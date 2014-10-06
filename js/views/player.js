@@ -31,11 +31,10 @@ App.Views.PlayerView = Backbone.View.extend({
 
         $("#player-container").flowplayer({
             rtmp: 'rtmp://media.vifi.ee/tv',
-            debug:true,
             playlist: [
             [ 
-                { mpegurl: 'http://media.vifi.ee:1935/tv/_definst_/test2.mp4/playlist.m3u8' },
                 {     mp4: 'http://gonzales.vifi.ee/zsf/test2.mp4'  },
+                { mpegurl: 'http://media.vifi.ee:1935/tv/_definst_/test2.mp4/playlist.m3u8' },
                 {    flash: 'mp4:test2.mp4' },
 
             ]
@@ -48,7 +47,6 @@ App.Views.PlayerView = Backbone.View.extend({
 
 
         $('.select-box').fancySelect();
-        var _this = this;
         this.$el.fadeIn();
 
 
