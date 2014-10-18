@@ -1,55 +1,51 @@
+
 App.Views.PlayerView = Backbone.View.extend({
     el: "#movie-player-container",
-    model: App.Models.Film,
+    model: App.Player.MediaPlayer,
     
     initialize: function() { 
-        _.bindAll(this, "render");
+        _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
+
+        this.render();
+        $(window).resize(this.resize);
+        this.resize();
+        this.listenTo(this.model, "player:content:ready", this.renderControls);
+    },
+    resize: function() {
+            var window_height = $(window).height();
+            var window_width = $(window).width();
+            var nav_height = $('#top-main-toolbar').outerHeight();
+            var footer_height = $('#video-container-footer').outerHeight() + $('#video-container-heading').outerHeight();
+            var player_height = window_height - (footer_height+nav_height);
+            this.$el.height(player_height);
+         
+            this.$("#player-container").height(player_height );
+            this.$("#player-container video").height(player_height);
     },
 
-   equalizeHeight: function() {
-        var width = this.width;
-        var height = width / 16 * 9;
-        // - $("#video-container-footer").height() - $("#video-container-heading").height();
-
-        this.$el.height(height); 
-   },
 
     close: function() {
-            this.$el.fadeOut();
             this.$el.empty();
+            this.$el.hide();
+            this.model.trigger("mediaplayer:stop");
+            this.unbind();
+    },
 
-    },
-    renderPlayer: function() { 
-    },
     render: function() {
 
-        this.height = this.$el.parent().height();
-        this.width = this.$el.parent().width();
         this.$el.empty();
         this.$el.append(ich.playerTemplate(this.model.toJSON()));
-
-
-        $("#player-container").flowplayer({
-            rtmp: 'rtmp://media.vifi.ee/tv',
-            playlist: [
-            [ 
-                {     mp4: 'http://gonzales.vifi.ee/zsf/test2.mp4'  },
-                { mpegurl: 'http://media.vifi.ee:1935/tv/_definst_/test2.mp4/playlist.m3u8' },
-                {    flash: 'mp4:test2.mp4' },
-
-            ]
-            ]
-
-            
-            }).one('ready', function(ev, api) {
-              api.resume();
-            });
-
-
-        $('.select-box').fancySelect();
         this.$el.fadeIn();
 
+        return this;
+    },
 
+    renderControls: function(content) {
+
+        $("#video-container-footer").append(ich.playerControlsTemplate(content.toJSON()));
+        $('.select-box').fancySelect();
+
+        return this;
     },
 });
 

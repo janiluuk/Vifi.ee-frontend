@@ -1,7 +1,7 @@
 App.Views.BrowserView = Backbone.View.extend({
     model: App.Models.Film,
-
-    el: $('#browser-content'),
+    el: '#browser-content',
+    template: _.template($("#browserPageTemplate").html()),
     events: {
         'submit #search-form': 'handleSearchFormSubmit',
         'change #search-form select': 'onSearchFieldChange',
@@ -11,6 +11,7 @@ App.Views.BrowserView = Backbone.View.extend({
     },
     initialize: function(options) {
         this.options = options;
+
         this.browsercollection = options.browsercollection;
         this.browsercollection.options.genres.bind('all', this.setGenreDropDown, this);
         this.browsercollection.bind('sync', this.renderResults, this);
@@ -20,13 +21,10 @@ App.Views.BrowserView = Backbone.View.extend({
         this.browsercollection.querystate.bind('change:durations', this.onChangeDuration, this);
         this.browsercollection.querystate.bind('change:years', this.onChangeYear, this);
         this.browsercollection.querystate.bind('change:search', this.onChangeText, this);
+        this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort});
+        this.filterview.bind('filter-bar:sort', this.onSort, this);
 
-        this.render();
-        this.applyIsotope();
-
-        this.renderResults();
-
-
+        
     },
      initEvents: function() { 
 
@@ -35,9 +33,11 @@ App.Views.BrowserView = Backbone.View.extend({
 
     },
     render: function() {
-        var template = _.template($("#browserPageTemplate").html());
-        this.$el.html(template);
-        this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort});
+
+        this.$el.html(this.template());
+        this.filterview.render();   
+        this.applyIsotope();
+        this.renderResults();
         return this;  
     },
     applyIsotope: function() {
@@ -87,6 +87,16 @@ App.Views.BrowserView = Backbone.View.extend({
         if (this.options.redirect_on_period_change && period != this.browsercollection.initial_search.period) {
             this.redirectToBaseURL();
         }
+    },
+    onSort: function(field, desc) {
+        this.browsercollection.sortByAttribute(field, desc);
+        $("#content-body-list").empty();
+        this.applyIsotope();
+
+        this.renderResults();
+
+
+
     },
    
     onChangeGenre: function(model, genre) {
@@ -139,15 +149,14 @@ App.Views.BrowserView = Backbone.View.extend({
     addOne : function ( item ) {
 
         var view = new App.Views.FilmView({model:item});
-        $('#content-body-list').append(view.render().el);
+        var el = view.render().el;
+         $('#content-body-list').append(el).isotope('insert', el);
     },
     addSet : function ( collection ) {
         var _this = this;
 
         collection.each(function(film, id) { 
-            var view = new App.Views.FilmView({model:film});
-            var el = view.render().el;
-            $('#content-body-list').append(el).isotope('appended', el);
+            _this.addOne(film);
 
         });
             $("#content-body-list").isotope("layout");
@@ -165,7 +174,6 @@ App.Views.BrowserView = Backbone.View.extend({
     },
 
     renderResults: function(el) {
-        this.fragment = document.createDocumentFragment();
 
         if (this.rendering) return false;
         this.rendering = true;
@@ -174,8 +182,7 @@ App.Views.BrowserView = Backbone.View.extend({
         //$("#search-results > div.movie").addClass("loading");
         $("#content-body-list").empty();
 
-        var _this = this;
-        this.browsercollection.getFirstPage()
+        this.browsercollection.getFirstPage();
         this.addSet(this.browsercollection);
         this.updateUIToState();
 

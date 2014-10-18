@@ -14,92 +14,140 @@ App.Views.BaseAppView = Backbone.View.extend({
     initialize: function(options) {
         this.options = options || {};
         var _this = this;
-        this.router = options.router;
         this.session = options.session;
+        this.user = options.session.get("profile");
+        
         this.collection = options.browsercollection;
         this.usercollection = options.usercollection;
-        this.eventhandler = options.eventhandler;
+        this.evt = options.eventhandler;
+        this.template = options.template;
+        this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
+        options.model = this.user;
 
         this.browserview = new App.Views.BrowserView({
-            browsercollection: options.browsercollection,
-            filters: options.filters,
-            sort: options.sort
+                browsercollection: options.browsercollection,
+                filters: options.filters,
+                sort: options.sort
         });
-
-
-        this.sidemenu = new App.Views.SideMenu();
-        this.topmenu = new App.Views.TopMenu();
-        
+        this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort});
         this.featuredview = new App.Views.FeaturedView({
             collection: options.browsercollection.featured()
         });
+        _.bindAll(this, 'render');
+            
+        this.sidemenu = new App.Views.SideMenu({model: this.user});
 
-
+        this.topmenu = new App.Views.TopMenu({model: this.user});
+        this.homepage = new App.Views.Homepage(options);
         this.render();
-
+        this.router = new App.Router();
     },
     render: function() {
-        this.topmenu.render().$el.appendTo(this.$el);
-        this.sidemenu.render().$el.appendTo(this.$el);
-
+       
+            this.topmenu.render();
+            this.sidemenu.render(); 
+            this.featuredview.render();
+            this.browserview.render();
+            return this;
     },
     scrollToTop: function() { 
          this.$("#content-container").stop().animate({scrollTop : 0},800);
     },
-   
-
     showMoviePage: function() {
         
         this.scrollTop = this.$("#content-container").scrollTop();
         $(".main-wrapper:not(#moviepage)").hide();
 
-        $("#moviepage").css( { width: $("#homepage").width() } ).fadeIn();
+        $("#moviepage").css( { width: $("#content-container").width() } ).fadeIn();
         this.$("#content-container").scrollTop(0);
 
     },
     showBrowserPage: function() {
         $(".main-wrapper:not(#homepage)").hide();
-
-        $("#homepage").fadeIn();
-        app.browserview.trigger("maximise");
-
+        $("#homepage").show();
+        
         this.$("#content-container").scrollTop(this.scrollTop);
+        app.browserview.$isotope.isotope('layout');
     },
     
     showSearchPage: function() {
         app.browserview.collection.onSearchFieldChange();
+    },
+    showContentPage: function(id) {
+        $(".main-wrapper:not(#contentpage)").hide();
+        if (id) {
+            $(".side-menu-list a.active").removeClass("active");
+            $(".side-menu-list a#menu-"+id).addClass("active");
+
+        }
+        app.sidemenu.closeSideBar();
+        this.$("#content-container").scrollTop(0);
+
+        $("#contentpage").show();
     }
 });
 
+App.Views.Homepage = Backbone.View.extend({
+    el: $("#homepage"),
+    initialize: function(options) {
 
+
+    },
+    render: function() {
+
+
+
+
+        return this;  
+    },
+
+});
 
 App.Views.TopMenu = Backbone.View.extend({
     events: { 
         'submit form#main-search-form' : 'onSearchSubmit',
+        'click #search-button' : 'toggleSearchBox',
         'click #menu-dragger' : 'toggleSideBar',
-        'click #search-button' : 'toggleSearchBox'
+        'click .login' : 'login',
+        'click .logout' : 'logout'
     },
-
-    model: App.Models.User,
+    model: App.User.FBPerson,
     el: $("#top-main-toolbar"),
-    render: function() {   
-        this.$el.append(ich.topmenuTemplate({}));
 
+    initialize: function(options) {
+        if (options.model) this.model = options.model;
+        this.model.on('change', this.render, this);
+        this.template = _.template(app.template.get('topmenu'));
+
+    },
+    render: function() {
+
+        this.$el.html(this.template(this.model.toJSON()));
         return this;  
+    },
+    login: function(e) {
+
+        $(document).trigger("login");
+        return false;
+    },
+    logout: function (e) {
+        $(document).trigger('logout');
+        return false;
     },
     toggleSearchBox: function(e) {
         e.preventDefault();
         $('#toolbar-search-group').toggle({ "display": "block"}, {"display":"none"});
         return false;
     },
-    toggleSideBar: function() {
-       if( window.snapper.state().state=="left" ){
-                    snapper.close();
-        } else {
-                    snapper.open('left');
-        }
+    toggleSideBar: function(e) {
+        if (e) e.preventDefault();
+        app.sidemenu.toggleSideBar();
+
+        return false;
+
     },
-     onSearchSubmit: function(e) {
+   
+    onSearchSubmit: function(e) {
         e.preventDefault();
         var q = $("#main-search-box").val();
         app.browserview.onSearchFieldChange(e);
@@ -107,7 +155,6 @@ App.Views.TopMenu = Backbone.View.extend({
         app.browserview.renderResults();
 
         return false;
-
     },   
 
 
@@ -115,38 +162,63 @@ App.Views.TopMenu = Backbone.View.extend({
 
 App.Views.SideMenu = Backbone.View.extend({ 
     el: $("#side-menu-container"),
-    events: {
-        'click a ' : 'openDialog'
-
+    state: 'closed',
+    events: { 
+        'click a.register-button' : 'toggleRegisterForm',
+        'click .logout' : 'logout',
+        'click .btn.facebook' : 'login'
     },
-    model: App.Models.User,
-
-    initialize: function() { 
+    initialize: function(options) { 
+        if (options.model) this.model = options.model;
+        _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
+        this.listenTo(this.model, "change", this.render, this);
         this.enableSideMenu();
     },
+
+    logout: function(e) { 
+        e.preventDefault();
+        $(document).trigger("logout");
+    },
+    login: function(e) { 
+        e.preventDefault();
+        $(document).trigger("login");
+    },
+    toggleRegisterForm: function(e) {
+        e.preventDefault();
+        $("form#user-register, form#user-login").toggle(); 
+        return false;
+    },
     enableSideMenu: function() {
+
         window.snapper = new Snap({
             element: document.getElementById("content-container"),
             disable: 'right',
             maxPosition: 260
         });
+    },
+   
+    toggleSideBar: function() {
 
-       $("#menu-dragger").on('click', this.toggleSideBar);
+        if (!window.snapper) return false;
+        if ($("body").hasClass("snapjs-left")) this.state = "left"; else this.state="closed";
+        if( this.state=="left" ){
+                    window.snapper.close();
+                    this.state = "closed";
+        } else {
+                    window.snapper.open('left');
+                    this.state = "left";
+        }
 
     },
-    openDialog: function() {
+    closeSideBar: function() {
+        if (!window.snapper) return false;
+        window.snapper.close();
+        this.state = "closed";
 
-        $.magnificPopup.open({
-          items: {
-              src: ich.dialogTemplate({}),
-              type: 'inline'
-          },
-          closeBtnInside: true
-        });
     },
-    
+ 
     render: function() {   
-        this.$el.append(ich.sidemenuTemplate({}));
+        this.$el.html(ich.sidemenuTemplate(this.model.toJSON()));
         return this;  
     }
 

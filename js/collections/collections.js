@@ -65,6 +65,33 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             return new App.Films.UserCollection(items);
 
         },
+        sortByAttribute: function(attribute, desc) {
+
+            var comparator = 'model.get("film").'+attribute;
+            var asc_comparator = function (model) { 
+
+                return eval(comparator);
+            }
+            this.fullCollection.comparator = desc ? this.reverseSortBy(asc_comparator) : asc_comparator;
+
+            this.fullCollection.sort();
+            return true;
+            
+
+        },
+
+        reverseSortBy: function(sortByFunction) {
+          return function(left, right) {
+            var l = sortByFunction(left);
+            var r = sortByFunction(right);
+         
+            if (l === void 0) return -1;
+            if (r === void 0) return 1;
+         
+            return l < r ? 1 : l > r ? -1 : 0;
+          };
+        }
+         
     });
 
 

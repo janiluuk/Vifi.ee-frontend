@@ -1,12 +1,11 @@
 App.Views.FilterView = Backbone.View.extend({
     initialize: function(options) {
-
-        this.filterbarview = new App.Views.FilterbarView({filters: options.filters, sort: options.sort});
-        this.filterlistview = new App.Views.FilterlistView({filters: options.filters, sort: options.sort});
-        this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this );
+        this.options = options;        
 
     },
-
+    onChangeSort: function (val, desc) {
+        this.trigger("filter-bar:sort", val, desc);
+    },
     onChangeFilter: function(field, val) {
 
             $("#id_" + field + " option").each(function() {
@@ -22,8 +21,15 @@ App.Views.FilterView = Backbone.View.extend({
             $("#id_" + field ).trigger("change");
 
 
-    }
+    },
+    render: function() {
+        this.filterlistview = new App.Views.FilterlistView({filters: this.options.filters, sort: this.options.sort});
 
+        this.filterbarview = new App.Views.FilterbarView({filters: this.options.filters, sort: this.options.sort});
+        this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this );
+        this.filterlistview.bind('filter-bar:sort', this.onChangeSort, this );
+
+    }
 
  }); 
 
@@ -55,9 +61,10 @@ App.Views.FilterItemView = Backbone.View.extend({
                 $(el).parent().find('.reset').addClass("toggle-on")
         }
 
+        this.trigger("filter-bar:toggle", val, field);
+
         e.stopPropagation();
 
-        this.trigger("filter-bar:toggle", val, field);
 
 
     },
@@ -68,7 +75,7 @@ App.Views.FilterItemView = Backbone.View.extend({
 
         this.filters = options.filters;
         this.initDropDown();
-
+        this.render();
     },
     initDropDown: function() {
         var _this = this;
@@ -84,6 +91,7 @@ App.Views.FilterItemView = Backbone.View.extend({
     },
     render: function() {
         this.$el.html(ich.checkboxlistTemplate({'items': this.filters.toJSON(), 'group': this.selectEl }));
+
         return this;
     }
 
@@ -93,8 +101,13 @@ App.Views.SortItemView = App.Views.FilterItemView.extend({
     toggleSelection: function(e) {
         e.preventDefault();
         var el = $(e.currentTarget);
+        var val = el.attr("data-val");
+        var desc = el.attr("data-desc");
+
         $(el).addClass("toggle-on");
         $(el).siblings().removeClass("toggle-on");
+        this.trigger("filter-bar:sort", val, desc);
+
     },
     render: function() {
         this.$el.html(ich.radiolistTemplate({'items': this.filters.toJSON()}));
@@ -119,15 +132,21 @@ App.Views.FilterlistView = Backbone.View.extend({
         this.trigger("filter-bar:toggle", field, val);
 
     },
+    onSortButton: function(val, desc) {
+        this.trigger("filter-bar:sort", val, desc);
+
+    },
+    
     render: function() { 
         var _this = this;
 
-         $("<div>").attr("id", "sort-list").appendTo(_this.$el);
+         $("<div>").attr("id", "sort-list").appendTo(this.$el);
             var view = new App.Views.SortItemView({
-                filters: _this.sort,
+                filters: this.sort,
                 selectEl: "sort",
                 el: '#sort-list'
             });
+                view.on('filter-bar:sort', this.onSortButton, this);
 
 
             this.$el.append(view.render().$el);
@@ -166,7 +185,7 @@ App.Views.FilterbarView = Backbone.View.extend({
         setTimeout(function() { 
             _this.enableCarosel();
 
-        },100);
+        },250);
         return this;
     },
     toggleFilter: function(e) { 
@@ -219,7 +238,8 @@ App.Views.FilterbarView = Backbone.View.extend({
     closeFilterBar: function() {
         if (!this.state) return;
         this.state = false;
-        $("#filter-list").slideUp(); $("#front-tabbar-swiper-container .swiper-slide-active").removeClass("swiper-slide-active");
+     $("#front-tabbar-swiper-container .swiper-slide-active").removeClass("swiper-slide-active");
+        $("#filter-list").slideUp(); 
     },
 
 });

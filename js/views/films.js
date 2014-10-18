@@ -20,6 +20,42 @@ App.Views.FilmView = Backbone.View.extend({
         var tmpl = $("#filmItemTemplate").html();
         var template = _.template(tmpl);
 
+        this.$el.html(template(this.model.get("film")));
+
+        return this;  
+    }
+
+});
+App.Views.UserFilmView = Backbone.View.extend({
+    model: App.Models.Film,
+    tagName: 'li',
+    className: 'item',
+    events: { 'click a' : 'showMoviePage'},
+    initialize: function() {
+        this.model.bind('change', this.render, this);
+        this.model.bind('remove', this.remove, this);
+
+    },
+    showMoviePage: function(e) {
+
+        var url = app.collection.fullCollection.get(this.model.get("id")).get("film").seo_friendly_url;
+
+        app.router.navigate(url, {trigger: true });
+        e.preventDefault();
+        return false;
+    },
+
+    render: function() {   
+        var tmpl = $("#userFilmItemTemplate").html();
+        var template = _.template(tmpl);
+        var film = app.collection.fullCollection.get(this.model.get("id")).get("film");
+        this.model.set("seo_friendly_url", film.seo_friendly_url);
+        this.model.set("poster_url", film.poster_url);
+        var date = App.Utils.stringToDate(this.model.get("validto"));
+
+        var validtotext = App.Utils.dateToHumanreadable(date);
+        this.model.set("validtotext", validtotext);
+       
         this.$el.html(template(this.model.toJSON()));
 
         return this;  
@@ -28,15 +64,12 @@ App.Views.FilmView = Backbone.View.extend({
 });
 
 
-
 App.Views.FeaturedView = Backbone.View.extend({
-    el: "#featured-slides",
+    el: '#featured-slides',
     browsercollection: App.Collections.PaginatedCollection,
     template: $("#featuredItemTemplate").html(),
     initialize: function() {
         this.fragment = document.createDocumentFragment();
-        this.render();
-
     },
    
     render: function() {
@@ -51,7 +84,6 @@ App.Views.FeaturedView = Backbone.View.extend({
         } );
         this.$el.append(this.fragment);
         this.startCarousel();
-
     },
     startCarousel: function() {
         window.mySwiper = $('#featured-swiper-container').swiper({

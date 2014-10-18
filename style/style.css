@@ -32,24 +32,38 @@ html {
         line-height: 1.2em !important;
         margin: 0.4em !important;
     }
+
+    #subscribepage-heading {
+        font-size: 2em !important;
+        margin: 70px 50px !important;
+    }
+
+    #subscribepage-header {
+        background-position: 295px 55px !important;
+        height: 315px !important;
+        background-size: 650px !important;
+    }
 }
 
-@media only screen and (max-width: 920px), only screen and (max-device-width: 920px), only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dppx) {
+@media only screen and (max-width: 1100px) {
+    #featured-swiper-container, #gallery-swiper-container {
+        height: 420px !important;
+    }
+}
+
+@media only screen and (max-width: 920px), only screen and (max-device-width: 920px), only screen and (min-resolution: 192dppx) {
     .main-wrapper {
         max-width: 100% !important;
     }
 
     #featured-swiper-container, #gallery-swiper-container {
-        height: 28em !important;
+        height: 364px !important;
     }
 
     input#main-search-box {
         width: 80% !important;
     }
 
-    #gallery-swiper-container {
-        height: 20em !important;
-    }
 
     .selection {
         width: 24% !important;
@@ -94,11 +108,32 @@ html {
     .search-result-heading {
         font-size: 2.5em !important;
     }
+
+    #subscribepage-header {
+        background-position: 295px 30px !important;
+        height: 290px !important;
+    }
+
+    ul#subscription-benefit-list li {
+        font-size: 1.2em !important;
+    }
 }
 
-@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dppx) {
+@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (min-resolution: 192dppx) {
     html {
         font-size: 13px;
+    }
+
+    .width-50 {
+        width: 100% !important;
+    }
+
+    .width-25 {
+        width: 50% !important;
+    }
+
+    .card {
+        margin: 0 0 1em 0 !important;
     }
 
     #toolbar-left-group {
@@ -153,7 +188,7 @@ html {
     }
 
     #featured-swiper-container, #gallery-swiper-container {
-        height: 30em !important;
+        height: 390px !important;
     }
 
     .pagination, .pagination-1 {
@@ -175,9 +210,10 @@ html {
 
     .selection-wrapper {
         padding: 0 1% 1% 1%;
+        text-align: left !important;
     }
 
-    .film-list .item {
+    .film-list .item, .user-filmcollection-list .item {
         width: 98% !important;
         margin: 1% !important;
     }
@@ -191,12 +227,12 @@ html {
         height: 15em !important;
     }
 
-    .film-list .item-image {
+    .film-list .item-image, .user-filmcollection-list .item-image {
         width: 30% !important;
         height: 8em !important;
     }
 
-    .film-list .item-info {
+    .film-list .item-info, .user-filmcollection-list .item-info {
         width: 70% !important;
     }
 
@@ -232,7 +268,6 @@ html {
     }
 
     #gallery-swiper-container ul {
-        width: auto !important;
         height: auto !important;
         top: auto !important;
         right: auto !important;
@@ -345,11 +380,41 @@ html {
         margin-left: 0 !important;
     }
 
+    #subscribepage-heading {
+        font-size: 2em !important;
+        width: 80% !important;
+        margin: 10% !important;
+    }
+
+    #subscribepage-header {
+        background-position: -10px 160px !important;
+        height: 342px !important;
+        background-size: 455px !important;
+    }
+
+    .subscription-duration {
+        padding: 1em 0 !important;
+    }
+
+    p.duration-number {
+        font-size: 3em !important;
+        letter-spacing: -2px !important;
+    }
+
+    p.duration-text {
+        font-size: 1.2em !important;
+        letter-spacing: 0 !important;
+    }
+
+    #subscription-benefits {
+        padding: 1em !important;
+    }
+
 }
 
 @media only screen and (max-height: 768px) {
     #featured-swiper-container, #gallery-swiper-container, #player-container.flowplayer, .video-container-body iframe {
-        height: 27em !important;
+        height: 390px !important;
     }
 
     .selection-container {
@@ -373,19 +438,16 @@ html {
         height: 20em !important;
     }
 
-    .selection {
-        height: 2.3em !important;
-        line-height: 2.3em !important;
-    }
-
-    .selection:after {
-        top: 0.4em !important;
-    }
 }
 
 @media only screen and (max-height: 600px) {
     #featured-swiper-container, #gallery-swiper-container, #player-container.flowplayer, .video-container-body iframe {
-        height: 25em !important;
+        height: 350px !important;
+    }
+
+    p.duration-number {
+        font-size: 3.5em !important;
+        letter-spacing: -2px !important;
     }
 
 }
@@ -396,14 +458,18 @@ html {
     }
 
     #featured-swiper-container, #gallery-swiper-container {
-        height: 30em !important;
+        height: 390px !important;
+    }
+
+    .subscription-duration {
+        padding: 1em 0 !important;
     }
 
 }
 
 @media only screen and (max-height: 480px) {
     #featured-swiper-container, #gallery-swiper-container {
-        height: 20em !important;
+        height: 320px !important;
     }
 }
 
@@ -419,8 +485,27 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100%;
+    height: 100%;
     overflow: hidden;
+}
+
+#vifi-page-container {
+    position: relative;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -ms-box-orient: horizontal;
+    box-orient: horizontal;
+    overflow: hidden;
+    -webkit-perspective: 1000;
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    width: 100%;
+    min-height: 100%;
 }
 
 h3 {
@@ -429,6 +514,132 @@ h3 {
     color: #2EA849;
     border-bottom: 1px dotted #999;
     padding: 0 0 0.4em 0;
+}
+
+.break {
+    width: 100%;
+    height: 1px;
+    background: #E5E5E5;
+}
+
+.new-feature {
+    position: relative;
+}
+
+.new-feature:after {
+    content: 'new';
+    position: absolute;
+    text-transform: uppercase;
+    background-color: #1AD630;
+    border: 1px dotted;
+    padding: 0.1em 0.5em;
+    border-radius: 1em;
+}
+
+.width-100 {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.width-50 {
+    width: 50%;
+    box-sizing: border-box;
+    padding: 1%;
+}
+
+.width-25 {
+    width: 25%;
+    box-sizing: border-box;
+    padding: 1%;
+}
+
+.card {
+    margin: 0 0 2em 0;
+    background: white;
+    box-shadow: 0 2px 2px #ACA0A0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.card-heading {
+    font-size: 2em;
+    line-height: 2em;
+    background: #eee;
+    border-bottom: 1px solid #D6C5C5;
+}
+
+.card-body {
+    box-sizing: border-box;
+}
+
+.card-body .row-fluid {
+    font-size: 1.2em;
+    color: #1b1b1b;
+    padding: 0 1em;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 1em 0;
+}
+
+.card-body .row-fluid i.icon {
+    top: 13px;
+}
+
+#user-pairtv-info .card-body .row-fluid i.icon {
+    top: 7px;
+    left: 20px;
+}
+
+.card-body #change-password-edit .row-fluid i.icon {
+    top: 14px;
+    left: 20px;
+}
+
+.card-body #user-profile-edit .row-fluid i.icon {
+    top: 15px;
+    left: 20px;
+}
+
+.card-body .row-fluid input {
+    height: 33px;
+    line-height: 33px;
+    width: 100%;
+    border-color: #B5AAC4;
+    border-radius: 0.5em;
+    text-indent: 30px;
+}
+
+span.label {
+    margin-left: 2em;
+    font-size: 0.7em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #888;
+    color: #aaa;
+    margin: 0 10px 0 30px;
+}
+
+.card-body .row-fluid button {
+    font-size: 1em;
+}
+
+.card-body .row-fluid button.float_right {
+    margin: 0 0 1em 0;
+}
+
+.card-body .row-fluid #edit-profile-cancel-button, .card-body .row-fluid #change-password-cancel-button {
+    margin: 0 1em 1em 0;
+}
+
+.card-heading-icon {
+    height: 2em;
+    width: 2em;
+}
+
+.card-heading span {
+    margin-left: 0.5em;
+    color: #88718E;
 }
 
 #goTop {
@@ -612,9 +823,9 @@ li#code .payment-item-image {
     background-image: url('img/code-logo.jpg');
 }
 
-input#email, input#code {
-    line-height: 2.5em;
-    height: 2.5em;
+input#email, input#code, #side-menu input {
+    line-height: 33px;
+    height: 33px;
     width: 100%;
     border-color: #B5AAC4;
     border-radius: 0.5em;
@@ -629,13 +840,14 @@ input#code {
 
 button, .btn {
     background-color: #555;
+    color: #eee;
     padding: 0.4em 1.2em 0.3em 1.2em;
     box-shadow: 0 2px 0 #333;
     border: none;
     border-radius: 5px;
     box-sizing: border-box;
     text-decoration: none;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 1.3em;
@@ -670,9 +882,18 @@ a button, a .btn, button a, .btn a {
     background-color: #09863E;
 }
 
+.btn.blue {
+    background-color: #2E9BDD;
+    box-shadow: 0 2px 0 #084D77;
+}
+
+.btn.blue:hover {
+    background-color: #2376A8;
+}
+
 button#loadMore {
     width: 98%;
-    margin: 1%;
+    margin: 1em 1%;
     box-sizing: border-box;
     padding: 1em 0;
     background-color: #A6BFC9;
@@ -684,6 +905,49 @@ button#loadMore:hover {
     background-color: #90AFBB;
 }
 
+button.facebook {
+    font-size: 1em;
+    text-transform: none;
+    padding: 0.7em;
+    background-color: #3f5b95;
+    box-shadow: 0 2px 0 #1F3F7F;
+    letter-spacing: 0;
+    position: relative;
+    text-align: left;
+    text-indent: 35px;
+}
+
+button.facebook.revoke {
+    background-color: #D56D81;
+    box-shadow: 0 2px 0 #AD5252;
+}
+
+button.facebook.revoke .icon{
+    top: 5px;
+    left: 5px;
+}
+
+button.facebook.revoke:hover {
+    background-color: #B5596B;
+}
+
+button.facebook:hover {
+    background-color: #2E4C89;
+}
+
+button.btn.facebook:before {
+    content: '';
+    position: absolute;
+    background: black;
+    height: 100%;
+    width: 32px;
+    top: 0;
+    left: 0;
+    border-top-left-radius: 5px;
+    opacity: 0.2;
+    filter: alpha(opacity=20);
+}
+
 input.vifi-text-input {
     box-sizing: border-box;
     color: #1b1b1b;
@@ -691,6 +955,7 @@ input.vifi-text-input {
     border: 1px solid transparent;    
     -webkit-transition: background-color.2s, border-color.2s, width .3s;
     transition: background-color .2s, border-color.2s, width .3s;
+    box-shadow: none !important;
 }
 
 input.vifi-text-input:focus {
@@ -707,6 +972,52 @@ input.vifi-text-input:focus {
 span.icon {
     float: left;
     background: url('img/vifi-tactic-images.png') no-repeat;
+}
+
+i.icon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: url('img/vifi-tactic-images.png');
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    z-index: 9;
+}
+
+i.icon.email {
+    background-position: -23px -173px;
+}
+
+i.icon.password {
+    background-position: 0 -172px;
+}
+
+i.icon.confirm-password {
+    background-position: -46px -172px;
+}
+
+i.icon.user {
+    background-position: -87px 27px;
+}
+
+i.icon.message {
+    background-position: -110px 27px;
+}
+
+i.icon.sync {
+    background-position: -133px 27px;
+}
+
+i.icon.globe {
+    background-position: 43px 27px;
+}
+
+i.icon.check-green {
+    background-position: 21px 27px;
+}
+
+i.icon.facebook {
+    background-position: -66px 28px;
 }
 
 .film-rating span.icon {
@@ -776,24 +1087,50 @@ span.arrowup {
     margin: 3.85em 0 0 0;
 }
 
+#contentpage li {
+    float:left;
+    list-style-type: none;
+
+}
+#contentpage ul.pager {
+    z-index: 9;
+    position: absolute;
+    bottom:0;
+    position: absolute;
+    right: 0;
+}
+#toolbar-login {
+    float:left;
+
+}
+#toolbar-login li{
+    float:left;
+    list-style-type: none;
+}
+
 #top-main-toolbar {
     width: 100%;
     height: 3.85em;
-    z-index: 2;
+    z-index: 3;
     position:fixed;
     background-color: #322E54;
 }
 
-.menu-icon {
+#menu-dragger {
     height: 3.85em;
     width: 3.85em;
-    background: url('img/menu-icon.png') no-repeat 0 0;
+    cursor: pointer;
+}
+
+.menu-icon, .search-icon {
+    background-repeat: no-repeat;
+    background-position: 0 0;
 }
 
 .search-icon {
     height: 3.85em;
     width: 3.85em;
-    background: url('img/search-icon.png') no-repeat 0 0;
+    background-image: url('img/search-icon.png');
 }
 
 .menu-icon:hover, .snapjs-left .menu-icon, .search-icon:hover{
@@ -839,6 +1176,7 @@ input#main-search-box {
     line-height: 2.4em;
     margin: 0.55em 0;
     font-size: 1.1em;
+    text-indent: 0.5em;
     border-radius: 0.4em;   
     background-image: url('img/search-dark-90.png');
     background-size: 30px;
@@ -872,6 +1210,13 @@ input#main-search-box:focus {
     font-weight: 700;
 }
 
+#side-menu h3.new-feature:after {
+    right: 0.5em;
+    top: 0;
+    font-size: 0.7em;
+    color: #602583;
+}
+
 .snapjs-right .left-drawer,
 .snapjs-left .right-drawer {
     display: none;
@@ -888,17 +1233,65 @@ ul.side-menu-list a {
 }
 
 .side-menu-list li {
-    padding: 0.2em 0.5em 0.2em 1.7em;
+    padding: 0.3em 0.5em 0.3em 1.7em;
     color: #EBDAE3;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: 500;
     background: none;
     transition: background 0.2s;
     -webkit-transition: background 0.2s;
 }
 
-.side-menu-list li:hover, .side-menu-list li:focus {
+.side-menu-list li:hover, .side-menu-list li:focus,.side-menu-list a.active li {
     background: #634256;
+}
+
+form#user-login, form#user-register {
+    padding: 0 1.5em;
+}
+
+#side-menu form h3 {
+    margin: 1.5em 0.5em 0.5em 0;
+}
+
+.tagline {
+    color: #EBDAE3;
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+#side-menu form a {
+    color: #B67E9C;
+    font-size: 1.1em;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+form#user-register {
+    display:none;
+}
+
+#side-menu .row-fluid {
+    margin: 0 0 0.5em 0;
+    position: relative;
+}
+
+#side-menu form input {
+    text-indent: 30px;
+}
+
+#side-menu form .row-fluid i.icon{
+    top: 7px;
+    left: 7px;
+}
+
+#side-menu #social-login .row-fluid i.icon{
+    top: 5px;
+    left: 5px;
+}
+
+#social-login {
+    padding: 1.5em 1.5em 0 1.5em;
 }
 
 /* SLIDER */
@@ -967,12 +1360,9 @@ a.arrow-right {
 }
 
 .featured-item-background {
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    position: absolute;
-    z-index: -9;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -996,7 +1386,7 @@ a.arrow-right {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#d9000000',GradientType=0 ); /* IE6-9 */
     position: absolute;
     width: 90%;
-    bottom: 0em;
+    bottom: 0;
     padding: 2.5em 5% 3.5em 5%;
 }
 
@@ -1039,7 +1429,6 @@ a.arrow-right {
     max-width: 1280px;
     margin: 0 auto;
     position: relative;
-    background: #CAC3C3;
     transition: width 0.2s;
     -webkit-transition: width 0.2s;
 }
@@ -1050,7 +1439,7 @@ a.arrow-right {
 }
 
 #featured-swiper-container, #gallery-swiper-container {
-    height: 35em;
+    height: 455px;
 }
 
 .swiper-container, .swiper-wrapper {
@@ -1097,7 +1486,7 @@ a.arrow-right {
     width: 0;
     height: 0;
     border: 8px solid transparent;
-    border-bottom-color: #CAC3C3;
+    border-bottom-color: #DFDBDB;
     position: absolute;
     bottom: 0;
     left: 45%;
@@ -1238,8 +1627,7 @@ filter: alpha(opacity=90);
 
 /* MAIN CONTENT BODY */
 
-#content-body, #moviepage-body {
-    background: #CAC3C3;
+#content-body, #moviepage-body, #profilepage-body, #subscribepage-body {
     box-sizing: border-box;
     width: 100%;
     padding: 1%;
@@ -1247,16 +1635,24 @@ filter: alpha(opacity=90);
 
 #content-body {
     position: relative;
+    background: #CAC3C3;
 }
 
-ul#content-body-list, ul#cast-content-body-list, #film-info-container, #film-cast-container, #film-list-container {
+ul#content-body-list,
+ul#cast-content-body-list,
+ul.user-filmcollection-list, #film-info-container,
+#film-cast-container,
+#film-list-container,
+#profilepage-mymovies-container,
+#profilepage-myprofile-container,
+#subscribepage-body-container
+{
     margin: 0;
     padding: 0;
     width: 100%;
 }
 
 #film-info-container, #film-cast-container {
-    background: #CAC3C3;
     min-height: 40em;
 }
 
@@ -1296,6 +1692,7 @@ ul#content-body-list li, ul#cast-content-body-list li {
     height: 22em;
     float: left;
     background-size: cover;
+    background-position: center;
     position: relative;
 }
 
@@ -1386,6 +1783,9 @@ ul#cast-content-body-list li .item-image {
 
 /* MOVIE PAGE */
 
+#moviepage-body, #profilepage-body, #subscribepage-body {
+    background: #DFDBDB;
+}
 
 #movie-page-header.feature-wrapper {
     z-index: 0;
@@ -1393,6 +1793,7 @@ ul#cast-content-body-list li .item-image {
 
 #gallery-swiper-container {
     text-align: center;
+    position: relative;
 }
 
 #gallery-swiper-container ul {
@@ -1470,8 +1871,8 @@ ul#cast-content-body-list li .item-image {
 }
 
 .film-summary .text-area {
-    font-size: 1.4em;
-    line-height: 1.6em;
+    font-size: 1.2em;
+    line-height: 1.8em;
     color: black;
     padding-right: 1em;
 }
@@ -1528,6 +1929,7 @@ ul#cast-content-body-list li .item-image {
 
 #movie-player-container {
     background: #1b1b1b;
+    position: relative;
 }
 
 .flowplayer .fp-progress {
@@ -1549,6 +1951,19 @@ ul#cast-content-body-list li .item-image {
     background-color: #1b1b1b !important;
 }
 
+#subtitles {
+    position: absolute;
+    bottom: 1em;
+    width: 100%;
+    text-align: center;
+    font-size: 3em;
+    font-family: Arial;
+    line-height: 1em;
+    z-index:99;
+    font-weight: 600;
+    color: #FFF683;
+    text-shadow: 0 0 2px black, 0 0 3px black, 0 0 4px black, 0 2px 2px black;
+}
 /* SEARCH PAGE */
 
 .search-result-heading {
@@ -1564,4 +1979,152 @@ ul#cast-content-body-list li .item-image {
 #search-result-header {
     background: url('img/blur_background1.jpg') no-repeat center center fixed;
     background-size: cover;
+}
+
+/* USER PROFILE PAGE */
+
+#profilepage-header {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 2em 0;
+}
+
+.profile-image {
+    width: 9em;
+    height: 9em;
+    border-radius: 9em;
+    margin: 0 auto;
+    display: inline-block;
+    background-position: center;
+}
+
+.profile-name {
+    font-size: 2.5em;
+    font-weight: 100;
+    color: #fff;
+    text-shadow: 0 1px 1px #333;   
+}
+
+#user-profile .card-body .row-fluid, .card-body #change-password-edit .row-fluid {
+    height: 3em;
+    line-height: 3em;
+    margin: 0;
+}
+
+#user-profile-edit, #subscribe-positive, #change-password-edit, #profilepage-mymovies-container {
+    display:none;
+}
+
+input#profile-newsletter {
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+}
+
+/* SUBSCRIBE PAGE */
+
+#subscribepage-header {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    background-image: url('img/subscribe-page-heading.png');
+    background-repeat: no-repeat;
+    background-position: 450px 30px;
+    height: 350px;
+}
+
+#subscribepage-heading {
+    text-align: left;
+    margin: 100px 50px;
+    font-size: 2.5em;
+    font-weight: 100;
+    width: 45%;
+    color: #fff;
+    text-shadow: 0 1px 1px #333;
+}
+
+#subscribepage-body {
+    box-shadow: 0 -2px 2px #A38893;
+}
+
+.subscription {
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    -webkit-transition: border-color 0.2s;
+    -moz-transition: border-color 0.2s;
+    -o-transition: border-color 0.2s;
+    -ms-transition: border-color 0.2s;
+}
+
+.subscription:hover {
+    border-color: #09863E;
+}
+
+.subscription-duration {
+    padding: 2em 0;
+    background: #eee;
+}
+
+.subscription-duration p {
+    margin: 0 15px;
+    padding: 0;
+    text-align: center;
+    font-weight: 100;
+}
+
+p.duration-number {
+    font-size: 4em;
+    color: #D84678;
+    letter-spacing: -3px;
+}
+
+p.duration-text {
+    font-size: 1.7em;
+    color: #333;
+    letter-spacing: -1px;
+}
+
+#code-plan p.duration-text {
+    font-size: 1.4em;
+    letter-spacing: 0px;
+}
+
+.subscription-price {
+    padding: 1em 0 0 0;
+}
+
+.subscription-price p {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #1b1b1b;
+}
+
+p.price-teaser {
+    font-size: 1em;
+    color: #DF3A3A;
+}
+
+#subscription-benefits {
+    padding: 1%;
+}
+
+ul#subscription-benefit-list {
+    margin: 0;
+    padding: 0;
+}
+
+ul#subscription-benefit-list li {
+    font-size: 1.5em;
+    padding: 0 0.5em 0.5em 30px;
+    color: #333;
+    position: relative;
+}
+
+ul#subscription-benefit-list li .icon {
+    left: 0;
+    top: 4px;
 }

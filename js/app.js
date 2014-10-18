@@ -10,8 +10,7 @@ var App = {};
 
 App = {
     Utils: {},
-    Router: {},
-    Views: {},
+    Views: { FB: {}},
     Films: {},
     Player: {},
     User: {},
@@ -19,52 +18,240 @@ App = {
     Router: {},
     Settings: {
         // properties   
-        version: "0.2",
+        version: "061014",
         debug: false,
         api_key: '12345',
         api_url: "http://gonzales.vifi.ee/api/",
-        rtmp_url: "rtmp://media.vifi.ee/vod",
-        hls_url: "http://media.vifi.ee:1935/vod"
-    
+        rtmp_url: "rtmp://media.vifi.ee/tv",
+        hls_url: "http://media.vifi.ee:1935/vod", 
+        subtitles_url: "http://beta.vifi.ee/subs/",
+
+        mp4_url: "http://gonzales.vifi.ee/zsf/"
     }
 }
 
 
 App.Router = Backbone.Router.extend({
-        routes: {
-            '': 'homePage', //
-            'search': 'search',
-            'search/:searchStateHash': 'search',
+    views: {},
+    models: {},
+    routes: {
+        '': 'homePage', //
+        'search': 'search',
+        'search/:searchStateHash': 'search',
+        'welcome' : 'welcome',
+        'film/:id': 'showFilm',
+        'films/:id': 'showFilm',
+        "me": "me",
+        "me/friends": "myfriends",
+        "me/my-films": "filmcollection",
+        "me/pair-device": "pairdevice",
+        "subscription-plans" : "subscription",
+        "person/:id": "person",
+        "account": "account",
 
-            'film/:id': 'showFilm',
-            'films/:id': 'showFilm',
+        "person/:id/friends": "friends",
+        "person/:id/mutualfriends": "mutualfriends",
+        "person/:id/feed": "feed",
+        "revoke": "revoke",
+        "post": "post",
+        "postui": "postui"
+    },
+    search: function(searchStateHash) {
 
-        },
-        search: function(searchStateHash) {
-
-            app.browserview.onSearchFieldChange();
+        app.browserview.onSearchFieldChange();
 
 
-        },
-        showFilm: function(id) {
-            var film = new App.Models.Film({id: id});
+    },
+    showFilm: function(id) {
+        var film = new App.Models.Film({
+            id: id
+        });
+    
+        film.fetch().done(function() {
+            var playButtonText = "Vaata filmi ("+film.get("price")+")";
+            if (app.user.hasMovie(film)) {
+                playButtonText = "Vaata edasi";
+            }
+            film.set("playButton", playButtonText);
 
-            
-            film.fetch().done(function() {  
-                app.movieview = new App.Views.MovieDetailView({model: film});
+            if (!app.movieview) { 
+                app.movieview = new App.Views.MovieDetailView({
+                    model: film
+                });
                 app.movieview.render();
-                app.showMoviePage();
-                   
+
+            } else {
+                if (app.movieview.model.get("id") != film.id) { 
+                    app.movieview.model = film;
+                    app.movieview.render();
+                }
+            }
+
+            app.showMoviePage();
+        });
+    },
+
+    homePage: function() {
+        app.showBrowserPage();
+
+
+    },
+
+  
+    initialize: function() {
+        // Caching the Welcome View
+
+       // this.welcomeView = new App.Views.FB.Welcome({model: fb.user});
+    },
+
+    welcome: function() {
+       // $('#contentpage').html(app.welcomeview.el);
+    },
+
+
+    person: function(id) {
+
+        var self = this;
+
+        try {
+            FB.api("/" + id, function(response) {
+                if (response.error) {
+                    self.showErrorPage();
+                } else {
+                    $('#contentpage').html(new App.Views.FB.Person({
+                        model: new App.User.FBPerson(response)
+                    }).el);
+                }
             });
-        },
+        } catch (e) {
+            this.showErrorPage();
+        }
+        app.showContentPage();
 
-        homePage: function() {
-            app.showBrowserPage();
+    },
+    me: function() {
 
+        var profile = app.session.get("profile");
+        if (!this.views.profile)
+        this.views.profile = new App.Views.ProfileView({model: profile});
+        else
+        this.views.profile.model = profile;
+        this.views.profile.render();
+        app.showContentPage("me");
+
+    },
+    subscription: function() {
+
+        var view = new App.Views.SubscriptionView();
+        view.render();
+        app.showContentPage("subscription");
+
+    },
+    filmcollection: function() {
+
+        var collection = app.usercollection;
+
+        var view = new App.Views.UserCollectionView({carousel: true, carouselShowFilms: 5, collection: collection});
+        view.render();
+        
+        app.showContentPage("myfilms");
+
+    },
+    pairdevice: function() {
+
+        var profile = app.session.get("profile");
+
+        var view = new App.Views.UserPairView({model: profile});
+        $('#contentpage').html(view.render().$el.html());
+
+        app.showContentPage("pairtv");
+
+    },
+    friends: function(id) {
+        var self = this;
+
+        try {
+            FB.api("/" + id + "/friends?limit=20", function(response) {
+                if (response.error) {
+                    self.showErrorPage();
+                } else {
+                    $('#contentpage').html(new App.Views.FB.Friends({
+                        model: new Backbone.Model(response)
+                    }).el);
+                }
+            });
+        } catch (e) {
+            this.showErrorPage();
         }
 
-    });
+        app.showContentPage();
 
+    },
 
+    mutualfriends: function(id) {
+        var self = this;
+        $('#contentpage').html('<div class="breadcrumb api">FB.api("/' + id + '/mutualfriends");</div>');
+        try {
+            FB.api("/" + id + "/mutualfriends?limit=20", function(response) {
+                if (response.error) {
+                    self.showErrorPage();
+                } else {
+                    $('#contentpage').append(new App.Views.FB.Friends({
+                        model: new Backbone.Model(response)
+                    }).el);
+                }
+            });
+        } catch (e) {
+            this.showErrorPage();
+        }
+        app.showContentPage();
+
+    },
+
+    feed: function(id) {
+        var self = this;
+        $('#contentpage').html('<div class="breadcrumb api">FB.api("/' + id + '/feed");</div>');
+        try {
+            FB.api("/" + id + "/feed?limit=20", function(response) {
+                if (response.error) {
+                    self.showErrorPage();
+                } else {
+                    $('#contentpage').append(new App.Views.FB.Feed({
+                        model: new Backbone.Model(response)
+                    }).el);
+                }
+            });
+        } catch (e) {
+            this.showErrorPage();
+        }
+        app.showContentPage();
+
+    },
+
+    post: function() {
+        $('#contentpage').html('<div class="breadcrumb api">FB.api("/me/feed", "post", data);</div>');
+        $('#contentpage').append(new App.Views.FB.Post().el);
+        app.showContentPage();
+
+    },
+
+    postui: function() {
+        $('#contentpage').html('<div class="breadcrumb api">FB.ui();</div>');
+        $('#contentpage').append(new App.Views.FB.PostUI().el);
+        app.showContentPage();
+
+    },
+
+    revoke: function() {
+        $('#contentpage').html('<div class="breadcrumb api">FB.api("/me/permissions", "delete");</div>');
+        $('#contentpage').append(new App.Views.FB.Revoke().el);
+                app.showContentPage();
+
+    },
+
+    showErrorPage: function() {
+        $('#contentpage').append(new App.Views.FB.Error().el);
+    }
+});
 
 

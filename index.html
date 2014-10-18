@@ -3,52 +3,149 @@
     <head>
         <meta charset="utf-8">
         <title>BetaUI</title>
-        <link rel="stylesheet" href="http://releases.flowplayer.org/5.5.0/skin/minimalist.css">
-        <link rel="stylesheet" href="style/fancySelect.css">
+      
         <link rel="stylesheet" href="style/style.css" type="text/css" />
         <link rel="stylesheet" href="style/snap.css" type="text/css" />
         <link rel="stylesheet" href="style/idangerous.swiper.css"/>
         <link rel="stylesheet" href="style/magnific_popup.css"/>
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic" rel="stylesheet" type='text/css' />
+        <link rel="stylesheet" href="http://releases.flowplayer.org/5.5.0/skin/minimalist.css">
+        <link rel="stylesheet" href="style/fancySelect.css">
         <script type="text/javascript" src="js/vendors.js"></script>
         <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-540b49a3467ae07c"></script>
         <meta name="viewport" content="width=device-width" />
        
     </head>
     <body>
+<div id="dialog"></div>
+
+<div id="fb-root"></div>
+<div id="shell"></div>
+<div id="top-main-toolbar"></div>
     <div id="vifi-page-container">
                     <!-- Top Main Toolbar-->
-            <div id="top-main-toolbar"></div>
+            
             <div id="side-menu-container" class="snap-drawers"></div>
             <div id="content-container" class="snap-content">
                     <!-- Home Page-->
                     <div class="main-wrapper" id="homepage">
                         <div id="front-page-slider" class="feature-wrapper float_left">
                             <div class="swiper-container" id="featured-swiper-container" data-snap-ignore="true">
+
                                 <a class="arrow-left" href="#"></a>
                                 <a class="arrow-right" href="#"></a>
-                                <div class="swiper-wrapper" id="featured-slides">
-                               
-                                </div>
+                                <div class="swiper-wrapper" id="featured-slides"></div>
                                 <div class="pagination"></div>
                             </div>
                         </div>
                         <div id="browser-content"></div>
-
                     </div>
 
                     <!-- Movie Page-->
                     <div class="main-wrapper" style="display:none" id="moviepage">
                         
                     </div>
-
+                    <!-- Content Page-->
+                    <div class="main-wrapper" style="display:none" id="contentpage"></div>
                     <!-- Search Result Page-->
                     <div class="main-wrapper" style="display:none" id="searchpage">
                       
                     </div>
             </div>
         </div>
+        <script type="text/html" id="subscriptionPlansTemplate">
+            <div id="subscription-plans-content">
+                <div id="subscribepage-header" class="float_left">
+                    <div id="subscribepage-heading">Unlimited access to all movies. Anytime. Anywhere.</div>
+                </div>
+                <div id="subscribepage-body" class="float_left">
+                    <div id="subscribepage-body-container" class="float_left">
+                        <div id="subscription-benefits" class="float_left width-100">
+                            <ul id="subscription-benefit-list" class="float_left width-100">
+                                <li class="width-50"><i class="icon check-green"></i>Unlimited access to all movies and TV series</li>
+                                <li class="width-50"><i class="icon check-green"></i>Watch on smart phones, tablets, computers or TV</li>                                
+                                <li class="width-50"><i class="icon check-green"></i>Substitle in Estonian</li>
+                                <li class="width-50"><i class="icon check-green"></i>24/7 hotline support</li>
+                            </ul>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="week-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">7</p>
+                                        <p class="duration-text">days</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="subscription-price">
+                                        <p>3,90 €</p>
+                                        <p class="price-teaser">&nbsp;</p>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button class="btn buysubscription green full">Buy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="month-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">30</p>
+                                        <p class="duration-text">days</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="subscription-price">
+                                        <p>6,90 €</p>
+                                        <p class="price-teaser">Save 55%</p>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button class="btn buysubscription green full">Buy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="year-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">1</p>
+                                        <p class="duration-text">year</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="subscription-price">
+                                        <p>69,90 €</p>
+                                        <p class="price-teaser">Save 15%</p>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button class="btn buysubscription  green full">Buy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="code-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">code</p>
+                                        <p class="duration-text">If you have a subscription code, please activate it here</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="row-fluid">
+                                        <button class="btn blue activatesubscription full">Enter code</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                                                        
+                </div>
 
+            </div>
+        </script>
+        <script type="text/html" id="userCollectionTemplate">
+            <div id="user-collection">
+
+            </div>
+        </script>
         <script type="text/template" id="browserPageTemplate">
 
                         <form id="search-form">
@@ -64,16 +161,35 @@
                             </ul>
                             <button id="loadMore">Load more</button>
                         </div>
+                        <!-- Footer -->
+                        <div class="page-footer float_left">
+                            <div id="goTop" class="goTop">
+                                <span class="arrowup"></span>
+                                <p>Go to top</p>
+                            </div>
+                        </div>
         </script>
         <script type="text/template" id="filmItemTemplate">
-                        <a href="<%-film.seo_friendly_url %>">
-                        <div class="item-image" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src=<%- film.poster_url %>&w=300');"></div></a>
+                        <a href="<%-seo_friendly_url %>">
+                        <div class="item-image" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src=<%- poster_url %>&w=300');"></div></a>
                         <div class="item-info">
-                                    <div class="item-info-title"><a href="<%-film.seo_friendly_url %>"><%-film.title %></a></div>
-                                        <div class="item-info-description"><%-film.year %> - <%-film.genres_text %></div>
+                                    <div class="item-info-title"><a href="<%-seo_friendly_url %>"><%-title %></a></div>
+                                        <div class="item-info-description"><%-year %> - <%-genres_text %></div>
                                     <div class="item-info-footer">
-                                                <div class="item-info-duration"><%-film.running_time_text %></div>
-                                                <div class="item-info-price"><%-film.price %></div>
+                                                <div class="item-info-duration"><%-running_time_text %></div>
+                                                <div class="item-info-price"><%-price %></div>
+                                    </div>
+                        </div>
+                        </a>
+                    
+        </script>
+        <script type="text/template" id="userFilmItemTemplate">
+                        <a href="<%-seo_friendly_url %>">
+                        <div class="item-image" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src=<%- poster_url %>&w=300');"></div></a>
+                        <div class="item-info">
+                                    <div class="item-info-title"><a href="<%-seo_friendly_url %>"><%-title %></a></div>
+                                    <div class="item-info-footer">
+                                                <div class="item-info-duration"><%-validtotext %></div>
                                     </div>
                         </div>
                         </a>
@@ -103,7 +219,7 @@
                         <iframe class="float_left" src="//www.youtube.com/embed/{{youtube_id}}" frameborder="0" allowfullsceen></iframe>
                         <div id="video-container-footer" class="float_left">
                             <ul>
-                                <li><a><button class="btn green"><span class="icon play"></span>Vaata filmi (2,20 EUR)</button></a></li>
+                                <li><a><button class="btn green"><span class="icon play"></span>{{ playButton }}</button></a></li>
                                 <li><a><button class="btn"><span class="icon gift"></span>Kingi Söbrale!</button></a></li>
                             </ul>
                         </div>
@@ -118,10 +234,11 @@
                 <div id="movie-player-container" class="fixed-controls"></div>
 
                 <!--Film gallery-->
+
                 <div class="swiper-container" id="gallery-swiper-container" data-snap-ignore="true" >
                     <ul>
                         <li><a href="#trailer" id="watchTrailer"><button class="btn"><span class="icon trailer"></span>Treiler</button></a></li>
-                        <li><a href="#player" id="playMovie"><button class="btn big green"><span class="icon play"></span>Vaata filmi (2,20 EUR)</button></a></li>
+                        <li><a href="#player" id="playMovie"><button class="btn big green"><span class="icon play"></span><%= playButton %></button></a></li>
                         <li><a><button class="btn"><span class="icon gift"></span>Kingi Söbrale!</button></a></li>
                     </ul>
                     <a class="arrow-left" href="#back"></a>
@@ -195,7 +312,14 @@
                 <!-- Film cast -->
                 <div id="film-cast-container" class="float_left" style="display:none;">
                     <ul id="cast-content-body-list">
-                    <% _.each(actors, function(actor) { %>
+                    <% _.each(actors, function(actor) { 
+
+                        if (typeof(actor.character) =="object") { 
+                            var characters = _.map(actor.character, function(char) { return char });
+                            actor.character = characters.join(","); 
+                        }
+                        if (actor.image_url == null) actor.image_url = '/style/img/anonymous_avatar.jpg';                      
+                            %>
                         <li class="item">
                             <div class="item-image" style="background-image: url('<%= actor.image_url%>');"></div>
                             <div class="item-info">
@@ -206,14 +330,11 @@
                                 </div>
                             </div>
                         </li>
-
                     <%  }); %>
-
-
-
                     </ul>
                 </div>
             </div>
+                
             <!-- Footer -->
             <div class="page-footer float_left">
                 <div id="goTop" class="goTop">
@@ -250,7 +371,13 @@
                             <ul id="searchpage-content-body-list" class="film-list">
                             </ul>                   
                         </div>
-
+                        <!-- Footer -->
+                        <div class="page-footer float_left">
+                            <div id="goTop" class="goTop">
+                                <span class="arrowup"></span>
+                                <p>Go to top</p>
+                            </div>
+                        </div>
         </script>
         <script type="text/html" id="checkboxlistTemplate">
             <div class="selection-wrapper" data-field="{{group}}" data-type="checkbox">
@@ -261,63 +388,60 @@
             </div>
         </script>
         <script type="text/html" id="radiolistTemplate">
-            <div class="selection-wrapper" data-field="{{group}}" data-type="radio">
+                <div class="selection-wrapper" data-field="{{group}}" data-type="radio">
                       
                 {{# items}}
-                <div class="selection" data-val="{{id}}"><span>{{name}}</span></div>
+               
+                <div class="selection {{#default}}toggle-on{{/ default}}" data-val="{{id}}" data-desc="{{desc}}"><span>{{name}}</span></div>
                 {{/ items}}                                
             </div>
         </script>
         <script type="text/html" id="playerTemplate">
             <div id="video-container-heading" class="float_left">
-                <div id="close-player" class="close"><span class="close-button"></span> Close</div>
+                <div id="close-player" class="close"><span class="close-button"></span>Close</div>
             </div>
             <div id="player-container"></div>
+            <div id="subtitles"></div>
+
             <div id="video-container-footer" class="float_left">
-            <div class="video-selector">
-                <select id="video-sub" class="select-box">
-                  <option value="volvo">Volvo</option>
-                  <option value="saab">Saab</option>
-                  <option value="mercedes">Mercedes</option>
-                  <option value="audi">Audi</option>
-                </select>
-            </div>
-            <div class="video-selector">
-                <select id="video-lang" class="select-box">
-                  <option value="volvo">Volvo</option>
-                  <option value="saab">Saab</option>
-                  <option value="mercedes">Mercedes</option>
-                  <option value="audi">This is a super long shit option urggg fuck</option>
-                  <option value="volvo">Volvo</option>
-                  <option value="saab">Saab</option>
-                  <option value="mercedes">Mercedes</option>
-                  <option value="audi">Audi</option>
-                </select>
-            </div>
-            <div class="video-selector">
-                <select id="video-quality" class="select-box">
-                  <option value="volvo">Volvo</option>
-                  <option value="saab">Saab</option>
-                  <option value="mercedes">Mercedes</option>
-                  <option value="audi">Audi</option>
-                  <option value="saab">Saab</option>
-                  <option value="mercedes">Mercedes</option>
-                </select>
-            </div>
-            <div class="video-selector">
-                <select id=" " class="select-box">
-                  <option value="volvo">Volvo</option>
-                  <option value="saab">This is a super long shit option urggg fuck</option>
-                </select>
-            </div>
+            
             </div>
         </script>
+        
+        <script type="text/html" id="playerControlsTemplate">
+            <div class="video-selector">
+                <select id="video-sub" data-value="none" data-category="player-subtitles" class="select-box">
+                 <option value="reset">Subtitles (auto)</option>
+                {{#subtitles}}
+                  <option value="{{code}}">{{ language }}</option>
+                {{/subtitles}}
+                </select>
+            </div>
+            <div class="video-selector">
+                <select id="video-lang" data-value="none" data-category="player-audio" class="select-box">
+                 <option value="reset">Audio (auto)</option>
+                {{#subtitles}}
+                  <option value="{{code}}">{{ language }}</option>
+                {{/subtitles}}
+                </select>                </select>
+            </div>
+            <div class="video-selector">
+                <select id="video-quality" data-category="player-quality" class="select-box">
+                        <option value="reset">Quality (Auto)</option>
+                       {{#videos }}
+                          <option value="{{code}}">{{profile}}</option>
+                       {{/videos }}
+               </select>
+            </div>
+                           
+             
+</script>
         <script type="text/html" id="topmenuTemplate">
                    <div id="toolbar-left-group">
                         <div id="menu-dragger" class="menu-icon float_left"></div>
                             <a href="#">
                                 <div id="main-vifi-logo" class="float_left"></div>
-                        </a>
+                         </a>
                     </div>
                     <form id="main-search-form">
                         
@@ -328,17 +452,18 @@
                                 <input type="text" id="main-search-box" class="vifi-text-input" placeholder="Otsi filmi või näitlejat"/>
 
                         </div>
-                    </form>         
+                        </form>
         </script>
 
         <script type="text/html" id="dialogTemplate">
         <div class="white-popup vifi-popup image-and-content-popup">
-            <div class="col-img" style="background-image: url('style/img/cloudatlas.jpg');">
+
+            <div class="col-img" style="background-image: url('{{ poster_url }}');">
             </div>
             <div class="col-content">
                 <div class="popup-section">
-                    <div class="film-title">Cloud Atlas</div>
-                    <div class="film-description price">2.20 EUR</div>
+                    <div class="film-title">{{ title }}</div>
+                    <div class="film-description price">{{ price }} EUR</div>
                     <div class="film-language">
                         <table>
                             <tbody>
@@ -347,13 +472,14 @@
                                     <td><h3>Subtiitrid</h3></td>
                                 </tr>
                                 <tr>
-                                    <td>Inglise</td>
-                                    <td>Eesti</td>
+                                    <td>{{ languages_text }}</td>
+                                    <td>{{ subtitles_text }}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+ 
                 <div id="payment-section" class="popup-section">
                     <h3>Vali makseviis</h3>
                     <ul id="payment-list">
@@ -388,7 +514,7 @@
                         <form id="single-email-purchase">
                         <input type="text" id="email" class="vifi-text-input" placeholder="Sinu e-posti aadress"></input>
                         </form>
-                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
+                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
                     </div>
                     <div id="payment-code">
                         <h3>Sisesta filmi kood</h3>
@@ -399,24 +525,436 @@
                     <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
                 </div>
             </div>
+
+        </div>
+
+        </script>
+ <script type="text/html" id="subscriptionPurchaseDialogTemplate">
+        <div class="white-popup vifi-popup image-and-content-popup">
+
+            <div class="col-img" style="background-image: url('{{ poster_url }}');">
+            </div>
+            <div class="col-content">
+                <div class="popup-section">
+                    <div class="film-title">{{ title }}</div>
+                    <div class="film-description price">{{ price }} EUR</div>
+                    <div class="film-language">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><h3>Keeled</h3></td>
+                                    <td><h3>Subtiitrid</h3></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ languages_text }}</td>
+                                    <td>{{ subtitles_text }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+ 
+                <div id="payment-section" class="popup-section">
+                    <h3>Vali makseviis</h3>
+                    <ul id="payment-list">
+                        <li id="swedbank"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Swedbank</p>
+                        </a></li>
+                        <li id="seb"><a>
+                            <div class="payment-item-image"></div>
+                            <p>SEB</p>
+                        </a></li>
+                        <li id="danske"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Danske</p>                        
+                        </a></li>
+                        <li id="nordea"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Nordea</p>                        
+                        </a></li>
+                        <li id="creditcard"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Krediitkaart</p>                        
+                        </a></li>
+                        <li id="code"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Kood</p>
+                        </a></li>
+                    </ul>
+                    <div id="payment-email">
+                        <h3>Email</h3>
+                        <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
+                        <form id="single-email-purchase">
+                        <input type="text" id="email" class="vifi-text-input" placeholder="Sinu e-posti aadress"></input>
+                        </form>
+                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
+                    </div>
+                    <div id="payment-code">
+                        <h3>Sisesta filmi kood</h3>
+                        <form id="single-code-purchase">
+                        <input type="text" id="code" class="vifi-text-input" placeholder="Sisesta kood"></input>
+                        </form>
+                    </div>
+                    <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                </div>
+            </div>
+
+        </div>
+
+        </script>
+<script type="text/html" id="subscriptionActivateDialogTemplate">
+        <div class="white-popup vifi-popup image-and-content-popup">
+
+            <div class="col-img" style="background-image: url('{{ poster_url }}');">
+            </div>
+            <div class="col-content">
+                <div class="popup-section">
+                    <div class="film-title">{{ title }}</div>
+                    <div class="film-description price">{{ price }} EUR</div>
+                    <div class="film-language">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><h3>Keeled</h3></td>
+                                    <td><h3>Subtiitrid</h3></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ languages_text }}</td>
+                                    <td>{{ subtitles_text }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+ 
+                <div id="payment-section" class="popup-section">
+                    <h3>Vali makseviis</h3>
+                    <ul id="payment-list">
+                        <li id="swedbank"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Swedbank</p>
+                        </a></li>
+                        <li id="seb"><a>
+                            <div class="payment-item-image"></div>
+                            <p>SEB</p>
+                        </a></li>
+                        <li id="danske"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Danske</p>                        
+                        </a></li>
+                        <li id="nordea"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Nordea</p>                        
+                        </a></li>
+                        <li id="creditcard"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Krediitkaart</p>                        
+                        </a></li>
+                        <li id="code"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Kood</p>
+                        </a></li>
+                    </ul>
+                    <div id="payment-email">
+                        <h3>Email</h3>
+                        <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
+                        <form id="single-email-purchase">
+                        <input type="text" id="email" class="vifi-text-input" placeholder="Sinu e-posti aadress"></input>
+                        </form>
+                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
+                    </div>
+                    <div id="payment-code">
+                        <h3>Sisesta filmi kood</h3>
+                        <form id="single-code-purchase">
+                        <input type="text" id="code" class="vifi-text-input" placeholder="Sisesta kood"></input>
+                        </form>
+                    </div>
+                    <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                </div>
+            </div>
+
+        </div>
+
+        </script>
+
+        <script type="text/html" id="pairDeviceTemplate">
+
+        <div id="pairingPage">
+            <div id="pairing-form-container">
+                <form id="pair-form">
+                    <input id="pairingcode" type="text" placeholder="Enter pairing code"></input><br/>
+                    <button class="btn">Pair</button>
+                </form>
+
+            </div>
+
+            <div class="pairing-list">
+                 Active sessions: <br/> 
+                 <ul>
+                 {{#active_sessions}} 
+                 <li>{{ipAddress}} {{userAgent}}</li> 
+                 {{/active_sessions}}
+                 </ul>
+            </div>
         </div>
         </script>
+
+      
+        <script type="text/html" id="profileTemplate">
+            <div id="profilepage-header" class="float_left">
+                <div class="profile-image" style="background-image: url('{{profile_picture}}?width=200')"></div>
+                <div class="profile-name">{{ firstname }} {{lastname}}</div>
+            </div>
+            <div class="sub-tabbar float_left">
+                <div class="swiper-nav swiper-container" id="profile-tabbar-swiper-container" data-snap-ignore="true">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" data-rel="profilepage-myprofile-container"><span>My profile</span></div>
+                        <div class="swiper-slide" data-rel="profilepage-mymovies-container"><span>My movies</span></div>
+                    </div>
+                </div>
+            </div>
+            <div id="profilepage-body" class="float_left">
+                <div id="profilepage-myprofile-container" class="float_left">
+                <div class="width-50 float_left">
+                    <div id="user-profile" class="card float_left">
+                        <div class="card-heading"><div class="card-heading-icon float_left" style="background: url('{{profile_picture}}') center;" class="float_left"/><span>Profile</span></div>
+                        <div class="card-body">
+                            <!--VIEW PROFILE-->
+                            <div id="user-profile-view">
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <span class="label">First name</span><span>{{ firstname }}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <span class="label">Last name</span><span>{{ lastname }}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon email"></i>
+                                    <span class="label">Email</span><span>{{email}}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon globe"></i>
+                                    <span class="label">Language</span><span>{{email}}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon message"></i>
+                                    <span class="label">Newsletter</span><span>{{newsletter}}</span>
+                                </div>
+                                <div class="row-fluid">
+                                    <button id="edit-profile-button" class="btn green float_right">Edit</button>
+                                </div>
+                            </div>
+
+                            <!--EDIT PROFILE-->
+                            <div id="user-profile-edit">
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <input type="text" id="profile-firstname" class="vifi-text-input" placeholder="First name"/>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <input type="text" id="profile-lastname" class="vifi-text-input" placeholder="Last name"/>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon email"></i>
+                                    <input type="email" id="profile-email" class="vifi-text-input" placeholder="Email"/>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <div class="info-selector">
+                                        <select id="profile-language" class="select-box">
+                                            <option>English</option>
+                                            <option>Estonian</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon message"></i>
+                                    <span class="label">Newsletter</span><input id="profile-newsletter" type="checkbox" />
+                                </div>
+                                <div class="row-fluid">
+                                    <button id="edit-profile-confirm-button" class="btn green float_right">Save</button>
+                                    <button id="edit-profile-cancel-button" class="btn float_right">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="reset-password" class="card float_left">
+                        <div class="card-heading"><span>Password</span></div>
+                        <div class="card-body">
+                            <!--CHANGE PASSWORD VIEW-->
+                            <div id="change-password-view">
+                                <div class="row-fluid">
+                                    <button id="change-password-button" class="btn float_right">Change password</button>
+                                </div>
+                            </div>
+
+                            <!--CHANGE PASSWORD EDIT-->
+                            <div id="change-password-edit">
+                                <div class="row-fluid">
+                                    <i class="icon password"></i>
+                                    <input type="password" class="vifi-text-input" placeholder="Current password" />
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid">
+                                    <i class="icon confirm-password"></i>
+                                    <input type="password" class="vifi-text-input" placeholder="New password" />
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid">
+                                    <i class="icon confirm-password"></i>
+                                    <input type="password" class="vifi-text-input" placeholder="Confirm new password" />
+                                </div>                                
+                                <div class="row-fluid">
+                                    <button id="change-password-save-button" class="btn green float_right">Save</button>
+                                    <button id="change-password-cancel-button" class="btn float_right">Cancel</button>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="width-50 float_left">
+                    <div id="user-subscription-info" class="card float_left">
+                        <div class="card-heading"><span>My subscription</span></div>
+                        <div class="card-body">
+                            <!--Subscribe = NO-->
+                            <div id="subscribe-negative">
+                                <div class="row-fluid">
+                                    <span>You are not subscribed to any plans yet. Subscribe now to watch movies at lower price.</span>
+                                </div>
+                                <div class="row-fluid">
+                                    <a href="#subscription-plans"><button id="subscription-view-plans" class="btn green float_right">View plans</button></a>
+                                </div>
+                            </div>
+
+                            <!--Subscribe = YES-->
+                            <div id="subscribe-positive">
+                                <div class="row-fluid">
+                                    <span>Your subscription will expire on <b>October 11th 2014</b>.</span>
+                                </div>
+                                <div class="row-fluid">
+                                    <button id="subscription-extend" class="btn green float_right">Extend my subscription</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="user-pairtv-info" class="card float_left">
+                        <div class="card-heading"><span>TV-Pairing</span></div>
+                        <div class="card-body">
+                            <div class="row-fluid">
+                                <span>Please enter the pairing code from your television. <a href="#pair">What is this?</a></span>
+                            </div>
+                            <div class="row-fluid">
+                                <i class="icon sync"></i>
+                                <input type="text" id="pairing-code" class="vifi-text-input" placeholder="Pairing code"/>
+                            </div>
+                            <div class="row-fluid">
+                                <button class="btn float_right">Pair!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn facebook revoke float_right"><i class="icon facebook"></i>Revoke Facebook permission</button>
+                </div>
+            </div>
+            <div id="profilepage-mymovies-container" class="float_left">
+
+            </div>
+        </div>
+
+        </script>
+
         <script type="text/html" id="sidemenuTemplate">
 
             <div id="side-menu" class="snap-drawer snap-drawer-left">
+                        {{#name}}                       
+                        <h3>{{ name }}</h3>
+                        <ul class="side-menu-list">
+                            <a href="#me" id="menu-me"><li> Account </li></a>
+                            <a href="#me/my-films" id="menu-myfilms"><li>My films</li></a>
+                            <a href="#me/pair-device" id="menu-pairtv"><li>Pair TV</li></a>
+                            <a class="logout" href="#"><li>Logout </li></a>
+                        </ul>
+                        {{/name}}
+                        {{^name}}
+                        <div id="social-login">
+                            <div class="row-fluid">
+                                <i class="icon facebook"></i>
+                                <button class="btn full facebook">Logi sisse Facebookiga</button>
+                            </div>
+                        </div>
+
+                        <div id="login-register-form">
+                            <form id="user-login">
+                            <h3>Logi Sisse</h3>
+                                <div class="row-fluid">
+                                    <i class="icon email"></i>
+                                    <input type="email" id="login-email" class="vifi-text-input" placeholder="E-post" />
+                                </div>
+                                <div class="row-fluid">
+                                    <i class="icon password"></i>                            
+                                    <input type="password" id="login-password" class="vifi-text-input" placeholder="Parool" />
+                                </div>
+                                <div class="row-fluid">
+                                    <button class="btn green full" id="login-confirm">Logi Sisse</button>
+                                </div>
+                                <div class="row-fluid">
+                                    <a href="">Unustasin parooli</a>
+                                </div>
+                                <div class="row-fluid">
+                                    <p id="login-tagline" class="tagline">New to Vifi? <a class="register-button" href="#">Registreeri</a></p>
+                                </div>
+                            </form>
+
+                            <form id="user-register">
+                            <h3>Registreeri</h3>
+                                <div class="row-fluid">
+                                    <i class="icon email"></i>
+                                    <input type="email" id="login-email" class="vifi-text-input" placeholder="E-post" />
+                                </div>
+                                <div class="row-fluid">
+                                    <i class="icon password"></i>                            
+                                    <input type="password" id="login-password" class="vifi-text-input" placeholder="Parool" />
+                                </div>
+                                <div class="row-fluid">
+                                    <i class="icon confirm-password"></i> 
+                                    <input type="password" id="login-password" class="vifi-text-input" placeholder="Parool uuesti" />
+                                </div>
+                                <div class="row-fluid">
+                                    <button class="btn green full" id="register-confirm">Registreeri</button>
+                                </div>
+                                <div class="row-fluid">
+                                    <p id="register-tagline" class="tagline">Already have an account? <a class="register-button" href="#">Logi Sisse</a></p>
+                                </div>
+                            </form>
+                        </div>
+                        {{/name}}
+
+                        <h3 class="new-feature">Subscribe</h3>
+                        <ul class="side-menu-list">
+                            <a id="menu-subscription" href="#subscription-plans"><li>Subscription plans</li></a>
+                        </li>
+
                         <h3>Tugi</h3>
                         <ul class="side-menu-list">
+                  
                             <a href="#"><li>Kasutustingimused</li></a>
-                            <a href="#"><li>Privaatsustingimused</li></a>
                             <a href="#"><li>Korduma kippuvad küsimused</li></a>
                             <a href="#"><li>Filmi vaatamine läbi teleri</li></a>
                             <a href="#"><li>Tagasiside</li></a>
                         </ul>
                         <h3>Testi Arvutit!</h3>
                         <ul class="side-menu-list">
-                            <a href="#"><li>Vaata ja testi oma arvuti seadeid siit!</li></a>
-                            <a href="#"><li>Liitu uudiskirjalistiga siit!</li></a>
-                            <a href="#"><li>Anna tagasisidet!</li></a>
+                            <a href="#"><li>Vaata ja testi oma arvuti seadeid</li></a>
+                            <a href="#"><li>Liitu uudiskirjaga</li></a>
                         </ul>
             </div>
         </script>
@@ -424,48 +962,21 @@
         <script type="text/javascript" src="js/models/models.js"></script>                
         <script type="text/javascript" src="js/models/utils.js"></script>
         <script type="text/javascript" src="js/models/user.js"></script>
+
         <script type="text/javascript" src="js/models/player.js"></script>
+        <script type="text/javascript" src="js/models/purchase.js"></script>
         <script type="text/javascript" src="js/collections/collections.js"></script>
         <script type="text/javascript" src="js/views/app.js"></script>
         <script type="text/javascript" src="js/views/films.js"></script>
         <script type="text/javascript" src="js/views/filterbar.js"></script>
         <script type="text/javascript" src="js/views/detailpage.js"></script>
-        <script type="text/javascript" src="js/views/player.js"></script>
+        <script type="text/javascript" src="js/views/purchase.js"></script>
+
+        <script type="text/javascript" src="js/views/player.js"></script><script type="text/javascript" src="js/views/user.js"></script>
+
+        <script type="text/javascript" src="js/views/facebook.js"></script>
+
         <script type="text/javascript" src="js/views/browser.js"></script>
         <script type="text/javascript" src="js/init.js"></script>
     </body>
 </html>
-<!--
-actors: ""
-audience: Array[2]
-audience_text: Array[2]
-available_on_mobile: false
-available_on_web: true
-backdrop_url: "http://cf2.imgobject.com/t/p/w780/gOJZAqF9zKyfsuIP8ALWOcA5QWM.jpg"
-director: "Woody Allen"
-featured: "0"
-genres: Array[2]
-genres_text: "Draama, Komöödia"
-id: "58969"
-language: "Inglise"
-overview: "Woody Allen’i filmides on alati viis reeglit:
-↵- vähemalt üks tegelane (kui Allen mängib, siis tema ise) on neurootiline ja fundamentaalselt ebastabiilne
-↵- ükski asi pole tegelikult nii nagu see alguses näib ega ükski tegelane selline nagu esmase mulje põhjal võiks arvata
-↵- kui filmis on rohkem kui kaks peategelast, siis on seal kindlasti ka rohkem kui üks intriig
-↵- film ei pruugi olla temaatiliselt sobilik kõigile, kuid on sisuliselt garanteeritud, et see ei sisalda tilkagi verd
-↵- ning kokkuvõte filmi sisust annab harva hea ülevaate tegelikust loost, kuid teekond, millele Allen meid viib on peaaegu alati seda väärt
-↵You Will Meet A Tall Dark Stranger pole erand: kaks abielupaari - Alfie (Hopkins) ja Helena (Gemma Jones) ning nende tütar Sally (Watts) oma mehe Roy’ga (Josh Brolin) satuvad saatuse küüsis olukorda, mille tingivad nende enda düsfunktsionaalsed ambitsioonid ja ootused elult. Loost käivad läbi selgeltnägija ja purunenud suhe, prostituut ja salajane naisterahvas, kelle identiteet on täielik müsteerium ning otseloomulikult mees, keda ühel hetkel - varem või hiljem - kohtab meist igaüks: pikk tumedanahaline võõras. Seekord on selleks Antonio Banderas."
-poster_url: "http://cf2.imgobject.com/t/p/w300/qn18b06ehnUnH2hhsFLEntTZ3of.jpg"
-price: "2.20"
-running_time: "98"
-running_time_text: "1h 38min "
-seo_friendly_url: "/films/you-will-meet-a-tall-dark-stranger"
-star_rating: 4
-subtitles: Array[1]
-tagline: "Woody Allen’i filmides on alati viis reeglit:
-↵- vähemalt üks tegelane (kui "
-title: "You will meet a tall dark stranger"
-trailer: "http://www.youtube.com/watch?v=OLLbzJC_mp4&feature=youtube_gdata_player"
-year: "2010"
-youtube_id: "OLLbzJC_mp4"
--->
