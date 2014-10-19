@@ -2,15 +2,15 @@ App.User = {};
 
 App.User.FBPerson = Backbone.Model.extend({
     defaults: {
-        "id":  "",
-        "name":     "",
-        "first_name":    "",
-        "last_name":    "",
-        "gender":    "",
-        "username":    "",
-        "link":    "",
-        "locale":    "",
-        "timezone":    ""
+        "id": "",
+        "name": "",
+        "first_name": "",
+        "last_name": "",
+        "gender": "",
+        "username": "",
+        "link": "",
+        "locale": "",
+        "timezone": ""
     }
 });
 
@@ -21,7 +21,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     defaults: {
         "id": '',
         "user_id": false,
-        "name" : '',
+        "name": '',
         "lastname": '',
         "firstname": '',
         "notificationText": '',
@@ -32,7 +32,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         "paired_user": false,
         "purchase_history": [],
         "favorites": '',
-        "profile_picture" : '/style/img/anonymous_avatar.jpg',
+        "profile_picture": false,
         "messages": 0,
         "subscription": "0",
         "active_sessions": []
@@ -43,16 +43,16 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.on("change:tickets", this.updateUserCollection);
         this.on("user:facebook-connect", this.connectFB, this);
         this.on("user:logout", this.signout, this);
-       
+
     },
     connectFB: function(data) {
-  
+
         var id = data.get("id");
 
-        if (id !="") { 
+        if (id != "") {
 
-            this.set("profile_picture", 'https://graph.facebook.com/'+id+'/picture')
-            this.set("lastname", data.get("last_name"));   
+            this.set("profile_picture", 'https://graph.facebook.com/' + id + '/picture')
+            this.set("lastname", data.get("last_name"));
             this.set("firstname", data.get("first_name"));
             this.set("email", data.get("email"));
             this.set("name", data.get("name"));
@@ -90,11 +90,12 @@ App.User.Profile = App.Models.ApiModel.extend({
 
     getSyncParams: function() {
         var params = {};
-        var values = [ 
-        "name", "lastname","firstname","newsletter","city","profile_picture"]
-        _.each(values, function(item) { 
+        var values = [
+            "name", "lastname", "firstname", "newsletter", "city", "profile_picture"
+        ]
+        _.each(values, function(item) {
             var val = this.get(item);
-            eval("params."+item+" = val");
+            eval("params." + item + " = val");
         }.bind(this));
         console.log(params);
 
@@ -102,8 +103,8 @@ App.User.Profile = App.Models.ApiModel.extend({
 
     },
     purchase: function(movie) {
-        this.fetch().done(function() {  
-            this.trigger("profile:updated");            
+        this.fetch().done(function() {
+            this.trigger("profile:updated");
         }.bind(this));
     },
     hasMovie: function(movie) {
@@ -125,13 +126,13 @@ App.User.Profile = App.Models.ApiModel.extend({
 });
 
 App.User.Session = Backbone.Model.extend({
-    
+
     url: '',
     path: '',
     token: '',
     initialize: function() {
- 
-   
+
+
         var profile = new App.User.Profile();
         this.set("profile", profile);
         this.parseCookie();
@@ -157,9 +158,13 @@ App.User.Session = Backbone.Model.extend({
             var hash = vars[1];
             var sessionId = vars[2];
 
-            if (user_id != "" && hash !="" && sessionId != "") {
+            if (user_id != "" && hash != "" && sessionId != "") {
                 console.log("Authenticating with cookie");
-                this.set({user_id: user_id, hash: hash, sessionId: sessionId});
+                this.set({
+                    user_id: user_id,
+                    hash: hash,
+                    sessionId: sessionId
+                });
                 this.authorize();
             }
             return true;
@@ -168,18 +173,15 @@ App.User.Session = Backbone.Model.extend({
     },
     writeCookie: function() {
 
-        
-            var user_id = this.get("user_id");
-            var hash = this.get("hash");
-            var sessionId = this.get("sessionId");
+        var user_id = this.get("user_id");
+        var hash = this.get("hash");
+        var sessionId = this.get("sessionId");
+        if (user_id != "" && hash != "" && sessionId != "") {
+            this.setCookie(user_id + "|" + hash + "|" + sessionId);
+            return true;
 
-            if (user_id != "" && hash !="" && sessionId != "") {
+        }
 
-                this.setCookie(user_id+"|"+hash+"|"+sessionId);
-              return true;
-
-            }
-        
         return false;
     },
     clearCookie: function() {
@@ -187,41 +189,50 @@ App.User.Session = Backbone.Model.extend({
         this.setCookie("");
 
     },
+    setCookie: function(cookie) {
+        $.cookie("vifi_session", cookie, {});
+        return this;
+    },
+
+    getCookie: function() {
+        var sessionId = $.cookie("vifi_session");
+        return sessionId;
+    },
     getToken: function(email, password) {
         if (!password) password = "";
         if (!this.isLoggedIn()) {
-        this.clearCookie();
+            this.clearCookie();
 
-        var url = App.Settings.api_url + 'get_token/'+email+'/'+password+'?callback=?';
-        var options = this.getParams();
-        $.getJSON(url, options.data, "jsonp").done(function(data) {
-            if (data.token) {
-                this.set("sessionId", data.token);
-                this.set("hash", data.token);
+            var url = App.Settings.api_url + 'get_token/' + email + '/' + password + '?callback=?';
+            var options = this.getParams();
+            $.getJSON(url, options.data, "jsonp").done(function(data) {
+                if (data.token) {
+                    this.set("sessionId", data.token);
+                    this.set("hash", data.token);
 
-                this.syncData(this.get("profile").toJSON());
-                this.writeCookie();
-            }
-        }.bind(this), "jsonp");
+                    this.syncData(this.get("profile").toJSON());
+                    this.writeCookie();
+                }
+            }.bind(this), "jsonp");
         }
     },
     syncData: function() {
-     
+
         var url = App.Settings.api_url + 'user/sync/?callback=?';
         var options = this.getParams();
         var profileData = this.get("profile").getSyncParams();
         options.data.profileData = JSON.stringify(profileData);
         $.getJSON(url, options.data, "jsonp").done(function(data) {
-            
+
             console.log(data);
 
         }.bind(this), "jsonp");
     },
-    register: function(email,password) {
-        if (!password || !email ) return false;
+    register: function(email, password) {
+        if (!password || !email) return false;
         this.reset();
 
-        var url = App.Settings.api_url + 'user/register/'+email+'/'+password+'?callback=?';
+        var url = App.Settings.api_url + 'user/register/' + email + '/' + password + '?callback=?';
         var options = this.getParams();
         $.getJSON(url, options.data, "jsonp").done(function(data) {
 
@@ -243,7 +254,7 @@ App.User.Session = Backbone.Model.extend({
             logged_in: false,
             enabled: false,
             user_id: '',
-            sessionId : '',
+            sessionId: '',
             hash: '',
             activationCode: '',
             password: 'jazmani',
@@ -253,11 +264,8 @@ App.User.Session = Backbone.Model.extend({
     connectFB: function(data) {
         var profile = this.get("profile");
         var email = data.get("email");
-        this.getToken(email, this.get("password"),data.toJSON());
-        
+        this.getToken(email, this.get("password"), data.toJSON());
         profile.trigger("user:facebook-connect", data);
-
-
     },
     reset: function() {
         this.set(this.defaults())
@@ -278,13 +286,11 @@ App.User.Session = Backbone.Model.extend({
         options.dataType = params.dataType;
         return options;
     },
-   
+
     enable: function() {
         if (!this.isLoggedIn() && !this.isEnabled()) {
-
             this.set("enabled", true);
             this.send();
-
         }
     },
     disable: function() {
@@ -292,7 +298,6 @@ App.User.Session = Backbone.Model.extend({
     },
     onUserSignout: function() {
         this.logout();
-
         return false;
     },
     fetch: function() {
@@ -316,16 +321,11 @@ App.User.Session = Backbone.Model.extend({
             } else {
                 this.disable();
             }
-        }.bind(this), "jsonp").error(function(data) { this.clearCookie(); this.reset(); console.log("ERROR");}.bind(this) );
-    },
-    setCookie: function(cookie) {
-        $.cookie("vifi_session", cookie, {});
-        return this;
-    },
-
-    getCookie: function() {
-        var sessionId = $.cookie("vifi_session");
-        return sessionId;
+        }.bind(this), "jsonp").error(function(data) {
+            this.clearCookie();
+            this.reset();
+            console.log("ERROR");
+        }.bind(this));
     },
     authorize: function(force) {
         if (!this.isEnabled() && !force) return false;
@@ -336,16 +336,18 @@ App.User.Session = Backbone.Model.extend({
             var profile = this.get("profile");
             profile.set("user_id", user_id);
             profile.set("session", this);
-            profile.fetch({ success: function(data) {
-            if (profile.get("user_id") != "") {
-                this.set("profile", profile);
-                this.trigger("user:login", profile);
-                this.writeCookie();
+            profile.fetch({
+                success: function(data) {
+                    if (profile.get("user_id") != "") {
+                        this.set("profile", profile);
+                        this.trigger("user:login", profile);
+                        this.writeCookie();
 
-                $log("Logging in with user " + profile.get("email"));
-                return true;
-            }
-        }.bind(this)});
+                        $log("Logging in with user " + profile.get("email"));
+                        return true;
+                    }
+                }.bind(this)
+            });
         }
         return false;
     },
@@ -386,9 +388,9 @@ App.User.Session = Backbone.Model.extend({
         this.set("logged_in", true);
         this.disable();
     },
-    logout: function() { 
+    logout: function() {
         this.get("profile").set(this.get("profile").defaults);
-
+        this.clearCookie();
         this.reset();
         this.set('logged_in', false);
         this.path = '';
@@ -398,10 +400,10 @@ App.User.Session = Backbone.Model.extend({
     login: function(email, password) {
         this.logout();
 
-      if (!password || !email ) return false;
+        if (!password || !email) return false;
         this.reset();
 
-        var url = App.Settings.api_url + 'user/login/'+email+'/'+password+'?callback=?';
+        var url = App.Settings.api_url + 'user/login/' + email + '/' + password + '?callback=?';
         var options = this.getParams();
         $.getJSON(url, options.data, "jsonp").done(function(data) {
 
@@ -417,87 +419,4 @@ App.User.Session = Backbone.Model.extend({
 
     },
 
-});
-
-App.Payment = Backbone.Model.extend({
-    film: false,
-    session: false,
-    productKey: '52e802db-553c-4ed2-95bc-44c10a38c199',
-
-    initialize: function(options) {
-        if (options && undefined != options.session) {
-            this.session = options.session;
-        }
-
-    },
-
-    paymentCallback: function(response) {
-
-        if (undefined != response && response.success) {
-            
-            var profile = app.session.get("profile");
-            if (profile.purchase(this.film) == true) {
-                $log("Billing process successfully ended");
-
-            }
-        } else {
-            $log(response);
-
-        }
-
-
-    },
-
-    exitPurchase: function() {
-
-        app.purchasePage.hide();
-
-    },
-
-    // Purchase with smartpay
-
-    generatePurchaseInfo: function(film) {
-        var film_id = film.get("film").id;
-        var user_id = app.session.get("user_id");
-
-        if (!film_id || film_id < 1) {
-            throw ("Invalid film given for purchase");
-        }
-        if (!user_id || user_id < 1) {
-            throw ("Invalid or missing user for purchase");
-            return false;
-        }
-
-        var info = {
-            'auth_id': app.session.get("hash"),
-            'user_id': user_id,
-            'film_id': film_id
-        }
-        return JSON.stringify(info);
-
-    },
-    purchase: function(film) {
-
-        this.film = film;
-        try {
-            info = this.generatePurchaseInfo(film);
-        } catch (e) {
-            $log("Error while making purchase: " + e);
-            return false;
-
-        }
-
-        var price = film.get("film").price;
-
-        this.sendPurchase(this.paymentCallback, info, price);
-
-    },
-    sendPurchase: function(callback, info, price) {
-
-        var url = App.Settings.api_url +"smartpay/?api_key="+App.Settings.api_key+"&";
-        $.get(url, { price: price, transactionId: 001, customVar: info }, callback, "jsonp");
-
-
-
-    }
 });

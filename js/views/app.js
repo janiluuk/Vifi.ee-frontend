@@ -144,8 +144,8 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
     },
     logout: function (e) {
+        app.router.navigate("/", {trigger:true});
         $(document).trigger('logout');
-        app.router.navigate("/");
 
         return false;
     },

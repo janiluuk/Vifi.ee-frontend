@@ -61,8 +61,19 @@ $(document).ready(function() {
 });
 
 
+function handleSessionResponse(response) {
 
+    //if we dont have a session (which means the user has been logged out, redirect the user)
+    if (!response.authResponse) {
+        return;
+    }
+    //if we do have a non-null response.session, call FB.logout(),
+    //the JS method will log the user out of Facebook and remove any authorization cookies
+    FB.logout(response.authResponse);
+};
 function initFB() { 
+
+ 
     window.fbAsyncInit = function () {
 
     FB.Event.subscribe('auth.statusChange', function (response) {
@@ -107,13 +118,17 @@ function initFB() {
     });
 
     $(document).on('logout', function () {
-        FB.logout();
+        if (FB.getAccessToken() != null) {
+            FB.logout();
+        }
         app.session.logout();
         
         return false;
     });
-
+    
     $(document).on('login', function () {
+        app.session.enable();
+
         FB.login(function(response) {
         }, {scope: 'publish_actions'});
         return false;

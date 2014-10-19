@@ -60,8 +60,7 @@ App.Views.BrowserView = Backbone.View.extend({
                 queue: false,
             },
             masonry: {
-
-
+                
             }
         });
         return true;
