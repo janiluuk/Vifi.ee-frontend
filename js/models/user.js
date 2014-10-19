@@ -20,7 +20,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     params: "",
     defaults: {
         "id": '',
-        "user_id": '',
+        "user_id": false,
         "name" : '',
         "lastname": '',
         "firstname": '',
@@ -32,7 +32,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         "paired_user": false,
         "purchase_history": [],
         "favorites": '',
-        "profile_picture" : '',
+        "profile_picture" : '/style/img/anonymous_avatar.jpg',
         "messages": 0,
         "subscription": "0",
         "active_sessions": []
@@ -302,7 +302,6 @@ App.User.Session = Backbone.Model.extend({
         else this.path = '';
 
         var options = this.getParams();
-                        console.log(options);
 
         $.getJSON(this.url(), options.data).done(function(data) {
             if (this.isLoggedIn() === false) {

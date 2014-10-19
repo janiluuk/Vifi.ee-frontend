@@ -5,6 +5,8 @@ App.Views.BaseAppView = Backbone.View.extend({
     events: { 
         'change #search-form select': 'onSearchFieldChange',
         'change #search-form input[type="text"]': 'onSearchFieldChange',
+        'change #main-search-box input[type="text"]': 'onSearchFieldChange',
+
         'change #search-form input[type="hidden"]': 'onSearchFieldChange',
         'click .goTop' : 'scrollToTop',
         'submit form#main-search-form' : 'onSearchSubmit'
@@ -17,7 +19,7 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.session = options.session;
         this.user = options.session.get("profile");
         
-        this.collection = options.browsercollection;
+        this.collection = options.collection;
         this.usercollection = options.usercollection;
         this.evt = options.eventhandler;
         this.template = options.template;
@@ -25,15 +27,14 @@ App.Views.BaseAppView = Backbone.View.extend({
         options.model = this.user;
 
         this.browserview = new App.Views.BrowserView({
-                browsercollection: options.browsercollection,
+                collection: options.collection,
                 filters: options.filters,
                 sort: options.sort
         });
-        this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort});
         this.featuredview = new App.Views.FeaturedView({
-            collection: options.browsercollection.featured()
+            collection: options.collection.featured()
         });
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render', 'showBrowserPage');
             
         this.sidemenu = new App.Views.SideMenu({model: this.user});
 
@@ -64,8 +65,10 @@ App.Views.BaseAppView = Backbone.View.extend({
     },
     showBrowserPage: function() {
         $(".main-wrapper:not(#homepage)").hide();
+        app.sidemenu.closeSideBar();
+
         $("#homepage").show();
-        
+        app.browserview.filterview.filterbarview.enableCarosel();
         this.$("#content-container").scrollTop(this.scrollTop);
         app.browserview.$isotope.isotope('layout');
     },
@@ -121,8 +124,18 @@ App.Views.TopMenu = Backbone.View.extend({
 
     },
     render: function() {
+        var search = this.$("#main-search-box");
+        
+        if (search) {
+            var q = $(search).val();
 
+        }
         this.$el.html(this.template(this.model.toJSON()));
+        
+        if (q) { 
+            this.$("#main-search-box").val(q);
+        }
+
         return this;  
     },
     login: function(e) {
@@ -132,6 +145,8 @@ App.Views.TopMenu = Backbone.View.extend({
     },
     logout: function (e) {
         $(document).trigger('logout');
+        app.router.navigate("/");
+
         return false;
     },
     toggleSearchBox: function(e) {
@@ -149,11 +164,10 @@ App.Views.TopMenu = Backbone.View.extend({
    
     onSearchSubmit: function(e) {
         e.preventDefault();
-        var q = $("#main-search-box").val();
+
         app.browserview.onSearchFieldChange(e);
         app.browserview.trigger("minimize");
-        app.browserview.renderResults();
-
+        
         return false;
     },   
 

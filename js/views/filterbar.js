@@ -1,7 +1,11 @@
 App.Views.FilterView = Backbone.View.extend({
     initialize: function(options) {
         this.options = options;        
-
+        this.filterlistview = new App.Views.FilterlistView({filters: this.options.filters, sort: this.options.sort});
+        this.filterbarview = new App.Views.FilterbarView({filters: this.options.filters, sort: this.options.sort});
+        this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this );
+        this.filterlistview.bind('filter-bar:sort', this.onChangeSort, this );
+        _.bindAll(this, 'render');
     },
     onChangeSort: function (val, desc) {
         this.trigger("filter-bar:sort", val, desc);
@@ -22,13 +26,34 @@ App.Views.FilterView = Backbone.View.extend({
 
 
     },
+    updateUI: function() {
+        var _this = this;
+
+        $.each(this.options.filters, function(option,idx) {
+
+            var val = decodeURIComponent(_this.options.state.get(option));
+
+            if (val != "") {
+                var parts = val.split(';');
+
+                if (parts.length > 0 && parts != "undefined") {
+                    $.each(parts, function(idx, item) {
+                        $('#id_' + option + ' option[value="' + item + '"]').attr('selected', 'selected');
+
+                        $(".selection-wrapper[data-field='" + option + "'] div[data-val=" + item + "]").addClass("toggle-on");
+
+                    });
+                    $(".selection-wrapper[data-field='" + option + "'] div[data-val=reset]").removeClass("toggle-on");
+                }
+            }
+        });
+    },
     render: function() {
-        this.filterlistview = new App.Views.FilterlistView({filters: this.options.filters, sort: this.options.sort});
+        this.filterbarview.render();
+        this.filterlistview.render();
 
-        this.filterbarview = new App.Views.FilterbarView({filters: this.options.filters, sort: this.options.sort});
-        this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this );
-        this.filterlistview.bind('filter-bar:sort', this.onChangeSort, this );
-
+        return this;
+        
     }
 
  }); 
@@ -118,15 +143,12 @@ App.Views.SortItemView = App.Views.FilterItemView.extend({
 
 App.Views.FilterlistView = Backbone.View.extend({ 
 
-    el: "#filter-list",
     views: [],
     initialize: function(options) { 
         _.bindAll(this, "render");
-
         this.options = options || {};
         this.filters = options.filters;
         this.sort = options.sort;
-        this.render();
     },
     onFilterBarButton: function(val, field) {
         this.trigger("filter-bar:toggle", field, val);
@@ -138,7 +160,10 @@ App.Views.FilterlistView = Backbone.View.extend({
     },
     
     render: function() { 
+        this.setElement($("#filter-list"));
+
         var _this = this;
+        this.views = [];
 
          $("<div>").attr("id", "sort-list").appendTo(this.$el);
             var view = new App.Views.SortItemView({
@@ -146,7 +171,7 @@ App.Views.FilterlistView = Backbone.View.extend({
                 selectEl: "sort",
                 el: '#sort-list'
             });
-                view.on('filter-bar:sort', this.onSortButton, this);
+            view.on('filter-bar:sort', this.onSortButton, this);
 
 
             this.$el.append(view.render().$el);
@@ -164,28 +189,32 @@ App.Views.FilterlistView = Backbone.View.extend({
                 _this.$el.append(view.render().$el);
                 _this.views.push(view);
             });
+        return this;
     }
 });
 
 App.Views.FilterbarView = Backbone.View.extend({ 
-    el: "#filter-bar",
     events: { 'click .swiper-slide' : 'toggleFilter'},
     state: true,
     initialize: function(options) { 
         _.bindAll(this, "render");
         this.options = options || {};
-        this.render();
+
     },
 
 
     render: function() {
+        this.setElement($("#filter-bar"));
+
         this.$el.html(ich.filterBarTemplate());
         this.$(".swiper-slide:first").addClass("active swiper-slide-active");
         var _this = this;
+        var width = 0;
+        
         setTimeout(function() { 
             _this.enableCarosel();
+        },200);
 
-        },250);
         return this;
     },
     toggleFilter: function(e) { 

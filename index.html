@@ -149,7 +149,7 @@
         <script type="text/template" id="browserPageTemplate">
 
                         <form id="search-form">
-                          
+                        <input type="hidden" id="q"/>
                         <div id="filter-elements" style="display:none"></div>
                         </form>
                         <div id="filter-bar" class="sub-tabbar float_left"></div>
@@ -702,6 +702,7 @@
 
       
         <script type="text/html" id="profileTemplate">
+            {{#user_id}}
             <div id="profilepage-header" class="float_left">
                 <div class="profile-image" style="background-image: url('{{profile_picture}}?width=200')"></div>
                 <div class="profile-name">{{ firstname }} {{lastname}}</div>
@@ -869,6 +870,7 @@
 
             </div>
         </div>
+            {{/user_id}}
 
         </script>
 

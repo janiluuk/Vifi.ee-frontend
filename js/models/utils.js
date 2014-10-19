@@ -1,6 +1,8 @@
 
 App.Utils = { 
-    
+    template: function(id) {
+        return _.template( $('#'+id).html());
+    },
     TemplateLoader: function () {
 
         this.templates = {};
@@ -98,7 +100,8 @@ App.Utils.State = Backbone.Model.extend({
         var dict = this.toJSON();
         for (key in dict) {
             if ((!_.indexOf(_.keys(this.defaults), key) || (this.defaults[key] != dict[key])) && dict[key] != undefined) {
-                hashables.push(key + '=' + escape(dict[key]));
+                if (dict[key] != "") hashables.push(key + '=' + escape(dict[key]));
+
             }
         }
         if (addParams) {
@@ -106,7 +109,8 @@ App.Utils.State = Backbone.Model.extend({
                 hashables.push(key + '=' + addParams[key])
             }
         }
-        return '?' + hashables.join('&');
+        var params = hashables.join('&');
+        return params.length ? '?' + params : "";
     },
     //A hash to use in the url to create a bookmark or link
     //Makes somehting like prop1:value1|prop2:value2
@@ -116,9 +120,13 @@ App.Utils.State = Backbone.Model.extend({
     //Take a hash from the url and set the model attributes
     //Parses from the formate of prop1:value1|prop2:value2
     setFromHash: function(hash) {
-        var hashables = hash.replace("?", "").split('|');
+        hash = hash.replace("?", "");
+        if (hash.length == 0) return false;
+        
+        var hashables = hash.split('|');
         var dict = _.clone(this.defaults);
         var i = false;
+
         _.each(hashables, function(hashable) {
             var parts = hashable.split(':');
             var prop = parts[0];

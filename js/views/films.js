@@ -38,7 +38,7 @@ App.Views.UserFilmView = Backbone.View.extend({
     },
     showMoviePage: function(e) {
 
-        var url = app.collection.fullCollection.get(this.model.get("id")).get("film").seo_friendly_url;
+        var url = app.collection.originalCollection.get(this.model.get("id")).get("film").seo_friendly_url;
 
         app.router.navigate(url, {trigger: true });
         e.preventDefault();
@@ -48,7 +48,7 @@ App.Views.UserFilmView = Backbone.View.extend({
     render: function() {   
         var tmpl = $("#userFilmItemTemplate").html();
         var template = _.template(tmpl);
-        var film = app.collection.fullCollection.get(this.model.get("id")).get("film");
+        var film = app.collection.originalCollection.get(this.model.get("id")).get("film");
         this.model.set("seo_friendly_url", film.seo_friendly_url);
         this.model.set("poster_url", film.poster_url);
         var date = App.Utils.stringToDate(this.model.get("validto"));
@@ -66,7 +66,7 @@ App.Views.UserFilmView = Backbone.View.extend({
 
 App.Views.FeaturedView = Backbone.View.extend({
     el: '#featured-slides',
-    browsercollection: App.Collections.PaginatedCollection,
+    collection: App.Collections.PaginatedCollection,
     template: $("#featuredItemTemplate").html(),
     initialize: function() {
         this.fragment = document.createDocumentFragment();

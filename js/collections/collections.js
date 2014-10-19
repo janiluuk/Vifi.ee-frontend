@@ -1,6 +1,9 @@
 App.Collections = {};
     // Create a new collection using one of Backbone.Paginator's
     // pagers. We're going to begin using the requestPager first.
+App.Collections.FilmCollection = Backbone.Collection.extend({
+
+});
 
 App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         baseUrl: App.Settings.api_url + 'search/',
@@ -12,6 +15,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             this.querystate = options.querystate;
             this.initial_search = options.search;
             this.options = options;
+            this.originalCollection = new App.Collections.FilmCollection(models);
             // Whenever the state is changed, 
             // update the collection records
             // to match the state
@@ -19,6 +23,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             if (options.pagination) {
                 this.pagination = options.pagination;
             }
+            
         },
  
         url: App.Settings.api_url + "search?api_key=" +App.Settings.api_key+ "&",
@@ -41,10 +46,10 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         },
 
         update: function() {
+
            _.extend(this.queryParams,this.querystate.attributes);
+
             this.fetch({ reset: true, url: this.url, dataType: 'jsonp'});
-
-
         },
 
         parse: function(data) {

@@ -27,10 +27,11 @@ window.app = {};
         var genres = new App.Films.GenreCollection(data.genres);
         var usercollection = new App.Collections.UserCollection();
 
-        var browsercollection = new App.Collections.PaginatedCollection(
+        var collection = new App.Collections.PaginatedCollection(
             data.results, {
             mode: "client",
             querystate: state,
+            all: data.results,
             genres: genres,
             pagination: data.pagination,
             search: data.search
@@ -43,7 +44,7 @@ window.app = {};
         var eventhandler = _.extend({}, Backbone.Events);
         app.template.load(['homepage', 'topmenu', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke'], function () {
             
-            window.app = new App.Views.BaseAppView({session: session, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, browsercollection: browsercollection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
+            window.app = new App.Views.BaseAppView({session: session, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
             window.history = Backbone.history.start();
             initFB();
 

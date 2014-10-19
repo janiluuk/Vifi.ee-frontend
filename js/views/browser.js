@@ -12,38 +12,44 @@ App.Views.BrowserView = Backbone.View.extend({
     initialize: function(options) {
         this.options = options;
 
-        this.browsercollection = options.browsercollection;
-        this.browsercollection.options.genres.bind('all', this.setGenreDropDown, this);
-        this.browsercollection.bind('sync', this.renderResults, this);
+        this.collection = options.collection;
+        this.collection.options.genres.bind('all', this.setGenreDropDown, this);
+        this.collection.bind('sync', this.renderResults, this);
         
-        this.browsercollection.querystate.bind('change', this.onChangeCollectionState, this);
-        this.browsercollection.querystate.bind('change:genres', this.onChangeGenre, this);
-        this.browsercollection.querystate.bind('change:durations', this.onChangeDuration, this);
-        this.browsercollection.querystate.bind('change:years', this.onChangeYear, this);
-        this.browsercollection.querystate.bind('change:search', this.onChangeText, this);
-        this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort});
+        this.collection.querystate.bind('change', this.onChangeCollectionState, this);
+        this.collection.querystate.bind('change:genres', this.onChangeGenre, this);
+        this.collection.querystate.bind('change:durations', this.onChangeDuration, this);
+        this.collection.querystate.bind('change:years', this.onChangeYear, this);
+        this.collection.querystate.bind('change:q', this.onChangeText, this);
+        _.bindAll(this,'render', 'renderResults', 'applyIsotope');
+        this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort, state: this.collection.querystate});
         this.filterview.bind('filter-bar:sort', this.onSort, this);
+        var querystring = this.collection.querystate.getQueryString();
+        if (querystring != "") this.collection.update();
+        this.initEvents();
 
-        
     },
      initEvents: function() { 
 
-        this.on("maximise", function() { $("#featured-swiper-container").stop().slideDown() } );
-        this.on("minimize", function() { $("#featured-swiper-container").stop().slideUp() } );
+       // this.on("maximize", function() { $("#homepage").css("min-height", "100%"); $("#featured-swiper-container").stop().slideDown(); } );
+      //  this.on("minimize", function() { $("#homepage").css("min-height", "0px"); $("#featured-swiper-container").stop().slideUp(); } );
 
     },
     render: function() {
 
         this.$el.html(this.template());
-        this.filterview.render();   
+        this.filterview.render();
+
         this.applyIsotope();
         this.renderResults();
+
+
         return this;  
     },
     applyIsotope: function() {
         /* Enable isotope on the results */
-        
-       this.$isotope = $("#content-body-list").isotope({
+       
+        this.$isotope = $("#content-body-list").isotope({
             layoutMode: 'fitRows',
             resizable: true,
             itemSelector: '.item',
@@ -58,56 +64,59 @@ App.Views.BrowserView = Backbone.View.extend({
 
             }
         });
-
+        return true;
     },
 
     setGenreDropDown: function(action) {
         $('#id_genres').empty();
-        if (this.browsercollection.options.genres.length > 0) {
-            if (this.browsercollection.options.genres.length > 1) {
+        if (this.collection.options.genres.length > 0) {
+            if (this.collection.options.genres.length > 1) {
                 $('#id_genres').append(new Option('All Genres', ''));
             }
-            _.each(this.browsercollection.options.genres.models, function(genre, key, list) {  
+            _.each(this.collection.options.genres.models, function(genre, key, list) {  
                 $('#id_genres').append(new Option(genre.get("name"), genre.get("id")));
             });
-            this.$('#id_genres option[value="' + this.browsercollection.querystate.get('genres') + '"]').attr('selected', 'selected');
+            this.$('#id_genres option[value="' + this.collection.querystate.get('genres') + '"]').attr('selected', 'selected');
         }
     },
     redirectToBaseURL: function() {
-        window.location = 'http://' + window.location.host + '/#search/' + this.browsercollection.querystate.getHash();
+        window.location = 'http://' + window.location.host + '/#search/' + this.collection.querystate.getHash();
     },
     onChangeDuration: function(model, duration) {
         //This is a state change event, not a dom event
-        if (this.options.redirect_on_duration_change && duration != this.browsercollection.initial_search.duration) {
+        if (this.options.redirect_on_duration_change && duration != this.collection.initial_search.duration) {
             this.redirectToBaseURL();
         }
     },
     onChangePeriod: function(model, period) {
         //This is a state change event, not a dom event
-        if (this.options.redirect_on_period_change && period != this.browsercollection.initial_search.period) {
+        if (this.options.redirect_on_period_change && period != this.collection.initial_search.period) {
             this.redirectToBaseURL();
         }
     },
     onSort: function(field, desc) {
-        this.browsercollection.sortByAttribute(field, desc);
+
+        this.collection.sortByAttribute(field, desc);
         $("#content-body-list").empty();
-        this.applyIsotope();
-
         this.renderResults();
-
-
+        return false;
 
     },
    
     onChangeGenre: function(model, genre) {
         // this function is a model state change, not the dom event: change
         // because of this we don't need the "event" arg.
-        var parts = app.browserview.browsercollection.querystate.get('genres');
+        var parts = app.browserview.collection.querystate.get('genres');
                 if (undefined == parts || parts.length == 0) return false;
         _.each(parts.split(";"), function(i) { $(".selection-wrapper [data-val="+i+"]")});
-        if (this.options.redirect_on_genre_change && genre != this.browsercollection.initial_search.genre) {
+        if (this.options.redirect_on_genre_change && genre != this.collection.initial_search.genre) {
             this.redirectToBaseURL();
         }
+    },
+    onChangeText:function(item) {
+        //console.log(item);
+
+
     },
     handleSearchFormSubmit: function(event) {
         event.preventDefault();
@@ -126,8 +135,9 @@ App.Views.BrowserView = Backbone.View.extend({
         if (images.length > 0) app.browser.loadBrowserImages();
     },
     onSearchFieldChange: function(event) {
-        
+
         var value = $("#main-search-box").val();
+
         var search_array = {
             genres: undefined,
             duration: undefined,
@@ -143,14 +153,15 @@ App.Views.BrowserView = Backbone.View.extend({
             search_dict[fieldname] = search_dict[fieldname] == undefined ? val : search_dict[fieldname] += ";" + val;
         });
 
-        this.browsercollection.querystate.set(search_dict);
+        this.collection.querystate.set(search_dict);
+
     },
 
     addOne : function ( item ) {
 
         var view = new App.Views.FilmView({model:item});
         var el = view.render().el;
-         $('#content-body-list').append(el).isotope('insert', el);
+        this.$isotope.append(el).isotope('insert', el);
     },
     addSet : function ( collection ) {
         var _this = this;
@@ -159,18 +170,17 @@ App.Views.BrowserView = Backbone.View.extend({
             _this.addOne(film);
 
         });
-            $("#content-body-list").isotope("layout");
+        this.$isotope.isotope("layout");
 
     },
     onLoadMore: function() {
 
-        this.addSet(this.browsercollection.getNextPage());
-        if (!app.browserview.browsercollection.hasNextPage()) {
+        this.addSet(this.collection.getNextPage());
+        if (!app.browserview.collection.hasNextPage()) {
 
             $("#loadMore").hide();
 
         }
-
     },
 
     renderResults: function(el) {
@@ -182,40 +192,23 @@ App.Views.BrowserView = Backbone.View.extend({
         //$("#search-results > div.movie").addClass("loading");
         $("#content-body-list").empty();
 
-        this.browsercollection.getFirstPage();
-        this.addSet(this.browsercollection);
+        this.collection.getFirstPage();
+        this.addSet(this.collection);
         this.updateUIToState();
 
         this.rendering = false;
     },
     updateUIToState: function() {
-        var state = this.browsercollection.querystate;
-        var $this = this;
+        var state = this.collection.querystate;
         // main search text box
         var query = state.get('q');
+
         $('#main-search-box').val(query);
 
-        var options = ['genres', 'periods', 'durations'];
-        $.each(options, function(idx, option) {
-            var val = decodeURIComponent(state.get(option));
-
-            if (val != "") {
-                var parts = val.split(';');
-
-                if (parts.length > 0 && parts != "undefined") {
-                    $.each(parts, function(idx, item) {
-                        $this.$('#id_' + option + ' option[value="' + item + '"]').attr('selected', 'selected');
-
-                        $(".selection-wrapper[data-field='" + option + "'] div[data-val=" + item + "]").addClass("toggle-on");
-
-                    });
-                    $(".selection-wrapper[data-field='" + option + "'] div[data-val=reset]").removeClass("toggle-on");
-                }
-            }
-        });
+        this.filterview.updateUI();
 
         // Load more button
-        if (this.browsercollection.state.pageSize > this.browsercollection.models.length) {
+        if (this.collection.state.pageSize > this.collection.models.length) {
             $("#loadMore").hide();
         } else {
             $("#loadMore").show();
@@ -230,19 +223,19 @@ App.Views.BrowserView = Backbone.View.extend({
         if (this.options.redirect_on_genre_change && (genre_is_changed)) {
             return this.redirectToBaseURL();
         }
-        _.extend(this.browsercollection.queryParams, this.browsercollection.querystate.attributes);        
+        _.extend(this.collection.queryParams, this.collection.querystate.attributes);        
         //Update the url of the browser using the router navigate method
-        app.router.navigate('search' + '?' + app.browserview.browsercollection.querystate.getHash());
+        app.router.navigate('search' + '?' + app.browserview.collection.querystate.getHash(), {trigger:true});
     },
 
     //Set the search state from the url
     setSearchStateFromHash: function(searchStateHash) {
         //setFromHash will trigger a change event, which then
         //loads the records and reloads the table
-        this.browsercollection.querystate.setFromHash(searchStateHash);
+        this.collection.querystate.setFromHash(searchStateHash);
     },
     clearSearch: function() {
-        this.browsercollection.querystate.set(this.browsercollection.initial_search);
+        this.collection.querystate.set(this.collection.initial_search);
         this.trigger("search:clear", this);
     }
 });
