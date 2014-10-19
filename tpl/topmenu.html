@@ -1,0 +1,21 @@
+<div id="toolbar-left-group">
+    <% if (profile_picture) { %>
+        <div id="menu-dragger" class="float_left" style="background-image: url('<%= profile_picture %>?width=50&height=50')"></div>
+    <% } else { %>
+        <div id="menu-dragger" class="menu-icon float_left" style="background-image: url('style/img/menu-icon.png')"></div>
+    <% } %>
+        <a href="#">
+            <div id="main-vifi-logo" class="float_left"></div>
+        </a>
+</div>
+
+<form id="main-search-form">
+    <div id="toolbar-right-group">
+        <div id="search-button" class="search-icon float_left"></div>
+    </div>
+
+    <div id="toolbar-search-group">
+        <input type="text" id="main-search-box" class="vifi-text-input" placeholder="Otsi filmi või näitlejat"/>
+    </div>
+</form>         
+
