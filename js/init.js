@@ -42,7 +42,7 @@ window.app = {};
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Most recent', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Most watched'}]);
         var eventhandler = _.extend({}, Backbone.Events);
-        app.template.load(['homepage', 'topmenu', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke'], function () {
+        app.template.load(['topmenu', 'login', 'person','feed',  'error', 'revoke'], function () {
             
             window.app = new App.Views.BaseAppView({session: session, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
             window.history = Backbone.history.start();
@@ -56,7 +56,7 @@ window.app = {};
 
 $(document).ready(function() {
 
-	$.getJSON("http://backend.vifi.ee/api/search?api_key=12345&jsoncallback=?", initApp, "jsonp")
+	$.getJSON("http://backend.vifi.ee/api/search?limit=500&api_key=12345&jsoncallback=?", initApp, "jsonp")
 
 });
 

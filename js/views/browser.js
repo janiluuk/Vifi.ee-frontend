@@ -31,8 +31,8 @@ App.Views.BrowserView = Backbone.View.extend({
     },
      initEvents: function() { 
 
-       // this.on("maximize", function() { $("#homepage").css("min-height", "100%"); $("#featured-swiper-container").stop().slideDown(); } );
-      //  this.on("minimize", function() { $("#homepage").css("min-height", "0px"); $("#featured-swiper-container").stop().slideUp(); } );
+        this.on("maximize", function() {  $("#front-page-slider").stop().slideDown(); } );
+        this.on("minimize", function() {  $("#front-page-slider").stop().slideUp(); } );
 
     },
     render: function() {
