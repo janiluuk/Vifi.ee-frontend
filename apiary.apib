@@ -14,12 +14,12 @@ General functions
 
 -- Authentication --
 Get token for user
+#GET /api/get_token/{user}
+
 
 Provides token that is used to authenticate user session.
-# GET /posts/{id}
 + Parameters
-    + id = `20` (optional, number, `1001`) ... Id of a post.
-
+    + user = `janiluuk@gmail.com` (optional, number, `1001`) ... Id of a post.
 GET /api/get_token/{user}
 { "api_key": "12345", user: "testuser@example.com", "format": "json" }
 < 200
