@@ -1,5 +1,4 @@
 HOST: http://gonzales.vifi.ee/
-
 --- Vifi API ---
 ---
 
@@ -18,7 +17,7 @@ Get token for user
 
 Provides token that is used to authenticate user session.
 
-POST /api/get_token/testuser@example.com				
+POST /api/get_token/testuser@example.com	
 { "api_key": "12345", "format": "json" }
 < 200
 < Content-Type: application/json
@@ -28,7 +27,7 @@ POST /api/get_token/testuser@example.com
 Get token for authenticated user
 
 Use md5 hash as the second parameter.
-POST /api/get_token/testuser@example.com/d1f533d2e5b1cde7f2e1a2			
+POST /api/get_token/testuser@example.com/d1f533d2e5b1cde7f2e1a2
 { "api_key": "12345", "format": "json" }
 < 200
 < Content-Type: application/json
