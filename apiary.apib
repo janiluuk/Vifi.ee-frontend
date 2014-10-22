@@ -20,8 +20,8 @@ Provides token that is used to authenticate user session.
 + Parameters
     + id = `20` (optional, number, `1001`) ... Id of a post.
 
-GET /api/get_token/testuser@example.com
-{ "api_key": "12345", "format": "json" }
+GET /api/get_token/{user}
+{ "api_key": "12345", user: "testuser@example.com", "format": "json" }
 < 200
 < Content-Type: application/json
 { "status" : "ok", "token": "1234567890abcdef"}
