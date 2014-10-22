@@ -1,4 +1,4 @@
-HOST: http://gonzales.vifi.ee/?api_key=12345&format=json
+HOST: http://gonzales.vifi.ee
 --- Vifi API ---
 ---
 
@@ -17,11 +17,11 @@ Get token for user
 
 Provides token that is used to authenticate user session.
 
-POST /api/get_token/testuser@example.com
+GET /api/get_token/testuser@example.com
 { "api_key": "12345", "format": "json" }
 < 200
 < Content-Type: application/json
-{ "status" : "ok", "token": "1234567890abcdef"  }
+{ "status" : "ok", "token": "1234567890abcdef"}
 
 
 Get token for authenticated user
