@@ -19,7 +19,6 @@ Get token for user
 Provides token that is used to authenticate user session.
 
 POST /api/get_token/testuser@example.com				
-> Content-Type: application/json
 { "api_key": "12345", "format": "json" }
 < 200
 < Content-Type: application/json
@@ -30,7 +29,6 @@ Get token for authenticated user
 
 Use md5 hash as the second parameter.
 POST /api/get_token/testuser@example.com/d1f533d2e5b1cde7f2e1a2			
-> Content-Type: application/json
 { "api_key": "12345", "format": "json" }
 < 200
 < Content-Type: application/json
