@@ -1,26 +1,34 @@
-HOST: http://gonzales.vifi.ee/?api_key=12345
+HOST: http://gonzales.vifi.ee/
 
 --- Vifi API ---
 ---
-Welcome to the our sample API documentation. All comments can be written in (support [Markdown](http://daringfireball.net/projects/markdown/syntax) syntax)
-API Specification 1.1
 
 Each request must have parameters api_key and ip_address given in the GET / POST request. 
 
 Api key is to authenticate the distributor, IP address has to provide the current IP address of the peer requesting the action.
-
 Additional IP restrictions may apply for using the key.
-
 Output format is provided as XML or JSON. Default is XML and can be altered by adding format=json as a request parameter.
-
+---
+--
 General functions
+--
 
-/api/get_token				
+-- Authentication --
+Get token for user
 
 Provides token that is used to authenticate user session.
 
+POST /api/get_token/testuser@example.com				
+> Content-Type: application/json
+{ "api_key": "12345", "format": "json" }
+< 200
+< Content-Type: application/json
+{ }
+---
+
 in: 	User e-mail address / MD5 password hash (optional) to get authenticated session.
 out:	token to be stored in the cookie / session and is used to identify the user later on 
+
 
 example:
 
