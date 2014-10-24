@@ -1,7 +1,6 @@
-App.Views.BrowserView = Backbone.View.extend({
+App.Views.BrowserPage = Backbone.View.extend({
     model: App.Models.Film,
     el: '#browser-content',
-    template: _.template($("#browserPageTemplate").html()),
     events: {
         'submit #search-form': 'handleSearchFormSubmit',
         'change #search-form select': 'onSearchFieldChange',
@@ -37,18 +36,16 @@ App.Views.BrowserView = Backbone.View.extend({
     },
     render: function() {
 
-        this.$el.html(this.template());
+        this.$el.html(ich.browserPageTemplate());
         this.filterview.render();
-
         this.applyIsotope();
-        this.renderResults();
 
 
         return this;  
     },
     applyIsotope: function() {
         /* Enable isotope on the results */
-       
+
         this.$isotope = $("#content-body-list").isotope({
             layoutMode: 'fitRows',
             resizable: true,
@@ -58,11 +55,10 @@ App.Views.BrowserView = Backbone.View.extend({
                 duration: 250,
                 easing: 'linear',
                 queue: false,
-            },
-            masonry: {
-                
             }
         });
+
+    
         return true;
     },
 
@@ -105,7 +101,7 @@ App.Views.BrowserView = Backbone.View.extend({
     onChangeGenre: function(model, genre) {
         // this function is a model state change, not the dom event: change
         // because of this we don't need the "event" arg.
-        var parts = app.browserview.collection.querystate.get('genres');
+        var parts = app.homepage.collection.querystate.get('genres');
                 if (undefined == parts || parts.length == 0) return false;
         _.each(parts.split(";"), function(i) { $(".selection-wrapper [data-val="+i+"]")});
         if (this.options.redirect_on_genre_change && genre != this.collection.initial_search.genre) {
@@ -121,7 +117,7 @@ App.Views.BrowserView = Backbone.View.extend({
         event.preventDefault();
     },
     loadBrowserImages: function() {
-        $("#search-results div.lazy").lazyload({
+        $("#content-body-list div.lazy").lazyload({
             threshold: 4000,
             effect: 'fadeIn',
             effectspeed: 900
@@ -130,7 +126,7 @@ App.Views.BrowserView = Backbone.View.extend({
     
     // Handle preloading imags on browser
     onBrowserPaginationEvent: function(e) {
-        var images = $("#search-results div.lazy.loading:in-viewport");
+        var images = $("#content-body-list div.lazy.loading:in-viewport");
         if (images.length > 0) app.browser.loadBrowserImages();
     },
     onSearchFieldChange: function(event) {
@@ -169,13 +165,15 @@ App.Views.BrowserView = Backbone.View.extend({
             _this.addOne(film);
 
         });
+
+
         this.$isotope.isotope("layout");
 
     },
     onLoadMore: function() {
 
         this.addSet(this.collection.getNextPage());
-        if (!app.browserview.collection.hasNextPage()) {
+        if (!app.homepage.collection.hasNextPage()) {
 
             $("#loadMore").hide();
 
@@ -186,9 +184,9 @@ App.Views.BrowserView = Backbone.View.extend({
 
         if (this.rendering) return false;
         this.rendering = true;
-      
+        
 
-        //$("#search-results > div.movie").addClass("loading");
+        //$("#content-body-list > div.movie").addClass("loading");
         $("#content-body-list").empty();
 
         this.collection.getFirstPage();
@@ -224,7 +222,7 @@ App.Views.BrowserView = Backbone.View.extend({
         }
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);        
         //Update the url of the browser using the router navigate method
-        app.router.navigate('search' + '?' + app.browserview.collection.querystate.getHash(), {trigger:true});
+        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {trigger:true});
     },
 
     //Set the search state from the url

@@ -17,13 +17,8 @@ window.app = {};
 
         window.$log = function(log) { console.log(log); };
 
-        window.$noop = function(input) {
-            // if more then one return an array.
-            if (arguments.length > 1) return Array.prototype.slice.call(arguments, 0);
-            else return arguments[0]; // Don't return an array if only one thing came in.
-        };
-
-
+        App.Platforms.init();
+        
         var genres = new App.Films.GenreCollection(data.genres);
         var usercollection = new App.Collections.UserCollection();
 
@@ -31,7 +26,6 @@ window.app = {};
             data.results, {
             mode: "client",
             querystate: state,
-            all: data.results,
             genres: genres,
             pagination: data.pagination,
             search: data.search
@@ -42,14 +36,17 @@ window.app = {};
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Most recent', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Most watched'}]);
         var eventhandler = _.extend({}, Backbone.Events);
-        app.template.load(['topmenu', 'login', 'person','feed',  'error', 'revoke'], function () {
-            
-            window.app = new App.Views.BaseAppView({session: session, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
-            window.history = Backbone.history.start();
-            initFB();
+        App.Utils.include(["popup", "menu", "player","filmitem", "profile", "homepage"], function() { 
 
+            app.template.load(['error','film'], function () {
+
+                window.app = new App.Views.BaseAppView({session: session, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
+                window.history = Backbone.history.start();
+                initFB();
+
+
+            }); 
         });
-
     }
 
 
@@ -130,7 +127,7 @@ function initFB() {
         app.session.enable();
 
         FB.login(function(response) {
-        }, {scope: 'publish_actions'});
+        }, {scope: 'email,publish_actions'});
         return false;
     });
 }

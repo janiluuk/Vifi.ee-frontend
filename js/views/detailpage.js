@@ -45,9 +45,8 @@ App.Views.MovieDetailView = Backbone.View.extend({
             });
     },
     render: function() {
-        var tmpl = $("#moviePageTemplate").html();
 
-        var template = _.template(tmpl);
+        var template = _.template(app.template.get("film"));
 
         this.$el.html(template(this.model.toJSON()));
         setTimeout(function() {
@@ -92,7 +91,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
                 model: app.player
             });
         } else {
-            this.playerView.model = this.model;
+            this.playerView.model = app.player.model;
         }
 
 
@@ -196,9 +195,11 @@ App.Views.TrailerView = Backbone.View.extend({
 
     },
     render: function() {
+        this.$el.fadeIn();
         this.height = this.$el.parent().height();
         this.width = this.$el.parent().width();
         this.$el.empty();
+
         this.$el.append(ich.trailerTemplate(this.model.toJSON()));
         this.equalizeHeight();
     },

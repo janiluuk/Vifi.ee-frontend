@@ -30,8 +30,8 @@ App.Views.ProfileView = Backbone.View.extend({
     events: {
         'click #edit-profile-button, #edit-profile-cancel-button': 'editProfile',
         'click #change-password-button, #change-password-cancel-button': 'changePassword',
-        'click #profile-tabbar-swiper-container .swiper-slide' : 'changeTab'
-
+        'click #profile-tabbar-swiper-container .swiper-slide' : 'changeTab',
+        "click .revoke": "revoke"
     },
     initialize: function(options) {
       this.options = options;
@@ -91,6 +91,15 @@ App.Views.ProfileView = Backbone.View.extend({
 
 
     },
+
+    revoke: function () {
+        FB.api("/me/permissions", "delete", function () {
+            alert('Permissions revoked');
+            FB.getLoginStatus();
+        });
+        return false;
+    },
+
     render: function() { 
 
       this.$el.html(ich.profileTemplate(this.model.toJSON()));
@@ -108,14 +117,24 @@ App.Views.ProfileView = Backbone.View.extend({
 App.Views.UserPairView = Backbone.View.extend({ 
       model: App.User.Profile,
       el: '#contentpage',
-
+      events:  { 'submit #pair-form' : 'pair'},
     initialize: function(options) {
       this.options = options;
       this.listenTo(this.model, "change", this.render, this);
 
 
     },
+    pair: function(e) {
+        e.preventDefault();
+        var code = $("#pairing-code").val();
+        if (code == "") { 
+            alert("Empty code :/");
+        }
+        this.model.trigger("user:pair", code);
 
+        return false;
+
+    },
     render: function() { 
 
       this.$el.html(ich.pairDeviceTemplate(this.model.toJSON()));

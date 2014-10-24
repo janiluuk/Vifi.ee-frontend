@@ -33,7 +33,7 @@ html {
         margin: 0.4em !important;
     }
 
-    #subscribepage-heading {
+    #subscribepage-heading, #pairingpage-heading {
         font-size: 2em !important;
         margin: 70px 50px !important;
     }
@@ -42,6 +42,16 @@ html {
         background-position: 295px 55px !important;
         height: 315px !important;
         background-size: 650px !important;
+    }
+
+    #pairingpage-header {
+        background-position: 440px 30px !important;
+        height: 296px !important;
+        background-size: 500px !important;
+    }
+
+    #subtitles {
+        font-size: 2.3em !important;
     }
 }
 
@@ -114,8 +124,18 @@ html {
         height: 290px !important;
     }
 
+    #pairingpage-header {
+        background-position: 390px 30px !important;
+        height: 270px !important;
+        background-size: 450px !important;
+    }
+
     ul#subscription-benefit-list li {
         font-size: 1.2em !important;
+    }
+
+    #subtitles {
+        font-size: 2em !important;
     }
 }
 
@@ -130,6 +150,10 @@ html {
 
     .width-25 {
         width: 50% !important;
+    }
+
+    .col-50 {
+        width: 100% !important;
     }
 
     .card {
@@ -354,8 +378,16 @@ html {
         padding: 1% 1% 3% 1% !important;
     }
 
+    #video-container-footer ul {
+        margin: 1em 1em 0 1em !important;
+    }
+
+    #video-container-footer ul.options {
+        margin: 0 !important;
+    }
+
     #video-container-footer ul li {
-        margin-bottom: 1%;
+        margin-bottom: 1em;
     }
 
     #video-container-heading {
@@ -375,12 +407,12 @@ html {
         display: none !important;
     }
 
-    .image-and-content-popup .col-content {
+    .image-and-content-popup .col-content, .col-50 {
         width: 100% !important;
         margin-left: 0 !important;
     }
 
-    #subscribepage-heading {
+    #subscribepage-heading, #pairingpage-heading {
         font-size: 2em !important;
         width: 80% !important;
         margin: 10% !important;
@@ -390,6 +422,12 @@ html {
         background-position: -10px 160px !important;
         height: 342px !important;
         background-size: 455px !important;
+    }
+
+    #pairingpage-header {
+        background-position: 10px 140px !important;
+        height: 322px !important;
+        background-size: 340px !important;
     }
 
     .subscription-duration {
@@ -408,6 +446,11 @@ html {
 
     #subscription-benefits {
         padding: 1em !important;
+    }
+
+    #subtitles {
+        font-size: 1.2em !important;
+        bottom: 2.2em !important;
     }
 
 }
@@ -438,6 +481,9 @@ html {
         height: 20em !important;
     }
 
+    #subtitles {
+        font-size: 2em !important;
+    }
 }
 
 @media only screen and (max-height: 600px) {
@@ -452,7 +498,7 @@ html {
 
 }
 
-@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dppx) {
+@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (min-resolution: 192dppx) {
     #player-container.flowplayer, .video-container-body iframe {
         height: auto !important;
     }
@@ -463,6 +509,11 @@ html {
 
     .subscription-duration {
         padding: 1em 0 !important;
+    }
+
+    #subtitles {
+        font-size: 1.2em !important;
+        bottom: 2.2em !important;
     }
 
 }
@@ -586,7 +637,7 @@ h3 {
     top: 13px;
 }
 
-#user-pairtv-info .card-body .row-fluid i.icon {
+#user-pairtv-info .card-body .row-fluid i.icon, #user-pairtv .card-body .row-fluid i.icon {
     top: 7px;
     left: 20px;
 }
@@ -705,10 +756,15 @@ span.label {
     padding: 0;
     box-sizing: border-box;        
     background-color: rgba(255,255,255,0.85);
+    display: table;
 }
 
-.white-popup.vifi-popup.image-and-content-popup {
+.white-popup.vifi-popup.image-and-content-popup, .white-popup.multiple-col-popup  {
     max-width: 800px;
+}
+
+.white-popup.vifi-popup p {
+    font-size: 1.1em;
 }
 
 .white-popup.vifi-popup.image-and-content-popup .col-content {
@@ -716,6 +772,14 @@ span.label {
     width: 60%;
     margin-left: 40%;
     box-sizing: border-box;
+}
+
+.col-50 {
+    padding: 1.5em;
+    width: 50%;
+    box-sizing: border-box;  
+    float: left;
+    display: inline-block;
 }
 
 .white-popup.vifi-popup.image-and-content-popup .popup-section {
@@ -823,13 +887,17 @@ li#code .payment-item-image {
     background-image: url('img/code-logo.jpg');
 }
 
-input#email, input#code, #side-menu input {
+input#email, input#code, #side-menu input, .vifi-popup input.vifi-text-input {
     line-height: 33px;
     height: 33px;
     width: 100%;
-    border-color: #B5AAC4;
+    border: 1px solid #B5AAC4;
     border-radius: 0.5em;
     text-indent: 1em;
+}
+
+#side-menu input {
+    border: none;
 }
 
 input#code {
@@ -1260,6 +1328,14 @@ form#user-login, form#user-register {
     font-weight: 500;
 }
 
+.vifi-popup .tagline {
+    color: #1b1b1b;
+}
+
+.tagline a, #side-menu form .tagline a {
+    font-weight: 700;
+}
+
 #side-menu form a {
     color: #B67E9C;
     font-size: 1.1em;
@@ -1267,25 +1343,35 @@ form#user-login, form#user-register {
     text-decoration: underline;
 }
 
-form#user-register {
+form#user-register, form#popup-user-register {
     display:none;
 }
 
-#side-menu .row-fluid {
+#side-menu .row-fluid, .vifi-popup .row-fluid {
     margin: 0 0 0.5em 0;
     position: relative;
 }
 
-#side-menu form input {
+#side-menu .row-fluid.error {
+    color: red;
+    border: 1px solid red;
+    padding: 0.3em;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9em;
+    margin: 0.5em 0;
+}
+
+#side-menu form input, .vifi-popup form .row-fluid input {
     text-indent: 30px;
 }
 
-#side-menu form .row-fluid i.icon{
+#side-menu form .row-fluid i.icon, .vifi-popup form .row-fluid i.icon {
     top: 7px;
     left: 7px;
 }
 
-#side-menu #social-login .row-fluid i.icon{
+#side-menu #social-login .row-fluid i.icon, #popup-social-login .row-fluid i.icon {
     top: 5px;
     left: 5px;
 }
@@ -1627,10 +1713,14 @@ filter: alpha(opacity=90);
 
 /* MAIN CONTENT BODY */
 
-#content-body, #moviepage-body, #profilepage-body, #subscribepage-body {
+#content-body, #moviepage-body, #profilepage-body, .singlepage-body {
     box-sizing: border-box;
     width: 100%;
     padding: 1%;
+}
+#homepage {
+
+    visibility:visible;
 }
 
 #content-body {
@@ -1645,7 +1735,7 @@ ul.user-filmcollection-list, #film-info-container,
 #film-list-container,
 #profilepage-mymovies-container,
 #profilepage-myprofile-container,
-#subscribepage-body-container
+.singlepage-body-container
 {
     margin: 0;
     padding: 0;
@@ -1783,7 +1873,7 @@ ul#cast-content-body-list li .item-image {
 
 /* MOVIE PAGE */
 
-#moviepage-body, #profilepage-body, #subscribepage-body {
+#moviepage-body, #profilepage-body, .singlepage-body {
     background: #DFDBDB;
 }
 
@@ -1942,7 +2032,7 @@ ul#cast-content-body-list li .item-image {
 
 .video-selector {
     float: left;
-    width: 25%;
+    width: 33.2%;
     box-sizing: border-box;
     padding: 0.5%;
 }
@@ -1953,12 +2043,12 @@ ul#cast-content-body-list li .item-image {
 
 #subtitles {
     position: absolute;
-    bottom: 1em;
+    bottom: 1.2em;
     width: 100%;
     text-align: center;
     font-size: 3em;
     font-family: Arial;
-    line-height: 1em;
+    line-height: 1.1em;
     z-index:99;
     font-weight: 600;
     color: #FFF683;
@@ -2024,27 +2114,47 @@ input#profile-newsletter {
 
 /* SUBSCRIBE PAGE */
 
-#subscribepage-header {
+.singlepage-header {
     width: 100%;
     text-align: center;
     box-sizing: border-box;
-    background-image: url('img/subscribe-page-heading.png');
     background-repeat: no-repeat;
+}
+
+#subscribepage-header {
+    background-image: url('img/subscribe-page-heading.png');
     background-position: 450px 30px;
     height: 350px;
 }
+
+#pairingpage-header {
+    background-image: url('img/pairing-page-heading.png');
+    background-position: 620px 30px;
+    height: 350px;
+}
+
 
 #subscribepage-heading {
     text-align: left;
     margin: 100px 50px;
     font-size: 2.5em;
-    font-weight: 100;
     width: 45%;
-    color: #fff;
-    text-shadow: 0 1px 1px #333;
 }
 
-#subscribepage-body {
+#pairingpage-heading {
+    text-align: left;
+    margin: 100px 50px;
+    font-size: 2.5em;
+    width: 45%;    
+}
+
+.singlepage-heading {
+    color: #fff;
+    text-shadow: 0 1px 1px #333;    
+    font-weight: 100;
+}
+
+.singlepage-body {
     box-shadow: 0 -2px 2px #A38893;
 }
 
@@ -2128,3 +2238,20 @@ ul#subscription-benefit-list li .icon {
     left: 0;
     top: 4px;
 }
+
+#pairingpage-body .singlepage-text ul.simple-list li{
+    margin-bottom: 1em;
+}
+
+/* SINGLE PAGE */
+
+.singlepage-text {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1.2em;
+}
+
+#contentpage .singlepage-text ul.simple-list li{
+    list-style-type: disc;
+}
+

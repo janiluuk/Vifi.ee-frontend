@@ -1,0 +1,213 @@
+
+        <script type="text/html" id="dialogTemplate">
+        <div class="white-popup vifi-popup image-and-content-popup">
+
+            <div class="col-img" style="background-image: url('{{ poster_url }}');">
+            </div>
+            <div class="col-content">
+                <div class="popup-section">
+                    <div class="film-title">{{ title }}</div>
+                    <div class="film-description price">{{ price }} EUR</div>
+                    <div class="film-language">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><h3>Keeled</h3></td>
+                                    <td><h3>Subtiitrid</h3></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ languages_text }}</td>
+                                    <td>{{ subtitles_text }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+ 
+                <div id="payment-section" class="popup-section">
+                    <h3>Vali makseviis</h3>
+                    <ul id="payment-list">
+                        <li id="swedbank"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Swedbank</p>
+                        </a></li>
+                        <li id="seb"><a>
+                            <div class="payment-item-image"></div>
+                            <p>SEB</p>
+                        </a></li>
+                        <li id="danske"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Danske</p>                        
+                        </a></li>
+                        <li id="nordea"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Nordea</p>                        
+                        </a></li>
+                        <li id="creditcard"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Krediitkaart</p>                        
+                        </a></li>
+                        <li id="code"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Kood</p>
+                        </a></li>
+                    </ul>
+                    <div id="payment-email">
+                        <h3>Email</h3>
+                        <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
+                        <form id="single-email-purchase">
+                        <input type="text" id="email" class="vifi-text-input" placeholder="Sinu e-posti aadress"></input>
+                        </form>
+                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
+                    </div>
+                    <div id="payment-code">
+                        <h3>Sisesta filmi kood</h3>
+                        <form id="single-code-purchase">
+                        <input type="text" id="code" class="vifi-text-input" placeholder="Sisesta kood"></input>
+                        </form>
+                    </div>
+                    <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                </div>
+            </div>
+
+        </div>
+
+        </script>
+ <script type="text/html" id="loginDialogTemplate">
+        <div id="login-popup" class="white-popup vifi-popup multiple-col-popup">
+            <div id="popup-login-register-form" class="col-50">
+                <form id="popup-user-login">
+                    <h3>Logi Sisse</h3>                            
+                        <div class="row-fluid">
+                            <i class="icon email"></i>
+                            <input type="email" id="login-email" class="vifi-text-input" placeholder="E-post" />
+                        </div>
+                        <div class="row-fluid">
+                            <i class="icon password"></i>                            
+                            <input type="password" id="login-password" class="vifi-text-input" placeholder="Parool" />
+                        </div>
+                        <div class="row-fluid">
+                            <button class="btn green full" id="login-confirm">Logi Sisse</button>
+                        </div>
+                        <div class="row-fluid">
+                            <a href="">Unustasin parooli</a>
+                        </div>
+                        <div class="row-fluid">
+                            <p id="login-tagline" class="tagline">New to Vifi? <a class="register-button" href="#">Registreeri</a></p>
+                        </div>
+                    </form>
+
+                    <form id="popup-user-register">
+                        <h3>Registreeri</h3>
+                            <div class="row-fluid">
+                                <i class="icon email"></i>
+                                <input type="email" id="register-email" class="vifi-text-input" placeholder="E-post" />
+                            </div>
+                            <div class="row-fluid">
+                                <i class="icon password"></i>                            
+                                <input type="password" id="register-password" class="vifi-text-input" placeholder="Parool" />
+                            </div>
+                            <div class="row-fluid">
+                                <i class="icon confirm-password"></i> 
+                                <input type="password" id="register-password-verify" class="vifi-text-input" placeholder="Parool uuesti" />
+                            </div>
+                            <div class="row-fluid">
+                                <button class="btn green full" id="register-confirm">Registreeri</button>
+                            </div>
+                            <div class="row-fluid">
+                                <p id="register-tagline" class="tagline">Already have an account? <a class="register-button" href="#">Logi Sisse</a></p>
+                            </div>
+                    </form>     
+
+                    <div id="popup-social-login">
+                        <div class="row-fluid">
+                            <i class="icon facebook"></i>
+                            <button class="btn full facebook">Logi sisse Facebookiga</button>
+                        </div>   
+                    </div>        
+            </div>
+            <div class="col-50">
+                <h3>Continue without an account</h3>
+                <p>You can purchase as a guest. You will just need to indicate the essential details to place your order.</p>
+                <div class="row-fluid">
+                    <button class="btn float_right">Continue</button>
+                </div>
+
+            </div>
+        </div>
+
+        </script>
+<script type="text/html" id="subscriptionActivateDialogTemplate">
+        <div class="white-popup vifi-popup image-and-content-popup">
+
+            <div class="col-img" style="background-image: url('{{ poster_url }}');">
+            </div>
+            <div class="col-content">
+                <div class="popup-section">
+                    <div class="film-title">{{ title }}</div>
+                    <div class="film-description price">{{ price }} EUR</div>
+                    <div class="film-language">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><h3>Keeled</h3></td>
+                                    <td><h3>Subtiitrid</h3></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ languages_text }}</td>
+                                    <td>{{ subtitles_text }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+ 
+                <div id="payment-section" class="popup-section">
+                    <h3>Vali makseviis</h3>
+                    <ul id="payment-list">
+                        <li id="swedbank"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Swedbank</p>
+                        </a></li>
+                        <li id="seb"><a>
+                            <div class="payment-item-image"></div>
+                            <p>SEB</p>
+                        </a></li>
+                        <li id="danske"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Danske</p>                        
+                        </a></li>
+                        <li id="nordea"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Nordea</p>                        
+                        </a></li>
+                        <li id="creditcard"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Krediitkaart</p>                        
+                        </a></li>
+                        <li id="code"><a>
+                            <div class="payment-item-image"></div>
+                            <p>Kood</p>
+                        </a></li>
+                    </ul>
+                    <div id="payment-email">
+                        <h3>Email</h3>
+                        <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
+                        <form id="single-email-purchase">
+                        <input type="text" id="email" class="vifi-text-input" placeholder="Sinu e-posti aadress"></input>
+                        </form>
+                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
+                    </div>
+                    <div id="payment-code">
+                        <h3>Sisesta filmi kood</h3>
+                        <form id="single-code-purchase">
+                        <input type="text" id="code" class="vifi-text-input" placeholder="Sisesta kood"></input>
+                        </form>
+                    </div>
+                    <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                </div>
+            </div>
+
+        </div>
+
+        </script>

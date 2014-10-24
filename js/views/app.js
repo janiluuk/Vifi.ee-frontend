@@ -15,10 +15,8 @@ App.Views.BaseAppView = Backbone.View.extend({
     state: false,
     initialize: function(options) {
         this.options = options || {};
-        var _this = this;
         this.session = options.session;
         this.user = options.session.get("profile");
-        
         this.collection = options.collection;
         this.usercollection = options.usercollection;
         this.evt = options.eventhandler;
@@ -26,20 +24,12 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
         options.model = this.user;
 
-        this.browserview = new App.Views.BrowserView({
-                collection: options.collection,
-                filters: options.filters,
-                sort: options.sort
-        });
-        this.featuredview = new App.Views.FeaturedView({
-            collection: options.collection.featured()
-        });
         _.bindAll(this, 'render', 'showBrowserPage');
             
-        this.sidemenu = new App.Views.SideMenu({model: this.user});
+        this.sidemenu = new App.Views.SideMenu({model: this.user, session: this.session});
 
         this.topmenu = new App.Views.TopMenu({model: this.user});
-        this.homepage = new App.Views.Homepage(options);
+        this.homepage = new App.Views.HomePage(options);
         this.render();
         this.router = new App.Router();
     },
@@ -47,8 +37,7 @@ App.Views.BaseAppView = Backbone.View.extend({
        
             this.topmenu.render();
             this.sidemenu.render(); 
-            this.featuredview.render();
-            this.browserview.render();
+            this.homepage.render();
             return this;
     },
     scrollToTop: function() { 
@@ -65,41 +54,51 @@ App.Views.BaseAppView = Backbone.View.extend({
     },
     showBrowserPage: function() {
         $(".main-wrapper:not(#homepage)").hide();
-        app.sidemenu.closeSideBar();
 
-        $("#homepage").show();
-        app.browserview.filterview.filterbarview.enableCarosel();
-        this.$("#content-container").scrollTop(this.scrollTop);
-        app.browserview.$isotope.isotope('layout');
+        $("#homepage").css("visibility", "visible").show();
+        app.homepage.browserview.filterview.filterbarview.enableCarosel();
+        
+        if (this.scrollTop == 0) { app.homepage.browserview.renderResults(); }
+        else 
+        $("#content-container").scrollTop(this.scrollTop);
+
+        app.homepage.browserview.$isotope.isotope('layout');
+
     },
     
     showSearchPage: function() {
-        app.browserview.collection.onSearchFieldChange();
+        app.homepage.browserview.collection.onSearchFieldChange();
     },
     showContentPage: function(id) {
         $(".main-wrapper:not(#contentpage)").hide();
+
         if (id) {
             $(".side-menu-list a.active").removeClass("active");
             $(".side-menu-list a#menu-"+id).addClass("active");
 
         }
-        app.sidemenu.closeSideBar();
         this.$("#content-container").scrollTop(0);
 
         $("#contentpage").show();
     }
 });
 
-App.Views.Homepage = Backbone.View.extend({
+App.Views.HomePage = Backbone.View.extend({
     el: $("#homepage"),
-    initialize: function(options) {
-
+    initialize: function(options) {   
+        this.browserview = new App.Views.BrowserPage({
+                collection: options.collection,
+                filters: options.filters,
+                sort: options.sort
+        });
+        this.featuredview = new App.Views.FeaturedView({
+            collection: options.collection.featured()
+        });
 
     },
     render: function() {
-
-
-
+            this.featuredview.render();
+            this.browserview.render();
 
         return this;  
     },
@@ -120,21 +119,14 @@ App.Views.TopMenu = Backbone.View.extend({
     initialize: function(options) {
         if (options.model) this.model = options.model;
         this.model.on('change', this.render, this);
-        this.template = _.template(app.template.get('topmenu'));
 
     },
     render: function() {
-        var search = this.$("#main-search-box");
+        var search = this.$("#main-search-box").val();
         
-        if (search) {
-            var q = $(search).val();
-
-        }
-        this.$el.html(this.template(this.model.toJSON()));
+        this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
         
-        if (q) { 
-            this.$("#main-search-box").val(q);
-        }
+            this.$("#main-search-box").val(search);
 
         return this;  
     },
@@ -155,7 +147,6 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
     },
     toggleSideBar: function(e) {
-        if (e) e.preventDefault();
         app.sidemenu.toggleSideBar();
 
         return false;
@@ -165,8 +156,8 @@ App.Views.TopMenu = Backbone.View.extend({
     onSearchSubmit: function(e) {
         e.preventDefault();
 
-        app.browserview.onSearchFieldChange(e);
-        app.browserview.trigger("minimize");
+        app.homepage.onSearchFieldChange(e);
+        app.homepage.trigger("minimize");
         
         return false;
     },   
@@ -180,22 +171,65 @@ App.Views.SideMenu = Backbone.View.extend({
     events: { 
         'click a.register-button' : 'toggleRegisterForm',
         'click .logout' : 'logout',
-        'click .btn.facebook' : 'login'
+        'click .btn.facebook' : 'loginFacebook',
+        'submit form#user-register' : 'register',
+        'submit form#user-login': 'login'
     },
     initialize: function(options) { 
+        var options = options || {};
         if (options.model) this.model = options.model;
+        if (options.session) this.session = options.session;
+
         _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
         this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.session, "user:register:fail", this.onFail, this);
+        this.listenTo(this.session, "user:login:fail", this.onFail, this);
+
+        this.listenTo(this.session, "user:register:success", function(data) {
+            alert("You have successfully registered!")
+            return false;
+        }, this);
+        this.listenTo(this.session, "user:login", this.render, this);
+
         this.enableSideMenu();
     },
+    onFail: function(data) {
+        if (!data) return false;
+        this.$("form .error").remove();
+        var div = $("<div>").addClass("row-fluid error").html(data.message);
+        this.$("form:visible:first h3").append(div);
+        return false;
 
+    },
+    login: function(e) {
+        e.preventDefault();
+        var email = $("#login-email").val();
+        var pass = $("#login-password").val();
+
+        this.session.login(email, pass);
+
+        return false;
+
+    },
     logout: function(e) { 
         e.preventDefault();
         $(document).trigger("logout");
     },
-    login: function(e) { 
+    loginFacebook: function(e) { 
         e.preventDefault();
         $(document).trigger("login");
+    },
+    register: function(e) {
+        e.preventDefault();
+        var email = $("#register-email").val();
+        var pass = $("#register-password").val();
+        var passverify = $("#register-password-verify").val();
+        if (email =="" || pass == "" || passverify == "") {  
+            this.onFail({message: "Fill all the fields!"});
+        } else { 
+            this.session.register(email, pass);
+        }
+        return false;
     },
     toggleRegisterForm: function(e) {
         e.preventDefault();

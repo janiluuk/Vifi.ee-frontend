@@ -1,0 +1,114 @@
+            <div id="movie-page-header" class="feature-wrapper float_left">
+                <!--Film video-->
+                <div id="movie-trailer-container"></div>
+                <div id="movie-player-container" class="fixed-controls"></div>
+
+                <!--Film gallery-->
+
+                <div class="swiper-container" id="gallery-swiper-container" data-snap-ignore="true" >
+                    <ul>
+                        <li><a href="#trailer" id="watchTrailer"><button class="btn"><span class="icon trailer"></span>Treiler</button></a></li>
+                        <li><a href="#player" id="playMovie"><button class="btn big green"><span class="icon play"></span><%= playButton %></button></a></li>
+                        <li><a><button class="btn"><span class="icon gift"></span>Kingi Söbrale!</button></a></li>
+                    </ul>
+                    <a class="arrow-left" href="#back"></a>
+                    <a class="arrow-right" href="#next"></a>
+                    <div class="swiper-wrapper" id="movie-gallery-slides">
+                        <% _.each(images.backdrops, function(img) {  %> 
+                            <div class="swiper-slide">
+                                <div class="featured-item">
+                                    <div class="featured-item-background" style="background-image:url('<%=img%>')"></div> 
+                                </div>
+                            </div>
+                        <% }); %> 
+                    </div>
+                    <div class="pagination-1"></div>
+                </div>
+            </div>
+            <!-- Film Info Tab -->
+            <div class="sub-tabbar float_left">
+                <div class="swiper-nav swiper-container" id="film-tabbar-swiper-container" data-snap-ignore="true">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" data-rel="film-info-container"><span>Info</span></div>
+                        <div class="swiper-slide" data-rel="film-cast-container"><span>Näitlejad</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="moviepage-body" class="float_left">
+                <!-- Film Info -->
+                <div id="film-info-container" class="float_left">
+                    <div class="film-poster float_left"><img src="<%-poster_url %>" /></div>
+                    <div class="film-info float_left">
+                        <div class="film-title"><%-title %></div>
+                        <div class="film-description"><span><%-year %></span> - <span><%-genres_text %></span> - <span><%-running_time_text %></span></div>
+                        <div class="film-rating">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="icon imdb"></span><span><%-imdbrating %></span></td>
+                                        <td><span class="icon rottentomato"></span><span></span></td>
+                                        <td><span class="icon metacritic"></span></span><span></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="addthis_native_toolbox"></div>
+                    </div>
+                    <div id="film-summary-container" class="film-summary float_left">
+                        <h3>Summary</h3>
+                        <div class="text-area"><%=overview %></div>
+                        <div class="film-language float_left">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><h3>Keeled</h3></td>
+                                        <td><h3>Riigid</h3></td>
+                                        <td><h3>Subtiitrid</h3></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%-language %></td>
+                                        <td></td>
+                                        <td><% _.each(subtitles, function(subtitle) { %>
+                                                    <%= subtitle %> 
+                                                    <% }); %></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="disqus_thread"></div>
+                    </div>
+                </div>
+                <!-- Film cast -->
+                <div id="film-cast-container" class="float_left" style="display:none;">
+                    <ul id="cast-content-body-list">
+                    <% _.each(actors, function(actor) { 
+
+                        if (typeof(actor.character) =="object") { 
+                            var characters = _.map(actor.character, function(char) { return char });
+                            actor.character = characters.join(","); 
+                        }
+                        if (actor.image_url == null) actor.image_url = '/style/img/anonymous_avatar.jpg';                      
+                            %>
+                        <li class="item">
+                            <div class="item-image" style="background-image: url('<%= actor.image_url%>');"></div>
+                            <div class="item-info">
+                                <div class="item-info-title">
+                                        <a href="#"><%= actor.name %></a>
+                                </div>
+                                <div class="item-info-description">'<%=actor.character %>'
+                                </div>
+                            </div>
+                        </li>
+                    <%  }); %>
+                    </ul>
+                </div>
+            </div>
+                
+            <!-- Footer -->
+            <div class="page-footer float_left">
+                <div id="goTop" class="goTop">
+                    <span class="arrowup"></span>
+                    <p>Go to top</p>
+                </div>
+            </div>

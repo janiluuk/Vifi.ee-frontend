@@ -10,7 +10,6 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
 
         // As usual, let's specify the model to be used
         // with this collection
-        model: App.Models.Film,
         initialize: function(models, options) {
             this.querystate = options.querystate;
             this.initial_search = options.search;
@@ -34,7 +33,8 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         state: {
           pageSize: 15,
           sortKey: "id",
-          order: 1
+          order: 1,
+          limit: 550
         },
 
         // You can remap the query parameters from `state` keys from
@@ -42,7 +42,9 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         queryParams: {
           totalPages: null,
           totalRecords: null,
-          sortKey: "sort"
+          sortKey: "sort",
+          limit: 500
+
         },
 
         update: function() {

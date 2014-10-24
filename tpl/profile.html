@@ -1,0 +1,308 @@
+        <script type="text/html" id="profileTemplate">
+            {{#firstname}}
+            <div id="profilepage-header" class="float_left">
+                <div class="profile-image" style="background-image: url('{{profile_picture}}?width=200')"></div>
+                <div class="profile-name">{{ firstname }} {{lastname}}</div>
+            </div>
+            <div class="sub-tabbar float_left">
+                <div class="swiper-nav swiper-container" id="profile-tabbar-swiper-container" data-snap-ignore="true">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" data-rel="profilepage-myprofile-container"><span>My profile</span></div>
+                        <div class="swiper-slide" data-rel="profilepage-mymovies-container"><span>My movies</span></div>
+                    </div>
+                </div>
+            </div>
+            <div id="profilepage-body" class="float_left">
+                <div id="profilepage-myprofile-container" class="float_left">
+                <div class="width-50 float_left">
+                    <div id="user-profile" class="card float_left">
+                        <div class="card-heading"><div class="card-heading-icon float_left" style="background: url('{{profile_picture}}') center;"/><span>Profile</span></div>
+                        <div class="card-body">
+                            <!--VIEW PROFILE-->
+                            <div id="user-profile-view">
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <span class="label">First name</span><span>{{ firstname }}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <span class="label">Last name</span><span>{{ lastname }}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon email"></i>
+                                    <span class="label">Email</span><span>{{email}}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon globe"></i>
+                                    <span class="label">Language</span><span>{{email}}</span>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon message"></i>
+                                    <span class="label">Newsletter</span><span>{{newsletter}}</span>
+                                </div>
+                                <div class="row-fluid">
+                                    <button id="edit-profile-button" class="btn green float_right">Edit</button>
+                                </div>
+                            </div>
+
+                            <!--EDIT PROFILE-->
+                            <div id="user-profile-edit">
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <input type="text" id="profile-firstname" class="vifi-text-input" placeholder="First name"/>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon user"></i>
+                                    <input type="text" id="profile-lastname" class="vifi-text-input" placeholder="Last name"/>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon email"></i>
+                                    <input type="email" id="profile-email" class="vifi-text-input" placeholder="Email"/>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <div class="info-selector">
+                                        <select id="profile-language" class="select-box">
+                                            <option>English</option>
+                                            <option>Estonian</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid"> 
+                                    <i class="icon message"></i>
+                                    <span class="label">Newsletter</span><input id="profile-newsletter" type="checkbox" />
+                                </div>
+                                <div class="row-fluid">
+                                    <button id="edit-profile-confirm-button" class="btn green float_right">Save</button>
+                                    <button id="edit-profile-cancel-button" class="btn float_right">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="reset-password" class="card float_left">
+                        <div class="card-heading"><span>Password</span></div>
+                        <div class="card-body">
+                            <!--CHANGE PASSWORD VIEW-->
+                            <div id="change-password-view">
+                                <div class="row-fluid">
+                                    <button id="change-password-button" class="btn float_right">Change password</button>
+                                </div>
+                            </div>
+
+                            <!--CHANGE PASSWORD EDIT-->
+                            <div id="change-password-edit">
+                                <div class="row-fluid">
+                                    <i class="icon password"></i>
+                                    <input type="password" class="vifi-text-input" placeholder="Current password" />
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid">
+                                    <i class="icon confirm-password"></i>
+                                    <input type="password" class="vifi-text-input" placeholder="New password" />
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid">
+                                    <i class="icon confirm-password"></i>
+                                    <input type="password" class="vifi-text-input" placeholder="Confirm new password" />
+                                </div>                                
+                                <div class="row-fluid">
+                                    <button id="change-password-save-button" class="btn green float_right">Save</button>
+                                    <button id="change-password-cancel-button" class="btn float_right">Cancel</button>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="width-50 float_left">
+                    <div id="user-subscription-info" class="card float_left">
+                        <div class="card-heading"><span>My subscription</span></div>
+                        <div class="card-body">
+                            <!--Subscribe = NO-->
+                            <div id="subscribe-negative">
+                                <div class="row-fluid">
+                                    <span>You are not subscribed to any plans yet. Subscribe now to watch movies at lower price.</span>
+                                </div>
+                                <div class="row-fluid">
+                                    <a href="#subscription-plans"><button id="subscription-view-plans" class="btn green float_right">View plans</button></a>
+                                </div>
+                            </div>
+
+                            <!--Subscribe = YES-->
+                            <div id="subscribe-positive">
+                                <div class="row-fluid">
+                                    <span>Your subscription will expire on <b>October 11th 2014</b>.</span>
+                                </div>
+                                <div class="row-fluid">
+                                    <button id="subscription-extend" class="btn green float_right">Extend my subscription</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="user-pairtv-info" class="card float_left">
+                        <div class="card-heading"><span>TV-Pairing</span></div>
+                        <div class="card-body">
+                            <div class="row-fluid">
+                                <span>Please enter the pairing code from your television. <a href="#pair">What is this?</a></span>
+                            </div>
+                            <div class="row-fluid">
+                                <i class="icon sync"></i>
+                                <input type="text" id="pairing-code" class="vifi-text-input" placeholder="Pairing code"/>
+                            </div>
+                            <div class="row-fluid">
+                                <button class="btn float_right">Pair!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn facebook revoke float_right"><i class="icon facebook"></i>Revoke Facebook permission</button>
+                </div>
+            </div>
+            <div id="profilepage-mymovies-container" class="float_left">
+
+            </div>
+        </div>
+            {{/firstname}}
+
+        </script>
+         <script type="text/html" id="pairDeviceTemplate">
+            <div id="pairingpage-content" class="singlepage-content">
+                <div id="pairingpage-header" class="singlepage-header float_left">
+                    <div id="pairingpage-heading" class="singlepage-heading">Pair your account with your smart TV</div>
+                </div>
+                <div id="pairingpage-body" class="singlepage-body float_left">
+
+                    <div id="pairing-body-container" class=" singlepage-body-container float_left">
+                        <div class="width-50 float_left">
+                            <div id="user-pairtv" class="card float_left">
+                                <div class="card-heading"><span>TV-Pairing</span></div>
+                                <div class="card-body">
+                                    <div class="row-fluid">
+                                        <span>Please enter the pairing code from your television.</span>
+                                    </div>
+                                    <form id="pair-form">
+
+                                    <div class="row-fluid">
+                                        <i class="icon sync"></i>
+                                        <input type="text" id="pairing-code" class="vifi-text-input" placeholder="Pairing code"/>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button class="btn green float_right">Pair!</button>
+                                    </div>
+                                </form>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <div class="width-50 float_left">
+                            <div class="singlepage-text float_left">
+                                <ul class="float_left simple-list">
+                                    <li>Download the Vifi app from the Samsung Smart TV Galaxy Store</li>
+                                    <li>From the landing page, press arrow-up to go to the user panel</li>
+                                    <li>Click "Pair account" button, the app will generate a pairing code for you</li>
+                                    <li>Enter the code here. It may take a few moments for the pairing process to finish.</li>
+                                    <li>After the TV is paired with your account, you will be able to continue watching your movies and browse your library on the TV.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </script>
+
+                <script type="text/html" id="subscriptionPlansTemplate">
+            <div id="subscription-plans-content" class="singlepage-content">
+                <div id="subscribepage-header" class="singlepage-header float_left">
+                    <div id="subscribepage-heading" class="singlepage-heading">Unlimited access to all movies. Anytime. Anywhere.</div>
+                </div>
+                <div id="subscribepage-body" class="singlepage-body float_left">
+                    <div id="subscribepage-body-container" class=" singlepage-body-container float_left">
+                        <div id="subscription-benefits" class="float_left width-100">
+                            <ul id="subscription-benefit-list" class="float_left width-100">
+                                <li class="width-50"><i class="icon check-green"></i>Unlimited access to all movies and TV series</li>
+                                <li class="width-50"><i class="icon check-green"></i>Watch on smart phones, tablets, computers or TV</li>                                
+                                <li class="width-50"><i class="icon check-green"></i>Substitle in Estonian</li>
+                                <li class="width-50"><i class="icon check-green"></i>24/7 hotline support</li>
+                            </ul>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="week-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">7</p>
+                                        <p class="duration-text">days</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="subscription-price">
+                                        <p>3,90 €</p>
+                                        <p class="price-teaser">&nbsp;</p>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button class="btn buysubscription green full">Buy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="month-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">30</p>
+                                        <p class="duration-text">days</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="subscription-price">
+                                        <p>6,90 €</p>
+                                        <p class="price-teaser">Save 55%</p>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button class="btn buysubscription green full">Buy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="year-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">1</p>
+                                        <p class="duration-text">year</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="subscription-price">
+                                        <p>69,90 €</p>
+                                        <p class="price-teaser">Save 15%</p>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button class="btn buysubscription  green full">Buy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-25 float_left">
+                            <div id="code-plan" class="card subscription float_left">
+                                <div class="card-body">
+                                    <div class="subscription-duration">
+                                        <p class="duration-number">code</p>
+                                        <p class="duration-text">If you have a subscription code, please activate it here</p>
+                                    </div>
+                                    <div class="break"></div>
+                                    <div class="row-fluid">
+                                        <button class="btn blue activatesubscription full">Enter code</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                                                        
+                </div>
+
+            </div>
+        </script>

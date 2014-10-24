@@ -1,66 +1,5 @@
 App.Views.FB = {};
 
-App.Views.FB.Shell = Backbone.View.extend({
-
-    initialize: function () {
-        this.template = _.template(app.template.get('shell'));
-        this.render();
-    },
-
-    render: function () {
-        this.$el.html(this.template(this.model.toJSON()));
-        new App.Views.FB.Login({model: this.model, el: '#login'});
-        return this;
-    },
-
-    events: {
-        'mousedown li': 'mouseDown',
-        'mouseup li': 'mouseUp',
-        'click .btn-login': 'login'
-    },
-
-    mouseDown: function (e) {
-        $(e.currentTarget).addClass('active');
-    },
-
-    mouseUp: function () {
-        $('li').removeClass('active');
-    },
-
-    login: function () {
-        $(document).trigger('login');
-        return false;
-    }
-
-});
-
-App.Views.FB.Welcome = Backbone.View.extend({
-
-    initialize: function () {
-        var self = this;
-        this.template = _.template(app.template.get('welcome'));
-        this.model.on("change", this.showHideButtons, this);
-        this.render();
-    },
-
-    render: function () {
-        this.$el.html(this.template());
-        this.showHideButtons();
-        return this;
-    },
-
-    showHideButtons: function () {
-        if (this.model.get('id') !== '') {
-            $('.btn-login', this.el).addClass('hidden');
-            $('.btn-profile', this.el).removeClass('hidden');
-        } else {
-            $('.btn-login', this.el).removeClass('hidden');
-            $('.btn-profile', this.el).addClass('hidden');
-        }
-    }
-
-});
-
 App.Views.FB.Login = Backbone.View.extend({
 
     initialize: function () {
@@ -167,44 +106,6 @@ App.Views.FB.Friends = Backbone.View.extend({
 
 });
 
-App.Views.FB.Feed = Backbone.View.extend({
-
-    initialize: function () {
-        this.template = _.template(app.template.get('feed'));
-        this.model.on("change", this.render, this);
-        this.render();
-    },
-
-    render: function () {
-        this.$el.html(this.template(this.model.toJSON()));
-        return this;
-    },
-
-    events: {
-        'click .next': 'next',
-        'click .previous': 'previous'
-    },
-
-    next: function () {
-        this.fetch(this.model.get('paging').next);
-        return false;
-    },
-
-    previous: function () {
-        this.fetch(this.model.get('paging').previous);
-        return false;
-    },
-
-    fetch: function (url) {
-        var self = this;
-        $.ajax({url:url, dataType:"json"}).done(function (response) {
-            self.model.set(response);
-        }).fail(function (e) {
-                alert('Error fetching data');
-            });
-    }
-
-});
 
 App.Views.FB.Post = Backbone.View.extend({
 
@@ -293,16 +194,6 @@ App.Views.FB.Revoke = Backbone.View.extend({
         return this;
     },
 
-    events: {
-        "click .revoke": "revoke"
-    },
-
-    revoke: function () {
-        FB.api("/me/permissions", "delete", function () {
-            alert('Permissions revoked');
-            FB.getLoginStatus();
-        });
-        return false;
-    }
+   
 
 });

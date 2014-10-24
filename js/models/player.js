@@ -31,6 +31,8 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.content.on("content:ready", this.onContentReady, this);
         this.player.on("mediaplayer:pause", this.disableSubtitles, this);
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
+        this.on("mediaplayer:stop", this.stop, this);
+        this.on("mediaplayer:resume", this.play, this);
 
     },
 
@@ -56,7 +58,9 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     play: function() {
         this.player.play();
     },
-
+    stop: function() {
+        this.player.stop();
+    },
     onContentReady: function(content) {
 
         this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
@@ -680,6 +684,8 @@ App.Player.Subtitles = Backbone.Model.extend({
         this.ival = ival;
     },
     start: function() {
+        $("<div>").attr("id", this.subtitleElement).appendTo("#"+this.videoElement);
+        
         this.enabled = true;
         var subtitleElement = document.getElementById(this.subtitleElement);
         var videoId = this.videoElement;

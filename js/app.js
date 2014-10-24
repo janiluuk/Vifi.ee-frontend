@@ -27,7 +27,6 @@ App = {
         rtmp_url: "rtmp://media.vifi.ee/tv",
         hls_url: "http://media.vifi.ee:1935/vod",
         subtitles_url: "http://beta.vifi.ee/subs/",
-
         mp4_url: "http://gonzales.vifi.ee/zsf/"
     }
 }
@@ -40,46 +39,41 @@ App.Router = Backbone.Router.extend({
         '': 'homePage', //
         'search': 'search',
         'search/:searchStateHash': 'search',
-        'welcome': 'welcome',
         'film/:id': 'showFilm',
         'films/:id': 'showFilm',
         "me": "me",
-        "me/friends": "myfriends",
         "me/my-films": "filmcollection",
         "me/pair-device": "pairdevice",
         "subscription-plans": "subscription",
-        "person/:id": "person",
-        "account": "account",
-
-        "person/:id/friends": "friends",
-        "person/:id/mutualfriends": "mutualfriends",
-        "person/:id/feed": "feed",
         "revoke": "revoke",
-        "post": "post",
-        "postui": "postui"
     },
     initialize: function(options) {
         options = options || {};
         this.options = options;
-
-        // Caching the Welcome View
         this.on('route', this.onRoute, this);
-
-        // this.welcomeView = new App.Views.FB.Welcome({model: fb.user});
+        this.on('change:title', this.onChangeTitle, this);
     },
     onRoute: function(route) {
-        this.trigger("page:change", route);        
+        this.trigger("page:change", route);
+        app.sidemenu.closeSideBar();
+
         this.currentPage = route;
 
     },
-    search: function(searchStateHash) {
-        app.browserview.trigger("minimize");
+    onChangeTitle: function (title) 
+    {
+        $(document).attr('title', title + ' - Vifi.ee');
 
-        app.browserview.onSearchFieldChange();
+    },
+    search: function(searchStateHash) {
+        app.homepage.browserview.trigger("minimize");
+
+        app.homepage.browserview.onSearchFieldChange();
         var currentPage = this.currentPage;
         if (currentPage != "homePage" && currentPage != "search") {
             app.showBrowserPage();
         }
+        this.trigger("change:title", "Search results");
 
 
     },
@@ -87,6 +81,7 @@ App.Router = Backbone.Router.extend({
         var film = new App.Models.Film({
             id: id
         });
+        var _this = this;
 
         film.fetch().done(function() {
             var playButtonText = "Vaata filmi (" + film.get("price") + ")";
@@ -107,41 +102,19 @@ App.Router = Backbone.Router.extend({
                     app.movieview.render();
                 }
             }
-
             app.showMoviePage();
+            _this.trigger("change:title", film.get("title"));
+
         });
+
     },
 
     homePage: function() {
-        app.browserview.trigger("maximize");
+        app.homepage.browserview.trigger("maximize");
         app.showBrowserPage();
+        this.trigger("change:title", "Home");
     },
   
-
-    welcome: function() {
-        // $('#contentpage').html(app.welcomeview.el);
-    },
-
-    person: function(id) {
-
-        var self = this;
-
-        try {
-            FB.api("/" + id, function(response) {
-                if (response.error) {
-                    self.showErrorPage();
-                } else {
-                    $('#contentpage').html(new App.Views.FB.Person({
-                        model: new App.User.FBPerson(response)
-                    }).el);
-                }
-            });
-        } catch (e) {
-            this.showErrorPage();
-        }
-        app.showContentPage();
-
-    },
     me: function() {
 
         var profile = app.session.get("profile");
@@ -160,6 +133,8 @@ App.Router = Backbone.Router.extend({
         var view = new App.Views.SubscriptionView();
         view.render();
         app.showContentPage("subscription");
+        this.trigger("change:title", "Subscription");
+
 
     },
     filmcollection: function() {
@@ -174,6 +149,7 @@ App.Router = Backbone.Router.extend({
         });
         $('#contentpage').html(this.views.usercollection.render().$el.html());
 
+        this.trigger("change:title", "My films");
 
         app.showContentPage("myfilms");
 
@@ -186,92 +162,12 @@ App.Router = Backbone.Router.extend({
             model: profile
         });
         $('#contentpage').html(view.render().$el.html());
+        this.trigger("change:title", "Pair Device");
 
         app.showContentPage("pairtv");
 
     },
-    friends: function(id) {
-        var self = this;
-
-        try {
-            FB.api("/" + id + "/friends?limit=20", function(response) {
-                if (response.error) {
-                    self.showErrorPage();
-                } else {
-                    $('#contentpage').html(new App.Views.FB.Friends({
-                        model: new Backbone.Model(response)
-                    }).el);
-                }
-            });
-        } catch (e) {
-            this.showErrorPage();
-        }
-
-        app.showContentPage();
-
-    },
-
-    mutualfriends: function(id) {
-        var self = this;
-        $('#contentpage').html('<div class="breadcrumb api">FB.api("/' + id + '/mutualfriends");</div>');
-        try {
-            FB.api("/" + id + "/mutualfriends?limit=20", function(response) {
-                if (response.error) {
-                    self.showErrorPage();
-                } else {
-                    $('#contentpage').append(new App.Views.FB.Friends({
-                        model: new Backbone.Model(response)
-                    }).el);
-                }
-            });
-        } catch (e) {
-            this.showErrorPage();
-        }
-        app.showContentPage();
-
-    },
-
-    feed: function(id) {
-        var self = this;
-        $('#contentpage').html('<div class="breadcrumb api">FB.api("/' + id + '/feed");</div>');
-        try {
-            FB.api("/" + id + "/feed?limit=20", function(response) {
-                if (response.error) {
-                    self.showErrorPage();
-                } else {
-                    $('#contentpage').append(new App.Views.FB.Feed({
-                        model: new Backbone.Model(response)
-                    }).el);
-                }
-            });
-        } catch (e) {
-            this.showErrorPage();
-        }
-        app.showContentPage();
-
-    },
-
-    post: function() {
-        $('#contentpage').html('<div class="breadcrumb api">FB.api("/me/feed", "post", data);</div>');
-        $('#contentpage').append(new App.Views.FB.Post().el);
-        app.showContentPage();
-
-    },
-
-    postui: function() {
-        $('#contentpage').html('<div class="breadcrumb api">FB.ui();</div>');
-        $('#contentpage').append(new App.Views.FB.PostUI().el);
-        app.showContentPage();
-
-    },
-
-    revoke: function() {
-        $('#contentpage').html('<div class="breadcrumb api">FB.api("/me/permissions", "delete");</div>');
-        $('#contentpage').append(new App.Views.FB.Revoke().el);
-        app.showContentPage();
-
-    },
-
+   
     showErrorPage: function() {
         $('#contentpage').append(new App.Views.FB.Error().el);
     }
