@@ -342,7 +342,7 @@ App.Views.DialogView = Backbone.View.extend({
             beforeOpen: this.beforeOpen,
             afterOpen: this.afterOpen
           },
-          
+          showCloseBtn: false,
           closeBtnInside: false
 
         });
