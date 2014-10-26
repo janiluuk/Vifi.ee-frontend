@@ -31,6 +31,7 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.topmenu = new App.Views.TopMenu({model: this.user});
         this.homepage = new App.Views.HomePage(options);
         this.render();
+        App.Platforms.init()
         this.router = new App.Router();
     },
     render: function() {
@@ -270,4 +271,86 @@ App.Views.SideMenu = Backbone.View.extend({
         return this;  
     }
 
+});
+
+App.Views.CarouselView = Backbone.View.extend({
+    swiperState: false,
+    changeTab: function(e) {
+        e.preventDefault();
+        var attr = $(e.currentTarget).attr("data-rel");
+        var el = $("#"+attr);
+        $(e.currentTarget).siblings().removeClass("active");
+        $(el).siblings().removeClass("active").fadeOut();
+        $(el).fadeIn().addClass("active");
+        return false;
+    },
+    startCarousel: function(initialSlide) {
+        var _this = this;
+        initialSlide = initialSlide || 0;
+
+        this.swiper = new Swiper(this.options.swiperEl,{
+        slidesPerView:'auto',
+        mode:'horizontal',
+        loop: false,
+        centeredSlides: true,
+        cssWidthAndHeight: true,
+        initialSlide: initialSlide,
+         onTouchEnd : function(e) {
+                var idx = e.activeIndex;
+                $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child("+(idx+1)+")").click().siblings().removeClass("active");
+
+        },
+        onSwiperCreated : function() { 
+            if (_this.options.swipeTo)
+                $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child("+_this.options.swipeTo+")").click();
+        },
+      }); 
+
+        this.$('.swiper-slide').on('click', this.changeTab);
+
+      $(this.options.swiperEl + " .swiper-slide").each(function(item) { 
+            $(this).click(function(e) {
+                e.preventDefault();
+                _this.swiper.swipeTo(item);
+            })  
+      });
+
+      return this.swiper;
+    }
+});
+App.Views.DialogView = Backbone.View.extend({ 
+
+    initialize: function(options) {
+
+    },
+    onClose: function() {
+       $.magnificPopup.close(); 
+
+    },
+
+    openDialog: function(e) {
+        if (e) e.preventDefault();
+
+        $.magnificPopup.open({
+          items: {
+              src: this.$el.html(),
+              type: 'inline',
+          },
+          prependTo: document.getElementById("dialog"),
+          removalDelay: 500, //delay removal by X to allow out-animation
+          callbacks: {
+            beforeOpen: this.beforeOpen,
+            afterOpen: this.afterOpen
+          },
+          
+          closeBtnInside: false
+
+        });
+        return false;
+    },
+    afterOpen: function(e) {},
+    beforeOpen: function(e) {
+    },
+
+    
 });

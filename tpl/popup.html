@@ -1,6 +1,7 @@
 
-        <script type="text/html" id="dialogTemplate">
-        <div class="white-popup vifi-popup image-and-content-popup">
+        <script type="text/html" id="purchaseDialogTemplate">
+        <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
+     <button title="Close (Esc)" type="button" class="mfp-close">×</button>
 
             <div class="col-img" style="background-image: url('{{ poster_url }}');">
             </div>
@@ -52,21 +53,20 @@
                             <p>Kood</p>
                         </a></li>
                     </ul>
-                    <div id="payment-email">
+                    <form id="single-purchase">
+                    <input type="hidden" name="selectedMethod" id="selectedMethod"/>
+                    <div class="payment-method-data" id="payment-email" style="display:none">
                         <h3>Email</h3>
                         <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
-                        <form id="single-email-purchase">
-                        <input type="text" id="email" class="vifi-text-input" placeholder="Sinu e-posti aadress"></input>
-                        </form>
-                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
+                        <input type="text" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
+                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
                     </div>
-                    <div id="payment-code">
+                    <div class="payment-method-data" id="payment-code" style="display:none">
                         <h3>Sisesta filmi kood</h3>
-                        <form id="single-code-purchase">
-                        <input type="text" id="code" class="vifi-text-input" placeholder="Sisesta kood"></input>
-                        </form>
+                        <input type="text" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
                     </div>
                     <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                    </form>
                 </div>
             </div>
 
@@ -74,7 +74,9 @@
 
         </script>
  <script type="text/html" id="loginDialogTemplate">
+
         <div id="login-popup" class="white-popup vifi-popup multiple-col-popup">
+           <button title="Close (Esc)" type="button" class="mfp-close">×</button>
             <div id="popup-login-register-form" class="col-50">
                 <form id="popup-user-login">
                     <h3>Logi Sisse</h3>                            
@@ -130,7 +132,7 @@
                 <h3>Continue without an account</h3>
                 <p>You can purchase as a guest. You will just need to indicate the essential details to place your order.</p>
                 <div class="row-fluid">
-                    <button class="btn float_right">Continue</button>
+                    <button id="continue-unregistered" class="btn float_right">Continue</button>
                 </div>
 
             </div>
@@ -190,7 +192,7 @@
                             <p>Kood</p>
                         </a></li>
                     </ul>
-                    <div id="payment-email">
+                    <div class="payment-method-data" id="payment-email">
                         <h3>Email</h3>
                         <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
                         <form id="single-email-purchase">
@@ -198,7 +200,7 @@
                         </form>
                         <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
                     </div>
-                    <div id="payment-code">
+                    <div class="payment-method-data" id="payment-code">
                         <h3>Sisesta filmi kood</h3>
                         <form id="single-code-purchase">
                         <input type="text" id="code" class="vifi-text-input" placeholder="Sisesta kood"></input>

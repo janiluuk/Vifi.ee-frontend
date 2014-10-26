@@ -13,12 +13,14 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
         this.listenTo(this.model, 'change', this.render);
         _.bindAll(this, 'playMovie');
-        this.enableComments();
+        if (typeof(DISQUS) == "undefined") { 
 
+            this.enableComments();
+        }
     },
 
     enableComments: function() {
-
+        window.disqus_title = this.model.get("title");
         window.disqus_shortname = 'vifi'; // Required - Replace example with your forum shortname
         /* * * DON'T EDIT BELOW THIS LINE * * */
         (function() {
@@ -31,18 +33,15 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
     },
     resetComments: function() {
-        window.disqus_identifier = this.model.get("id");
+
+        window.disqus_identifier = "aaaaa"+this.model.get("seo_friendly_url");
         window.disqus_title = this.model.get("title");
         window.disqus_url = window.location.href;
-        if (typeof(DISQUS) != "undefined")
-            DISQUS.reset({
-                reload: true,
-                config: function() {
-                    this.page.identifier = disqus_identifier;
-                    this.page.url = window.location.href;
+        if (typeof(DISQUS) != "undefined") { 
 
-                }
-            });
+            reset("aaaaa"+this.model.get("seo_friendly_url"), window.location.href+'#!', window.location.href+'#!');
+
+        }
     },
     render: function() {
 
@@ -54,6 +53,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             this.resetComments();
 
         }.bind(this), 100);
+
     },
     playTrailer: function(e) {
 

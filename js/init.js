@@ -14,11 +14,6 @@ window.app = {};
         }
 
         app.template = new App.Utils.TemplateLoader();
-
-        window.$log = function(log) { console.log(log); };
-
-        App.Platforms.init();
-        
         var genres = new App.Films.GenreCollection(data.genres);
         var usercollection = new App.Collections.UserCollection();
 
@@ -36,26 +31,27 @@ window.app = {};
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Most recent', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Most watched'}]);
         var eventhandler = _.extend({}, Backbone.Events);
-        App.Utils.include(["popup", "menu", "player","filmitem", "profile", "homepage"], function() { 
+        App.Utils.include(["popup", "menu", "player","filmitem", "profile", "page"], function() { 
 
-            app.template.load(['error','film'], function () {
+            app.template.load(['film'], function () {
 
                 window.app = new App.Views.BaseAppView({session: session, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
                 initFB();
+                App.Platforms.init();
 
 
             }); 
         });
     }
-
-
-
 $(document).ready(function() {
 
-	$.getJSON("http://backend.vifi.ee/api/search?limit=500&api_key=12345&jsoncallback=?", initApp, "jsonp")
+	$.getJSON(App.Settings.api_url+"search?limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?", initApp, "jsonp")
 
 });
+
+
+/* Facebook login */
 
 
 function handleSessionResponse(response) {
@@ -113,21 +109,32 @@ function initFB() {
         }
  
     });
-
     $(document).on('logout', function () {
         if (FB.getAccessToken() != null) {
             FB.logout();
         }
         app.session.logout();
-        
         return false;
     });
     
     $(document).on('login', function () {
         app.session.enable();
-
         FB.login(function(response) {
         }, {scope: 'email,publish_actions'});
         return false;
     });
 }
+
+    /* * * Disqus Reset Function * * */
+    var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
+        
+        DISQUS.reset({
+            reload: true,
+            config: function () {
+                this.page.identifier = newIdentifier;
+                this.page.url = newUrl;
+                this.page.title = newTitle;
+                this.language = newLanguage;
+            }
+        });
+    };

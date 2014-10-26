@@ -16,7 +16,40 @@ App = {
     Films: {},
     Player: {},
     User: {},
-    Event: {},
+    Event: {},   changeTab: function(e) {
+        e.preventDefault();
+
+        var attr = $(e.currentTarget).attr("data-rel");
+        var el = $("#"+attr);
+
+        $(el).siblings().removeClass("active").fadeOut();
+        $(el).fadeIn().addClass("active");
+    },
+    startCarousel: function() {
+
+      window.profileSwiper = new Swiper('#profile-tabbar-swiper-container',{
+        slidesPerView:'auto',
+        mode:'horizontal',
+        loop: false,
+        centeredSlides: true,
+        cssWidthAndHeight: true,
+
+         onTouchEnd : function(e) {
+                var idx = e.activeIndex;
+                $("#profile-tabbar-swiper-container .swiper-wrapper .swiper-slide:nth-child("+(idx+1)+")").click();
+        } 
+      }); 
+
+      $("#profile-tabbar-swiper-container .swiper-slide").each(function(item) { 
+            $(this).click(function(e) {
+                e.preventDefault();
+
+                profileSwiper.swipeTo(item);
+            })  
+      });
+
+
+    },
     Router: {},
     Settings: {
         // properties   
@@ -117,13 +150,14 @@ App.Router = Backbone.Router.extend({
   
     me: function() {
 
-        var profile = app.session.get("profile");
         if (!this.views.profile)
             this.views.profile = new App.Views.ProfileView({
-                model: profile
+                swiperEl: '#profile-tabbar-swiper-container',
+                model: app.session.get("profile"),
+                swipeTo: 1
             });
         else
-            this.views.profile.model = profile;
+            this.views.profile.model = app.session.get("profile");
         this.views.profile.render();
         app.showContentPage("me");
 

@@ -150,12 +150,9 @@ App.User.Session = Backbone.Model.extend({
     },
 
     initialize: function() {
-
-
         var profile = new App.User.Profile();
         this.set("profile", profile);
         this.parseCookie();
-
         this.on('poll:enable', this.enable, this);
         this.on('poll:disable', this.disable, this);
         this.on('user:login', this.onUserAuthenticate, this);
@@ -180,7 +177,7 @@ App.User.Session = Backbone.Model.extend({
             var sessionId = vars[2];
 
             if (user_id != "" && hash != "" && sessionId != "") {
-                console.log("Authenticating with cookie");
+                $log("Authenticating with cookie");
                 this.set({
                     user_id: user_id,
                     hash: hash,
@@ -376,7 +373,6 @@ App.User.Session = Backbone.Model.extend({
                         this.set("profile", profile);
                         this.trigger("user:login", profile);
                         this.writeCookie();
-
                         $log("Logging in with user " + profile.get("email"));
                         return true;
                     }

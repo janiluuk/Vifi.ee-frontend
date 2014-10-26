@@ -24,13 +24,13 @@ App.Views.SubscriptionView = Backbone.View.extend({
       
     },
 });
-App.Views.ProfileView = Backbone.View.extend({ 
+App.Views.ProfileView =  App.Views.CarouselView.extend({ 
     model: App.User.Profile,
     el: '#contentpage',
     events: {
         'click #edit-profile-button, #edit-profile-cancel-button': 'editProfile',
         'click #change-password-button, #change-password-cancel-button': 'changePassword',
-        'click #profile-tabbar-swiper-container .swiper-slide' : 'changeTab',
+
         "click .revoke": "revoke"
     },
     initialize: function(options) {
@@ -38,9 +38,10 @@ App.Views.ProfileView = Backbone.View.extend({
       this.collection = app.usercollection;
 
       this.listenTo(this.model, "change", this.render, this);
-      this.listenTo(this.collection, "change", this.render, this);
-
+      this.listenTo(this.collection, "change", this.renderCollection, this);
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
+
+      
 
     },
     editProfile: function(e) {
@@ -57,40 +58,6 @@ App.Views.ProfileView = Backbone.View.extend({
 
         return false;
     },
-    changeTab: function(e) {
-        e.preventDefault();
-
-        var attr = $(e.currentTarget).attr("data-rel");
-        var el = $("#"+attr);
-
-        $(el).siblings().removeClass("active").fadeOut();
-        $(el).fadeIn().addClass("active");
-    },
-    startCarousel: function() {
-
-      window.profileSwiper = new Swiper('#profile-tabbar-swiper-container',{
-        slidesPerView:'auto',
-        mode:'horizontal',
-        loop: false,
-        centeredSlides: true,
-        cssWidthAndHeight: true,
-
-         onTouchEnd : function(e) {
-                var idx = e.activeIndex;
-                $("#profile-tabbar-swiper-container .swiper-wrapper .swiper-slide:nth-child("+(idx+1)+")").click();
-        } 
-      }); 
-
-      $("#profile-tabbar-swiper-container .swiper-slide").each(function(item) { 
-            $(this).click(function(e) {
-                e.preventDefault();
-
-                profileSwiper.swipeTo(item);
-            })  
-      });
-
-
-    },
 
     revoke: function () {
         FB.api("/me/permissions", "delete", function () {
@@ -99,19 +66,21 @@ App.Views.ProfileView = Backbone.View.extend({
         });
         return false;
     },
+    renderCollection: function() { 
+      this.collectionview.render().$el.appendTo("#profilepage-mymovies-container");
+
+    },
 
     render: function() { 
 
       this.$el.html(ich.profileTemplate(this.model.toJSON()));
       this.collectionview.render().$el.appendTo("#profilepage-mymovies-container");
-        setTimeout(function() { 
-                this.startCarousel(); 
-  
-            }.bind(this), 100);
-     
+      setTimeout(function() { 
+      var swiper = this.startCarousel(this.options.swipeTo);
+        }.bind(this),100);
       return this;
       
-    },
+    }
 
 });
 App.Views.UserPairView = Backbone.View.extend({ 

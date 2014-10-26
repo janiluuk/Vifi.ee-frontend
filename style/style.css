@@ -1,529 +1,6 @@
 html {
     font-size: 13px;
 }
-
-@media (max-width: 3840px) {
-    html {
-        font-size: 13px;
-    }
-}
-
-@media only screen and (max-width: 1280px) {
-    .main-wrapper {
-        max-width: 960px !important;
-    }
-
-    #header-page-header.feature-wrapper {
-        height: 25em !important;
-    }
-
-    .item {
-        width: 18% !important;    
-        margin: 1% !important;
-    }
-
-    .film-title {
-        font-size: 2.8em !important;
-        margin-top: 0.2em !important;
-    }
-
-    .film-description {
-        font-size: 1.3em !important;
-        line-height: 1.2em !important;
-        margin: 0.4em !important;
-    }
-
-    #subscribepage-heading, #pairingpage-heading {
-        font-size: 2em !important;
-        margin: 70px 50px !important;
-    }
-
-    #subscribepage-header {
-        background-position: 295px 55px !important;
-        height: 315px !important;
-        background-size: 650px !important;
-    }
-
-    #pairingpage-header {
-        background-position: 440px 30px !important;
-        height: 296px !important;
-        background-size: 500px !important;
-    }
-
-    #subtitles {
-        font-size: 2.3em !important;
-    }
-}
-
-@media only screen and (max-width: 1100px) {
-    #featured-swiper-container, #gallery-swiper-container {
-        height: 420px !important;
-    }
-}
-
-@media only screen and (max-width: 920px), only screen and (max-device-width: 920px), only screen and (min-resolution: 192dppx) {
-    .main-wrapper {
-        max-width: 100% !important;
-    }
-
-    #featured-swiper-container, #gallery-swiper-container {
-        height: 364px !important;
-    }
-
-    input#main-search-box {
-        width: 80% !important;
-    }
-
-
-    .selection {
-        width: 24% !important;
-    }
-
-    .item {
-        width: 22% !important;    
-        margin: 1.5% !important;
-    }
-
-    .featured-item-title {
-        font-size: 2em !important;
-    }
-
-    .featured-item-description {
-        font-size: 1.2em !important;
-        line-height: 1.4em !important;
-    }
-
-    .featured-item-description {
-        width: 75% !important;
-    }
-
-    .btn.big {
-        padding: 0.9em 1.2em 0.8em 1.2em !important;
-    }
-
-    .film-poster {
-        width: 28% !important;
-    }
-
-    .film-info, .film-summary {
-        width: 68% !important;
-    }
-
-    .film-summary .text-area {
-        font-size: 1.2em !important;
-        line-height: 1.7em !important;
-        padding-right: 0.8em !important;
-    }
-
-    .search-result-heading {
-        font-size: 2.5em !important;
-    }
-
-    #subscribepage-header {
-        background-position: 295px 30px !important;
-        height: 290px !important;
-    }
-
-    #pairingpage-header {
-        background-position: 390px 30px !important;
-        height: 270px !important;
-        background-size: 450px !important;
-    }
-
-    ul#subscription-benefit-list li {
-        font-size: 1.2em !important;
-    }
-
-    #subtitles {
-        font-size: 2em !important;
-    }
-}
-
-@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (min-resolution: 192dppx) {
-    html {
-        font-size: 13px;
-    }
-
-    .width-50 {
-        width: 100% !important;
-    }
-
-    .width-25 {
-        width: 50% !important;
-    }
-
-    .col-50 {
-        width: 100% !important;
-    }
-
-    .card {
-        margin: 0 0 1em 0 !important;
-    }
-
-    #toolbar-left-group {
-        float:left !important;
-        width: auto !important;
-    }
-
-    #toolbar-right-group {
-        display: block !important;
-    }
-
-    #main-vifi-logo {
-        position: absolute !important;
-        margin: auto !important;
-        left: 0;
-        right: 0;
-    }
-
-    #toolbar-search-group {
-        display: none;
-        float: left;
-        width: 100% !important;
-        height: 3.35em;
-        position:absolute;
-        top: 3.85em;
-        background-color: #322E54;
-    }
-
-    #toolbar-search-group:after {
-        visibility: hidden !important;
-    }
-
-    input#main-search-box {
-        position: absolute !important;
-        width: 90% !important;
-        margin: 0.3em auto !important;        
-        background-image: url('img/search-white-80.png');
-        background-repeat: no-repeat;
-        left: 0;
-        right: 0;
-    }
-
-    #content-body {
-        padding: 1% 1% 5em 1% !important;
-    }
-
-    span.arrowup {
-        height: 30px !important;
-        width: 30px !important;
-        background-size: 119px !important;
-        background-position: -45px -32px !important;
-    }
-
-    #featured-swiper-container, #gallery-swiper-container {
-        height: 390px !important;
-    }
-
-    .pagination, .pagination-1 {
-        padding: 0.8em 0 !important;
-    }
-
-    .swiper-pagination-switch {
-        width: 0.5em;
-        height: 0.5em;
-    }
-    
-    .swiper-nav .swiper-slide {
-        padding: 0 1.5em !important;
-    }
-
-    .selection {
-        width: 49% !important;
-    }
-
-    .selection-wrapper {
-        padding: 0 1% 1% 1%;
-        text-align: left !important;
-    }
-
-    .film-list .item, .user-filmcollection-list .item {
-        width: 98% !important;
-        margin: 1% !important;
-    }
-
-    ul#cast-content-body-list .item {
-        width: 44% !important;
-        margin: 3% !important;
-    }
-
-    ul#cast-content-body-list .item-image {
-        height: 15em !important;
-    }
-
-    .film-list .item-image, .user-filmcollection-list .item-image {
-        width: 30% !important;
-        height: 8em !important;
-    }
-
-    .film-list .item-info, .user-filmcollection-list .item-info {
-        width: 70% !important;
-    }
-
-    .featured-item-background {
-        background-position: center;
-    }
-
-    a.arrow-left, a.arrow-right {
-        opacity: 0 !important;
-        filter: alpha(opacity=0) !important;
-    }
-
-    .feature-item-info {
-        width: 96% !important;
-        padding: 2em 2% 3.6em 2% !important;
-    }
-
-    .featured-item-title {
-        font-size: 1.8em !important;
-    }
-
-    .featured-item-description {
-        width: 90% !important;
-    }
-
-    .featured-item-description {
-        font-size: 1.1em !important;
-        line-height: 1.4em !important;
-    }
-
-    #gallery-swiper-container {
-        text-align: left !important;
-    }
-
-    #gallery-swiper-container ul {
-        height: auto !important;
-        top: auto !important;
-        right: auto !important;
-        bottom: 3em !important;
-        left: 1.5em !important;
-        margin: 0 !important;
-    }
-
-    #gallery-swiper-container ul li {
-        display: list-item !important;
-        margin-bottom: 0.5em !important;
-    }
-
-    .swiper-nav {
-        height: 3.5em !important;
-    }
-
-    .swiper-nav .swiper-slide {
-        height: 3em !important;
-        line-height: 3em !important;
-    }
-
-    #front-tabbar-swiper-container.swiper-nav .swiper-slide-active:after {
-        border-bottom-color: #2b2b51 !important;
-    }
-
-    .item-info-title a {
-        font-size: 1.4em !important;
-    }
-
-    .item-info-description {
-        font-size: 1.1em !important;
-    }
-
-    .film-title {
-        font-size: 2em !important;
-        margin-top: 0.4em !important;
-    }
-
-    .film-description {
-        font-size: 1.2em !important;
-        line-height: 1.2em !important;
-        margin: 0.6em 0 0 0 !important;
-    }
-
-    .film-rating {
-        font-size: 0.9em !important;
-    }
-
-    .film-summary {
-        width: 96% !important;
-    }
-
-    .film-summary h3 {
-        padding: 0 0.5em 0.4em 0.5em !important;
-    }
-
-    .film-summary .film-language h3 {
-        padding: 0 0 0.4em 0 !important;
-    }
-
-    .film-summary .text-area {
-        font-size: 1.2em !important;
-        line-height: 1.7em !important;
-        padding: 0 0.5em !important;
-    }
-
-    .search-result-heading {
-        font-size: 2em !important;
-        width: 90% !important;
-        margin: 1em 5% !important;
-    }
-
-    .film-rating table {
-        padding: 0.1em 0 !important;
-    }
-
-    #disqus_thread {
-        width: 98% !important;
-        padding: 2em 1% 0 1% !important;
-    }
-
-    .selection-container {
-        padding: 1% 1% 3% 1% !important;
-    }
-
-    #video-container-footer ul {
-        margin: 1em 1em 0 1em !important;
-    }
-
-    #video-container-footer ul.options {
-        margin: 0 !important;
-    }
-
-    #video-container-footer ul li {
-        margin-bottom: 1em;
-    }
-
-    #video-container-heading {
-        padding: 2% !important;
-    }
-
-    .video-container-footer ul li {
-        margin: 1%;
-    }
-
-    .video-selector {
-        width: 50% !important;
-        padding: 1%;
-    }
-
-    .image-and-content-popup .col-img {
-        display: none !important;
-    }
-
-    .image-and-content-popup .col-content, .col-50 {
-        width: 100% !important;
-        margin-left: 0 !important;
-    }
-
-    #subscribepage-heading, #pairingpage-heading {
-        font-size: 2em !important;
-        width: 80% !important;
-        margin: 10% !important;
-    }
-
-    #subscribepage-header {
-        background-position: -10px 160px !important;
-        height: 342px !important;
-        background-size: 455px !important;
-    }
-
-    #pairingpage-header {
-        background-position: 10px 140px !important;
-        height: 322px !important;
-        background-size: 340px !important;
-    }
-
-    .subscription-duration {
-        padding: 1em 0 !important;
-    }
-
-    p.duration-number {
-        font-size: 3em !important;
-        letter-spacing: -2px !important;
-    }
-
-    p.duration-text {
-        font-size: 1.2em !important;
-        letter-spacing: 0 !important;
-    }
-
-    #subscription-benefits {
-        padding: 1em !important;
-    }
-
-    #subtitles {
-        font-size: 1.2em !important;
-        bottom: 2.2em !important;
-    }
-
-}
-
-@media only screen and (max-height: 768px) {
-    #featured-swiper-container, #gallery-swiper-container, #player-container.flowplayer, .video-container-body iframe {
-        height: 390px !important;
-    }
-
-    .selection-container {
-        padding: 0.5% !important;
-    }
-
-    .swiper-nav {
-        height: 3.5em !important;
-    }
-
-    .swiper-nav .swiper-slide {
-        height: 3.2em !important;
-        line-height: 3.2em !important;
-    }
-
-    .swiper-nav .swiper-slide-active:after {
-        bottom: 3px !important;
-    }
-
-    .item-image {
-        height: 20em !important;
-    }
-
-    #subtitles {
-        font-size: 2em !important;
-    }
-}
-
-@media only screen and (max-height: 600px) {
-    #featured-swiper-container, #gallery-swiper-container, #player-container.flowplayer, .video-container-body iframe {
-        height: 350px !important;
-    }
-
-    p.duration-number {
-        font-size: 3.5em !important;
-        letter-spacing: -2px !important;
-    }
-
-}
-
-@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (min-resolution: 192dppx) {
-    #player-container.flowplayer, .video-container-body iframe {
-        height: auto !important;
-    }
-
-    #featured-swiper-container, #gallery-swiper-container {
-        height: 390px !important;
-    }
-
-    .subscription-duration {
-        padding: 1em 0 !important;
-    }
-
-    #subtitles {
-        font-size: 1.2em !important;
-        bottom: 2.2em !important;
-    }
-
-}
-
-@media only screen and (max-height: 480px) {
-    #featured-swiper-container, #gallery-swiper-container {
-        height: 320px !important;
-    }
-}
-
 /* MAIN STYLING */
 
 html, body {
@@ -759,8 +236,15 @@ span.label {
     display: table;
 }
 
+@media only screen and (min-width: 1280px) {
+
+    .white-popup.vifi-popup.image-and-content-popup, .white-popup.multiple-col-popup {
+        min-width: 640px;
+    }
+}
 .white-popup.vifi-popup.image-and-content-popup, .white-popup.multiple-col-popup  {
     max-width: 800px;
+
 }
 
 .white-popup.vifi-popup p {
@@ -1147,12 +631,8 @@ span.arrowup {
 
 /* MAIN TOOLBAR */
 
-#content-container {
-    padding: 3.85em 0 0 0;
-}
-
-#side-menu-container #side-menu {
-    margin: 3.85em 0 0 0;
+#content-container, #side-menu-container #side-menu {
+    padding: 45px 0 0 0;
 }
 
 #contentpage li {
@@ -1178,15 +658,15 @@ span.arrowup {
 
 #top-main-toolbar {
     width: 100%;
-    height: 3.85em;
+    height: 45px;
     z-index: 3;
     position:fixed;
     background-color: #322E54;
 }
 
 #menu-dragger {
-    height: 3.85em;
-    width: 3.85em;
+    height: 45px;
+    width: 45px;
     cursor: pointer;
 }
 
@@ -1196,21 +676,22 @@ span.arrowup {
 }
 
 .search-icon {
-    height: 3.85em;
-    width: 3.85em;
+    height: 45px;
+    width: 45px;
     background-image: url('img/search-icon.png');
+    background-size: 90px;
 }
 
 .menu-icon:hover, .snapjs-left .menu-icon, .search-icon:hover{
     cursor: pointer;
-    background-position: -3.85em 0;
+    background-position: -45px 0;
 }
 
 #main-vifi-logo {
     width: 6em;
-    height: 3.85em;
+    height: 45px;
     background: url('img/vifi_logo.png') no-repeat 1em center;
-    background-size: 4em;
+    background-size: 3.5em;
     padding: 0.5em 0;
     box-sizing: border-box;
     -webkit-transition: background-color.2s ease-in-out;
@@ -1235,14 +716,15 @@ span.arrowup {
 #toolbar-right-group {
     display: none;
     float: right;
-    width: 3.85em;
+    width: 45px;
 }
 
 input#main-search-box {
     width: 60%;
-    height: 2.4em;
-    line-height: 2.4em;
-    margin: 0.55em 0;
+    height: 33px;
+    box-sizing: border-box;
+    line-height: 33px;
+    margin: 6px 0;
     font-size: 1.1em;
     text-indent: 0.5em;
     border-radius: 0.4em;   
@@ -1516,6 +998,7 @@ a.arrow-right {
     margin: 0 auto;
     position: relative;
     transition: width 0.2s;
+    display:none;
     -webkit-transition: width 0.2s;
 }
 
@@ -1720,7 +1203,7 @@ filter: alpha(opacity=90);
 }
 #homepage {
 
-    visibility:visible;
+    visibility:hidden;
 }
 
 #content-body {
@@ -1886,8 +1369,8 @@ ul#cast-content-body-list li .item-image {
     position: relative;
 }
 
-#gallery-swiper-container ul {
-    z-index: 1;
+#gallery-swiper-container ul#movie-interactive-button-row {
+    z-index: 9;
     list-style-type: none;
     position: absolute;
     width: 100%;
@@ -1900,7 +1383,7 @@ ul#cast-content-body-list li .item-image {
     padding: 0;
 }
 
-#gallery-swiper-container ul li {
+#gallery-swiper-container ul#movie-interactive-button-row li {
     display: inline-block;
 }
 
@@ -2255,3 +1738,561 @@ ul#subscription-benefit-list li .icon {
     list-style-type: disc;
 }
 
+@media (max-width: 3840px) {
+    html {
+        font-size: 13px;
+    }
+}
+
+@media only screen and (max-width: 1600px) {
+
+    #content-container {
+        background: url('img/blur_background_1600.jpg') no-repeat center center fixed;
+    }
+
+}
+
+@media only screen and (max-width: 1280px) {
+
+    #content-container {
+        background: url('img/blur_background_1280.jpg') no-repeat center center fixed;
+    }
+
+    .main-wrapper {
+        max-width: 960px ;
+    }
+
+    #header-page-header.feature-wrapper {
+        height: 25em ;
+    }
+
+    .item {
+        width: 18% ;    
+        margin: 1% ;
+    }
+
+    .film-title {
+        font-size: 2.8em ;
+        margin-top: 0.2em ;
+    }
+
+    .film-description {
+        font-size: 1.3em ;
+        line-height: 1.2em ;
+        margin: 0.4em ;
+    }
+
+    #subscribepage-heading, #pairingpage-heading {
+        font-size: 2em ;
+        margin: 70px 50px ;
+    }
+
+    #subscribepage-header {
+        background-position: 295px 55px ;
+        height: 315px ;
+        background-size: 650px ;
+    }
+
+    #pairingpage-header {
+        background-position: 440px 30px ;
+        height: 296px ;
+        background-size: 500px ;
+    }
+
+    #subtitles {
+        font-size: 2.3em ;
+    }
+}
+
+@media only screen and (max-width: 1100px) {
+    #featured-swiper-container, #gallery-swiper-container {
+        height: 420px ;
+    }
+}
+
+@media only screen and (max-width: 1080px) {
+
+    #content-container {
+        background: url('img/blur_background_1080.jpg') no-repeat center center fixed;
+    }
+}
+
+@media only screen and (max-width: 920px), only screen and (max-device-width: 920px), only screen and (min-resolution: 192dppx) {
+
+    #content-container {
+        background: url('img/blur_background_960.jpg') no-repeat center center fixed;
+    }
+
+    .main-wrapper {
+        max-width: 100% ;
+    }
+
+    #featured-swiper-container, #gallery-swiper-container {
+        height: 364px ;
+    }
+
+    input#main-search-box {
+        width: 80% ;
+    }
+
+    input#main-search-box:focus {
+        width: 80%;
+    }
+
+    .selection {
+        width: 24% ;
+    }
+
+    .item {
+        width: 22% ;    
+        margin: 1.5% ;
+    }
+
+    .featured-item-title {
+        font-size: 2em ;
+    }
+
+    .featured-item-description {
+        font-size: 1.2em ;
+        line-height: 1.4em ;
+    }
+
+    .featured-item-description {
+        width: 75% ;
+    }
+
+    .btn.big {
+        padding: 0.9em 1.2em 0.8em 1.2em ;
+    }
+
+    .film-poster {
+        width: 28% ;
+    }
+
+    .film-info, .film-summary {
+        width: 68% ;
+    }
+
+    .film-summary .text-area {
+        font-size: 1.2em ;
+        line-height: 1.7em ;
+        padding-right: 0.8em ;
+    }
+
+    .search-result-heading {
+        font-size: 2.5em ;
+    }
+
+    #subscribepage-header {
+        background-position: 295px 30px ;
+        height: 290px ;
+    }
+
+    #pairingpage-header {
+        background-position: 390px 30px ;
+        height: 270px ;
+        background-size: 450px ;
+    }
+
+    ul#subscription-benefit-list li {
+        font-size: 1.2em ;
+    }
+
+    #subtitles {
+        font-size: 2em ;
+    }
+}
+
+@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (min-resolution: 192dppx) {
+
+    html {
+        font-size: 13px;
+    }
+
+    #content-container {
+        background: url('img/blur_background_640.jpg') no-repeat center center fixed;
+    }
+
+    .width-50 {
+        width: 100% ;
+    }
+
+    .width-25 {
+        width: 50% ;
+    }
+
+    .col-50 {
+        width: 100% ;
+    }
+
+    .card {
+        margin: 0 0 1em 0 ;
+    }
+
+    #toolbar-left-group {
+        float:left ;
+        width: auto ;
+    }
+
+    #toolbar-right-group {
+        display: block ;
+    }
+
+    #main-vifi-logo {
+        position: absolute ;
+        margin: auto ;
+        left: 0;
+        right: 0;
+    }
+
+    #toolbar-search-group {
+        display: none;
+        float: left;
+        width: 100% ;
+        height: 42px;
+        position:absolute;
+        top: 45px;
+        background-color: #322E54;
+    }
+
+    #toolbar-search-group:after {
+        visibility: hidden ;
+    }
+
+    input#main-search-box {
+        position: absolute ;
+        width: 90% ;
+        margin: 0.3em auto ;        
+        background-image: url('img/search-dark-90.png');
+        background-repeat: no-repeat;
+        left: 0;
+        right: 0;
+    }
+
+    input#main-search-box:focus {
+        width: 90%;
+    }
+
+    #content-body {
+        padding: 1% 1% 5em 1% ;
+    }
+
+    span.arrowup {
+        height: 30px ;
+        width: 30px ;
+        background-size: 119px ;
+        background-position: -45px -32px ;
+    }
+
+    #featured-swiper-container, #gallery-swiper-container {
+        height: 390px ;
+    }
+
+    .pagination, .pagination-1 {
+        padding: 0.8em 0 ;
+    }
+
+    .swiper-pagination-switch {
+        width: 0.5em;
+        height: 0.5em;
+    }
+    
+    .swiper-nav .swiper-slide {
+        padding: 0 1.5em ;
+    }
+
+    .selection {
+        width: 49% ;
+    }
+
+    .selection-wrapper {
+        padding: 0 1% 1% 1%;
+        text-align: left ;
+    }
+
+    .film-list .item, .user-filmcollection-list .item {
+        width: 98% ;
+        margin: 1% ;
+    }
+
+    ul#cast-content-body-list .item {
+        width: 44% ;
+        margin: 3% ;
+    }
+
+    ul#cast-content-body-list .item-image {
+        height: 15em ;
+    }
+
+    .film-list .item-image, .user-filmcollection-list .item-image {
+        width: 30% ;
+        height: 8em ;
+    }
+
+    .film-list .item-info, .user-filmcollection-list .item-info {
+        width: 70% ;
+    }
+
+    .featured-item-background {
+        background-position: center;
+    }
+
+    a.arrow-left, a.arrow-right {
+        opacity: 0 ;
+        filter: alpha(opacity=0) ;
+    }
+
+    .feature-item-info {
+        width: 96% ;
+        padding: 2em 2% 3.6em 2% ;
+    }
+
+    .featured-item-title {
+        font-size: 1.8em ;
+    }
+
+    .featured-item-description {
+        width: 90% ;
+    }
+
+    .featured-item-description {
+        font-size: 1.1em ;
+        line-height: 1.4em ;
+    }
+
+    #gallery-swiper-container {
+        text-align: left ;
+    }
+
+    #gallery-swiper-container ul#movie-interactive-button-row {
+        height: auto ;
+        top: auto ;
+        right: auto ;
+        bottom: 3em ;
+        left: 1.5em ;
+        margin: 0 ;
+    }
+
+    #gallery-swiper-container ul#movie-interactive-button-row li {
+        display: list-item ;
+        margin-bottom: 0.5em ;
+    }
+
+    .swiper-nav {
+        height: 3.5em ;
+    }
+
+    .swiper-nav .swiper-slide {
+        height: 3em ;
+        line-height: 3em ;
+    }
+
+    #front-tabbar-swiper-container.swiper-nav .swiper-slide-active:after {
+        border-bottom-color: #2b2b51 ;
+    }
+
+    .item-info-title a {
+        font-size: 1.4em ;
+    }
+
+    .item-info-description {
+        font-size: 1.1em ;
+    }
+
+    .film-title {
+        font-size: 2em ;
+        margin-top: 0.4em ;
+    }
+
+    .film-description {
+        font-size: 1.2em ;
+        line-height: 1.2em ;
+        margin: 0.6em 0 0 0 ;
+    }
+
+    .film-rating {
+        font-size: 0.9em ;
+    }
+
+    .film-summary {
+        width: 96% ;
+    }
+
+    .film-summary h3 {
+        padding: 0 0.5em 0.4em 0.5em ;
+    }
+
+    .film-summary .film-language h3 {
+        padding: 0 0 0.4em 0 ;
+    }
+
+    .film-summary .text-area {
+        font-size: 1.2em ;
+        line-height: 1.7em ;
+        padding: 0 0.5em ;
+    }
+
+    .search-result-heading {
+        font-size: 2em ;
+        width: 90% ;
+        margin: 1em 5% ;
+    }
+
+    .film-rating table {
+        padding: 0.1em 0 ;
+    }
+
+    #disqus_thread {
+        width: 98% ;
+        padding: 2em 1% 0 1% ;
+    }
+
+    .selection-container {
+        padding: 1% 1% 3% 1% ;
+    }
+
+    #video-container-footer ul {
+        margin: 1em 1em 0 1em ;
+    }
+
+    #video-container-footer ul.options {
+        margin: 0 ;
+    }
+
+    #video-container-footer ul li {
+        margin-bottom: 1em;
+    }
+
+    #video-container-heading {
+        padding: 2% ;
+    }
+
+    .video-container-footer ul li {
+        margin: 1%;
+    }
+
+    .video-selector {
+        width: 50% ;
+        padding: 1%;
+    }
+
+    .image-and-content-popup .col-img {
+        display: none ;
+    }
+
+    .image-and-content-popup .col-content, .col-50 {
+        width: 100% ;
+        margin-left: 0 ;
+    }
+
+    #subscribepage-heading, #pairingpage-heading {
+        font-size: 2em ;
+        width: 80% ;
+        margin: 10% ;
+    }
+
+    #subscribepage-header {
+        background-position: -10px 160px ;
+        height: 342px ;
+        background-size: 455px ;
+    }
+
+    #pairingpage-header {
+        background-position: 10px 140px ;
+        height: 322px ;
+        background-size: 340px ;
+    }
+
+    .subscription-duration {
+        padding: 1em 0 ;
+    }
+
+    p.duration-number {
+        font-size: 3em ;
+        letter-spacing: -2px ;
+    }
+
+    p.duration-text {
+        font-size: 1.2em ;
+        letter-spacing: 0 ;
+    }
+
+    #subscription-benefits {
+        padding: 1em ;
+    }
+
+    #subtitles {
+        font-size: 1.2em ;
+        bottom: 2.2em ;
+    }
+
+}
+
+@media only screen and (max-height: 768px) {
+    #featured-swiper-container, #gallery-swiper-container, #player-container.flowplayer, .video-container-body iframe {
+        height: 390px ;
+    }
+
+    .selection-container {
+        padding: 0.5% ;
+    }
+
+    .swiper-nav {
+        height: 3.5em ;
+    }
+
+    .swiper-nav .swiper-slide {
+        height: 3.2em ;
+        line-height: 3.2em ;
+    }
+
+    .swiper-nav .swiper-slide-active:after {
+        bottom: 3px ;
+    }
+
+    .item-image {
+        height: 20em ;
+    }
+
+    #subtitles {
+        font-size: 2em ;
+    }
+}
+
+@media only screen and (max-height: 600px) {
+    #featured-swiper-container, #gallery-swiper-container, #player-container.flowplayer, .video-container-body iframe {
+        height: 350px ;
+    }
+
+    p.duration-number {
+        font-size: 3.5em ;
+        letter-spacing: -2px ;
+    }
+
+}
+
+@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (min-resolution: 192dppx) {
+    #player-container.flowplayer, .video-container-body iframe {
+        height: auto ;
+    }
+
+    #featured-swiper-container, #gallery-swiper-container {
+        height: 390px ;
+    }
+
+    .subscription-duration {
+        padding: 1em 0 ;
+    }
+
+    #subtitles {
+        font-size: 1.2em ;
+        bottom: 2.2em ;
+    }
+
+}
+
+@media only screen and (max-height: 480px) {
+    #featured-swiper-container, #gallery-swiper-container {
+        height: 320px ;
+    }
+}

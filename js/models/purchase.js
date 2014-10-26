@@ -2,14 +2,16 @@
 App.Models.Purchase = Backbone.Model.extend({
     film: false,
     session: false,
+    defaults: { paymentMethod: 'code', purchaseInfo: {}},
     productKey: '52e802db-553c-4ed2-95bc-44c10a38c199',
 
     initialize: function(options) {
+        
         if (options && undefined != options.session) {
             this.session = options.session;
         }
-        if (options && undefined != options.film) {
-            this.film = options.film;
+        if (options && undefined != options.model) {
+            this.film = options.model;
         }
         _.bindAll(this, 'sendPurchase', 'purchase', 'paymentCallback')
     },
@@ -48,6 +50,8 @@ App.Models.Purchase = Backbone.Model.extend({
             'user_id': user_id,
             'film_id': film_id
         }
+        this.set("purchaseInfo", info);
+        
         return JSON.stringify(info);
 
     },

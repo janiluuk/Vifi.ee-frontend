@@ -1,5 +1,5 @@
 App.Models = {};
-App.Utils = {};
+
 
 App.Models.ApiModel = Backbone.Model.extend({
     defaults: {
