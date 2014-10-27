@@ -233,15 +233,9 @@ span.label {
     padding: 0;
     box-sizing: border-box;        
     background-color: rgba(255,255,255,0.85);
-    display: table;
 }
 
-@media only screen and (min-width: 1280px) {
 
-    .white-popup.vifi-popup.image-and-content-popup, .white-popup.multiple-col-popup {
-        min-width: 640px;
-    }
-}
 .white-popup.vifi-popup.image-and-content-popup, .white-popup.multiple-col-popup  {
     max-width: 800px;
 
@@ -256,6 +250,10 @@ span.label {
     width: 60%;
     margin-left: 40%;
     box-sizing: border-box;
+}
+
+#login-popup {
+    display: table;
 }
 
 .col-50 {
@@ -386,6 +384,10 @@ input#email, input#code, #side-menu input, .vifi-popup input.vifi-text-input {
 
 input#code {
     margin: 0 0 1.5em 0;
+}
+
+.payment-method-data {
+    margin: 0 0 20px 0;
 }
 
 /* BUTTONS AND OTHER INPUT*/
@@ -834,7 +836,7 @@ form#user-register, form#popup-user-register {
     position: relative;
 }
 
-#side-menu .row-fluid.error {
+#side-menu .row-fluid.error, form .row-fluid.error  {
     color: red;
     border: 1px solid red;
     padding: 0.3em;
@@ -1331,6 +1333,7 @@ ul#cast-content-body-list li .item-image {
 .item-info-description {
     font-size: 1em;
     margin: 0.1em 0 1em 0;
+    word-break: break-word;
 }
 
 .item-info-footer {
@@ -2180,7 +2183,7 @@ ul#subscription-benefit-list li .icon {
         display: none ;
     }
 
-    .image-and-content-popup .col-content, .col-50 {
+    .white-popup.vifi-popup.image-and-content-popup .col-content, .col-50 {
         width: 100% ;
         margin-left: 0 ;
     }

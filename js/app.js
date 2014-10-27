@@ -16,45 +16,12 @@ App = {
     Films: {},
     Player: {},
     User: {},
-    Event: {},   changeTab: function(e) {
-        e.preventDefault();
-
-        var attr = $(e.currentTarget).attr("data-rel");
-        var el = $("#"+attr);
-
-        $(el).siblings().removeClass("active").fadeOut();
-        $(el).fadeIn().addClass("active");
-    },
-    startCarousel: function() {
-
-      window.profileSwiper = new Swiper('#profile-tabbar-swiper-container',{
-        slidesPerView:'auto',
-        mode:'horizontal',
-        loop: false,
-        centeredSlides: true,
-        cssWidthAndHeight: true,
-
-         onTouchEnd : function(e) {
-                var idx = e.activeIndex;
-                $("#profile-tabbar-swiper-container .swiper-wrapper .swiper-slide:nth-child("+(idx+1)+")").click();
-        } 
-      }); 
-
-      $("#profile-tabbar-swiper-container .swiper-slide").each(function(item) { 
-            $(this).click(function(e) {
-                e.preventDefault();
-
-                profileSwiper.swipeTo(item);
-            })  
-      });
-
-
-    },
+    Event: {},   
     Router: {},
     Settings: {
         // properties   
         version: "061014",
-        debug: false,
+        debug: true,
         api_key: '12345',
         api_url: "http://gonzales.vifi.ee/api/",
         rtmp_url: "rtmp://media.vifi.ee/tv",
@@ -131,8 +98,7 @@ App.Router = Backbone.Router.extend({
 
             } else {
                 if (app.movieview.model.get("id") != film.id) {
-                    app.movieview.model = film;
-                    app.movieview.render();
+                    app.movieview.model.set(film.toJSON());
                 }
             }
             app.showMoviePage();
@@ -154,12 +120,16 @@ App.Router = Backbone.Router.extend({
             this.views.profile = new App.Views.ProfileView({
                 swiperEl: '#profile-tabbar-swiper-container',
                 model: app.session.get("profile"),
-                swipeTo: 1
+                swipeTo: 0
             });
-        else
-            this.views.profile.model = app.session.get("profile");
-        this.views.profile.render();
+        else {
+            this.views.profile.model.set(app.session.get("profile").toJSON());
+            this.views.profile.options.swipeTo = 0;
+            this.views.profile.render();
+        }
+            
         app.showContentPage("me");
+        this.trigger("change:title", "My profile");
 
     },
     subscription: function() {
@@ -172,19 +142,20 @@ App.Router = Backbone.Router.extend({
 
     },
     filmcollection: function() {
-
-        var collection = app.usercollection;
-
-        this.views.usercollection = new App.Views.UserCollectionView({
-            carousel: true,
-            carouselShowFilms: 5,
-            collection: collection,
-            el: $('#contentpage')
-        });
-        $('#contentpage').html(this.views.usercollection.render().$el.html());
-
+        
+        if (!this.views.profile)
+            this.views.profile = new App.Views.ProfileView({
+                swiperEl: '#profile-tabbar-swiper-container',
+                model: app.session.get("profile"),
+                swipeTo: 1
+            });
+        else {
+            this.views.profile.options.swipeTo = 1;
+            this.views.profile.model.set(app.session.get("profile").toJSON());
+            this.views.profile.render();
+        }
         this.trigger("change:title", "My films");
-
+           
         app.showContentPage("myfilms");
 
     },

@@ -14,9 +14,11 @@ App.Views.MovieDetailView = Backbone.View.extend({
         this.listenTo(this.model, 'change', this.render);
         _.bindAll(this, 'playMovie');
         if (typeof(DISQUS) == "undefined") { 
-
+            this.enableAddThis();
             this.enableComments();
         }
+
+
     },
 
     enableComments: function() {
@@ -31,6 +33,11 @@ App.Views.MovieDetailView = Backbone.View.extend({
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
 
+    },
+    enableAddThis: function() {
+        var path = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-540b49a3467ae07c";
+        //$log("Adding media player path: " + path);
+        $('<script src="'+path+'" type="text/javascript" async></script>').appendTo("body");
     },
     resetComments: function() {
 

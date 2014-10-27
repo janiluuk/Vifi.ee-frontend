@@ -15,7 +15,6 @@ App.Utils = {
             var items = $('<div>').html(response).find("script"); 
             items.each(function(idx,item) { 
                 var id = $(item).attr("id");         
-
                 ich.addTemplate(id, $(item).html());
             });
         }}));
@@ -178,7 +177,28 @@ Backbone.View.prototype.close = function(){
     
     this.onClose();
   }
-}
+};
+
+_.extend(Backbone.Validation.callbacks, {
+    valid: function (view, attr, selector) {
+        var $el = view.$('[name=' + attr + ']'), 
+            $group = $el.closest('form');
+        
+        $group.removeClass('error');
+
+        $group.find('.error-'+attr).remove();
+    },
+    invalid: function (view, attr, error, selector) {
+
+        var $el = view.$('[name=' + attr + ']'), 
+        $group = $el.closest('form');
+        $group.addClass('error');
+        $group.find('.error-'+attr).remove();
+
+        $group.prepend('<div class="row-fluid error error-'+attr+'">'+error+'</div>');
+    }
+});
+
 Backbone.View.prototype.assign = function(view, selector) {
     view.setElement(this.$(selector)).render();
 }

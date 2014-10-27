@@ -54,16 +54,16 @@
                         </a></li>
                     </ul>
                     <form id="single-purchase">
-                    <input type="hidden" name="selectedMethod" id="selectedMethod"/>
+                    <input type="hidden" name="method" id="method"/>
                     <div class="payment-method-data" id="payment-email" style="display:none">
                         <h3>Email</h3>
                         <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
-                        <input type="text" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
+                        <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
                         <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
                     </div>
-                    <div class="payment-method-data" id="payment-code" style="display:none">
+                    <div class="payment-method-data"  id="payment-code" style="display:none">
                         <h3>Sisesta filmi kood</h3>
-                        <input type="text" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
+                        <input type="text" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
                     </div>
                     <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
                     </form>

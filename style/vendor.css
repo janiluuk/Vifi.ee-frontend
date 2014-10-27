@@ -68,7 +68,7 @@
   background: #FFF;
   padding: 20px;
   width:auto;
-  max-width: 500px;
+  max-width: 800px;
   margin: 20px auto;
 }
 
@@ -210,7 +210,7 @@ button::-moz-focus-inner {
   opacity: 0.65;
   filter: alpha(opacity=65);
   padding: 0 0 18px 10px;
-  color: white;
+  color: #777;
   font-style: normal;
   font-size: 28px;
   font-family: Arial, Baskerville, monospace; }

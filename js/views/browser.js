@@ -10,7 +10,8 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     initialize: function(options) {
         this.options = options;
-
+       var querystring = this.collection.querystate.getQueryString();
+        if (querystring != "") this.collection.update();
         this.collection = options.collection;
         this.collection.options.genres.bind('all', this.setGenreDropDown, this);
         this.collection.bind('sync', this.renderResults, this);
@@ -23,8 +24,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         _.bindAll(this,'render', 'renderResults', 'applyIsotope');
         this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort, state: this.collection.querystate});
         this.filterview.bind('filter-bar:sort', this.onSort, this);
-        var querystring = this.collection.querystate.getQueryString();
-        if (querystring != "") this.collection.update();
+ 
         this.initEvents();
 
     },
@@ -39,6 +39,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.$el.html(ich.browserPageTemplate());
         this.filterview.render();
         this.applyIsotope();
+        this.updateUIToState();
 
 
         return this;  
@@ -173,10 +174,8 @@ App.Views.BrowserPage = Backbone.View.extend({
     onLoadMore: function() {
 
         this.addSet(this.collection.getNextPage());
-        if (!app.homepage.collection.hasNextPage()) {
-
+        if (!app.homepage.browserview.collection.hasNextPage()) {
             $("#loadMore").hide();
-
         }
     },
 
@@ -191,8 +190,12 @@ App.Views.BrowserPage = Backbone.View.extend({
 
         this.collection.getFirstPage();
         this.addSet(this.collection);
-        this.updateUIToState();
-
+        
+        if (!this.collection.hasNextPage()) {
+            $("#loadMore").hide();
+        } else { 
+            $("#loadMore").show();
+        }
         this.rendering = false;
     },
     updateUIToState: function() {
@@ -204,13 +207,7 @@ App.Views.BrowserPage = Backbone.View.extend({
 
         this.filterview.updateUI();
 
-        // Load more button
-        if (this.collection.state.pageSize > this.collection.models.length) {
-            $("#loadMore").hide();
-        } else {
-            $("#loadMore").show();
-
-        }
+       
     },
 
     onChangeCollectionState: function(state) {

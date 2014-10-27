@@ -26,7 +26,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             "lastname": '',
             "firstname": '',
             "notificationText": '',
-            "email": 'Visitor',
+            "email": 'anonymous@vifi.ee',
             "city": '',
             'newsletter' : '',
             "balance": "",
@@ -85,6 +85,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.set("notificationText", "");
         this.set("user_id", "");
         this.set("balance", 0);
+
         this.set("paired_user", false);
         this.set("sessionId", "");
         this.set("email", "Visitor");
@@ -119,7 +120,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
     isRegisteredUser: function() {
 
-        if (this.get("user_id") != "" && this.get("paired_user") === true) {
+        if (this.get("user_id") != "" && this.get("paired_user") === true && this.get("email") != "anonymous@vifi.ee") {
             return true;
         }
         return false;
@@ -166,6 +167,8 @@ App.User.Session = Backbone.Model.extend({
     },
     reset: function() {
         this.set(this.defaults());
+        this.clearCookie();
+
     },
     parseCookie: function() {
 
@@ -225,13 +228,13 @@ App.User.Session = Backbone.Model.extend({
             var options = this.getParams();
             $.getJSON(url, options.data, "jsonp").done(function(data) {
                 if (data.token) {
-                    this.set("sessionId", data.token);
                     this.set("hash", data.token);
+                    this.trigger("user:token:authenticated", data.token);
 
-                    this.syncData(this.get("profile").toJSON());
-                    this.writeCookie();
+                    if (email == "anonymous@vifi.ee") this.disable();
                 }
             }.bind(this), "jsonp");
+
         }
     },
     syncData: function() {
@@ -241,9 +244,6 @@ App.User.Session = Backbone.Model.extend({
         var profileData = this.get("profile").getSyncParams();
         options.data.profileData = JSON.stringify(profileData);
         $.getJSON(url, options.data, "jsonp").done(function(data) {
-
-            console.log(data);
-
         }.bind(this), "jsonp");
     },
     register: function(email, password) {
@@ -281,7 +281,6 @@ App.User.Session = Backbone.Model.extend({
         alert(url);
         
         $.getJSON(url, options.data, "jsonp").done(function(data) {
-            alert(data.status);
             profile.trigger("user:paired");
 
         }.bind(this), "jsonp");
@@ -300,6 +299,7 @@ App.User.Session = Backbone.Model.extend({
     },
 
     getParams: function() {
+
         var options = {}
         var params = {
             dataType: 'jsonp',
@@ -353,7 +353,6 @@ App.User.Session = Backbone.Model.extend({
                 this.disable();
             }
         }.bind(this), "jsonp").error(function(data) {
-            this.clearCookie();
             this.reset();
             $log(data);
         }.bind(this));
@@ -416,7 +415,7 @@ App.User.Session = Backbone.Model.extend({
     isRegisteredUser: function() {
         var profile = this.get("profile");
 
-        if (profile.get("user_id") != "" && profile.get("paired_user")) {
+        if (profile.get("user_id") != "" && profile.get("paired_user") && profile.get("email") != "anonymous@vifi.ee") {
             return true;
         }
         return false;

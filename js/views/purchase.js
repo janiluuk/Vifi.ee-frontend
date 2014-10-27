@@ -72,16 +72,21 @@ App.Views.LoginDialog = Backbone.View.extend({
 
 App.Views.PaymentDialog = Backbone.View.extend({
   events: { 'click .mfp-close' : 'exit',
-            'click button' : 'initPayment',
+            'click button#confirm-purchase-button' : 'initPayment',
             'click #payment-list li' : 'selectMethod',
           },
     initialize: function(options) {
       options = options || {};
       this.parent = options.parent;
       this.session = options.session;
-
+      this.model = options.model;
       this.payment = new App.Models.Purchase({model: this.model, session: options.session });
       this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
+      Backbone.Validation.configure({
+          forceUpdate: true
+      });
+      Backbone.Validation.bind(this, { model: this.payment});
+      
     },
 
 
@@ -89,14 +94,12 @@ App.Views.PaymentDialog = Backbone.View.extend({
       e.preventDefault();
       var el = $(e.currentTarget);
       el.addClass("selected").siblings().removeClass("selected");
-      var value = el.attr("id");
-      $("#selectedMethod").val(value);
-      this.payment.set("paymentMethod", value);
+      this.payment.set("method", el.attr("id"));
       this.updateUI();
 
     },
     getSelectedMethod: function() {
-      var paymentMethod = this.payment.get("paymentMethod");
+      var paymentMethod = this.payment.get("method");
       if (undefined !== $.cookie("vifi_payment_method") ) {
         paymentMethod = $.cookie("vifi_payment_method");
       } 
@@ -109,8 +112,9 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
     },
     getEmail: function() {
+
       var email = this.session.get("profile").get("email");
-      if (email != "Visitor") {
+      if (email != "anonymous@vifi.ee") {
         return email;
 
       }
@@ -127,26 +131,26 @@ App.Views.PaymentDialog = Backbone.View.extend({
       // Payment method
 
       var method = this.getSelectedMethod();
-      $("#selectedMethod").val(method);
+
       $(".payment-method-data").hide();
       $("#"+method).addClass("selected");
 
+      $("#method").val(method);
       if (method == "code") {
           $("#payment-code").show();
-          return false;
       } else { 
-        $("#payment-email").show();
+          $("#payment-email").show();
       }
 
     },
 
-    initPayment: function() {
-      var code = $("#payment-method-code").val();
-      var email = $("#payment-method-email").val();
-      this.payment.set("paymentCode", code);
-      this.payment.set("email", email);
-      this.payment.purchase(this.model);
+    initPayment: function(e) {
 
+      var data = this.$("form").serializeObject();
+      this.payment.set(data);
+      if (this.payment.isValid(true)) { 
+        this.payment.purchase(this.model);
+      }
       return false;
       
     },
@@ -170,17 +174,19 @@ App.Views.PaymentDialog = Backbone.View.extend({
 });
 
 App.Views.PurchaseSubscription = App.Views.DialogView.extend({
-
    render: function() {
-        this.$el.html(ich.subscriptionActivateDialogTemplate(this.model.toJSON()));
+        this.$el.html(ich.subscriptionActivateDialogTemplate());
+        this.openDialog(false, ich.subscriptionActivateDialogTemplate());
+
         return this;
     },
 
 });
-App.Views.ActivateSubscription = App.Views.PurchaseView.extend({
-
+App.Views.ActivateSubscription = App.Views.DialogView.extend({
    render: function() {
-        this.$el.html(ich.subscriptionActivateDialogTemplate(this.model.toJSON()));
+        this.$el.html(ich.subscriptionActivateDialogTemplate());
+        this.openDialog(false, ich.subscriptionActivateDialogTemplate());
+
         return this;
     }
 

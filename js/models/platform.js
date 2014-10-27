@@ -44,7 +44,7 @@ App.Platforms = {
         this.platform.init();
         //this.platform.addPlatformCSS();
         this.platform.fetchMediaPlayer();
-
+        
 
     }
 }
@@ -110,11 +110,7 @@ App.Platform.prototype.fetchMediaPlayer = function() {
         //  $log("Adding media player path");
         var path = "js/vendor/" + this._mediaPlayer.toLowerCase() + ".min.js?";
         //$log("Adding media player path: " + path);
-        $("<script />", {
-            src: path,
-            async: true,
-            type: 'text/javascript'
-        }).appendTo("head");
+        $('<script src="'+path+'" type="text/javascript" async></script>').appendTo("body");
     }
 }
 

@@ -157,8 +157,8 @@ App.Views.TopMenu = Backbone.View.extend({
     onSearchSubmit: function(e) {
         e.preventDefault();
 
-        app.homepage.onSearchFieldChange(e);
-        app.homepage.trigger("minimize");
+        app.homepage.browserview.onSearchFieldChange(e);
+        app.homepage.browserview.trigger("minimize");
         
         return false;
     },   
@@ -301,8 +301,15 @@ App.Views.CarouselView = Backbone.View.extend({
 
         },
         onSwiperCreated : function() { 
-            if (_this.options.swipeTo)
-                $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child("+_this.options.swipeTo+")").click();
+            if (_this.options.swipeTo) {
+                var el = $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child("+(_this.options.swipeTo+1)+")");
+                el.click();
+                var tab = el.attr("data-rel");
+                $("#"+tab).show().siblings().hide();
+                console.log(tab);
+
+            }
+            
         },
       }); 
 
@@ -328,12 +335,12 @@ App.Views.DialogView = Backbone.View.extend({
 
     },
 
-    openDialog: function(e) {
+    openDialog: function(e, content) {
         if (e) e.preventDefault();
-
+        var html = content ? content: this.$el.html();
         $.magnificPopup.open({
           items: {
-              src: this.$el.html(),
+              src: html,
               type: 'inline',
           },
           prependTo: document.getElementById("dialog"),

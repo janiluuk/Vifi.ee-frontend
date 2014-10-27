@@ -2,7 +2,6 @@ window.app = {};
 
     function initApp(data) {
         // check for hash and set state accordingly
-
         if (window.location.hash.indexOf('#search') != -1) {
             // start with empty state because Router will configure it later.
             var state = new App.Utils.State();
@@ -38,21 +37,33 @@ window.app = {};
                 window.app = new App.Views.BaseAppView({session: session, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
                 initFB();
-                App.Platforms.init();
-
-
+                
             }); 
         });
     }
-$(document).ready(function() {
 
-	$.getJSON(App.Settings.api_url+"search?limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?", initApp, "jsonp")
+
+$(document).ready(function() {
+    if (App.Settings.debug === false) initCached();
+    else
+    init();
 
 });
 
+function init() {
+
+    var url = App.Settings.api_url+"search?limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?";
+    $.getJSON(url, initApp, "jsonp");
+
+}
+
+function initCached() {
+    var cachedUrl = "http://beta.vifi.ee/init.json";
+    $.getJSON(cachedUrl, function(data) { var parsed = JSON.parse(data); initApp(parsed)}, "json");
+}
+
 
 /* Facebook login */
-
 
 function handleSessionResponse(response) {
 
@@ -118,6 +129,7 @@ function initFB() {
     });
     
     $(document).on('login', function () {
+        app.session.reset();
         app.session.enable();
         FB.login(function(response) {
         }, {scope: 'email,publish_actions'});
