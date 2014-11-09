@@ -11,13 +11,25 @@ App.Views.MovieDetailView = Backbone.View.extend({
     },
     initialize: function(options) {
 
-        this.listenTo(this.model, 'change', this.render);
-        _.bindAll(this, 'playMovie');
+        this.listenTo(this.model, 'change:id', this.render);
+
+        this.listenTo(this.model, 'change:rt_ratings', this.renderRatings);
+
+        _.bindAll(this, 'playMovie', 'render');
+
         if (typeof(DISQUS) == "undefined") { 
-            this.enableAddThis();
             this.enableComments();
         }
+        this.template = _.template(app.template.get("film"));
 
+
+    },
+    enableRatings: function() {
+
+        $('[id^="imdb-rating-api"]').remove();
+        (function(d,s,id){                                    
+            var js,stags=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return;}js=d.createElement(s);js.id=id;js.src="http://g-ec2.images-amazon.com/images/G/01/imdb/plugins/rating/js/rating.min.js";stags.parentNode.insertBefore(js,stags);
+        })(document,'script','imdb-rating-api');
 
     },
 
@@ -32,9 +44,20 @@ App.Views.MovieDetailView = Backbone.View.extend({
             dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
+        this.resetComments();
+
 
     },
     enableAddThis: function() {
+            if (window.addthis) {
+                      window.addthis = null;
+                      window._adr = null;
+                      window._atc = null;
+                      window._atd = null;
+                      window._ate = null;
+                      window._atr = null;
+                      window._atw = null;
+                  }
         var path = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-540b49a3467ae07c";
         //$log("Adding media player path: " + path);
         $('<script src="'+path+'" type="text/javascript" async></script>').appendTo("body");
@@ -50,14 +73,25 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
         }
     },
+    renderRatings: function() {
+        if (undefined != this.model.get("rt_ratings") && this.model.get("rt_ratings") != "") {
+           var link =  this.model.get("rt_links").alternate;
+
+        this.$("#rtratings").html('<a href="'+link+'"><span class="icon rottentomato"></span><span>'+ this.model.get("rt_ratings").critics_score+'%</span></a>');
+        }
+
+    },
     render: function() {
+        this.model.fetchRT();
 
-        var template = _.template(app.template.get("film"));
 
-        this.$el.html(template(this.model.toJSON()));
+        this.$el.html(this.template(this.model.toJSON()));
         setTimeout(function() {
             this.startCarousel();
             this.resetComments();
+            this.enableRatings();
+
+            this.enableAddThis();
 
         }.bind(this), 100);
 
@@ -86,21 +120,15 @@ App.Views.MovieDetailView = Backbone.View.extend({
         }
         $("#gallery-swiper-container").hide();
 
-        if (app.player) app.player.destroy();
-
-        app.player = new App.Player.MediaPlayer({
-            session: app.session,
-            movie: this.model
-        });
-
+       
+    
         if (!this.playerView) {
             this.playerView = new App.Views.PlayerView({
                 model: app.player
             });
-        } else {
-            this.playerView.model = app.player.model;
         }
-
+        
+        app.player.load(this.model);
 
         this.playerView.render();
 

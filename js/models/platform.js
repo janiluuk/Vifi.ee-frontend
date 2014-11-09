@@ -6,7 +6,7 @@ window.$noop = function(input) {
 }
 
 window.$log = function(log) { 
-    if (App.Settings.Debug === true)
+    if (App.Settings.debug === true)
     console.log(log); 
     
 };
@@ -55,12 +55,12 @@ App.Platforms = {
 App.Platform = function(name) {
     this.name = name;
     this.defaultPlatform = true;
-    this._mediaPlayer = "flowplayer";
+    this._mediaPlayer = "html5";
 
     this.start = $noop;
     this.exit = $noop;
     this._keys = {
-        KEY_RETURN: 8,
+        KEY_RETURN: 8, 
         KEY_UP: 38,
         KEY_DOWN: 40,
         KEY_LEFT: 37,
@@ -108,9 +108,9 @@ App.Platform.prototype.setMediaPlayer = function(mediaplayer) {
 App.Platform.prototype.fetchMediaPlayer = function() {
     if (this._mediaPlayer) {
         //  $log("Adding media player path");
-        var path = "js/vendor/" + this._mediaPlayer.toLowerCase() + ".min.js?";
+        var path = "js/platforms/mediaplayer_" + this._mediaPlayer.toLowerCase() + ".js?";
         //$log("Adding media player path: " + path);
-        $('<script src="'+path+'" type="text/javascript" async></script>').appendTo("body");
+        $('<script src="'+path+'" type="text/javascript"></script>').appendTo("head");
     }
 }
 
@@ -177,7 +177,7 @@ App.Platform.prototype.proxy = function() {
     browser.setResolution(window.screen.width, window.screen.height);
     browser.defaultPlatform = true;
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("flowplayer");
+    browser.setMediaPlayer("html5");
     
 }());
 
@@ -212,6 +212,40 @@ App.Platform.prototype.proxy = function() {
 
     browser.defaultPlatform = false;
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("flowplayer");
+    browser.setMediaPlayer("html5");
     
 }());
+
+/* The second default platform "flash" */
+
+(function() {
+    var browser = new App.Platform('flash');
+    // browser.needsProxy = true;
+    // We want this to fail, and get added as default
+    browser.setResolution(window.screen.width, window.screen.height);
+
+    browser.detectPlatform = function() {
+        try {
+            if (navigator.plugins != null && navigator.plugins.length > 0) {
+                return navigator.plugins["Shockwave Flash"] && true;
+            }
+            if (~navigator.userAgent.toLowerCase().indexOf("webtv")) {
+                return true;
+            }
+            if (~navigator.appVersion.indexOf("MSIE") && !~navigator.userAgent.indexOf("Opera")) {
+                try {
+                    return new ActiveXObject("ShockwaveFlash.ShockwaveFlash") && true;
+                } catch (e) {}
+            }
+            return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    browser.defaultPlatform = false;
+    App.Platforms.addSupportedPlatform(browser);
+    browser.setMediaPlayer("flash");
+
+}());
+

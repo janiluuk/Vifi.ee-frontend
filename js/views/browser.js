@@ -10,7 +10,7 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     initialize: function(options) {
         this.options = options;
-       var querystring = this.collection.querystate.getQueryString();
+        var querystring = this.collection.querystate.getQueryString();
         if (querystring != "") this.collection.update();
         this.collection = options.collection;
         this.collection.options.genres.bind('all', this.setGenreDropDown, this);
@@ -24,14 +24,26 @@ App.Views.BrowserPage = Backbone.View.extend({
         _.bindAll(this,'render', 'renderResults', 'applyIsotope');
         this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort, state: this.collection.querystate});
         this.filterview.bind('filter-bar:sort', this.onSort, this);
+        this.filterview.bind('filter-bar:clear', this.onClear, this);
+
  
-        this.initEvents();
+      //  this.initEvents();
 
     },
      initEvents: function() { 
 
-        this.on("maximize", function() {  $("#front-page-slider").stop().slideDown(); } );
-        this.on("minimize", function() {  $("#front-page-slider").stop().slideUp(); } );
+        this.on("maximize", function() {  
+            $("#front-page-search-header").css("display", "none").empty();
+            $("#front-page-slider").css("display", "block"); 
+
+        } );
+        
+        this.on("minimize", function() {  
+            $("#front-page-slider").css("display", "none");
+
+            $("#front-page-search-header").css("display", "block").html("you searched for sum shitz");
+
+        } );
 
     },
     render: function() {
@@ -98,7 +110,13 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
 
     },
-   
+    onClear: function(e) {
+
+        this.clearSearch();
+
+        return false;
+
+    },   
     onChangeGenre: function(model, genre) {
         // this function is a model state change, not the dom event: change
         // because of this we don't need the "event" arg.
@@ -136,11 +154,17 @@ App.Views.BrowserPage = Backbone.View.extend({
 
         var search_array = {
             genres: undefined,
-            duration: undefined,
+            durations: undefined,
             periods: undefined,
             q: value
         };
         var search_dict = _.extend({}, search_array);
+
+        if (value != "") {
+            $("#clear-search-text-button").show();
+        } else {
+            $("#clear-search-text-button").hide();
+        }
 
         $("#search-form select :selected").each(function() {
             var fieldid = $(this).parent().attr("id");
@@ -206,14 +230,20 @@ App.Views.BrowserPage = Backbone.View.extend({
         $('#main-search-box').val(query);
 
         this.filterview.updateUI();
+        if (query != "") {
+            $("#clear-search-text-button").show();
+        } else {
 
+            $("#clear-search-text-button").hide();
+        }
        
     },
 
     onChangeCollectionState: function(state) {
-        
+
         var changed_keys = _.keys(state.changedAttributes());
         var genre_is_changed = _.contains(changed_keys, 'genres');
+
         if (this.options.redirect_on_genre_change && (genre_is_changed)) {
             return this.redirectToBaseURL();
         }
@@ -228,9 +258,11 @@ App.Views.BrowserPage = Backbone.View.extend({
         //loads the records and reloads the table
         this.collection.querystate.setFromHash(searchStateHash);
     },
+
     clearSearch: function() {
-        this.collection.querystate.set(this.collection.initial_search);
-        this.trigger("search:clear", this);
+        this.updateUIToState();
+        this.onSearchFieldChange();
+        return false;
     }
 });
 

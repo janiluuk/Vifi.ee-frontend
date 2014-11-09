@@ -17,7 +17,7 @@
             </div>
             <div class="video-selector">
                     <select id="video-lang" data-value="none" data-category="player-audio" class="select-box">
-                        <option value="reset">Audio (auto)</option>
+                        <option value="reset">Audio (auto)  </option>
                         {{#subtitles}}
                         <option value="{{code}}">{{ language }}</option>
                         {{/subtitles}}
@@ -43,8 +43,8 @@
                                 <iframe class="float_left" src="//www.youtube.com/embed/{{youtube_id}}" frameborder="0" allowfullsceen></iframe>
                                 <div id="video-container-footer" class="float_left">
                                         <ul>
-                                                <li><a><button class="btn green"><span class="icon play"></span>{{ playButton }}</button></a></li>
-                                                <li><a><button class="btn"><span class="icon gift"></span>Kingi Söbrale!</button></a></li>
+                                                <li><a><button class="btn green icon play">{{ playButton }}</button></a></li>
+                                                <li><a><button class="btn icon gift"></span>Kingi Söbrale!</button></a></li>
                                         </ul>
                                 </div>
                         </div>

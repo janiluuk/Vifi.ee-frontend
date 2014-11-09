@@ -15,20 +15,38 @@ App = {
     },
     Films: {},
     Player: {},
+    MediaPlayer: {},
     User: {},
     Event: {},   
-    Router: {},
     Settings: {
         // properties   
         version: "061014",
         debug: true,
+        language: 'est',
         api_key: '12345',
+        rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         api_url: "http://gonzales.vifi.ee/api/",
         rtmp_url: "rtmp://media.vifi.ee/tv",
         hls_url: "http://media.vifi.ee:1935/vod",
         subtitles_url: "http://beta.vifi.ee/subs/",
         mp4_url: "http://gonzales.vifi.ee/zsf/"
-    }
+    },
+    Translations: {
+        'est' : { 
+            'eesti' : 'Eesti',
+            'english' : 'Inglise',
+            'Clear' : 'Tühista',
+            'Change password': 'Vaheta parool',
+            'Create password': 'Loo parool'
+
+        },
+        'en' : { 
+            'eesti' : 'Estonian',
+            'english' : 'English'
+        }
+
+
+    },
 }
 
 

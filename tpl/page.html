@@ -10,7 +10,7 @@
         <div id="content-body" class="float_left">
                 <ul id="content-body-list" class="film-list">
                 </ul>
-                <button style="display:none" id="loadMore">Load more</button>
+                <button style="display:none" id="loadMore">Lae juurde</button>
         </div>
         <!-- Footer -->
         <div class="page-footer float_left">
@@ -19,6 +19,49 @@
                 <p>Go to top</p>
             </div>
         </div>
+</script>
+<script id="languageFormat" class="helper" data-args="arg1" type="text/html">
+      
+      languageString = arg1.toString();      
+      if (languageString == "en") return t("English");
+      return t("Estonian");
+
+</script>
+<script id="selectedHelper" class="helper" data-args="arg1,arg2" type="text/html">
+      var sel = arg1;
+      if (sel == arg2) { 
+        return "selected";
+      }
+
+
+</script>
+<script id="ifCond" class="helper" data-args="arg1,arg2,options" type="text/html">
+ if(arg1 === arg2) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+</script>
+<script id="trans" class="helper" data-args="arg1,arg2" type="text/html">
+    return t(arg1);
+</script>
+<script id="checkboxFormat" class="helper" data-args="arg1" type="text/html">
+      
+      checkboxString = arg1.toString();      
+      if (checkboxString == "0") return t("No");
+      return t("Yes");
+
+</script>
+
+<script id="lastModified" type="text/html">
+    <div class="modified-date">This page last modified on {{{dateformat aspDate}}}</div>
+</script>
+ 
+<script id="dateformat" class="helper" data-args="aspDate" type="text/html">
+//<![CDATA[ // Optional if there are no &, <, or > in your javascript.
+      aspDateString = aspDate.toString()
+      var dateObject = new Date(parseInt(aspDateString.substr(6)));
+      return (dateObject.getMonth()+1) + '/' + dateObject.getDay() + '/' + dateObject.getFullYear();
+//]]>
 </script>
 <script type="text/html" id="errorPageTemplate">
     <div class="span4"><img src="img/oops.jpg"/></div>
@@ -38,10 +81,12 @@
 <script type="text/html" id="filterBarTemplate">
            <div class="swiper-nav swiper-container" id="front-tabbar-swiper-container" data-snap-ignore="true">
                     <div class="swiper-wrapper">
-                            <div class="swiper-slide" data-rel="sort-list"><span>Sort by</span></div>
+                            <div class="swiper-slide" data-rel="sort-list"><span>Sorteeri</span></div>
                             <div class="swiper-slide" data-rel="genres-list"><span>Kategooriad</span></div>
                             <div class="swiper-slide" data-rel="durations-list"><span>Kestvus</span></div>
                             <div class="swiper-slide" data-rel="periods-list"><span>Aasta</span></div>
+                            <div class="swiper-slide" data-rel="clear-list"><span>Tühista</span></div>
+
                 
                     </div>
             </div>
@@ -81,7 +126,7 @@
                                     <div class="featured-item-title">{{film.title}}</div>
                                     <div class="featured-item-description">{{film.shortOverview}}</div>
                                     <div class="featured-item-button">
-                                            <a href="#{{film.seo_friendly_url}}"><button class="btn green"><span class="icon play"></span>Vaata</button></a>
+                                            <a href="#{{film.seo_friendly_url}}"><button class="btn green icon play">Vaata</button></a>
                                     </div>
                             </div>
                             <div class="featured-item-background" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src={{ film.backdrop_url }}&w=1280&h=720');"></div>

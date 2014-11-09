@@ -1,9 +1,29 @@
 
 App.Utils = { 
+
+    translations: {
+        'est' : { 
+            'eesti' : 'Eesti',
+            'english' : 'Inglise'
+
+        },
+        'en' : { 
+            'eesti' : 'Estonian',
+            'english' : 'English'
+        }
+
+
+    },
+    translate: function(string) {
+      var str =  _.find(App.Utils.translations[App.Settings.language], function(item,key) { if (key == string) return item});        
+      if (undefined != str) return str; 
+      return string;
+
+    },
     template: function(id) {
         return _.template( $('#'+id).html());
     },
-    
+
     // Icanhaz handlebars loader
 
     include: function(names, callback) {
@@ -15,15 +35,23 @@ App.Utils = {
             var items = $('<div>').html(response).find("script"); 
             items.each(function(idx,item) { 
                 var id = $(item).attr("id");         
+                if ($(item).hasClass("helper") === true)
+                ich.addHelper(id, $(item).html(), $(item).attr("data-args") );
+                else if ($(item).hasClass("partial") === true) 
+                ich.addPartial(id, $(item).html());
+                else
                 ich.addTemplate(id, $(item).html());
+
             });
         }}));
         })
         $.when.apply(window, deferreds).done(callback);
 
     },
+  
+
     // Underscore template loader
-    
+
     TemplateLoader: function () {
 
         this.templates = {};
@@ -166,6 +194,7 @@ App.Utils.State = Backbone.Model.extend({
         
     }
 });
+window.t = App.Utils.translate;
 
     
 Backbone.View.prototype.close = function(){
@@ -192,6 +221,7 @@ _.extend(Backbone.Validation.callbacks, {
 
         var $el = view.$('[name=' + attr + ']'), 
         $group = $el.closest('form');
+        
         $group.addClass('error');
         $group.find('.error-'+attr).remove();
 

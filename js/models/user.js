@@ -28,7 +28,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             "notificationText": '',
             "email": 'anonymous@vifi.ee',
             "city": '',
-            'newsletter' : '',
+            'newsletter' : '0',
             "balance": "",
             "language": "Estonian",
             "tickets": [],
@@ -37,6 +37,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             "favorites": '',
             "profile_picture": false,
             "messages": 0,
+            "role" : 'Guest',
             "subscription": "0",
             "active_sessions": []
         };
@@ -49,6 +50,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.on("user:facebook-connect", this.connectFB, this);
         this.on("user:logout", this.signout, this);
     },
+
     connectFB: function(data) {
 
         var id = data.get("id");
@@ -72,9 +74,11 @@ App.User.Profile = App.Models.ApiModel.extend({
             var validto = model.get("validto");
 
             if (film && validto) {
+                if (undefined != validto && validto.length() > 1) { 
                 var date = App.Utils.stringToDate(validto);
                 var validtotext = App.Utils.dateToHumanreadable(date);
                 model.set("validtotext", validtotext);
+                }
                 film.set("ticket", model.toJSON());
             }
         });
@@ -125,7 +129,29 @@ App.User.Profile = App.Models.ApiModel.extend({
         }
         return false;
     },
+    isAnonymous: function() {
+        if (this.get("role") == "Anonymous customer") return true;
 
+        return false;
+    },
+    isRegistered: function() {
+        if (this.get("role") == "Registered customer") return true;
+
+        return false;
+    },
+    getRole:function() {
+        
+    },
+    hasNewsletter: function() {
+
+        return this.get("newsletter") == "1";
+
+    },
+    getLanguage: function() {
+        if (this.get("language") == "es") return "Estonian";
+        else return "English";
+
+    }
 
 });
 
@@ -458,4 +484,24 @@ App.User.Session = Backbone.Model.extend({
 
     },
 
+});
+
+App.User.ChangePassword = Backbone.Model.extend({
+
+    defaults: {
+        password: ''
+    },
+// Define a model with some validation rules
+    
+    validation: {
+
+        newPassword: {
+            minLength: 8
+        },
+        repeatPassword: {
+            equalTo: 'newPassword',
+            msg: 'The passwords does not match'
+        },
+
+    }
 });

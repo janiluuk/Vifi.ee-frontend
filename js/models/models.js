@@ -14,7 +14,21 @@ App.Models.ApiModel = Backbone.Model.extend({
 
     // override backbone synch to force a jsonp call
     sync: function(method, model, options) {
+
         // Default JSON-request options.
+        // passing options.url will override 
+        // the default construction of the url in Backbone.sync
+        var type="GET";
+        var dataType = "jsonp";
+        var jsonp = "jsoncallback";
+
+        switch (method) {
+            case "update":
+            type="POST";
+            jsonp = false;
+            dataType=false;
+            break;
+        }
 
         this.params = "api_key=" + App.Settings.api_key;
         var session = this.get("session");
@@ -23,15 +37,17 @@ App.Models.ApiModel = Backbone.Model.extend({
             if (session.get("hash") != null && session.get("hash") != "") this.params += "&authId=" + session.get("hash");
         }
         var params = _.extend({
-            type: 'GET',
-            dataType: 'jsonp',
+            type: type,
+            dataType: dataType,
             url: model.url(),
-            jsonp: "jsoncallback", // the api requires the jsonp callback name to be this exact name
+            jsonp: jsonp, // the api requires the jsonp callback name to be this exact name
             processData: true
         }, options);
+
         // Make the request.
         return $.ajax(params);
     },
+
 });
 
 
@@ -39,11 +55,38 @@ App.Models.Film = App.Models.ApiModel.extend({
     path: 'details/',
     initialize: function(options) {
         this.refresh();
+
     },
 
     refresh: function() {
             this.path = "details/" + this.get("id");
-    }
+
+    },
+    fetchRT: function(id) {
+
+        if (id) imdb_id = id; 
+        else imdb_id = this.get("imdb_id");
+
+        if (undefined == imdb_id || imdb_id == "") return false;
+        this.set("rt_ratings","");
+        this.set("rt_links","");
+
+        var url = 'http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?apikey='+App.Settings.rt_api_key+'&type=imdb&id='+imdb_id.replace("tt","");
+        
+        var _this = this;
+
+        $.ajax({
+            url: url,
+            dataType: "jsonp",
+            success: function(res) { 
+                _this.set("rt_links", res.links);
+                _this.set("rt_ratings", res.ratings);
+
+            }
+        });
+        return true;
+
+    },
  });
 
 App.Models.FilmContent = App.Models.ApiModel.extend({
@@ -72,7 +115,6 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         if (options && undefined !== options.session) {
             this.set("session", options.session);
         }
-        this.on("change:id", this.refresh, this);
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
 
@@ -84,8 +126,9 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
      * Load defined film content to the player
      */
 
-    load: function(id) {
-
+    load: function (id) {
+        this.set("videos", false);
+        this.set("subtitles", false);        
         this.set("id", id);
         this.refresh(true);
         return this;    
@@ -101,7 +144,6 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         if (this.get("subtitles") != null && this.get("subtitles").length > 0)
             this.trigger("subtitles:ready", this.get("subtitles"));
     },
-
 
 
     refresh: function(fetch) {

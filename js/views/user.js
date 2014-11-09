@@ -25,13 +25,14 @@ App.Views.SubscriptionView = Backbone.View.extend({
       
     },
 });
+
+
 App.Views.ProfileView =  App.Views.CarouselView.extend({ 
     model: App.User.Profile,
     el: '#contentpage',
     events: {
         'click #edit-profile-button, #edit-profile-cancel-button': 'editProfile',
-        'click #change-password-button, #change-password-cancel-button': 'changePassword',
-
+        'submit #profile-update-form' : 'updateProfile',
         "click .revoke": "revoke"
     },
     initialize: function(options) {
@@ -42,10 +43,25 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.listenTo(this.model, "change:id", this.render, this);
       this.listenTo(this.collection, "add", this.renderCollection, this);
       this.listenTo(this.collection, "reset", this.renderCollection, this);
+      this.resetpasswordview = new App.Views.ResetPasswordView({model: this.model});
 
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
       this.render();
       
+
+    },
+    updateProfile: function(e) {
+        e.preventDefault();
+        var formData = _.extend({newsletter: "0"}, $("#profile-update-form").serializeObject());
+
+        this.model.set(formData);
+        this.model.save(null, {
+            type: 'POST',
+            data: formData
+        });
+        this.render();
+        return false;
+
 
     },
     editProfile: function(e) {
@@ -55,14 +71,8 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
 
         return false;
     },
-    changePassword: function(e) {
-        e.preventDefault();
-        $("#change-password-view, #change-password-edit").toggle();
-        e.stopPropagation();
-
-        return false;
-    },
-
+    
+   
     revoke: function () {
         FB.api("/me/permissions", "delete", function () {
             alert('Permissions revoked');
@@ -79,7 +89,10 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
 
     render: function() { 
       this.$el.html(ich.profileTemplate(this.model.toJSON()));
+      this.resetpasswordview.setElement($("#reset-password")).render();
+
       this.renderCollection();
+
       setTimeout(function() { 
             var swiper = this.startCarousel(this.options.swipeTo);
         }.bind(this),100);
@@ -178,4 +191,79 @@ App.Views.UserCollectionView = Backbone.View.extend({
         }
         this.renderFilmViews();
     }
+});
+
+
+
+App.Views.ResetPasswordForm = Backbone.View.extend({ 
+
+    bindings: {
+        '[name=newPassword]': {
+            observe: 'newPassword',
+            setOptions: {
+                validate: false
+            }
+        },
+        '[name=repeatPassword]': {
+            observe: 'repeatPassword'   ,
+            setOptions: {
+                validate: false
+            }
+        }
+    },
+    events: {  
+        'click #change-password-save-button': 'changePassword'
+    },
+    initialize: function (options) {
+
+        // This hooks up the validation
+        Backbone.Validation.bind(this);
+    },
+    changePassword: function (e) {
+        e.preventDefault();
+
+        // Check if the model is valid before saving
+
+        if(this.model.isValid(true)) {       
+            // this.model.save();
+            alert('Great Success!');
+        }
+        return false;
+
+    },
+    render: function() {
+        this.stickit();
+        return this;
+    },
+    remove: function() {
+        // Remove the validation binding
+        // See: http://thedersen.com/projects/backbone-validation/#using-form-model-validation/unbinding
+        Backbone.Validation.unbind(this);
+        return Backbone.View.prototype.remove.apply(this, arguments);
+    }
+})
+App.Views.ResetPasswordView = Backbone.View.extend({
+    el: "#reset-password",
+    
+    events: {
+        'click #change-password-button, #change-password-cancel-button': 'toggleForm',
+    },
+    
+    initialize: function() {
+        this.changePasswordForm = new App.Views.ResetPasswordForm({ el: '#password-form', model: new App.User.ChangePassword()});
+    },
+    render: function() {
+       this.$el.html(ich.resetPasswordTemplate(this.model.toJSON()));
+       this.changePasswordForm.setElement("#reset-password").render();
+       return this;
+
+    },
+    toggleForm: function(e) {
+        e.preventDefault();
+        $("#change-password-view, #change-password-edit").toggle();
+        e.stopPropagation();
+
+        return false;
+    },
+
 });

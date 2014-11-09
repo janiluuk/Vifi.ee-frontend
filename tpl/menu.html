@@ -1,26 +1,28 @@
 <script type="text/html" id="topmenuTemplate">
 
      <div id="toolbar-left-group">
-       {{#profile_picture}} 
-        <div id="menu-dragger" class="float_left" style="background-image: url('{{profile_picture}}?width=45&height=45')"></div>
-        {{/profile_picture}}   
-        {{^profile_picture}}
+       {{#if profile_picture}} 
+        <div id="menu-dragger" class="float_left" style="background-image: url({{profile_picture}}?width=90&height=90); background-size: auto 45px;"></div>
+        {{else}}
+        
         <div id="menu-dragger" class="menu-icon float_left" style="background-image: url('style/img/menu-icon.png'); background-size: 90px;"></div>
-        {{/profile_picture}} 
+        {{/if}}
+
         <a href="#">
             <div id="main-vifi-logo" class="float_left"></div>
         </a>
+
 </div>
 
-<form id="main-search-form">
     <div id="toolbar-right-group">
         <div id="search-button" class="search-icon float_left"></div>
     </div>
 
     <div id="toolbar-search-group">
-        <input type="text" id="main-search-box" class="vifi-text-input" placeholder="Otsi filmi või näitlejat"/>
+    <form id="main-search-form">
+
+        <input type="text" id="main-search-box" class="vifi-text-input" placeholder="Otsi filmi või näitlejat"/></form><button class="search-button btn" id="clear-search-text-button">X</button>
     </div>
-</form>         
 
 
 </script>
@@ -28,7 +30,7 @@
 <script type="text/html" id="sidemenuTemplate">
 
             <div id="side-menu" class="snap-drawer snap-drawer-left">
-                        {{#name}}                       
+                        {{#if name}}                       
                         <h3>{{ name }}</h3>
                         <ul class="side-menu-list">
                             <a href="#me" id="menu-me"><li> Account </li></a>
@@ -36,8 +38,7 @@
                             <a href="#me/pair-device" id="menu-pairtv"><li>Pair TV</li></a>
                             <a class="logout" href="#"><li>Logout </li></a>
                         </ul>
-                        {{/name}}
-                        {{^name}}
+                        {{else}}
                         <div id="social-login">
                             <div class="row-fluid">
                                 <i class="icon facebook"></i>
@@ -89,12 +90,12 @@
                                 </div>
                             </form>
                         </div>
-                        {{/name}}
+                        {{/if}}
 
                         <h3 class="new-feature">Subscribe</h3>
                         <ul class="side-menu-list">
                             <a id="menu-subscription" href="#subscription-plans"><li>Subscription plans</li></a>
-                        </li>
+                        </ul>
 
                         <h3>Tugi</h3>
                         <ul class="side-menu-list">

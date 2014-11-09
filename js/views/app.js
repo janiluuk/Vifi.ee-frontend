@@ -21,6 +21,8 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.usercollection = options.usercollection;
         this.evt = options.eventhandler;
         this.template = options.template;
+        this.player = options.player;
+        
         this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
         options.model = this.user;
 
@@ -31,7 +33,6 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.topmenu = new App.Views.TopMenu({model: this.user});
         this.homepage = new App.Views.HomePage(options);
         this.render();
-        App.Platforms.init()
         this.router = new App.Router();
     },
     render: function() {
@@ -112,7 +113,8 @@ App.Views.TopMenu = Backbone.View.extend({
         'click #search-button' : 'toggleSearchBox',
         'click #menu-dragger' : 'toggleSideBar',
         'click .login' : 'login',
-        'click .logout' : 'logout'
+        'click .logout' : 'logout',
+        'click #clear-search-text-button' : 'clearSearch'
     },
     model: App.User.FBPerson,
     el: $("#top-main-toolbar"),
@@ -128,6 +130,11 @@ App.Views.TopMenu = Backbone.View.extend({
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
         
             this.$("#main-search-box").val(search);
+        if (search != "") {
+            $("#clear-search-text-button").show();
+        } else {
+            $("#clear-search-text-button").hide();
+        }
 
         return this;  
     },
@@ -153,7 +160,14 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
 
     },
-   
+    clearSearch: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.$("#main-search-box").val("");
+        app.homepage.browserview.onSearchFieldChange(e);
+        return false;
+    },
     onSearchSubmit: function(e) {
         e.preventDefault();
 
@@ -225,6 +239,10 @@ App.Views.SideMenu = Backbone.View.extend({
         var email = $("#register-email").val();
         var pass = $("#register-password").val();
         var passverify = $("#register-password-verify").val();
+        if (pass != passverify) {
+                this.onFail({message: "Passwords do not match!"});
+
+        }        
         if (email =="" || pass == "" || passverify == "") {  
             this.onFail({message: "Fill all the fields!"});
         } else { 
