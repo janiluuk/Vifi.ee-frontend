@@ -26,10 +26,11 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
 
         this.player = App.MediaPlayer;
-        _.bindAll( this, 'load');
+        _.bindAll( this, 'load', 'onSubtitlesLoad');
 
         this.content.on('subtitles:ready', this.onSubtitlesReady, this);
         this.content.on("content:ready", this.onContentReady, this);
+        this.subtitles.on("subtitles:loadfile", this.onSubtitlesLoad, this);
         this.player.on("mediaplayer:pause", this.disableSubtitles, this);
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
         this.on("mediaplayer:stop", this.stop, this);
@@ -42,7 +43,11 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     onSubtitlesReady: function(subtitles) {
         this.subtitles.load(subtitles);
     },
-
+    onSubtitlesLoad: function(filename) {
+        this.once("player:ready", function() { 
+            this.player.loadSubtitles(filename);
+        }.bind(this), this);
+    },
     disableSubtitles: function() { 
         if (this.subtitles) {
             this.subtitles.disable();
@@ -606,6 +611,7 @@ App.Player.Subtitles = Backbone.Model.extend({
         $log("Downloaded " + i + " subtitles");
         if (!nodefault) this.loadLanguage(this.defaultCode);
     },
+
     loadLanguage: function(code) {
         if (this.subtitles && this.subtitles[code]) {
             this.subtitleFile = this.srtUrl + this.subtitles[code].file;
@@ -614,6 +620,8 @@ App.Player.Subtitles = Backbone.Model.extend({
             this.start();
             this.language = code;
             this.trigger("subtitles:load", code);
+            this.trigger("subtitles:loadfile", this.subtitleFile);
+
 
             return true;
         }

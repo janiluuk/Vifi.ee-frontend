@@ -31,6 +31,7 @@ App.MediaPlayer = {
         }
 
 
+        _.bindAll(this, 'loadSubtitles');
 
         this._videoElement = $("#" + this.playerId);
         if (!this._videoElement) {
@@ -67,7 +68,7 @@ App.MediaPlayer = {
         var _this = this;
 
         this.plugin = flowplayer(this.playerId, {
-            src: 'http://app.vifi.ee/app/swf/flowplayer.commercial.swf',
+            src: 'http://beta.vifi.ee/swf/flowplayer.commercial-3.2.15.swf',
             wmode: 'opaque'
         }, {
             key: '#$05466e2f492e2ca07a3',
@@ -112,7 +113,6 @@ App.MediaPlayer = {
                 backgroundGradient: 'none'
             },
             clip: {
-                baseUrl: 'rtmpe://media.vifi.ee/vod/',
                 autoBuffering: true,
                 autoplay: false,
                 scaling: 'fit',
@@ -148,34 +148,36 @@ App.MediaPlayer = {
             },
             plugins: {
                 rtmp: {
-                    url: 'http://app.vifi.ee/app/swf/flowplayer.rtmp-3.2.3.swf',
+
+                    url: 'http://beta.vifi.ee/swf/flowplayer.rtmp-3.2.11.swf',
+                    netConnectionUrl: 'rtmp://media.vifi.ee/vod'                    
                 },
                 // the captions plugin
                 captions: {
-                    url: 'http://app.vifi.ee/app/swf/flowplayer.captions-3.2.3.swf',
+                    url: 'http://beta.vifi.ee/swf/flowplayer.captions-3.2.9.swf',
                     captionTarget: 'content',
                     button: null
                 },
-                secure: {
-                    url: 'http://app.vifi.ee/app/swf/flowplayer.securestreaming.swf',
+                    secure: {
+                    url:'http://beta.vifi.ee/swf/flowplayer.securestreaming-3.2.3.swf',
+                    token: 'jambal4ika'
                 },
-                controls: {
-                    url: 'http://app.vifi.ee/app/swf/flowplayer.controls.swf'
-                },
+             
                 content: {
-                    url: 'http://app.vifi.ee/app/swf/flowplayer.content-3.2.0.swf',
-                    bottom: 15,
-                    height: 70,
+                    url: 'http://beta.vifi.ee/swf/flowplayer.content-3.2.8.swf',
+                    bottom: 10,
+                    height: "28%",
+                    width: '100%',
                     backgroundColor: 'transparent',
                     backgroundGradient: 'none',
                     border: 0,
                     textDecoration: 'outline',
                     style: {
                         body: {
-                            fontSize: '18%',
+                            fontSize: '28',
                             fontFamily: 'Arial',
                             textAlign: 'center',
-                            color: '#ffffff'
+                            color: '#efffff'
                         }
                     }
                 }
@@ -194,7 +196,15 @@ App.MediaPlayer = {
 
     },
 
-   
+    loadSubtitles: function(file) {
+        if (typeof($f) == "undefined") return false;
+        setTimeout(function() { 
+        $f().getPlugin("captions").loadCaptions(0,file);
+
+        },1000);
+
+
+    },
     stop: function(forced) {
         if (this.plugin) {
             try {

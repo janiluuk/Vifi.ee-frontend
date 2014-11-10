@@ -88,7 +88,7 @@ App.MediaPlayer = {
     },
 
    
-
+    loadSubtitles: function() { },
     stop: function(forced) {
         if (this.plugin) {
             try {
