@@ -13,8 +13,9 @@ App.MediaPlayer = {
     plugin: false,
     wasMuted: false,
     bitrate: false,
-    default_playlist: [{"mp4":"ollin_kurjuus.mp4"}],
     allowFastFoward: true,
+    _eventsToTrack: ['error', 'finish', 'fullscreen', 'fullscreen-exit', 'progress', 'seek', 'pause', 'unload', 'resume', 'ready', 'volume'],
+
     init: function(playlist) {
 
         if (playlist) this.setPlaylist(playlist);
@@ -73,96 +74,27 @@ App.MediaPlayer = {
         return items;
 
     },
-    generatePlaylistItem: function(file) {
-        if (!file) return false;
 
-        if (file[0] == '/') file = file.substring(1);
-        var mp4_url = App.Settings.mp4_url +file;
-
-        var mpegurl = App.Settings.hls_url+'/_definst_/'+file+'/playlist.m3u8'
-        var playlist_item = [ 
-
-                {    mpegurl: mpegurl },
-                {    mp4: mp4_url },
-                {    flash: 'mp4:'+ file.replace('.mp4','') },
-        ];
-        return playlist_item;
-
-    },
-    setPlaylist: function(playlist) {
-        this.deactive();
-
-        $log(" Setting new Playlist ");
-        this.trigger("mediaplayer:onnewplaylist", playlist);
-        this.stop(true);
-        this.playlist = playlist;        
-        this.nextVideo();
-
-    },
-    setCurrentIndex: function(index) {
-        $log(" Setting current Index ");
-        if (this.playlist) {
-            this.currentIndex = index;
-            this.playlist.setCurrentIndex(index);
-        }
-    },
-
-    play: function() {
-        $log("Playing Media");
-            
-        if (!this.currentStream) {
-            $log(" Can't press play on a mediaplayer without a content")
-            return;
-        }
-
-        if (!this.plugin) {
-            alert("no player found");
-
-            return false;
-        }
-        if (this.plugin && !this.plugin.paused && (typeof(this._videoElement.playbackRate) != 'undefined' && this._videoElement.playbackRate != 1)) {
-            $log(" Restting Playback Rate");
-            this._videoElement.playbackRate = 1;
-        } else if (this._videoElement && this.currentStream == null) {
-
-            this._trackEvents();
-            $log(" Playing NExt File ")
-            //this._playVideo();
-        } else if (this._videoElement) {
-            if (!this.plugin.playing) {
-
-                $log(" Calling Video Element Play")
-                this.plugin.play();
-            } else {
-                $log(" Calling Video Element Pause ")
-                this.plugin.stop();
-            }
-        }
-    },
 
     _playVideo: function() {
+        this.currentStream = this.playlist.nextFile();
+
         $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
+        this.play();
 
         // this._videoElement.play();
         //this.wasMuted = this.plugin.muted;
 
     },
 
-    nextVideo: function() {
-        this.currentStream = this.playlist.nextFile();
-        if (this.currentStream) {
-            this.trigger('mediaplayer:onnextvideo', this.playlist.currentItemIndex());
-            this._playVideo();
-        } else {
-            this.trigger("mediaplayer:onplaylistend");
-        }
-    },
+   
 
     stop: function(forced) {
         if (this.plugin) {
             try {
                 this.plugin.pause();
                 this.deactive();
+                this._stopTrackingEvents();
 
                 if (!forced) this.trigger("mediaplayer:onstop");
                 else this.plugin.unload();
@@ -171,18 +103,7 @@ App.MediaPlayer = {
 
         }
     },
-
-    pause: function() {
-        // May get called without the correct initialization, so wrapping in block.
-        // This should always fail gracefully.
-
-        try {
-            this.plugin.pause();
-            this.trigger("mediaplayer:onpause");
-        } catch (e) {
-            $log(" FAILED TO PAUSE VIDEO: " + e);
-        }
-    },
+    
 
     fastforward: function() {
         var currentTime = this.plugin.video.time;
@@ -210,14 +131,6 @@ App.MediaPlayer = {
         }
     },
 
-    setCoordinates: function(x, y, width, height) {
-        $(this._videoElement).css({
-            left: x,
-            top: y,
-            width: width,
-            height: height
-        })
-    },
 
     playing: function() {
         var playing = (this.plugin.playing ? true : false);
@@ -232,46 +145,8 @@ App.MediaPlayer = {
         }
     },
 
-    setVideoElement: function(element) {
-        this._videoElement = $(element);
-    },
 
-    _eventHandler: function(e) {
-        if (e.type != 'timeupdate') $log(e.type);
-        switch (e.type) {
-            case 'timeupdate':
-                this.trigger("mediaplayer:timeupdate", Math.round(e.currentTarget.currentTime * 1000));
-                break;
-            case 'loadstart':
-                this.trigger("mediaplayer:bufferingstart");
-                break;
-            case 'loadeddata':
-                this.trigger("mediaplayer:bufferingend");
-                break;
-            case 'ended':
-                this.trigger("mediaplayer:mediaend", this.playlist.currentItemIndex());
-                this.nextVideo();
-                break;
-            case 'play':
-                this.trigger("mediaplayer:play", this.playlist.currentItemIndex());
-                break;
-            case 'pause':
-                this.trigger("mediaplayer:pause");
-                break;
-            case 'error':
-                $(this._videoElement).remove();
-                this._createPlayer();
-                this.trigger("mediaplayer:videoerror");
-                break;
-            case 'volumechange':
-                $log(" VOLUME CHANGE EVENT ");
-                if (player.wasMuted != this.muted) {
-                    this.trigger("mediaplayer:muted");
-                }
-                this.trigger("mediaplayer:volumechange", e.currentTarget.volume);
-                break;
-        }
-    },
+    
 
  
 }

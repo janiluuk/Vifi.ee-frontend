@@ -139,9 +139,9 @@ App.Player.Platforms.Core = {
     _eventsToTrack: ['loadstart', 'ended', 'timeupdate', 'play', 'pause', 'loadstart', 'timeupdate', 'error', 'loadeddata', 'volumechange', 'duration'],
     _active: false,
     _videoElement: null,
+    wasMuted: false,
+
     playerId: "player-container",
-
-
     name: "MediaPlayer",
     userBitrate: 10000,
     speedtest: function(callback) {
@@ -157,6 +157,11 @@ App.Player.Platforms.Core = {
             _this.userBitrate = bitrate;
         });
     },
+
+    setVideoElement: function(element) {
+        this._videoElement = $(element);
+    },
+
     _trackEvents: function() {
         $log("___ TRACK EVENTS CALLED ___ ");
         if (this.eventsBound) return;
@@ -179,6 +184,84 @@ App.Player.Platforms.Core = {
   //      App.KeyHandler.unbind("all", this._keyhandler);
     },
 
+    setPlaylist: function(playlist) {
+        $log(" Setting new Playlist ");
+        this.trigger("mediaplayer:onnewplaylist", playlist);
+        this.stop(true);
+        this.playlist = playlist;
+        this.currentIndex = 0;
+        this.currentStream = null;
+        $(this._videoElement).show();
+    },
+
+    setCurrentIndex: function(index) {
+        $log(" Setting current Index ");
+        if (this.playlist) {
+            this.currentIndex = index;
+            this.playlist.setCurrentIndex(index);
+        }
+    },
+    nextVideo: function() {
+        this.currentStream = this.playlist.nextFile();
+        if (this.currentStream) {
+            this.trigger('mediaplayer:onnextvideo', this.playlist.currentItemIndex());
+            this._playVideo();
+        } else {
+            this.trigger("mediaplayer:onplaylistend");
+        }
+    },
+    play: function() {
+            
+        if (!this.currentStream) {
+            $log(" Can't press play on a mediaplayer without a content")
+            return;
+        }
+        if (!this.plugin) {
+            alert("no player found");
+
+            return false;
+        }
+        this._trackEvents();
+
+        if (this.plugin && !this.plugin.paused && (typeof(this._videoElement.playbackRate) != 'undefined' && this._videoElement.playbackRate != 1)) {
+            $log(" Restting Playback Rate");
+            this._videoElement.playbackRate = 1;
+        } else if (this._videoElement && this.currentStream == null) {
+
+            $log(" Playing Next File ")
+            this._playVideo();
+        } else if (this._videoElement) {
+            if (!this.plugin.playing) {
+
+                $log(" Calling Video Element Play")
+                this.resume();
+            } else {
+                $log(" Calling Video Element Pause ")
+                this.pause();
+            }
+        }
+    },
+    
+
+    resume: function() {
+        try {
+            this.plugin.play();
+            this.trigger("mediaplayer:onplay");
+        } catch (e) {
+            $log(" FAILED TO PLAY VIDEO: " + e);
+        }
+    },
+    pause: function() {
+        // May get called without the correct initialization, so wrapping in block.
+        // This should always fail gracefully.
+
+        try {
+            this.plugin.pause();
+            this.trigger("mediaplayer:onpause");
+        } catch (e) {
+            $log(" FAILED TO PAUSE VIDEO: " + e);
+        }
+    },
     _keyMap: {
         'onPlay': this.play,
         'onPause': this.pause,
@@ -211,6 +294,57 @@ App.Player.Platforms.Core = {
                 this.fastforward();
                 break;
         }
+    },
+    _trackEvents: function() {
+        $log("___ TRACK EVENTS CALLED ___ ");
+        if (this.eventsBound) return;
+        $log(" ___ BINDING EVENTS ___ ");
+        $(this.plugin).bind(this._eventsToTrack.join(" "), $.proxy(this._eventHandler, this));
+        this.eventsBound = true;
+    },
+    _eventHandler: function(e) {
+        if (e.type != 'progress') $log(e.type);
+        switch (e.type) {
+            case 'progress':
+                this.trigger("mediaplayer:timeupdate", Math.round(e.currentTarget.currentTime * 1000));
+                break;
+            case 'fullscreen':
+                this.trigger("mediaplayer:fullscreen");
+                break;
+            case 'fullscreen-exit':
+                this.trigger("mediaplayer:fullscreen-exit");
+                break;
+            case 'finish':
+                this.trigger("mediaplayer:mediaend", this.playlist.currentItemIndex());
+                this.nextVideo();
+                break;
+            case 'resume':
+                this.trigger("mediaplayer:play", this.playlist.currentItemIndex());
+                break;
+            case 'pause':
+                this.trigger("mediaplayer:pause");
+                break;
+            case 'seek':
+                this.trigger("mediaplayer:seek");
+                break;
+            case 'error':
+                $(this._videoElement).remove();
+                this._createPlayer();
+                this.trigger("mediaplayer:videoerror");
+                break;
+            case 'volume':
+                $log(" VOLUME CHANGE EVENT ");
+                if (player.wasMuted != this.muted) {
+                    this.trigger("mediaplayer:muted");
+                }
+                this.trigger("mediaplayer:volumechange", e.currentTarget.volume);
+                break;
+        }
+    },
+    _stopTrackingEvents: function() {
+        $log(" UNBINDING MEDIA EVENTS TO FLASH VIDEO PLAYER ");
+        this.plugin.unbind();
+        this.eventsBound = false;
     }
 
 }
@@ -272,8 +406,8 @@ App.Player.Playlist = function() {
             }
         });
         return file;
-    }
-    generatePlaylistItem: function(file) {
+    },
+    this.generatePlaylistItem= function(file) {
         if (!file) return false;
 
         if (file[0] == '/') file = file.substring(1);

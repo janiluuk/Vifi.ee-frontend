@@ -22,8 +22,8 @@ App.Views.PlayerView = Backbone.View.extend({
 
 
             $log("setting height "+ player_height);
-            this.$el.height(player_height+footer_height+nav_height);
-            $("#player-container").height(player_height+footer_height );
+            this.$el.height(player_height+footer_height);
+            $("#player-container").height(player_height);
             $("#player-container video").height(player_height);
             $("#player-container object").height(player_height);
 
