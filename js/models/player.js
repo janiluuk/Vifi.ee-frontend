@@ -24,7 +24,6 @@ App.Player.MediaPlayer = Backbone.Model.extend({
             this.load(options.movie);
 
         }
-
         this.player = App.MediaPlayer;
         _.bindAll( this, 'load', 'onSubtitlesLoad');
 
