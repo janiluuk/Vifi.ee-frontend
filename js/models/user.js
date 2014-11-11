@@ -74,7 +74,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             var validto = model.get("validto");
 
             if (film && validto) {
-                if (undefined != validto && validto.length() > 1) { 
+                if (undefined != validto && validto.length > 1) { 
                 var date = App.Utils.stringToDate(validto);
                 var validtotext = App.Utils.dateToHumanreadable(date);
                 model.set("validtotext", validtotext);

@@ -29,7 +29,8 @@ App = {
         rtmp_url: "rtmp://media.vifi.ee/tv",
         hls_url: "http://media.vifi.ee:1935/vod",
         subtitles_url: "http://beta.vifi.ee/subs/",
-        mp4_url: "http://gonzales.vifi.ee/zsf/"
+        mp4_url: "http://gonzales.vifi.ee/zsf/",
+        speedtest_url: 'http://backend.vifi.ee/files/bwtest.jpg'
     },
     Translations: {
         'est' : { 
@@ -151,9 +152,11 @@ App.Router = Backbone.Router.extend({
 
     },
     subscription: function() {
+    
+        if (!this.views.subscriptionview) 
+        this.views.subscriptionview = new App.Views.SubscriptionView();
 
-        var view = new App.Views.SubscriptionView();
-        view.render();
+        this.views.subscriptionview.render();
         app.showContentPage("subscription");
         this.trigger("change:title", "Subscription");
 
@@ -181,10 +184,13 @@ App.Router = Backbone.Router.extend({
 
         var profile = app.session.get("profile");
 
-        var view = new App.Views.UserPairView({
+
+        if (!this.views.pairview)
+        this.views.pairview = new App.Views.UserPairView({
             model: profile
         });
-        $('#contentpage').html(view.render().$el.html());
+
+        $('#contentpage').html(this.views.pairview.render().$el.html());
         this.trigger("change:title", "Pair Device");
 
         app.showContentPage("pairtv");

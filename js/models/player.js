@@ -77,9 +77,9 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
         this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
         this.playlist.addFiles(this.content);
-        this.player.init(this.playlist);
-        this.trigger("player:ready", this.content);
-
+        if (this.player.init(this.playlist)) { 
+            this.trigger("player:ready", this.content);
+        }
     },
 
     /*
@@ -138,29 +138,48 @@ _.extend(App.Player.MediaPlayer, Backbone.Events);
  */
 
 App.Player.Platforms.Core = {
-    _testUrl: null, // "http://assets.adifferentengine.com/SizedDownloads/512KB.json",
-    _testSize: 512000,
     _active: false,
     _eventsToTrack: ['loadstart', 'ended', 'timeupdate', 'play', 'pause', 'loadstart', 'timeupdate', 'error', 'loadeddata', 'volumechange', 'duration'],
-    _active: false,
     _videoElement: null,
     wasMuted: false,
-
     playerId: "player-container",
     name: "MediaPlayer",
-    userBitrate: 10000,
+    userBitrate: 1000,
+    _testSize: 200000,
     speedtest: function(callback) {
-        // $log(" ___ PERFORMING SPEEDTEST ___ ");
+
         callback = callback || $noop;
-        this.startTestTime = new Date().getTime();
+        
+        if (!App.Settings.speedtest_url) return;
+        $log(" ___ PERFORMING SPEEDTEST ___ ");
+
         var _this = this;
-        if (!App.Settings.speedTestUrl) return;
-        $.get(App.Settings.speedTestUrl, function() {
-            // $log(" ___ SPEEDTEST SUCCESS ___ ");''
-            var bitrate = Math.round(_this._testSize / (new Date().getTime() - _this.startTestTime) * 1000 / 1024 * 8);
-            // $log( "___ USER BITRATE DETECTED: " + bitrate + " ____");
-            _this.userBitrate = bitrate;
-        });
+        var imageAddr = App.Settings.speedtest_url +"?n=" + Math.random();
+        var startTime, endTime;
+        startTime = (new Date()).getTime();
+
+        function getResults() {
+            $log(" ___ SPEEDTEST SUCCESS ___ ");
+
+            var duration = Math.round((endTime - startTime) / 1000);
+            var bitsLoaded = _this._testSize * 8;
+            var speedBps = Math.round(bitsLoaded / duration);
+            var bitrate = (speedBps / 1024).toFixed(2);
+            if (parseInt(bitrate) > 100)
+                _this.userBitrate = bitrate;
+
+            $log( "___ USER BITRATE DETECTED: " + bitrate + " ____");
+
+
+        }
+        var download = new Image();
+        download.onload = function () {
+            endTime = (new Date()).getTime();
+            getResults();
+        }
+        download.src = imageAddr;
+
+        
     },
 
     setVideoElement: function(element) {
@@ -194,7 +213,7 @@ App.Player.Platforms.Core = {
         this.trigger("mediaplayer:onnewplaylist", playlist);
         this.stop(true);
         this.playlist = playlist;
-        this.currentIndex = 0;
+        this.currentIndex = playlist.currentIndex;
         this.currentStream = null;
         $(this._videoElement).show();
     },
@@ -395,14 +414,25 @@ App.Player.Playlist = function() {
         return this.currentIndex - 1;
     }
 
+
     this.nextFile = function() {
-        var bitrate = App.Player.MediaPlayer.userBitrate || 10000; // Should be the largest bitrate
         if (this.currentIndex == this.files.length) {
             $log(" REACHED THE END OF PLAYLIST");
             this.resetIndex();
             if (!this.looping) return null;
         }
-        var profiles = this.files[this.currentIndex].get("videos");
+         // Should be the largest bitrate
+
+        var file = this.getPlaylistItem(this.files[this.currentIndex]);
+
+        this.currentIndex+=1;
+
+        return file;
+    }
+    this.getPlaylistItem = function(content) { 
+        if (!content) return false;
+        var profiles = content.get("videos");
+        var bitrate = App.MediaPlayer.userBitrate || 10000;
         var file = profiles[0];
         _.each(profiles, function(profile) {
             $log(" TESTING file.bitrate: " + file.bitrate + " file.bitrate: " + file.bitrate + " my bitrate: " + App.Player.MediaPlayer.userBitrate)
@@ -412,12 +442,24 @@ App.Player.Playlist = function() {
         });
         return file;
     },
-    this.generatePlaylistItem= function(file) {
+
+    this.getPlaylistFiles = function() { 
+
+        var content = this.nextFile();
+        var files = this.generatePlaylistItem(content.mp4);
+        return files;
+    }
+    this.getBitrates = function() { 
+
+        var profiles = this.files[this.currentIndex].get("videos");
+        var bitrates = _.pluck(profiles, "bitrate");
+        return bitrates;
+    }
+    this.generatePlaylistItem = function(file) {
         if (!file) return false;
 
         if (file[0] == '/') file = file.substring(1);
         var mp4_url = App.Settings.mp4_url +file;
-
         var mpegurl = App.Settings.hls_url+'/_definst_/'+file+'/playlist.m3u8'
         var playlist_item = [ 
 

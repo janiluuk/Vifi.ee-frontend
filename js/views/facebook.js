@@ -45,28 +45,6 @@ App.Views.FB.Person = Backbone.View.extend({
 
 });
 
-App.Views.FB.Error = Backbone.View.extend({
-
-    initialize: function () {
-        this.template = _.template(app.template.get('error'));
-        this.render();
-    },
-
-    render: function () {
-        this.$el.html(this.template());
-        return this;
-    },
-
-    events: {
-        'click .retry':'retry'
-    },
-
-    retry: function () {
-        Backbone.history.loadUrl(Backbone.history.fragment);
-    }
-
-});
-
 App.Views.FB.Friends = Backbone.View.extend({
 
     initialize: function () {

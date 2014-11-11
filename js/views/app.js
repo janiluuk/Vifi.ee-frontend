@@ -379,3 +379,28 @@ App.Views.DialogView = Backbone.View.extend({
 
     
 });
+
+App.Views.Error = Backbone.View.extend({
+    text: {error_description: ''},
+    initialize: function (options) {
+
+        if (options.text) this.text.error_description = options.text;
+
+        this.template = ich.errorPageTemplate();
+        this.render();
+    },
+
+    render: function () {
+        this.$el.html(this.template(this.text));
+        return this;
+    },
+
+    events: {
+        'click .retry':'retry'
+    },
+
+    retry: function () {
+        Backbone.history.loadUrl(Backbone.history.fragment);
+    }
+
+});

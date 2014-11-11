@@ -822,7 +822,7 @@ span.arrowup {
     height: 45px;
     z-index: 3;
     position:fixed;
-    background-color: rgba(50, 46, 84, 0.9);
+    background-color: rgba(50, 46, 84, 0.95);
 }
 
 #menu-dragger {
@@ -1223,7 +1223,7 @@ a.arrow-right {
 .sub-tabbar {
     width: 100%;
     text-align:center;
-    background: rgba(69, 45, 74, 0.7);
+    background: rgba(90, 69, 94, 0.8);
 }
 
 .swiper-nav .swiper-slide-active:after {
@@ -1232,7 +1232,7 @@ a.arrow-right {
     width: 0;
     height: 0;
     border: 8px solid transparent;
-    border-bottom-color: rgba(219, 219, 219, 0.9);
+    border-bottom-color: rgba(230, 230, 230, 0.9);
     position: absolute;
     bottom: 0;
     left: 45%;
@@ -1244,14 +1244,14 @@ a.arrow-right {
 }
 
 #front-tabbar-swiper-container.swiper-nav .swiper-slide-active:after {
-    border-bottom-color: rgba(55, 35, 60, 0.65);
+    border-bottom-color: rgba(49, 34, 53, 0.5);
 }
 
 
 .selection-container {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(55, 35, 60, 0.85);
+    background: rgba(49, 34, 53, 0.75);
     padding: 1%;
 }
 
@@ -2253,7 +2253,7 @@ ul#subscription-benefit-list li .icon {
         height: 42px;
         position:absolute;
         top: 45px;
-        background-color: #322E54;
+        background-color: rgba(50, 46, 84, 0.95);
     }
 
     #toolbar-search-group:after {

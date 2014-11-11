@@ -17,6 +17,8 @@ App.MediaPlayer = {
     _eventsToTrack: ['error', 'finish', 'fullscreen', 'fullscreen-exit', 'progress', 'seek', 'pause', 'unload', 'resume', 'ready', 'volume'],
 
     init: function(playlist) {
+        if (this.userBitrate == 1000)
+        this.speedtest();
 
         if (playlist) this.setPlaylist(playlist);
         var _this = this;
@@ -24,16 +26,10 @@ App.MediaPlayer = {
         if (this._videoElement.length == 0) {
           this._videoElement = $("<div>").attr("id", this.playerId).appendTo("#movie-player-container");
         } 
-         var path = "js/vendor/flowplayer.min.js?" + new Date().getTime();
-        // $log("Adding flowplayer path: " + path);
-        $("<script />", {
-            src: path,
-            type: 'text/javascript'
-        }).appendTo("head");
-
-
-        this._createPlayer();
-
+        
+        
+         
+        return this._createPlayer(); 
 
     },
 
@@ -45,18 +41,18 @@ App.MediaPlayer = {
     _createPlayer: function() {
         if (this._active) return false;
         if (!this.playlist) return false;
-        var playlist = this.getPlaylist();
+        var playlist = this.playlist.nextFile();
+        var playlistFiles = this.playlist.getPlaylistFiles();
 
         var _this = this;
 
-        this._videoElement.flowplayer({
+        var player = this._videoElement.flowplayer({
             rtmp: App.Settings.rtmp_url,
             adaptiveRatio: false,
-            playlist: [ playlist ],
+            playlist: [ playlistFiles ],
             }).one('ready', function(ev, api) {
                 _this.plugin = api;
                 _this.active();
-            api.resume();
             api.bind("pause", function(e, api) {
                 _this.trigger("mediaplayer:pause");         
                  
@@ -65,17 +61,13 @@ App.MediaPlayer = {
                 _this.trigger("mediaplayer:resume");         
                  
             });
+            api.resume();
+
         });
-
-
-    },
-    getPlaylist: function() {
-        var items = this.generatePlaylistItem(this.currentStream.mp4);
-        return items;
+        return player;
 
     },
-
-
+   
     _playVideo: function() {
         this.currentStream = this.playlist.nextFile();
 

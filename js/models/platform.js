@@ -29,6 +29,7 @@ App.Platforms = {
  
         _.each(this.supportedPlatforms, function(platform) {
             if (!platform.defaultPlatform && platform.detectPlatform()) {
+
                 this.platform = platform;
                 return;
             }
@@ -108,9 +109,16 @@ App.Platform.prototype.setMediaPlayer = function(mediaplayer) {
 App.Platform.prototype.fetchMediaPlayer = function() {
     if (this._mediaPlayer) {
         //  $log("Adding media player path");
-        var path = "js/platforms/mediaplayer_" + this._mediaPlayer.toLowerCase() + ".js?";
+        var path = "js/platforms/mediaplayer_" + this._mediaPlayer.toLowerCase() + ".js";
         //$log("Adding media player path: " + path);
-        $('<script src="'+path+'" type="text/javascript"></script>').appendTo("head");
+        $('<script async src="'+path+'" type="text/javascript"></script>').appendTo("head");
+        var pluginpath = "js/vendor/flowplayer."+this._mediaPlayer.toLowerCase()+".js";
+            // $log("Adding flowplayer path: " + path);
+            $("<script/>", {
+                src: pluginpath,
+                type: 'text/javascript'
+            }).appendTo("head");
+               
     }
 }
 
@@ -184,7 +192,6 @@ App.Platform.prototype.proxy = function() {
 (function() {
     var browser = new App.Platform('mobile');
     // browser.needsProxy = true;
-    // We want this to fail, and get added as default
     browser.detectPlatform = function() {
 
         return jQuery.browser.mobile;
@@ -221,10 +228,11 @@ App.Platform.prototype.proxy = function() {
 (function() {
     var browser = new App.Platform('flash');
     // browser.needsProxy = true;
-    // We want this to fail, and get added as default
-    browser.setResolution(window.screen.width, window.screen.height);
 
     browser.detectPlatform = function() {
+        return false;
+
+        if (jQuery.browser.mobile) return false;
         try {
             if (navigator.plugins != null && navigator.plugins.length > 0) {
                 return navigator.plugins["Shockwave Flash"] && true;

@@ -9,11 +9,9 @@
  */
 
 App.MediaPlayer = {
-    _active: false,
     content: null,
     currentStream: null,
     plugin: false,
-    _videoElement: null,
     allowFastFoward: true,
     init: function(playlist) {
 
@@ -21,14 +19,7 @@ App.MediaPlayer = {
             this.setPlaylist(playlist);
             this.currentStream = playlist.nextFile();
         }
-        if (typeof($f) == "undefined") {
-            var path = "js/vendor/flowplayer.flash.js?" + new Date().getTime();
-            // $log("Adding flowplayer path: " + path);
-            $("<script />", {
-                src: path,
-                type: 'text/javascript'
-            }).appendTo("head");
-        }
+        
 
 
         _.bindAll(this, 'loadSubtitles');
@@ -41,7 +32,7 @@ App.MediaPlayer = {
         }
         this.speedtest();
 
-        this._createPlayer();
+        return this._createPlayer();
 
     },
     loadFile: function(file) {
@@ -165,19 +156,20 @@ App.MediaPlayer = {
              
                 content: {
                     url: 'http://beta.vifi.ee/swf/flowplayer.content-3.2.8.swf',
-                    bottom: 10,
-                    height: "28%",
-                    width: '100%',
+                    bottom: 7,
+                    height: "17%",
+                    width: '80%',
                     backgroundColor: 'transparent',
                     backgroundGradient: 'none',
                     border: 0,
                     textDecoration: 'outline',
                     style: {
                         body: {
-                            fontSize: '28',
+                            fontSize: '26',
+                            fontWeight: 'bold',
                             fontFamily: 'Arial',
                             textAlign: 'center',
-                            color: '#efffff'
+                            color: '#FFF683'
                         }
                     }
                 }
@@ -185,6 +177,8 @@ App.MediaPlayer = {
         }); // .controls("player-controls");
 
         this.play();
+        return this.plugin;
+
     },
 
 
