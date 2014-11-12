@@ -6,7 +6,7 @@ App.Views.PlayerView = Backbone.View.extend({
     initialize: function() { 
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
 
-        this.render();
+        this.render().resize();
         $(window).resize(this.resize);
         this.listenTo(this.model, "player:ready", this.renderControls);
         this.listenTo(this.model, "change", this.render, this);
@@ -21,16 +21,20 @@ App.Views.PlayerView = Backbone.View.extend({
             var orientation = App.Platforms.platform.getDeviceOrientation();
             if (orientation == "portrait")
             var player_width = this.$el.width();
-            else 
-            var player_width = window_width;
+            else { 
 
+                var player_width = window_width;
+                this.$el.parent().width(player_width);
+                
+            }
+            
             var player_height = (player_width / 16) * 9;
 
 
             $log("setting height "+ player_height);
 
             this.$el.height(player_height+footer_height);
-            $("#player-container, #player-container video, #player-container object").css({ height: player_height, width, player_width});
+            $("#player-container, #player-container video, #player-container object").css({ height: player_height, width: player_width});
 
     },
 
@@ -38,6 +42,8 @@ App.Views.PlayerView = Backbone.View.extend({
     close: function() {
             this.$el.empty();
             this.$el.hide();
+            $(window).unbind(resize);
+
             this.model.trigger("mediaplayer:stop");
             this.unbind();
     },

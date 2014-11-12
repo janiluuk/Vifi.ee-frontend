@@ -53,6 +53,7 @@ App.MediaPlayer = {
             }).one('ready', function(ev, api) {
                 _this.plugin = api;
                 _this.active();
+
             api.bind("pause", function(e, api) {
                 _this.trigger("mediaplayer:pause");         
                  
@@ -61,7 +62,7 @@ App.MediaPlayer = {
                 _this.trigger("mediaplayer:resume");         
                  
             });
-            api.resume();
+                api.resume();
 
         });
         return player;

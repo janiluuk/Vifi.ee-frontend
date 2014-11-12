@@ -342,7 +342,7 @@ App.Player.Platforms.Core = {
                 this.nextVideo();
                 break;
             case 'resume':
-                this.trigger("mediaplayer:play", this.playlist.currentItemIndex());
+                this.trigger("mediaplayer:play", this._playVideo());
                 break;
             case 'pause':
                 this.trigger("mediaplayer:pause");
@@ -352,6 +352,8 @@ App.Player.Platforms.Core = {
                 break;
             case 'error':
                 $(this._videoElement).remove();
+                var jee = JSON.stringify(e);
+                alert(jee);
                 this._createPlayer();
                 this.trigger("mediaplayer:videoerror");
                 break;
