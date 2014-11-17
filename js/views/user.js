@@ -215,6 +215,7 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
         'click #change-password-save-button': 'changePassword'
     },
     initialize: function (options) {
+        if (options && options.profile) this.profile = options.profile;
 
         // This hooks up the validation
         Backbone.Validation.bind(this);
@@ -224,9 +225,19 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
 
         // Check if the model is valid before saving
 
-        if(this.model.isValid(true)) {       
+        if(this.model.isValid(true)) { 
+            var email = app.session.profile.get("email");
+            var pass = this.model.get("newPassword");
+            if (app.session.profile.isRegistered()) {
+                var oldpass = this.model.get("oldPassword");
+
+                app.session.profile.changePassword(oldpass, pass);
+
+            } else { 
+                app.session.profile.register(email, pass);
+
+            }
             // this.model.save();
-            alert('Great Success!');
         }
         return false;
 
@@ -237,7 +248,6 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
     },
     remove: function() {
         // Remove the validation binding
-        // See: http://thedersen.com/projects/backbone-validation/#using-form-model-validation/unbinding
         Backbone.Validation.unbind(this);
         return Backbone.View.prototype.remove.apply(this, arguments);
     }
@@ -250,7 +260,7 @@ App.Views.ResetPasswordView = Backbone.View.extend({
     },
     
     initialize: function() {
-        this.changePasswordForm = new App.Views.ResetPasswordForm({ el: '#password-form', model: new App.User.ChangePassword()});
+        this.changePasswordForm = new App.Views.ResetPasswordForm({ el: '#password-form', profile: this.model, model: new App.User.ChangePassword()});
     },
     render: function() {
        this.$el.html(ich.resetPasswordTemplate(this.model.toJSON()));

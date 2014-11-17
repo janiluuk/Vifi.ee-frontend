@@ -10,50 +10,34 @@ App.Views.PlayerView = Backbone.View.extend({
         $(window).resize(this.resize);
         this.listenTo(this.model, "player:ready", this.renderControls);
         this.listenTo(this.model, "change", this.render, this);
-
+        this.listenTo(this.model, "player:resize", this.resize, this);
     },
     resize: function() {
-            var window_height = $(window).height();
-            var window_width = $(window).width();
             var nav_height = $('#video-container-heading').outerHeight();
             var footer_height = $('#video-container-footer').outerHeight();
-
             var orientation = App.Platforms.platform.getDeviceOrientation();
             if (orientation == "portrait")
-            var player_width = this.$el.width();
+                var player_width = this.$el.width();
             else { 
-
-                var player_width = window_width;
+                var player_width = $(window).width();
                 this.$el.parent().width(player_width);
-                
             }
-            
-            var player_height = (player_width / 16) * 9;
-
-
+            var player_height = player_width*this.model.ratio;
             $log("setting height "+ player_height);
-
             this.$el.height(player_height+footer_height);
-            $("#player-container, #player-container video, #player-container object").css({ height: player_height, width: player_width});
-
+            $("#player-container").css({ height: player_height, width: player_width});
     },
-
-
     close: function() {
             this.$el.empty();
             this.$el.hide();
             $(window).unbind(resize);
-
             this.model.trigger("mediaplayer:stop");
             this.unbind();
     },
-
     render: function() {
-
         this.$el.empty();
         this.$el.append(ich.playerTemplate(this.model.toJSON()));
         this.$el.fadeIn();
-
         return this;
     },
 
@@ -61,7 +45,6 @@ App.Views.PlayerView = Backbone.View.extend({
         $("#video-container-footer").append(ich.playerControlsTemplate(content.toJSON()));
         $('.select-box').fancySelect();
         this.resize();
-
         return this;
     },
 });

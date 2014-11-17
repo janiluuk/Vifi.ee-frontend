@@ -8,7 +8,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     subtitles: {},
     playlist: {},
     ready: false,
-
+    ratio: 9/16,
     initialize: function(options) {
         if (this.ready) return false;
         this.content = new App.Models.FilmContent({ session: options.session});
@@ -34,11 +34,19 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
         this.on("mediaplayer:stop", this.stop, this);
         this.on("mediaplayer:resume", this.play, this);
+        this.player.on("mediaplayer:wchange", this.onChangeRatio, this);
         this.on("change:movie", this.load, this);
         this.ready = true;
 
     },
-
+    onChangeRatio: function(video) {
+        if (undefined !== video) { 
+            var ratio = video.height/video.width;
+            this.ratio = ratio;
+            $log("setting ratio to"+ratio);
+            this.trigger("player:resize", ratio);
+        } 
+    },
     onSubtitlesReady: function(subtitles) {
         this.subtitles.load(subtitles);
     },
@@ -58,12 +66,9 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
     },
     load: function(movie) {
-
         if (!movie) return false;
-
         var id = movie.get("id");
         this.content.load(id);
-        
     },
 
     play: function() {
@@ -116,16 +121,10 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
         return true;
     },
-
-
 });
 
 
-
-
 _.extend(App.Player.MediaPlayer, Backbone.Events);
-
-
 
 /**
  *
@@ -513,8 +512,6 @@ App.Player.Playlist = function() {
     };
     return this;
 };
-
-
 
 App.Player.Subtitles = Backbone.Model.extend({
     videoElement: 'player-container',

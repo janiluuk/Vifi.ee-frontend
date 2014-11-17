@@ -11,7 +11,25 @@ App.Models.ApiModel = Backbone.Model.extend({
     url: function() {
         return App.Settings.api_url + this.path + '?' + this.params;
     },
+    getParams: function(data) {
+        var session = this.get("session");
+        var options = {}
+        var params = {
+            dataType: 'jsonp',
+            data: {
+                api_key: App.Settings.api_key,
+                authId: session.get("auth_id"),
+                sessionId: session.get("session_id"),
+                format: 'json',
+            }
+        };
 
+        if (data) params.data = _.extend(params.data, data);
+        
+        options.data = JSON.parse(JSON.stringify(params.data));
+        options.dataType = params.dataType;
+        return options;
+    },
     // override backbone synch to force a jsonp call
     sync: function(method, model, options) {
 
@@ -30,11 +48,13 @@ App.Models.ApiModel = Backbone.Model.extend({
             break;
         }
 
+        if (undefined == model) model = this;
+
         this.params = "api_key=" + App.Settings.api_key;
         var session = this.get("session");
         if (session) {
-            this.params += "&sessionId=" + session.get("sessionId");
-            if (session.get("hash") != null && session.get("hash") != "") this.params += "&authId=" + session.get("hash");
+            this.params += "&sessionId=" + session.get("session_id");
+            if (session.get("auth_id") != null && session.get("auth_id") != "") this.params += "&authId=" + session.get("auth_id");
         }
         var params = _.extend({
             type: type,
@@ -57,10 +77,8 @@ App.Models.Film = App.Models.ApiModel.extend({
         this.refresh();
 
     },
-
     refresh: function() {
             this.path = "details/" + this.get("id");
-
     },
     fetchRT: function(id) {
 

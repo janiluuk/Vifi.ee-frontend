@@ -45,8 +45,6 @@ App.Platforms = {
         this.platform.init();
         //this.platform.addPlatformCSS();
         this.platform.fetchMediaPlayer();
-        
-
     }
 }
 
@@ -146,13 +144,13 @@ App.Platform.prototype.addPlatformCSS = function() {
     $("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: "style/" + this.matrix() + ".css?1234"
+        href: "style/" + this.matrix() + ".css"
     }).appendTo("head");
 
     $("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: "style/" + this.name.toLowerCase() + ".css?1234"
+        href: "style/" + this.name.toLowerCase() + ".css"
     }).appendTo("head");
 
 
@@ -193,24 +191,19 @@ App.Platform.prototype.proxy = function() {
     var browser = new App.Platform('mobile');
     // browser.needsProxy = true;
     browser.detectPlatform = function() {
-
         return jQuery.browser.mobile;
 
     };
     browser.updateScreen = function() {
-
             this.orientation = this.getDeviceOrientation();
             this.setResolution($(window).outerWidth(), $(window).outerHeight());
-
 
     };
     browser.init = function() {
         $(window).on('resize', function(e) { 
             this.updateScreen();
            // alert("screen changed to "+this.matrix()+" "+this.orientation);
-
         }.bind(browser));
-
         this.orientation = this.getDeviceOrientation();
         this.updateScreen();
 
@@ -230,7 +223,6 @@ App.Platform.prototype.proxy = function() {
     // browser.needsProxy = true;
 
     browser.detectPlatform = function() {
-        return false;
 
         if (jQuery.browser.mobile) return false;
         try {

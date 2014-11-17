@@ -19,9 +19,6 @@ App.MediaPlayer = {
             this.setPlaylist(playlist);
             this.currentStream = playlist.nextFile();
         }
-        
-
-
         _.bindAll(this, 'loadSubtitles');
 
         this._videoElement = $("#" + this.playerId);
@@ -122,7 +119,7 @@ App.MediaPlayer = {
 
                     _this.trigger("mediaplayer:seek");
                 },
-
+             
                 onFinish: function() {
 
                     _this.trigger("mediaplayer:finish");
@@ -133,13 +130,13 @@ App.MediaPlayer = {
                         opacity: 1
                     });
 
+                    _this.trigger("mediaplayer:ratio:change", $f().getClip());
                 }
 
 
             },
             plugins: {
                 rtmp: {
-
                     url: 'http://beta.vifi.ee/swf/flowplayer.rtmp-3.2.11.swf',
                     netConnectionUrl: 'rtmp://media.vifi.ee/vod'                    
                 },
@@ -181,23 +178,17 @@ App.MediaPlayer = {
 
     },
 
-
     _playVideo: function() {
         $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
-
         this.plugin.play();
         this.wasMuted = $f().getStatus().muted;
-
     },
 
     loadSubtitles: function(file) {
         if (typeof($f) == "undefined") return false;
         setTimeout(function() { 
-        $f().getPlugin("captions").loadCaptions(0,file);
-
+            $f().getPlugin("captions").loadCaptions(0,file);
         },1000);
-
-
     },
     stop: function(forced) {
         if (this.plugin) {
@@ -209,7 +200,6 @@ App.MediaPlayer = {
                 else $f().unload();
 
             } catch (e) {} // If this doesn't succeed, it doesn't matter, just die gracefully
-
         }
     },
     resume: function(forced) {
@@ -263,9 +253,6 @@ App.MediaPlayer = {
             }
         }
     },
-
-
-
     playing: function() {
         return (this.plugin.isPlaying() === true) ? true : false;
     },
@@ -276,12 +263,7 @@ App.MediaPlayer = {
         } else {
             return Math.floor(this.plugin.getClip().duration * 1000);
         }
-    },
-
-
-
-
-    
+    },   
 }
 _.extend(App.MediaPlayer, Backbone.Events);
 _.extend(App.MediaPlayer, App.Player.Platforms.Core);

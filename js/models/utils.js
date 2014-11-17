@@ -15,9 +15,9 @@ App.Utils = {
 
     },
     translate: function(string) {
-      var str =  _.find(App.Utils.translations[App.Settings.language], function(item,key) { if (key == string) return item});        
-      if (undefined != str) return str; 
-      return string;
+        var str =  _.find(App.Utils.translations[App.Settings.language], function(item,key) { if (key == string) return item});        
+        if (undefined != str) return str; 
+        return string;
 
     },
     template: function(id) {
@@ -196,18 +196,7 @@ App.Utils.State = Backbone.Model.extend({
 });
 window.t = App.Utils.translate;
 
-    
-Backbone.View.prototype.close = function(){
-  this.remove();
-  this.unbind();
-  this.stopListening();
-
-  if (this.onClose){
-    
-    this.onClose();
-  }
-};
-
+ 
 _.extend(Backbone.Validation.callbacks, {
     valid: function (view, attr, selector) {
         var $el = view.$('[name=' + attr + ']'), 
@@ -220,8 +209,7 @@ _.extend(Backbone.Validation.callbacks, {
     invalid: function (view, attr, error, selector) {
 
         var $el = view.$('[name=' + attr + ']'), 
-        $group = $el.closest('form');
-        
+        $group = $el.closest('form');        
         $group.addClass('error');
         $group.find('.error-'+attr).remove();
 
@@ -232,3 +220,14 @@ _.extend(Backbone.Validation.callbacks, {
 Backbone.View.prototype.assign = function(view, selector) {
     view.setElement(this.$(selector)).render();
 }
+   
+Backbone.View.prototype.close = function(){
+  this.remove();
+  this.unbind();
+  this.stopListening();
+
+  if (this.onClose){ 
+    this.onClose();
+  }
+};
+

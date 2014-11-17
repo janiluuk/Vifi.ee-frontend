@@ -246,7 +246,7 @@ App.Views.SideMenu = Backbone.View.extend({
         if (email =="" || pass == "" || passverify == "") {  
             this.onFail({message: "Fill all the fields!"});
         } else { 
-            this.session.register(email, pass);
+            this.session.get("profile").register(email, pass);
         }
         return false;
     },

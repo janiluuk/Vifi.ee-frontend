@@ -19,7 +19,6 @@ App.MediaPlayer = {
     init: function(playlist) {
         if (this.userBitrate == 1000)
         this.speedtest();
-
         if (playlist) this.setPlaylist(playlist);
         var _this = this;
         this._videoElement = $("#" + this.playerId);
@@ -27,12 +26,9 @@ App.MediaPlayer = {
           this._videoElement = $("<div>").attr("id", this.playerId).appendTo("#movie-player-container");
         } 
         
-        
-         
         return this._createPlayer(); 
 
     },
-
     getCurrentTime: function() {
         if (this.plugin) 
         return this.plugin.video.time * 1000;
@@ -48,22 +44,21 @@ App.MediaPlayer = {
 
         var player = this._videoElement.flowplayer({
             rtmp: App.Settings.rtmp_url,
-            adaptiveRatio: false,
+            adaptiveRatio: true,
             playlist: [ playlistFiles ],
-            }).one('ready', function(ev, api) {
+            }).one('ready', function(ev, api, video) {
                 _this.plugin = api;
                 _this.active();
-
+                _this.trigger("mediaplayer:ratio:change", video);
+                
             api.bind("pause", function(e, api) {
                 _this.trigger("mediaplayer:pause");         
                  
             });
-            api.bind("resume", function(e, api) {
+            api.bind("resume", function(e, api, video) {
                 _this.trigger("mediaplayer:resume");         
-                 
             });
                 api.resume();
-
         });
         return player;
 
@@ -71,17 +66,13 @@ App.MediaPlayer = {
    
     _playVideo: function() {
         this.currentStream = this.playlist.nextFile();
-
         $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
         this.play();
-
-        // this._videoElement.play();
-        //this.wasMuted = this.plugin.muted;
 
     },
 
    
-    loadSubtitles: function() { },
+    loadSubtitles: function() { },  
     stop: function(forced) {
         if (this.plugin) {
             try {
@@ -108,7 +99,6 @@ App.MediaPlayer = {
         this.plugin.seek(currentTime - 10);
         this.trigger("mediaplayer:onrewind", 1);
     },
-
     mute: function(muted) {
         if (this.plugin) {
             // need to hold on to this so we know when we've switched state in our onvolumechange handler.
@@ -123,13 +113,10 @@ App.MediaPlayer = {
             }
         }
     },
-
-
     playing: function() {
         var playing = (this.plugin.playing ? true : false);
         return playing;
     },
-
     duration: function() {
         if (_.isNaN(this.plugin.video.duration)) {
             return null;
@@ -137,11 +124,6 @@ App.MediaPlayer = {
             return Math.floor(this.plugin.video.duration * 1000);
         }
     },
-
-
-    
-
- 
 }
 
 _.extend(App.MediaPlayer, Backbone.Events);

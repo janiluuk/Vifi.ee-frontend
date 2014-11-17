@@ -83,7 +83,7 @@ App.Models.Purchase = Backbone.Model.extend({
         }
 
         var info = {
-            'auth_id': this.session.get("hash"),
+            'auth_id': this.session.get("auth_id"),
             'user_id': user_id,
             'film_id': film_id
         }
@@ -129,7 +129,7 @@ App.Models.Purchase = Backbone.Model.extend({
     purchase: function() {
 
         var method = this.get("method");
-        if (!this.session.get("hash") || this.session.get("hash").length ==0) { 
+        if (!this.session.get("auth_id") || this.session.get("auth_id").length ==0) { 
             this.getAnonymousToken();
             return false;
         }
