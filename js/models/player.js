@@ -662,7 +662,6 @@ App.Player.Subtitles = Backbone.Model.extend({
             this.trigger("subtitles:load", code);
             this.trigger("subtitles:loadfile", this.subtitleFile);
 
-
             return true;
         }
         return false;

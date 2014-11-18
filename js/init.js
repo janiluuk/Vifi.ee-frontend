@@ -38,9 +38,9 @@ window.app = _.extend({}, Backbone.Events);
             app.template.load(['film'], function () {
                 window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile, player: player, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
-                initFB();
             }); 
         });
+
     }
 
 
@@ -53,8 +53,9 @@ $(document).ready(function() {
 
 function init() {
 
-    var url = App.Settings.api_url+"search?limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?";
+    var url = App.Settings.api_url+"search?&short=1&limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?";
     $.getJSON(url, initApp, "jsonp");
+    initFB();
 
 }
 
@@ -130,8 +131,8 @@ function initFB() {
     });
     
     $(document).on('login', function () {
-        app.session.reset();
-        app.session.enable();
+      //  app.session.reset();
+      //  app.session.enable();
         FB.login(function(response) {
         }, {scope: 'email,publish_actions'});
         return false;

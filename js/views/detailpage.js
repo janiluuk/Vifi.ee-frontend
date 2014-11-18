@@ -58,9 +58,14 @@ App.Views.MovieDetailView = Backbone.View.extend({
                       window._atr = null;
                       window._atw = null;
                   }
-        var path = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-540b49a3467ae07c";
-        //$log("Adding media player path: " + path);
-        $('<script src="'+path+'" type="text/javascript" async></script>').appendTo("body");
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-540b49a3467ae07c";
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+        
     },
     resetComments: function() {
 
