@@ -197,14 +197,14 @@ App.Views.SideMenu = Backbone.View.extend({
 
         _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
         this.listenTo(this.model, "change", this.render, this);
-        this.listenTo(this.session, "user:register:fail", this.onFail, this);
-        this.listenTo(this.session, "user:login:fail", this.onFail, this);
+        this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
+        this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
 
-        this.listenTo(this.session, "user:register:success", function(data) {
+        this.listenTo(this.session.profile, "user:register:success", function(data) {
             alert("You have successfully registered!")
             return false;
         }, this);
-        this.listenTo(this.session, "user:login", this.render, this);
+        this.listenTo(this.session.profile, "user:login", this.render, this);
 
         this.enableSideMenu();
     },
@@ -221,7 +221,7 @@ App.Views.SideMenu = Backbone.View.extend({
         var email = $("#login-email").val();
         var pass = $("#login-password").val();
 
-        this.session.login(email, pass);
+        this.session.get("profile").login(email, pass);
 
         return false;
 

@@ -1011,7 +1011,7 @@ form#user-register, form#popup-user-register {
     position: relative;
 }
 
-#side-menu .row-fluid.error, form .row-fluid.error  {
+#side-menu .row-fluid.error  {
     color: red;
     border: 1px solid red;
     padding: 0.3em;
@@ -1019,6 +1019,13 @@ form#user-register, form#popup-user-register {
     font-weight: 700;
     font-size: 0.9em;
     margin: 0.5em 0;
+}
+
+form .row-fluid.error {
+    color: red;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9em;
 }
 
 #side-menu form input, .vifi-popup form .row-fluid input {
@@ -1223,7 +1230,7 @@ a.arrow-right {
 .sub-tabbar {
     width: 100%;
     text-align:center;
-    background: rgba(90, 69, 94, 0.8);
+    background: rgba(97, 58, 87, 0.8);
 }
 
 .swiper-nav .swiper-slide-active:after {
@@ -1244,14 +1251,14 @@ a.arrow-right {
 }
 
 #front-tabbar-swiper-container.swiper-nav .swiper-slide-active:after {
-    border-bottom-color: rgba(49, 34, 53, 0.5);
+    border-bottom-color: rgba(49, 34, 53, 0.7);
 }
 
 
 .selection-container {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(49, 34, 53, 0.75);
+    background: rgba(49, 34, 53, 0.85);
     padding: 1%;
 }
 
@@ -1282,8 +1289,6 @@ a.arrow-right {
 #video-container-heading
 {
     z-index: 5;
-    position: absolute;
-    top:0px;
     opacity: 0.5;
 }
 

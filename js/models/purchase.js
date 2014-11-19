@@ -120,7 +120,7 @@ App.Models.Purchase = Backbone.Model.extend({
         var session_id = data.session_id;
 
         if (session_id != "") { 
-            this.session.set("sessionId", session_id);
+            this.session.set("session_id", session_id);
             app.usercollection.add(this.model);
 
             this.trigger("purchase:successful"); 
@@ -166,8 +166,8 @@ App.Models.Purchase = Backbone.Model.extend({
     },
     remove: function() {
         // Remove the validation binding
-        // See: http://thedersen.com/projects/backbone-validation/#using-form-model-validation/unbinding
         Backbone.Validation.unbind(this);
         return Backbone.View.prototype.remove.apply(this, arguments);
     }     
 });
+

@@ -63,11 +63,20 @@ App.Views.BrowserPage = Backbone.View.extend({
             layoutMode: 'fitRows',
             resizable: true,
             itemSelector: '.item',
-            transitionDuration: '.3s',
-            animationOptins: {
+            transitionDuration: '0.7s',
+              // disable scale transform transition when hiding
+              hiddenStyle: {
+                opacity: 0,
+                'transform': 'translateY(100%)',
+              },
+              visibleStyle: {
+                opacity: 1,
+                'transform': 'translateY(0%)',
+              },
+            animationOptions: {
                 duration: 250,
                 easing: 'linear',
-                queue: false,
+                queue: true,
             }
         });
 

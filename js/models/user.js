@@ -99,21 +99,22 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
     changePassword: function(oldpass, password) {
         if (!password) return false;
-
-        var url = App.Settings.api_url + 'user/changepassword?callback=?';
+        
+        var url = App.Settings.api_url + 'user/changepassword/'+this.get("email")+'?callback=?';
         var options = this.getParams({password: password, oldpassword: oldpass});
         $.getJSON(url, options.data, "jsonp").done(function(data) {
 
             if (data.status == "ok") {
-                this.set("user_id", data.user_id);
-                this.set("session_id", data.cookie);
-                this.set("auth_id", data.activationKey);
-                this.trigger("user:changepassword:success", data);
+
+                this.trigger("user:changepassword:success", data.message);
             } else {
-                this.trigger("user:changepassword:fail", data);
+                this.trigger("user:changepassword:fail", data.message);
             }
 
-        }.bind(this), "jsonp");
+        }.bind(this), "jsonp").error(function(data) { 
+
+                this.trigger("user:changepassword:fail", "Error making query");
+        }.bind(this));
 
     },
     register: function(email, password) {
@@ -150,6 +151,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         }.bind(this), "jsonp");
     },
     updateUserCollection: function() {
+        if (!app || !app.usercollection) return false;
         var tickets = this.get("tickets");
         app.usercollection.reset(tickets);
 
@@ -348,6 +350,7 @@ App.User.Session = Backbone.Model.extend({
     onUserAuthenticate: function(data) {
         this.set("logged_in", true);
         this.set("user_id", this.profile.get("user_id"));
+        
         this.cookie.write(this.get("user_id"),this.get("auth_id"), this.get("session_id") );
         this.disable();
     },
@@ -373,7 +376,15 @@ App.User.Session = Backbone.Model.extend({
 
         $.getJSON(this.url(), options.data).done(function(data) {
             if (this.isLoggedIn() === false) {
+                if (undefined !== data.status && data.status == "error") {  
+                    $log("Retrieving new token "+data.message);
+                    
+                    this.reset();
+                    this.once("user:token:authenticated", this.fetch, this);
+                    this.getToken(this.profile.get("email"));
+                    return false;
 
+                }
                 if (undefined !== data.cookie) {
                     this.set("session_id", data.cookie);
                 }

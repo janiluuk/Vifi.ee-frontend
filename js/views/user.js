@@ -8,13 +8,24 @@ App.Views.SubscriptionView = Backbone.View.extend({
           this.options = options;
     },
     buysubscription: function() {
-        this.dialog = new App.Views.PurchaseSubscription();
-        this.dialog.render();
+        var subscription = app.collection.get(59444);
+
+//        if (!app.session.get("profile").hasMovie(subscrip)) {
+            this.purchaseView = new App.Views.PurchaseSubscriptionView({
+                model: subscription,
+                session: app.session
+            })
+            return false;
+//        }
+
     },
     activatesubscription: function() {
 
-        this.dialog = new App.Views.ActivateSubscription();
-        this.dialog.render();
+            this.purchaseView = new App.Views.PurchaseSubscriptionView({
+                model: subscription,
+                session: app.session
+            })
+            return false;
 
     },
     render: function() { 
@@ -198,18 +209,25 @@ App.Views.UserCollectionView = Backbone.View.extend({
 App.Views.ResetPasswordForm = Backbone.View.extend({ 
 
     bindings: {
-        '[name=newPassword]': {
-            observe: 'newPassword',
+        '[name=currentPassword]': {
+            observe: 'password',
             setOptions: {
                 validate: false
             }
         },
-        '[name=repeatPassword]': {
+        '[name=newPassword]': {
+            observe: 'newPassword'   ,
+            setOptions: {
+                validate: false
+            }
+        },
+      '[name=repeatPassword]': {
             observe: 'repeatPassword'   ,
             setOptions: {
                 validate: false
             }
-        }
+        },
+         
     },
     events: {  
         'click #change-password-save-button': 'changePassword'
@@ -229,7 +247,7 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
             var email = app.session.profile.get("email");
             var pass = this.model.get("newPassword");
             if (app.session.profile.isRegistered()) {
-                var oldpass = this.model.get("oldPassword");
+                var oldpass = this.model.get("password");
 
                 app.session.profile.changePassword(oldpass, pass);
 

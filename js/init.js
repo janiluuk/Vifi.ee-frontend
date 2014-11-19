@@ -28,7 +28,7 @@ window.app = _.extend({}, Backbone.Events);
         });
         var session = new App.User.Session();
         var profile = session.get("profile");
-        
+            
         var player = new App.Player.MediaPlayer({session: session});
 	    var periods = new App.Collections.FilterCollection([{'id': '2014-2014', 'name': '2014'}, {'id': '2013-2013', 'name': '2013'}, {'id': '2000-2012', 'name': '00-ndad'},{'id': '1990-2000', 'name': '90-ndad'}, {'id': '1980-1990', 'name': '80-ndad'},{'id': '1900-1980', 'name': '60-70 ndad'} ]);
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
@@ -38,6 +38,8 @@ window.app = _.extend({}, Backbone.Events);
             app.template.load(['film'], function () {
                 window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile, player: player, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
+                initFB();
+
             }); 
         });
 
@@ -55,7 +57,6 @@ function init() {
 
     var url = App.Settings.api_url+"search?&short=1&limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?";
     $.getJSON(url, initApp, "jsonp");
-    initFB();
 
 }
 
@@ -131,8 +132,8 @@ function initFB() {
     });
     
     $(document).on('login', function () {
-      //  app.session.reset();
-      //  app.session.enable();
+        app.session.reset();
+        app.session.enable();
         FB.login(function(response) {
         }, {scope: 'email,publish_actions'});
         return false;

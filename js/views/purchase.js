@@ -85,6 +85,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
       Backbone.Validation.configure({
           forceUpdate: true
       });
+
       Backbone.Validation.bind(this, { model: this.payment});
       
     },
@@ -173,19 +174,33 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
 });
 
-App.Views.PurchaseSubscription = App.Views.DialogView.extend({
-   render: function() {
-        this.$el.html(ich.subscriptionActivateDialogTemplate());
-        this.openDialog(false, ich.subscriptionActivateDialogTemplate());
+App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
+    
+    initialize: function(options) {
+
+        options = options || {};
+        this.session = options.session;
+        this.paymentView = new App.Views.SubscriptionPaymentDialog({model: options.model, session: options.session, parent: this});
+        this.loginView = new App.Views.LoginDialog({model: options.session, parent: this});
+        this.render();
+
+   }
+
+
+});
+App.Views.SubscriptionPaymentDialog = App.Views.PaymentDialog.extend({ 
+    render: function() {
+        this.$el.html(ich.subscriptionPurchaseDialogTemplate(this.model.toJSON()));
+        this.updateUI();
 
         return this;
     },
-
 });
+
 App.Views.ActivateSubscription = App.Views.DialogView.extend({
    render: function() {
         this.$el.html(ich.subscriptionActivateDialogTemplate());
-        this.openDialog(false, ich.subscriptionActivateDialogTemplate());
+        this.openDialog(false, ich.subscriptionPurchaseDialogTemplate());
 
         return this;
     }

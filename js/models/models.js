@@ -106,6 +106,25 @@ App.Models.Film = App.Models.ApiModel.extend({
 
     },
  });
+App.Models.FilmSession = App.Models.ApiModel.extend({ 
+    path: 'filmsession',
+    defaults: {  
+        'session_id' : '',
+        'timestamp' : '',
+        'watched' : false,
+        'film_id' : ''
+    },
+    initialize: function(options) {
+        if (options && undefined !== options.session) {
+            this.set("session", options.session);
+        }
+        this.on("change:videos", this.onLoadContent, this);
+        this.on("change:subtitles", this.onLoadSubtitles, this);
+
+
+    },
+
+});
 
 App.Models.FilmContent = App.Models.ApiModel.extend({
     'path': 'content',
@@ -126,7 +145,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
             'filename': '',
             'code': '',
             'language': ''
-        }]
+        }],
+        session: { },
     },
 
     initialize: function(options) {

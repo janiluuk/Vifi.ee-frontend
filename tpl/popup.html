@@ -1,32 +1,5 @@
-
-        <script type="text/html" id="purchaseDialogTemplate">
-        <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
-     <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-
-            <div class="col-img" style="background-image: url('{{ poster_url }}');">
-            </div>
-            <div class="col-content">
-                <div class="popup-section">
-                    <div class="film-title">{{ title }}</div>
-                    <div class="film-description price">{{ price }} EUR</div>
-                    <div class="film-language">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td><h3>Keeled</h3></td>
-                                    <td><h3>Subtiitrid</h3></td>
-                                </tr>
-                                <tr>
-                                    <td>{{ languages_text }}</td>
-                                    <td>{{ subtitles_text }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
- 
-                <div id="payment-section" class="popup-section">
-                    <h3>Vali makseviis</h3>
+<script type="text/html" id="paymentsPartial" class="partial">
+<h3>Vali makseviis</h3>
                     <ul id="payment-list">
                         <li id="swedbank"><a>
                             <div class="payment-item-image"></div>
@@ -53,6 +26,40 @@
                             <p>Kood</p>
                         </a></li>
                     </ul>
+</script>
+        <script type="text/html" id="purchaseDialogTemplate">
+        <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
+     <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+
+            <div class="col-img" style="background-image: url('{{ poster_url }}');">
+            </div>
+            <div class="col-content">
+                <div class="popup-section">
+                    <div class="film-title">{{ title }}</div>
+                    <div class="film-description price">{{ price }} EUR</div>
+                    <div class="film-language">
+                        <table>
+                            <tbody>
+                                 <tr>
+                                    <td><h3>Keeled</h3></td>
+                                    <td><h3>Subtiitrid</h3></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ language }}</td>
+                                    <td>{{#if subtitles }}
+                                    {{#subtitles}}{{this}} {{/subtitles}}
+                                    {{else}}
+                                    No subtitles
+                                    {{/if}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+ 
+                <div id="payment-section" class="popup-section">
+                    {{>paymentsPartial}}
                     <form id="single-purchase">
                     <input type="hidden" name="method" id="method"/>
                     <div class="payment-method-data" id="payment-email" style="display:none">
@@ -139,74 +146,35 @@
         </div>
 
         </script>
-<script type="text/html" id="subscriptionActivateDialogTemplate">
-        <div class="white-popup vifi-popup image-and-content-popup">
-
+<script type="text/html" id="subscriptionPurchaseDialogTemplate">
+       <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
+     <button title="Close (Esc)" type="button" class="mfp-close">×</button>
             <div class="col-img" style="background-image: url('{{ poster_url }}');">
             </div>
             <div class="col-content">
                 <div class="popup-section">
-                    <div class="film-title">{{ title }}</div>
-                    <div class="film-description price">{{ price }} EUR</div>
-                    <div class="film-language">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td><h3>Keeled</h3></td>
-                                    <td><h3>Subtiitrid</h3></td>
-                                </tr>
-                                <tr>
-                                    <td>{{ languages_text }}</td>
-                                    <td>{{ subtitles_text }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <div class="film-title">Subscription {{ title }}</div>
+                    <div class="film-description price">6.99 EUR / 30 days</div>
                 </div>
  
                 <div id="payment-section" class="popup-section">
-                    <h3>Vali makseviis</h3>
-                    <ul id="payment-list">
-                        <li id="swedbank"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Swedbank</p>
-                        </a></li>
-                        <li id="seb"><a>
-                            <div class="payment-item-image"></div>
-                            <p>SEB</p>
-                        </a></li>
-                        <li id="danske"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Danske</p>                        
-                        </a></li>
-                        <li id="nordea"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Nordea</p>                        
-                        </a></li>
-                        <li id="creditcard"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Krediitkaart</p>                        
-                        </a></li>
-                        <li id="code"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Kood</p>
-                        </a></li>
-                    </ul>
-                    <div class="payment-method-data" id="payment-email">
+                    {{>paymentsPartial}}
+                    <form id="single-purchase">
+                    <input type="hidden" name="method" id="method"/>
+                    <div class="payment-method-data" id="payment-email" style="display:none">
                         <h3>Email</h3>
-                        <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
-                        <form id="single-email-purchase">
-                        <input type="text" id="email" class="vifi-text-input" placeholder="Sinu e-posti aadress"></input>
-                        </form>
-                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu {{Tagasi kaupmehe juurde}}.</p>
+                        <p>Emailile saadetakse tellimuse kinnitus.</p>
+                        <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
+                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
                     </div>
-                    <div class="payment-method-data" id="payment-code">
-                        <h3>Sisesta filmi kood</h3>
-                        <form id="single-code-purchase">
-                        <input type="text" id="code" class="vifi-text-input" placeholder="Sisesta kood"></input>
-                        </form>
+                    <div class="payment-method-data"  id="payment-code" style="display:none">
+                        <h3>Sisesta promo kood</h3>
+                        <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
                     </div>
-                    <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                     <button id="confirm-purchase-button" class="btn big green full">Kinnita tellimus</button>
+                    </form>
+                    
+                   
                 </div>
             </div>
 
