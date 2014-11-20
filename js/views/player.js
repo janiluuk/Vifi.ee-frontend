@@ -11,6 +11,8 @@ App.Views.PlayerView = Backbone.View.extend({
         this.listenTo(this.model, "player:ready", this.renderControls);
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "player:resize", this.resize, this);
+        this.listenTo(app.router, "page:change", this.close, this);
+
     },
     resize: function() {
             var nav_height = $('#video-container-heading').outerHeight();
@@ -29,8 +31,10 @@ App.Views.PlayerView = Backbone.View.extend({
     },
     close: function() {
             this.$el.empty();
+            this.stopListening();
+
             this.$el.hide();
-            $(window).unbind(resize);
+            $(window).unbind("resize");
             this.model.trigger("mediaplayer:stop");
             this.unbind();
     },

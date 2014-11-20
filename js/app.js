@@ -75,7 +75,6 @@ App.Router = Backbone.Router.extend({
     onRoute: function(route) {
         this.trigger("page:change", route);
         app.sidemenu.closeSideBar();
-
         this.currentPage = route;
 
     },

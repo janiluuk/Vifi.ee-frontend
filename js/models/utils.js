@@ -194,6 +194,99 @@ App.Utils.State = Backbone.Model.extend({
         
     }
 });
+App.Utils.Api = Backbone.Model.extend({  
+
+    session: {},
+
+    initialize: function(options) { 
+
+        options = options || {};
+        if (options.session) this.session = session;
+        
+        $.ajaxSetup({
+              'error':function(res,data) { this.trigger("error", data); }.bind(this)
+        });
+        this.on("error", this.onError);
+        this.on("success", this.onSuccess);
+        this.on("notice", this.onNotice);
+
+    },
+    onError: function(data) {  
+        app.trigger("error", data);
+
+    },
+    onSuccess: function(data) {  
+        app.trigger("success", data);
+
+    },
+    onNotice: function(data) {  
+        app.trigger("notify", data);
+
+    },
+    parseResponse: function(data, callback) { 
+        var msg = data.message || JSON.stringify(data);
+
+        if (data.status == "ok") {
+            this.onSuccess(msg);
+        } 
+
+        if (callback) callback(data);
+
+    },
+    call: function(action, params, callback) {  
+        if (_.isArray(action)) action = action.join("/");
+        var _this = this;
+        params = params || {};
+        var url = App.Settings.api_url+action+"/?format=json&callback=?&api_key="+App.Settings.api_key+"&";
+        $.getJSON(url,params, function(data) {  _this.parseResponse(data, callback);  }, "jsonp");
+
+
+
+
+    }
+
+
+}),
+
+
+App.Utils.Notification = Backbone.Model.extend({ 
+
+    initialize: function(options) {
+        console.log(options);
+
+        if (options && options.model) this.attach(options.model);
+    },
+    attach: function(model) {
+
+        model.on("error", function(message, callback) { this.notify(message, "error", callback); }, this);
+        model.on("notice",function(message, callback) { this.notify(message, "notice", callback); }, this);
+        model.on("success", function(message, callback) { this.notify(message, "success", callback); }, this);
+
+
+    },
+    notify: function(message, type, callback) { 
+        message = message || "Empty message";
+
+        type = type || "notice";
+
+                // create the notification
+                        var notification = new NotificationFx({
+
+                            message : '<div class="ns-thumb"><img width=64 height=64 src="/style/img/notify_'+type+'.png"/></div><div class="ns-content"><p>'+message+'</p></div>',
+                            layout : 'other',
+                            ttl : 6000,
+                            effect : 'thumbslider',
+                            type : type, // notice, warning, error or success
+                            onClose : function() {
+                                if (callback) callback();
+                            }
+                        });
+
+                        // show the notification
+                        notification.show();
+    }
+}, Backbone.Events);
+
 window.t = App.Utils.translate;
 
  

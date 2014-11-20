@@ -32,9 +32,10 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.subtitles.on("subtitles:loadfile", this.onSubtitlesLoad, this);
         this.player.on("mediaplayer:pause", this.disableSubtitles, this);
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
+        this.player.on("mediaplayer:ratio:change", this.onChangeRatio, this);
+
         this.on("mediaplayer:stop", this.stop, this);
         this.on("mediaplayer:resume", this.play, this);
-        this.player.on("mediaplayer:wchange", this.onChangeRatio, this);
         this.on("change:movie", this.load, this);
         this.ready = true;
 

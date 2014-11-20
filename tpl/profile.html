@@ -185,22 +185,8 @@
                     </div>
                 </div>
                 <div id="user-pairtv-info" class="card float_left">
-                    <div class="card-heading">
-                        <span>TV-Pairing</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="row-fluid">
-                            <span>Please enter the pairing code from your television. <a href="/#me/pair-device">What is this?</a> 
-                            </span>
-                        </div>
-                        <div class="row-fluid">
-                            <i class="icon sync"></i>
-                            <input type="text" id="pairing-code" class="vifi-text-input" placeholder="Pairing code" />
-                        </div>
-                        <div class="row-fluid">
-                            <button class="btn float_right">Pair!</button>
-                        </div>
-                    </div>
+                        {{>pairDevicePartial}}
+
                 </div>
                 <button class="btn facebook revoke float_right"><i class="icon facebook"></i>Revoke Facebook permission</button>
             </div>
@@ -215,16 +201,7 @@
     {{/if}}
 
 </script>
-<script type="text/html" id="pairDeviceTemplate">
-    <div id="pairingpage-content" class="singlepage-content">
-        <div id="pairingpage-header" class="singlepage-header float_left">
-            <div id="pairingpage-heading" class="singlepage-heading">Pair your account with your smart TV</div>
-        </div>
-        <div id="pairingpage-body" class="singlepage-body float_left">
-
-            <div id="pairing-body-container" class=" singlepage-body-container float_left">
-                <div class="width-50 float_left">
-                    <div id="user-pairtv" class="card float_left">
+<script type="text/html" class="partial" id="pairDevicePartial">
                         <div class="card-heading">
                             <span>TV-Pairing</span>
                         </div>
@@ -244,6 +221,18 @@
                             </form>
 
                         </div>
+</script>
+<script type="text/html" id="pairDeviceTemplate">
+    <div id="pairingpage-content" class="singlepage-content">
+        <div id="pairingpage-header" class="singlepage-header float_left">
+            <div id="pairingpage-heading" class="singlepage-heading">Pair your account with your smart TV</div>
+        </div>
+        <div id="pairingpage-body" class="singlepage-body float_left">
+
+            <div id="pairing-body-container" class=" singlepage-body-container float_left">
+                <div class="width-50 float_left">
+                    <div id="user-pairtv" class="card float_left">
+                        {{>pairDevicePartial}}
 
                     </div>
                 </div>

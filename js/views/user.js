@@ -10,16 +10,17 @@ App.Views.SubscriptionView = Backbone.View.extend({
     buysubscription: function() {
         var subscription = app.collection.get(59444);
 
-//        if (!app.session.get("profile").hasMovie(subscrip)) {
+        if (!app.session.get("profile").hasSubscription()) {
             this.purchaseView = new App.Views.PurchaseSubscriptionView({
                 model: subscription,
                 session: app.session
             })
             return false;
-//        }
+        }
 
     },
     activatesubscription: function() {
+        var subscription = app.collection.get(59444);
 
             this.purchaseView = new App.Views.PurchaseSubscriptionView({
                 model: subscription,

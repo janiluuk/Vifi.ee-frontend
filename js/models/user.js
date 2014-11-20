@@ -199,7 +199,9 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
     purchase: function(movie) {
         this.fetch().done(function() {
-            this.trigger("profile:updated");
+            if (this.hasMovie(movie))
+            this.trigger("purchase:successful", movie);
+
         }.bind(this));
     },
     hasMovie: function(movie) {
@@ -209,6 +211,11 @@ App.User.Profile = App.Models.ApiModel.extend({
         });
         if (movies.length > 0) return true;
         return false;
+    },
+    hasSubscription: function() { 
+
+        return false;
+
     },
     isRegisteredUser: function() {
 

@@ -22,14 +22,13 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.evt = options.eventhandler;
         this.template = options.template;
         this.player = options.player;
-        
         this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
         options.model = this.user;
 
         _.bindAll(this, 'render', 'showBrowserPage');
-            
+        this.api = new App.Utils.Api({model: this.session});
+        this.notification = new App.Utils.Notification({model: this});
         this.sidemenu = new App.Views.SideMenu({model: this.user, session: this.session});
-
         this.topmenu = new App.Views.TopMenu({model: this.user});
         this.homepage = new App.Views.HomePage(options);
         this.render();

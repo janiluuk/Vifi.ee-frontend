@@ -28,15 +28,16 @@ window.app = _.extend({}, Backbone.Events);
         });
         var session = new App.User.Session();
         var profile = session.get("profile");
-            
+
         var player = new App.Player.MediaPlayer({session: session});
 	    var periods = new App.Collections.FilterCollection([{'id': '2014-2014', 'name': '2014'}, {'id': '2013-2013', 'name': '2013'}, {'id': '2000-2012', 'name': '00-ndad'},{'id': '1990-2000', 'name': '90-ndad'}, {'id': '1980-1990', 'name': '80-ndad'},{'id': '1900-1980', 'name': '60-70 ndad'} ]);
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Most recent', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Most watched'}]);
         var eventhandler = _.extend({}, Backbone.Events);
+
         App.Utils.include(["popup", "menu", "player","filmitem", "profile", "page"], function() { 
             app.template.load(['film'], function () {
-                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile, player: player, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
+                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile,player: player, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
                 initFB();
 

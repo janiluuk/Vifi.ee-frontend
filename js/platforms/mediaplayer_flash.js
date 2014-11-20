@@ -185,10 +185,11 @@ App.MediaPlayer = {
     },
 
     loadSubtitles: function(file) {
+
         if (typeof($f) == "undefined") return false;
         setTimeout(function() { 
-            $f().getPlugin("captions").loadCaptions(0,file);
-        },1000);
+            this.plugin.getPlugin("captions").loadCaptions(0,file);
+        }.bind(this),1000);
     },
     stop: function(forced) {
         if (this.plugin) {

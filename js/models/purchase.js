@@ -56,7 +56,7 @@ App.Models.Purchase = Backbone.Model.extend({
         if (undefined != response && response.status && response.status == "Success") {
             
             var profile = app.session.get("profile");
-                profile.once("profile:updated", function() { 
+                profile.once("purchase:successful", function() { 
                     this.trigger("purchase:successful"); 
                     $log("Billing process successfully ended");
                 }.bind(this));            
@@ -136,23 +136,19 @@ App.Models.Purchase = Backbone.Model.extend({
         if (method == "code") { 
             var id = this.model.get("id");
             var code = this.get("code");
-            this.sendCodeAuth(id, code,this.onCodeAuth);
+            this.sendCodeAuth(this.onCodeAuth, id, code);
             return false;
         }
    
-
         try {
            var info = this.generatePurchaseInfo();
+           var price = this.model.get("price");
+           this.sendPurchase(this.paymentCallback, info, price);
+
         } catch (e) {
             $log("Error while making purchase: " + e);
             return false;
-
         }
-
-        var price = this.model.get("price");
-
-        this.sendPurchase(this.paymentCallback, info, price);
-
     },
     sendPurchase: function(callback, info, price) {
 
@@ -160,9 +156,9 @@ App.Models.Purchase = Backbone.Model.extend({
         $.get(url, { price: price, transactionId: 001, customVar: info }, callback, "jsonp");
 
     },
-    sendCodeAuth: function(film_id,code,callback) {  
-        var url = App.Settings.api_url +"authorize_film/"+film_id+"/"+code+"/?format=json&callback=?&api_key="+App.Settings.api_key+"&";
-        $.getJSON(url, {}, callback, "jsonp");
+    sendCodeAuth: function(callback, film_id,code) {  
+        app.api.call(["authorize_film", film_id, code], {}, callback);
+
     },
     remove: function() {
         // Remove the validation binding
