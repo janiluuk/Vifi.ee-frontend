@@ -32,7 +32,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
         })(document,'script','imdb-rating-api');
 
     },
-
     enableComments: function() {
         window.disqus_title = this.model.get("title");
         window.disqus_shortname = 'vifi'; // Required - Replace example with your forum shortname
@@ -201,13 +200,11 @@ App.Views.MovieDetailView = Backbone.View.extend({
             }
             //etc..
         });
-
         $("#film-tabbar-swiper-container .swiper-slide").each(function(item) {
             $(this).click(function() {
                 filmnavSwiper.swipeTo(item)
             })
         });
-
 
     }
 });
