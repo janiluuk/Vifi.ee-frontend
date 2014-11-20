@@ -1037,7 +1037,7 @@ form .row-fluid.error {
     left: 7px;
 }
 
-#side-menu #social-login .row-fluid i.icon, #popup-social-login .row-fluid i.icon {
+#social-login .row-fluid i.icon {
     top: 5px;
     left: 5px;
 }
@@ -1599,8 +1599,10 @@ ul#movie-interactive-button-row {
     list-style-type: none;
     position: absolute;
     width: 650px;
+    height: 55px;
     margin: auto;
-    top: 200px;
+    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     padding: 0;
@@ -2137,10 +2139,6 @@ ul#subscription-benefit-list li .icon {
         height: 390px ;
     }
 
-    ul#movie-interactive-button-row {
-        top: 170px;
-    }
-
     .selection-container {
         padding: 0.5% ;
     }
@@ -2170,10 +2168,6 @@ ul#subscription-benefit-list li .icon {
 @media only screen and (max-height: 600px) {
     #featured-swiper-container, #gallery-swiper-container, #player-container.flowplayer, .video-container-body iframe {
         height: 350px ;
-    }
-
-    ul#movie-interactive-button-row {
-        top: 150px;
     }
 
     p.duration-number {
@@ -2370,10 +2364,12 @@ ul#subscription-benefit-list li .icon {
 
     ul#movie-interactive-button-row {
         width: 250px;
-        top: 220px;
-        left: 20px;
+        height: 140px;
         text-align: left;
         margin: 0;
+        top: auto;
+        bottom: 40px;
+        left: 20px;
         z-index: 999;
     }
 

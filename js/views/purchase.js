@@ -6,6 +6,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
 
   },
   initialize: function(options) {
+    _.bindAll(this, 'afterClose', 'render');
 
     options = options || {};
     this.session = options.session;
@@ -15,13 +16,11 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
       parent: this
     });
     this.loginView = new App.Views.LoginDialog({
-      model: options.session,
+      session: options.session,
       parent: this
     });
     this.render();
-
   },
-
 
   showLogin: function() {
     $(".vifi-popup").hide();
@@ -44,6 +43,11 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
     else this.showLogin();
     return this;
   },
+  afterClose: function(e) { 
+    this.loginView.close();
+    this.paymentView.close();
+    return false;
+  }
 
 });
 
@@ -53,22 +57,22 @@ App.Views.LoginDialog = Backbone.View.extend({
   events: {
     'click .mfp-close': 'close',
     'click button#continue-unregistered': 'showPayment'
-
   },
   initialize: function(options) {
 
     options = options || {};
     this.parent = options.parent;
-
+    this.session = options.session;
+    this.loginForm = new App.Views.LoginForm({session: options.session});
+    this.listenTo(this.session.profile, "user:login", this.showPayment, this);
   },
-
 
   showPayment: function() {
     this.parent.showPayment();
-
   },
   render: function() {
-    this.$el.html(ich.loginDialogTemplate(this.model.toJSON()));
+    this.$el.html(ich.loginDialogTemplate(this.session.toJSON()));
+    this.assign(this.loginForm, "#popup-login-register-form");
     return this;
   }
 
@@ -78,7 +82,7 @@ App.Views.LoginDialog = Backbone.View.extend({
 
 App.Views.PaymentDialog = Backbone.View.extend({
   events: {
-    'click .mfp-close': 'exit',
+    'click .mfp-close': 'close',
     'click button#confirm-purchase-button': 'initPayment',
     'click #payment-list li': 'selectMethod',
   },

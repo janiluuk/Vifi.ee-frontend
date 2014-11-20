@@ -39,56 +39,11 @@
                             <a class="logout" href="#"><li>Logout </li></a>
                         </ul>
                         {{else}}
-                        <div id="social-login">
-                            <div class="row-fluid">
-                                <i class="icon facebook"></i>
-                                <button class="btn full facebook">Logi sisse Facebookiga</button>
-                            </div>
-                        </div>
+                        
 
                         <div id="login-register-form">
-                            <form id="user-login">
-                            <h3>Logi Sisse</h3>                            
-                                <div class="row-fluid">
-                                    <i class="icon email"></i>
-                                    <input type="email" id="login-email" class="vifi-text-input" placeholder="E-post" />
-                                </div>
-                                <div class="row-fluid">
-                                    <i class="icon password"></i>                            
-                                    <input type="password" id="login-password" class="vifi-text-input" placeholder="Parool" />
-                                </div>
-                                <div class="row-fluid">
-                                    <button class="btn green full" id="login-confirm">Logi Sisse</button>
-                                </div>
-                                <div class="row-fluid">
-                                    <a href="">Unustasin parooli</a>
-                                </div>
-                                <div class="row-fluid">
-                                    <p id="login-tagline" class="tagline">New to Vifi? <a class="register-button" href="#">Registreeri</a></p>
-                                </div>
-                            </form>
-
-                            <form id="user-register">
-                            <h3>Registreeri</h3>
-                                <div class="row-fluid">
-                                    <i class="icon email"></i>
-                                    <input type="email" id="register-email" class="vifi-text-input" placeholder="E-post" />
-                                </div>
-                                <div class="row-fluid">
-                                    <i class="icon password"></i>                            
-                                    <input type="password" id="register-password" class="vifi-text-input" placeholder="Parool" />
-                                </div>
-                                <div class="row-fluid">
-                                    <i class="icon confirm-password"></i> 
-                                    <input type="password" id="register-password-verify" class="vifi-text-input" placeholder="Parool uuesti" />
-                                </div>
-                                <div class="row-fluid">
-                                    <button class="btn green full" id="register-confirm">Registreeri</button>
-                                </div>
-                                <div class="row-fluid">
-                                    <p id="register-tagline" class="tagline">Already have an account? <a class="register-button" href="#">Logi Sisse</a></p>
-                                </div>
-                            </form>
+                            {{>fbLoginPartial}}
+                            {{>loginformPartial}}
                         </div>
                         {{/if}}
 
@@ -98,7 +53,7 @@
                         </ul>
 
                         <h3>Tugi</h3>
-                        <ul class="side-menu-list">
+                        <ul class="side-menu-list" id="side-menu-content-pages">
                   
                             <a href="#"><li>Kasutustingimused</li></a>
                             <a href="#"><li>Korduma kippuvad küsimused</li></a>

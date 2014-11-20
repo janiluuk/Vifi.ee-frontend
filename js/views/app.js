@@ -28,6 +28,8 @@ App.Views.BaseAppView = Backbone.View.extend({
         _.bindAll(this, 'render', 'showBrowserPage');
         this.api = new App.Utils.Api({model: this.session});
         this.notification = new App.Utils.Notification({model: this});
+        this.notification.attach(this.session);
+        
         this.sidemenu = new App.Views.SideMenu({model: this.user, session: this.session});
         this.topmenu = new App.Views.TopMenu({model: this.user});
         this.homepage = new App.Views.HomePage(options);
@@ -48,7 +50,6 @@ App.Views.BaseAppView = Backbone.View.extend({
         
         this.scrollTop = this.$("#content-container").scrollTop();
         $(".main-wrapper:not(#moviepage)").hide();
-
         $("#moviepage").css( { width: $("#content-container").width() } ).fadeIn();
         this.$("#content-container").scrollTop(0);
 
@@ -183,77 +184,24 @@ App.Views.SideMenu = Backbone.View.extend({
     el: $("#side-menu-container"),
     state: 'closed',
     events: { 
-        'click a.register-button' : 'toggleRegisterForm',
-        'click .logout' : 'logout',
-        'click .btn.facebook' : 'loginFacebook',
-        'submit form#user-register' : 'register',
-        'submit form#user-login': 'login'
+        'click .logout' : 'logout'
+
     },
+
     initialize: function(options) { 
         var options = options || {};
+
         if (options.model) this.model = options.model;
         if (options.session) this.session = options.session;
 
         _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
         this.listenTo(this.model, "change", this.render, this);
-        this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
-        this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
-
-        this.listenTo(this.session.profile, "user:register:success", function(data) {
-            alert("You have successfully registered!")
-            return false;
-        }, this);
         this.listenTo(this.session.profile, "user:login", this.render, this);
+        this.loginForm = new App.Views.LoginForm({session: this.session});
 
         this.enableSideMenu();
     },
-    onFail: function(data) {
-        if (!data) return false;
-        this.$("form .error").remove();
-        var div = $("<div>").addClass("row-fluid error").html(data.message);
-        this.$("form:visible:first h3").append(div);
-        return false;
 
-    },
-    login: function(e) {
-        e.preventDefault();
-        var email = $("#login-email").val();
-        var pass = $("#login-password").val();
-
-        this.session.get("profile").login(email, pass);
-
-        return false;
-
-    },
-    logout: function(e) { 
-        e.preventDefault();
-        $(document).trigger("logout");
-    },
-    loginFacebook: function(e) { 
-        e.preventDefault();
-        $(document).trigger("login");
-    },
-    register: function(e) {
-        e.preventDefault();
-        var email = $("#register-email").val();
-        var pass = $("#register-password").val();
-        var passverify = $("#register-password-verify").val();
-        if (pass != passverify) {
-                this.onFail({message: "Passwords do not match!"});
-
-        }        
-        if (email =="" || pass == "" || passverify == "") {  
-            this.onFail({message: "Fill all the fields!"});
-        } else { 
-            this.session.get("profile").register(email, pass);
-        }
-        return false;
-    },
-    toggleRegisterForm: function(e) {
-        e.preventDefault();
-        $("form#user-register, form#user-login").toggle(); 
-        return false;
-    },
     enableSideMenu: function() {
 
         window.snapper = new Snap({
@@ -262,7 +210,10 @@ App.Views.SideMenu = Backbone.View.extend({
             maxPosition: 260
         });
     },
-   
+    logout: function(e) { 
+        e.preventDefault();
+        $(document).trigger("logout");
+    },
     toggleSideBar: function() {
 
         if (!window.snapper) return false;
@@ -285,6 +236,10 @@ App.Views.SideMenu = Backbone.View.extend({
  
     render: function() {   
         this.$el.html(ich.sidemenuTemplate(this.model.toJSON()));
+        $("#side-menu-content-pages li:first").click(function(e) { e.preventDefault(); app.trigger("error", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links."); return false;} );
+        $("#side-menu-content-pages li:nth(1)").click(function(e) {  e.preventDefault();app.trigger("notice", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links.");return false;  } );
+        $("#side-menu-content-pages li:nth(2)").click(function(e) { e.preventDefault(); app.trigger("success", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links. Remember that the textbox wont get over 3 lines.");return false; } );
+        this.assign(this.loginForm, "#login-register-form");
         return this;  
     }
 
@@ -347,9 +302,9 @@ App.Views.DialogView = Backbone.View.extend({
     initialize: function(options) {
 
     },
+
     onClose: function() {
        $.magnificPopup.close(); 
-
     },
 
     openDialog: function(e, content) {
@@ -364,7 +319,8 @@ App.Views.DialogView = Backbone.View.extend({
           removalDelay: 500, //delay removal by X to allow out-animation
           callbacks: {
             beforeOpen: this.beforeOpen,
-            afterOpen: this.afterOpen
+            afterOpen: this.afterOpen,
+            afterClose: this.afterClose
           },
           showCloseBtn: false,
           closeBtnInside: false
@@ -373,8 +329,9 @@ App.Views.DialogView = Backbone.View.extend({
         return false;
     },
     afterOpen: function(e) {},
-    beforeOpen: function(e) {
-    },
+    beforeOpen: function(e) {},
+    afterClose: function(e) {},
+    
 
     
 });

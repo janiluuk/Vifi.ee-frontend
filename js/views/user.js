@@ -38,6 +38,91 @@ App.Views.SubscriptionView = Backbone.View.extend({
     },
 });
 
+App.Views.LoginForm = Backbone.View.extend({ 
+    events: { 
+        'click a.register-button' : 'toggleRegisterForm',        
+        'click .btn.facebook' : 'loginFacebook',
+        'submit form#user-register' : 'register',
+        'submit form#user-login': 'login'
+    },
+
+    initialize: function(options) { 
+        var options = options || {};
+
+
+        if (options.model) this.model = options.model;
+        if (options.session) this.session = options.session;
+
+        _.bindAll(this, 'render');
+        this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
+        this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
+
+        this.listenTo(this.session.profile, "user:register:success", function(data) {
+            this.session.trigger("success", "You have registered successfully!");
+            return false;
+        }.bind(this), this);
+        this.listenTo(this.session.profile, "user:login", this.onSuccess, this);
+
+    },
+    onFail: function(data) {
+        if (!data) return false;
+        this.$("form .error").remove();
+        var div = $("<div>").addClass("row-fluid error").html(data.message);
+        this.$("form:visible:first h3").append(div);
+        return false;
+
+    },
+    logout: function (e) {
+        app.router.navigate("/", {trigger:true});
+        $(document).trigger('logout');
+        return false;
+    },
+    onSuccess: function(data) {
+        
+        return false;
+
+    },
+    login: function(e) {
+
+        e.preventDefault();
+        var email = this.$("#login-email").val();
+        var pass = this.$("#login-password").val();
+        this.session.get("profile").login(email, pass);
+        return false;
+
+    },
+    logout: function(e) { 
+        e.preventDefault();
+        $(document).trigger("logout");
+    },
+    loginFacebook: function(e) { 
+
+        e.preventDefault();
+        $(document).trigger("login");
+    },
+    register: function(e) {
+        e.preventDefault();
+        var email = this.$("#register-email").val();
+        var pass = this.$("#register-password").val();
+        var passverify = this.$("#register-password-verify").val();
+        if (pass != passverify) {
+                this.onFail({message: "Passwords do not match!"});
+
+        }        
+        if (email =="" || pass == "" || passverify == "") {  
+            this.onFail({message: "Fill all the fields!"});
+        } else { 
+            this.session.get("profile").register(email, pass);
+        }
+        return false;
+    },
+    toggleRegisterForm: function(e) {
+        e.preventDefault();
+        this.$("form#user-register, form#user-login").toggle(); 
+        return false;
+    },
+});
+
 
 App.Views.ProfileView =  App.Views.CarouselView.extend({ 
     model: App.User.Profile,
