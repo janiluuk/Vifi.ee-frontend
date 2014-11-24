@@ -128,7 +128,6 @@ App.Views.LoginForm = Backbone.View.extend({
     },
 });
 
-
 App.Views.ProfileView =  App.Views.CarouselView.extend({ 
     model: App.User.Profile,
     el: '#contentpage',
@@ -146,11 +145,9 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.listenTo(this.collection, "add", this.renderCollection, this);
       this.listenTo(this.collection, "reset", this.renderCollection, this);
       this.resetpasswordview = new App.Views.ResetPasswordView({model: this.model});
-
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
       this.render();
       
-
     },
     updateProfile: function(e) {
         e.preventDefault();
@@ -163,8 +160,6 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
         });
         this.render();
         return false;
-
-
     },
     editProfile: function(e) {
         e.preventDefault();
@@ -173,8 +168,6 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
 
         return false;
     },
-    
-   
     revoke: function () {
         FB.api("/me/permissions", "delete", function () {
             alert('Permissions revoked');
@@ -188,8 +181,6 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.collectionview.render().$el.appendTo("#profilepage-mymovies-container");
 
     },
-
-
     render: function() { 
       this.$el.html(ich.profileTemplate(this.model.toJSON()));
       this.resetpasswordview.setElement($("#reset-password")).render();
@@ -199,11 +190,8 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       setTimeout(function() { 
             var swiper = this.startCarousel(this.options.swipeTo);
         }.bind(this),100);
-      
       return this;
-      
     }
-
 });
 App.Views.UserPairView = Backbone.View.extend({ 
       model: App.User.Profile,
