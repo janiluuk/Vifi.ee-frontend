@@ -1,41 +1,47 @@
 App.Views.FilterView = Backbone.View.extend({
     initialize: function(options) {
-        this.options = options;        
-        this.filterlistview = new App.Views.FilterlistView({filters: this.options.filters, sort: this.options.sort});
-        this.filterbarview = new App.Views.FilterbarView({filters: this.options.filters, sort: this.options.sort});
-        this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this );
-        this.filterlistview.bind('filter-bar:clear', this.onClearFilter, this );
+        this.options = options;
+        this.filterlistview = new App.Views.FilterlistView({
+            filters: this.options.filters,
+            sort: this.options.sort
+        });
+        this.filterbarview = new App.Views.FilterbarView({
+            filters: this.options.filters,
+            sort: this.options.sort
+        });
+        this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this);
+        this.filterlistview.bind('filter-bar:clear', this.onClearFilter, this);
 
-        this.filterlistview.bind('filter-bar:sort', this.onChangeSort, this );
+        this.filterlistview.bind('filter-bar:sort', this.onChangeSort, this);
         _.bindAll(this, 'render');
     },
-    onChangeSort: function (val, desc) {
+    onChangeSort: function(val, desc) {
         this.trigger("filter-bar:sort", val, desc);
     },
-    onClearFilter: function () {
-        this.options.state.clearState();        
+    onClearFilter: function() {
+        this.options.state.clearState();
         this.trigger("filter-bar:clear");
     },
     onChangeFilter: function(field, val) {
 
-            $("#id_" + field + " option").each(function() {
-                if (val == "reset") {
-                    $(this).attr("selected", this.value != "" ? false : "selected");
-                } else if (this.value == val) {
-                    var sel = $(this).attr("selected");
+        $("#id_" + field + " option").each(function() {
+            if (val == "reset") {
+                $(this).attr("selected", this.value != "" ? false : "selected");
+            } else if (this.value == val) {
+                var sel = $(this).attr("selected");
 
-                    $(this).attr("selected", !sel ? "selected": false);
-                }
-            });
+                $(this).attr("selected", !sel ? "selected" : false);
+            }
+        });
 
-            $("#id_" + field ).trigger("change");
+        $("#id_" + field).trigger("change");
 
 
     },
     updateUI: function() {
         var _this = this;
 
-        $.each(this.options.filters, function(option,idx) {
+        $.each(this.options.filters, function(option, idx) {
 
             var val = decodeURIComponent(_this.options.state.get(option));
 
@@ -54,13 +60,12 @@ App.Views.FilterView = Backbone.View.extend({
                     $(".selection-wrapper[data-field='" + option + "'] div[data-val=reset]").removeClass("toggle-on");
                 }
             } else {
+                
+                $('#id_' + option + ' option').attr('selected', false);
 
+                $(".selection-wrapper[data-field='" + option + "'] div").removeClass("toggle-on");
 
-                                    $('#id_' + option + ' option').attr('selected', false);
-
-                                    $(".selection-wrapper[data-field='" + option + "'] div").removeClass("toggle-on");
-
-                                    $(".selection-wrapper[data-field='" + option + "'] div[data-val=reset]").addClass("toggle-on");
+                $(".selection-wrapper[data-field='" + option + "'] div[data-val=reset]").addClass("toggle-on");
 
             }
         });
@@ -70,17 +75,17 @@ App.Views.FilterView = Backbone.View.extend({
         this.filterlistview.render();
 
         return this;
-        
+
     }
 
- }); 
+});
 
 App.Views.FilterItemView = Backbone.View.extend({
     selectEl: '',
     tagName: 'div',
     filters: [],
-    events: { 
-        'click .selection' : 'toggleSelection'
+    events: {
+        'click .selection': 'toggleSelection'
 
     },
     initialize: function(options) {
@@ -100,7 +105,7 @@ App.Views.FilterItemView = Backbone.View.extend({
         var category = el.attr("data-category");
 
 
-        if (val == "reset") { 
+        if (val == "reset") {
             $(el).addClass("toggle-on").siblings().removeClass("toggle-on");
         } else {
             $(el).toggleClass("toggle-on");
@@ -108,7 +113,7 @@ App.Views.FilterItemView = Backbone.View.extend({
         }
 
         if ($(el).parent().find(".toggle-on").length == 0) {
-                $(el).parent().find('.reset').addClass("toggle-on")
+            $(el).parent().find('.reset').addClass("toggle-on")
         }
 
         this.trigger("filter-bar:toggle", val, field);
@@ -118,27 +123,30 @@ App.Views.FilterItemView = Backbone.View.extend({
 
 
     },
-  
+
     initDropDown: function() {
         var _this = this;
         var el = this.selectEl;
-        $('<select id="id_'+el+'" multiple></select>').appendTo("#filter-elements");
+        $('<select id="id_' + el + '" multiple></select>').appendTo("#filter-elements");
 
         if (this.filters.length > 0) {
-                $('#id_'+_this.selectEl).append(new Option('All Genres',''));
-                this.filters.each(function(filter) { 
-                $("#id_"+_this.selectEl).append('<option value="'+filter.get("id")+'" data-val="'+filter.get("id")+'">'+filter.get("name")+'</option>');
+            $('#id_' + _this.selectEl).append(new Option('All Genres', ''));
+            this.filters.each(function(filter) {
+                $("#id_" + _this.selectEl).append('<option value="' + filter.get("id") + '" data-val="' + filter.get("id") + '">' + filter.get("name") + '</option>');
             });
         }
     },
     render: function() {
-        this.$el.html(ich.checkboxlistTemplate({'items': this.filters.toJSON(), 'group': this.selectEl }));
+        this.$el.html(ich.checkboxlistTemplate({
+            'items': this.filters.toJSON(),
+            'group': this.selectEl
+        }));
 
         return this;
     }
 
 });
-App.Views.SortItemView = App.Views.FilterItemView.extend({ 
+App.Views.SortItemView = App.Views.FilterItemView.extend({
 
     toggleSelection: function(e) {
         e.preventDefault();
@@ -152,20 +160,24 @@ App.Views.SortItemView = App.Views.FilterItemView.extend({
 
     },
     render: function() {
-        this.$el.html(ich.radiolistTemplate({'items': this.filters.toJSON()}));
+        this.$el.html(ich.radiolistTemplate({
+            'items': this.filters.toJSON()
+        }));
         return this;
     }
 
 });
-App.Views.ClearFiltersView = Backbone.View.extend({ 
-    template: '<a href="#"><button class="clear btn" href="#">'+t("Clear")+'</button></a>',
-    events: { 'click button' : 'onClear'},
+App.Views.ClearFiltersView = Backbone.View.extend({
+    template: '<a href="#"><button class="clear btn" href="#">' + t("Clear") + '</button></a>',
+    events: {
+        'click button': 'onClear'
+    },
 
     initialize: function(options) {
         this.options = options || {};
         this.el = options.el;
         this.render();
-    },    
+    },
     onClear: function(e) {
 
         e.preventDefault();
@@ -179,10 +191,10 @@ App.Views.ClearFiltersView = Backbone.View.extend({
 
 });
 
-App.Views.FilterlistView = Backbone.View.extend({ 
+App.Views.FilterlistView = Backbone.View.extend({
 
     views: [],
-    initialize: function(options) { 
+    initialize: function(options) {
         _.bindAll(this, "render");
         this.options = options || {};
         this.filters = options.filters;
@@ -201,16 +213,16 @@ App.Views.FilterlistView = Backbone.View.extend({
         this.trigger("filter-bar:clear");
 
     },
-    render: function() { 
+    render: function() {
         this.setElement($("#filter-list"));
 
         var _this = this;
 
         $("<div>").attr("id", "sort-list").appendTo(this.$el);
         var view = new App.Views.SortItemView({
-                filters: this.sort,
-                selectEl: "sort",
-                el: '#sort-list'
+            filters: this.sort,
+            selectEl: "sort",
+            el: '#sort-list'
         });
         view.on('filter-bar:sort', this.onSortButton, this);
 
@@ -219,23 +231,23 @@ App.Views.FilterlistView = Backbone.View.extend({
         this.views.push(view);
 
         _.each(this.filters, function(items, id) {
-                var name = id+"-list"
-                $("<div>").attr("id", name).css("display", "none").appendTo(_this.$el);
-                var view = new App.Views.FilterItemView({
-                    filters: items,
-                    selectEl: id,
-                    el: '#'+name
-                });
-                view.on('filter-bar:toggle', _this.onFilterBarButton, _this);
-                _this.$el.append(view.render().$el);
-                _this.views.push(view);
+            var name = id + "-list"
+            $("<div>").attr("id", name).css("display", "none").appendTo(_this.$el);
+            var view = new App.Views.FilterItemView({
+                filters: items,
+                selectEl: id,
+                el: '#' + name
+            });
+            view.on('filter-bar:toggle', _this.onFilterBarButton, _this);
+            _this.$el.append(view.render().$el);
+            _this.views.push(view);
         });
 
         // Clear filters view
         // 
         $("<div>").attr("id", "clear-list").css("display", "none").appendTo(this.$el);
         var clearview = new App.Views.ClearFiltersView({
-                el: '#clear-list'
+            el: '#clear-list'
         });
         clearview.on("filter-bar:clear", this.onClearButton, this);
         this.views.push(clearview);
@@ -244,10 +256,12 @@ App.Views.FilterlistView = Backbone.View.extend({
     }
 });
 
-App.Views.FilterbarView = Backbone.View.extend({ 
-    events: { 'click .swiper-slide' : 'toggleFilter'},
+App.Views.FilterbarView = Backbone.View.extend({
+    events: {
+        'click .swiper-slide': 'toggleFilter'
+    },
     state: true,
-    initialize: function(options) { 
+    initialize: function(options) {
         _.bindAll(this, "render");
         this.options = options || {};
 
@@ -261,27 +275,27 @@ App.Views.FilterbarView = Backbone.View.extend({
         this.$(".swiper-slide:first").addClass("active swiper-slide-active");
         var _this = this;
         var width = 0;
-        
+
         setTimeout(function() { 
             _this.enableCarosel();
-        },600);
+        }, 600);
 
         return this;
     },
-    toggleFilter: function(e) { 
+    toggleFilter: function(e) {
 
         e.preventDefault();
         var el = e.currentTarget;
         var attr = $(el).attr("data-rel");
-        var filterEl = $("#"+attr);
+        var filterEl = $("#" + attr);
 
 
         $(filterEl).siblings().hide();
 
         if ($(el).hasClass("active")) {
             this.closeFilterBar();
-            $(el).removeClass("active swiper-slide-active");            
-        } else { 
+            $(el).removeClass("active swiper-slide-active");
+        } else {
             $(filterEl).show();
             $(el).addClass("active swiper-slide-active");
             this.openFilterBar();
@@ -290,36 +304,40 @@ App.Views.FilterbarView = Backbone.View.extend({
         $(el).siblings().removeClass("swiper-slide-active active");
         e.stopPropagation();
         return false;
-        
+
     },
-    enableCarosel: function() { 
+    enableCarosel: function() {
 
 
-      /* Categories / Filters */
-      window.frontnavSwiper = new Swiper('#front-tabbar-swiper-container',{
-        slidesPerView:'auto',
-        mode:'horizontal',
-        loop: false,
-        centeredSlides: true,
-        moveStartThreshold: 5,
-        slideActiveClass: "activeslide",
-        cssWidthAndHeight: true,
-         
-      });  
+        /* Categories / Filters */
+        window.frontnavSwiper = new Swiper('#front-tabbar-swiper-container', {
+            slidesPerView: 'auto',
+            mode: 'horizontal',
+            loop: false,
+            centeredSlides: true,
+            moveStartThreshold: 5,
+            slideActiveClass: "activeslide",
+            cssWidthAndHeight: true,
 
-      $("#front-tabbar-swiper-container .swiper-slide").each(function(item) {  $(this).click(function() { frontnavSwiper.swipeTo(item) })  });
-      
+        });
+
+        $("#front-tabbar-swiper-container .swiper-slide").each(function(item) {
+            $(this).click(function() {
+                frontnavSwiper.swipeTo(item)
+            })
+        });
+
     },
     openFilterBar: function() {
         if (this.state) return;
         this.state = true;
-         $("#filter-list").slideDown(); 
+        $("#filter-list").slideDown();
     },
     closeFilterBar: function() {
         if (!this.state) return;
         this.state = false;
         $("#front-tabbar-swiper-container .swiper-slide-active").removeClass("swiper-slide-active");
-        $("#filter-list").slideUp(); 
+        $("#filter-list").slideUp();
     },
 
 });

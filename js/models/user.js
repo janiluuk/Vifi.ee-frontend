@@ -146,8 +146,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         var options = this.getParams();
 
         $.getJSON(url, options.data, "jsonp").done(function(data) {
-            this.trigger("user:paired", data);
-            alert("Paired!");
+            this.session.trigger("success", "You have successfully paired the device!");
         }.bind(this), "jsonp");
     },
     updateUserCollection: function() {
@@ -261,7 +260,21 @@ App.User.Profile = App.Models.ApiModel.extend({
         });
         return false;
 
+    },
+
+    deauthorize: function() {
+
+        this.reset();
+        this.fetch().done(function() { 
+
+
+            return false;
+
+        }.bind(this));
+
+
     }
+
 
 });
 

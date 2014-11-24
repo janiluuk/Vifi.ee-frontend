@@ -33,7 +33,6 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
   render: function() {
     this.$el.html(this.template).appendTo("body");
     this.openDialog();
-
     this.setElement(".mfp-content");
     this.assign(this.paymentView, "#purchasemodal");
     this.assign(this.loginView, "#loginmodal");
@@ -201,6 +200,7 @@ App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
 
     this.loginView = new App.Views.LoginDialog({
       model: options.session,
+      session: options.session,
       parent: this
     });
 
@@ -223,7 +223,6 @@ App.Views.ActivateSubscription = App.Views.DialogView.extend({
   render: function() {
     this.$el.html(ich.subscriptionActivateDialogTemplate());
     this.openDialog(false, ich.subscriptionPurchaseDialogTemplate());
-
     return this;
   }
 

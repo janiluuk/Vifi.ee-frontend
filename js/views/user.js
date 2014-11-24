@@ -7,14 +7,18 @@ App.Views.SubscriptionView = Backbone.View.extend({
     initialize: function(options) {
           this.options = options;
     },
-    buysubscription: function() {
-        var subscription = app.collection.get(59444);
+
+    buysubscription: function(e) {
+
+        var itemId = $(e.currentTarget).data("id");
+        var item = app.subscriptions.findWhere({id: itemId});
+        if (!item) return false;
 
         if (!app.session.get("profile").hasSubscription()) {
             this.purchaseView = new App.Views.PurchaseSubscriptionView({
-                model: subscription,
+                model: item,
                 session: app.session
-            })
+            });
             return false;
         }
 
@@ -49,20 +53,22 @@ App.Views.LoginForm = Backbone.View.extend({
     initialize: function(options) { 
         var options = options || {};
 
-
-        if (options.model) this.model = options.model;
-        if (options.session) this.session = options.session;
-
         _.bindAll(this, 'render');
-        this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
-        this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
+        
+        if (options.model) this.model = options.model;
+        
+        if (options.session) {
+            this.session = options.session;
 
-        this.listenTo(this.session.profile, "user:register:success", function(data) {
-            this.session.trigger("success", "You have registered successfully!");
-            return false;
-        }.bind(this), this);
-        this.listenTo(this.session.profile, "user:login", this.onSuccess, this);
+            this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
+            this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
 
+            this.listenTo(this.session.profile, "user:register:success", function(data) {
+                this.session.trigger("success", "You have registered successfully!");
+                return false;
+            }.bind(this), this);
+            this.listenTo(this.session.profile, "user:login", this.onSuccess, this);
+        }    
     },
     onFail: function(data) {
         if (!data) return false;
@@ -183,6 +189,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.collectionview.render().$el.appendTo("#profilepage-mymovies-container");
 
     },
+
 
     render: function() { 
       this.$el.html(ich.profileTemplate(this.model.toJSON()));

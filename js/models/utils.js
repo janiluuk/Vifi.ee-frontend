@@ -228,8 +228,7 @@ App.Utils.Api = Backbone.Model.extend({
 
         if (data.status == "ok") {
             this.onSuccess(msg);
-        } 
-
+        }
         if (callback) callback(data);
 
     },
@@ -272,7 +271,7 @@ App.Utils.Notification = Backbone.Model.extend({
                 // create the notification
                         var notification = new NotificationFx({
 
-                            message : '<div class="ns-thumb"><img width=64 height=64 src="/style/img/notify_'+type+'.png"/></div><div class="ns-content"><p>'+message+'</p></div>',
+                            message : '<div class="ns-thumb"><img width=64 height=64 src="/style/img/notify_'+type+'.jpg"/></div><div class="ns-content"><div class="ns-message"><div class="ns-message-container">'+message+'</div></div></div>',
                             layout : 'other',
                             ttl : 6000,
                             effect : 'thumbslider',

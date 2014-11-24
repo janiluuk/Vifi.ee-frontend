@@ -34,11 +34,13 @@ window.app = _.extend({}, Backbone.Events);
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Most recent', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Most watched'}]);
 
+        var subscriptionCollection = new App.Collections.SubscriptionCollection([{'id' : 1, duration_number: '7', duration_text: 'days', price: '3.90', notion: '', image: '/style/img/07-days-cover.jpg', },{'id' : 2, duration_number: '30', duration_text: 'days', price: '6.90', notion: 'Save 55%', image: '/style/img/30-days-cover.jpg', },{'id' : 3, duration_number: '1', duration_text: 'year', price: '69.90', notion: 'Save 15%', image: '/style/img/365-days-cover.jpg'}, ]);
+
         var eventhandler = _.extend({}, Backbone.Events);
 
         App.Utils.include(["popup", "menu", "player","filmitem", "profile", "page"], function() { 
             app.template.load(['film'], function () {
-                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile,player: player, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
+                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile,player: player, subscriptions: subscriptionCollection, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
                 initFB();
 

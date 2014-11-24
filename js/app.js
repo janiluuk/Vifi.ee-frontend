@@ -183,7 +183,6 @@ App.Router = Backbone.Router.extend({
 
         var profile = app.session.get("profile");
 
-
         if (!this.views.pairview)
         this.views.pairview = new App.Views.UserPairView({
             model: profile

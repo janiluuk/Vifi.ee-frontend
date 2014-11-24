@@ -117,6 +117,6 @@ App.Films.GenreCollection = Backbone.Collection.extend({
 });
 App.Collections.SortCollection = Backbone.Collection.extend({});
 App.Collections.FilterCollection = Backbone.Collection.extend({});
-App.Collections.UserCollection = Backbone.Collection.extend({
- 
-});
+App.Collections.UserCollection = Backbone.Collection.extend({});
+App.Collections.SubscriptionCollection = Backbone.Collection.extend({});
+

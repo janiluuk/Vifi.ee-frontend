@@ -1,3 +1,4 @@
+
 App.Views = {};
 
 App.Views.BaseAppView = Backbone.View.extend({
@@ -6,7 +7,6 @@ App.Views.BaseAppView = Backbone.View.extend({
         'change #search-form select': 'onSearchFieldChange',
         'change #search-form input[type="text"]': 'onSearchFieldChange',
         'change #main-search-box input[type="text"]': 'onSearchFieldChange',
-
         'change #search-form input[type="hidden"]': 'onSearchFieldChange',
         'click .goTop' : 'scrollToTop',
         'submit form#main-search-form' : 'onSearchSubmit'
@@ -19,6 +19,8 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.user = options.session.get("profile");
         this.collection = options.collection;
         this.usercollection = options.usercollection;
+        this.subscriptions = options.subscriptions;
+
         this.evt = options.eventhandler;
         this.template = options.template;
         this.player = options.player;
@@ -67,7 +69,6 @@ App.Views.BaseAppView = Backbone.View.extend({
         app.homepage.browserview.$isotope.isotope('layout');
 
     },
-    
     showSearchPage: function() {
         app.homepage.browserview.collection.onSearchFieldChange();
     },
@@ -156,21 +157,17 @@ App.Views.TopMenu = Backbone.View.extend({
     },
     toggleSideBar: function(e) {
         app.sidemenu.toggleSideBar();
-
         return false;
-
     },
     clearSearch: function(e) {
         e.stopPropagation();
         e.preventDefault();
-
         this.$("#main-search-box").val("");
         app.homepage.browserview.onSearchFieldChange(e);
         return false;
     },
     onSearchSubmit: function(e) {
         e.preventDefault();
-
         app.homepage.browserview.onSearchFieldChange(e);
         app.homepage.browserview.trigger("minimize");
         
