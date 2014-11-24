@@ -147,7 +147,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.resetpasswordview = new App.Views.ResetPasswordView({model: this.model});
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
       this.render();
-      
+
     },
     updateProfile: function(e) {
         e.preventDefault();
@@ -200,8 +200,6 @@ App.Views.UserPairView = Backbone.View.extend({
     initialize: function(options) {
       this.options = options;
       this.listenTo(this.model, "change", this.render, this);
-
-
     },
     pair: function(e) {
         e.preventDefault();
@@ -212,13 +210,11 @@ App.Views.UserPairView = Backbone.View.extend({
         this.model.trigger("user:pair", code);
 
         return false;
-
     },
     render: function() { 
-
       this.$el.html(ich.pairDeviceTemplate(this.model.toJSON()));
+
       return this;
-      
     },
 });
 
@@ -296,13 +292,13 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
             }
         },
         '[name=newPassword]': {
-            observe: 'newPassword'   ,
+            observe: 'newPassword',
             setOptions: {
                 validate: false
             }
         },
-      '[name=repeatPassword]': {
-            observe: 'repeatPassword'   ,
+        '[name=repeatPassword]': {
+            observe: 'repeatPassword',
             setOptions: {
                 validate: false
             }
