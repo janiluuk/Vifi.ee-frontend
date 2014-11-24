@@ -21,15 +21,14 @@ App.Views.SubscriptionView = Backbone.View.extend({
             });
             return false;
         }
-
     },
     activatesubscription: function() {
         var subscription = app.collection.get(59444);
 
-            this.purchaseView = new App.Views.PurchaseSubscriptionView({
+        this.purchaseView = new App.Views.PurchaseSubscriptionView({
                 model: subscription,
                 session: app.session
-            })
+        });
             return false;
 
     },
