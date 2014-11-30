@@ -270,7 +270,6 @@ App.Views.UserCollectionView = Backbone.View.extend({
     addAndShowFirstPage: function() {
         this.page = 1;
         this.renderFilmViews();
-
     },
     addAndShowLastPage: function() {
         if (this.page < this.getTotalPages()) {
@@ -279,8 +278,6 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.renderFilmViews();
     }
 });
-
-
 
 App.Views.ResetPasswordForm = Backbone.View.extend({ 
 
@@ -324,12 +321,9 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
             var pass = this.model.get("newPassword");
             if (app.session.profile.isRegistered()) {
                 var oldpass = this.model.get("password");
-
                 app.session.profile.changePassword(oldpass, pass);
-
             } else { 
                 app.session.profile.register(email, pass);
-
             }
             // this.model.save();
         }
@@ -348,11 +342,9 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
 })
 App.Views.ResetPasswordView = Backbone.View.extend({
     el: "#reset-password",
-    
     events: {
         'click #change-password-button, #change-password-cancel-button': 'toggleForm',
     },
-    
     initialize: function() {
         this.changePasswordForm = new App.Views.ResetPasswordForm({ el: '#password-form', profile: this.model, model: new App.User.ChangePassword()});
     },
@@ -366,7 +358,6 @@ App.Views.ResetPasswordView = Backbone.View.extend({
         e.preventDefault();
         $("#change-password-view, #change-password-edit").toggle();
         e.stopPropagation();
-
         return false;
     },
 

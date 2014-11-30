@@ -59,7 +59,7 @@ App.Platform = function(name) {
     this.start = $noop;
     this.exit = $noop;
     this._keys = {
-        KEY_RETURN: 8, 
+        KEY_RETURN: 8, // backspace
         KEY_UP: 38,
         KEY_DOWN: 40,
         KEY_LEFT: 37,

@@ -159,6 +159,7 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     onSearchFieldChange: function(event) {
 
+        $("#content-body-list").addClass("fadeDownList");
         var value = $("#main-search-box").val();
 
         var search_array = {
@@ -187,38 +188,38 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
 
     addOne : function ( item ) {
-
         var view = new App.Views.FilmView({model:item});
         var el = view.render().el;
         this.$isotope.append(el).isotope('insert', el);
     },
     addSet : function ( collection ) {
         var _this = this;
-
         collection.each(function(film, id) { 
             _this.addOne(film);
-
         });
 
-
-        this.$isotope.isotope("layout");
+        return true;
 
     },
-    onLoadMore: function() {
+    onLoadMore: function(e) {
+        e.preventDefault();
 
-        this.addSet(this.collection.getNextPage());
-        if (!app.homepage.browserview.collection.hasNextPage()) {
-            $("#loadMore").hide();
-        }
+        $("#loadMore").addClass("loading");
+        setTimeout(function() { 
+            if (this.addSet(this.collection.getNextPage())) {
+                $("#loadMore").removeClass("loading"); 
+            }
+            if (!app.homepage.browserview.collection.hasNextPage()) {
+                $("#loadMore").hide();
+            }
+        }.bind(this),300);
+
     },
 
     renderResults: function(el) {
 
         if (this.rendering) return false;
         this.rendering = true;
-        
-
-        //$("#content-body-list > div.movie").addClass("loading");
         $("#content-body-list").empty();
 
         this.collection.getFirstPage();
@@ -229,6 +230,9 @@ App.Views.BrowserPage = Backbone.View.extend({
         } else { 
             $("#loadMore").show();
         }
+
+        $("#content-body-list").removeClass("fadeDownList");
+
         this.rendering = false;
     },
     updateUIToState: function() {

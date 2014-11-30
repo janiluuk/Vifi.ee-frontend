@@ -236,6 +236,11 @@ span.label {
     padding: 0;
     box-sizing: border-box;        
     background-color: rgba(255,255,255,0.85);
+    animation: fadeDownSmall 0.7s ease-in-out;
+    -webkit-animation: fadeDownSmall 0.7s ease-in-out;
+    -moz-animation: fadeDownSmall 0.7s ease-in-out;
+    -ms-animation: fadeDownSmall 0.7s ease-in-out;
+    -o-animation: fadeDownSmall 0.7s ease-in-out;
 }
 
 
@@ -311,27 +316,34 @@ ul#payment-list li {
     width: 32%;
     height: 70px;
     margin: 0 0 4px 0;
-    opacity: 0.8;    
-    filter: alpha(opacity=80);
     cursor: pointer;
     border: 2px solid transparent;
     box-sizing: border-box;
     background-color: silver;
-    -webkit-transition: background-color .2s, opacity .2s;
-    transition: background-color .2s, opacity .2s;
+    -webkit-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
+    -moz-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
+    -ms-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
+    -o-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
+    transition: background-color .2s ease-in-out, transform .2s ease-in-out;
     color: #000;
 }
 
-ul#payment-list li:hover, ul#payment-list li.selected { 
-    opacity: 0.9;    
-    filter: alpha(opacity=90);
+ul#payment-list li:hover { 
+    transform: translateY(-15%);
+    -webkit-transform: translateY(-15%);
+    -moz-transform: translateY(-15%);
+    -ms-transform: translateY(-15%);
+    -o-transform: translateY(-15%);
     background-color: #42BE6A;  
 }
 
-ul#payment-list li.selected { 
-    opacity: 1;    
-    filter: alpha(opacity=100);
+ul#payment-list li.selected {
     background-color: #42BE6A;  
+    transform: scale(0.9,0.9);
+    -webkit-transform: scale(0.9,0.9);
+    -moz-transform: scale(0.9,0.9);
+    -ms-transform: scale(0.9,0.9);
+    -o-transform: scale(0.9,0.9);
 }
 
 ul#payment-list li .payment-item-image {
@@ -358,6 +370,14 @@ li#nordea .payment-item-image {
 
 li#seb .payment-item-image {
     background-image: url('img/SEB-logo.jpg');
+}
+
+li#seb, li#seb .payment-item-image, li#nordea, li#nordea .payment-item-image {
+  -webkit-animation-delay: 0.3s;
+  -moz-animation-delay: 0.3s;
+  -ms-animation-delay: 0.3s;
+  -o-animation-delay: 0.3s;
+  animation-delay: 0.3s;
 }
 
 li#danske .payment-item-image {
@@ -409,8 +429,11 @@ button, .btn {
     text-transform: uppercase;
     font-size: 1.3em;
     cursor: pointer;
-    -webkit-transition: background-color .2s ease-in-out, padding 0.2s;
-    transition: background-color .2s ease-in-out, padding 0.2s;
+    -webkit-transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
+    -moz-transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
+    -o-transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
+    -ms-transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
+    transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
     position: relative;
 }
 
@@ -640,6 +663,9 @@ button.btn.facebook:before {
     border-bottom: 2px solid #ffffff;
     border-left: 2px solid #ffffff;
     -webkit-animation: load8 0.7s infinite linear;
+    -moz-animation: load8 0.8s infinite linear;
+    -ms-animation: load8 0.8s infinite linear;
+    -o-animation: load8 0.8s infinite linear;
     animation: load8 0.8s infinite linear;
 }
 
@@ -676,8 +702,11 @@ input.vifi-text-input {
     color: #1b1b1b;
     background-color: #E1E0ED;
     border: 1px solid transparent;    
-    -webkit-transition: background-color.2s, border-color.2s, width .3s;
-    transition: background-color .2s, border-color.2s, width .3s;
+    -webkit-transition: background-color.2s ease-in-out, border-color.2s ease-in-out, width .3s ease-in-out;
+    -moz-transition: background-color .2s ease-in-out, border-color.2s ease-in-out, width .3s ease-in-out;
+    -o-transition: background-color .2s ease-in-out, border-color.2s ease-in-out, width .3s ease-in-out;
+    -ms-transition: background-color .2s ease-in-out, border-color.2s ease-in-out, width .3s ease-in-out;
+    transition: background-color .2s ease-in-out border-color.2s ease-in-out, width .3s ease-in-out;
     box-shadow: none !important;
 }
 
@@ -875,6 +904,9 @@ span.arrowup {
     padding: 0.5em 0;
     box-sizing: border-box;
     -webkit-transition: background-color.2s ease-in-out;
+    -moz-transition: background .2s ease-in-out;
+    -o-transition: background .2s ease-in-out;
+    -ms-transition: background .2s ease-in-out;
     transition: background .2s ease-in-out;
 }
 
@@ -965,8 +997,11 @@ ul.side-menu-list a {
     font-size: 1.1em;
     font-weight: 500;
     background: none;
-    transition: background 0.2s;
-    -webkit-transition: background 0.2s;
+    transition: background 0.2s ease-in-out;
+    -moz-transition: background 0.2s ease-in-out;
+    -o-transition: background 0.2s ease-in-out;
+    -ms-transition: background 0.2s ease-in-out;
+    -webkit-transition: background 0.2s ease-in-out;
 }
 
 .side-menu-list li:hover, .side-menu-list li:focus,.side-menu-list a.active li {
@@ -1181,9 +1216,12 @@ a.arrow-right {
     max-width: 1280px;
     margin: 0 auto;
     position: relative;
-    transition: width 0.2s;
+    transition: width 0.2s ease-in-out;
     display:none;
-    -webkit-transition: width 0.2s;
+    -webkit-transition: width 0.2s ease-in-out;
+    -moztransition: width 0.2s ease-in-out;
+    -ms-transition: width 0.2s ease-in-out;
+    -o-transition: width 0.2s ease-in-out;
 }
 
 .feature-wrapper {
@@ -1207,6 +1245,11 @@ a.arrow-right {
 
 .swiper-nav .swiper-wrapper{
     margin: 0 auto;
+    -webkit-animation: slideRightDelay 1.8s ease-in-out; /* Chrome, Safari, Opera */
+    -moz-animation: slideRightDelay 1.8s ease-in-out;
+    -ms-animation: slideRightDelay 1.8s ease-in-out;
+    -o-animation: slideRightDelay 1.8s ease-in-out; 
+    animation: slideRightDelay 1.8s ease-in-out;
 }
 
 .swiper-nav .swiper-slide {
@@ -1218,8 +1261,11 @@ a.arrow-right {
     font-size: 1.2em;
     color: #A28095;
     cursor: pointer;
-    transition: color 0.2s;
-    -webkit-transition: color 0.2s;
+    transition: color 0.2s ease-in-out;
+    -moz-transition: color 0.2s ease-in-out;
+    -o-transition: color 0.2s ease-in-out;
+    -ms-transition: color 0.2s ease-in-out;
+    -webkit-transition: color 0.2s ease-in-out;
 }
 
 .swiper-nav .swiper-slide:hover, .swiper-nav .swiper-slide-active {
@@ -1330,8 +1376,11 @@ a.arrow-right {
     overflow: hidden;
     opacity: 0.5;
     filter: alpha(opacity=50);
-    transition: opacity 0.2s;
-    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s ease-in-out;
+    -moz-transition: opacity 0.2s ease-in-out;
+    -o-transition: opacity 0.2s ease-in-out;
+    -ms-transition: opacity 0.2s ease-in-out;
+    -webkit-transition: opacity 0.2s ease-in-out;
     text-align: left;
     display: inline-block;
 }
@@ -1359,8 +1408,11 @@ a.arrow-right {
     border-radius: 2em;
     opacity: 0.5;
     filter: alpha(opacity=50);
-    transition: opacity 0.2s;
-    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s ease-in-out;
+    -moz-transition: opacity 0.2s ease-in-out;
+    -o-transition: opacity 0.2s ease-in-out;
+    -ms-transition: opacity 0.2s ease-in-out;
+    -webkit-transition: opacity 0.2s ease-in-out;
 }
 
 .selection:hover .selection:after {
@@ -1435,11 +1487,11 @@ ul#content-body-list li, ul#cast-content-body-list li {
     box-sizing: border-box;
     box-shadow: 0 2px 2px #ACA0A0;
     background: white;
-    transition: background 0.2s;
-    -webkit-transition: background  0.2s;
-    -moz-transition: background  0.2s;
-    -o-transition: background  0.2s;
-    -ms-transition: background  0.2s;
+    transition: background 0.2s ease-in-out;
+    -webkit-transition: background  0.2s ease-in-out;
+    -moz-transition: background  0.2s ease-in-out;
+    -o-transition: background  0.2s ease-in-out;
+    -ms-transition: background  0.2s ease-in-out;
     float:left;
     cursor: pointer;
 }
@@ -1495,16 +1547,26 @@ ul#cast-content-body-list li .item-image {
     padding: 5px;
     opacity: 0;
     filter: alpha(opacity=0);
-    transition: opacity 0.1s;
-    -webkit-transition: opacity 0.2s;
-    -moz-transition: opacity 0.2s;
-    -o-transition: opacity 0.2s;
-    -ms-transition: opacity 0.2s;
+    transform: translateY(50%);
+    -webkit-transform: translateY(50%);
+    -moz-transform: translateY(50%);
+    -ms-transform: translateY(50%);
+    -o-transform: translateY(50%);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    -webkit-transition: opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+    -moz-transition: opacity 0.2s ease-in-out, -moz-transform 0.2s ease-in-out;
+    -o-transition: opacity 0.2 ease-in-outs, -o-transform 0.2s ease-in-out;
+    -ms-transition: opacity 0.2s ease-in-out, -ms-transform 0.2s ease-in-out;
 }
 
 .item:hover .item-rating {
     opacity: 1;
     filter: alpha(opacity=100);  
+    transform: translateY(0);
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
 }
 
 .item-rating table {
@@ -1534,11 +1596,11 @@ ul#cast-content-body-list li .item-image {
     text-decoration: none;
     font-weight: 700;
     color: #333;
-    transition: color 0.1s;
-    -webkit-transition: color 0.2s;
-    -moz-transition: color 0.2s;
-    -o-transition: color 0.2s;
-    -ms-transition: color 0.2s;
+    transition: color 0.1s ease-in-out;
+    -webkit-transition: color 0.2s ease-in-out;
+    -moz-transition: color 0.2s ease-in-out;
+    -o-transition: color 0.2s ease-in-out;
+    -ms-transition: color 0.2s ease-in-out;
 }
 
 .item:hover .item-info-title a {
@@ -1882,11 +1944,11 @@ input#profile-newsletter {
 
 .subscription {
     border: 2px solid transparent;
-    transition: border-color 0.2s;
-    -webkit-transition: border-color 0.2s;
-    -moz-transition: border-color 0.2s;
-    -o-transition: border-color 0.2s;
-    -ms-transition: border-color 0.2s;
+    transition: border-color 0.2s ease-in-out;
+    -webkit-transition: border-color 0.2s ease-in-out;
+    -moz-transition: border-color 0.2s ease-in-out;
+    -o-transition: border-color 0.2s ease-in-out;
+    -ms-transition: border-color 0.2s ease-in-out;
 }
 
 .subscription:hover {
@@ -2544,4 +2606,112 @@ ul#subscription-benefit-list li .icon {
         background-color: transparent;
     }
 
+    #loginmodal form#user-login, #loginmodal form#user-register {
+        padding: 0 0;
+    }
+
 }
+
+/* ANIMATIONS LIBRARY */
+
+/* slideRightDelay */
+
+@-webkit-keyframes slideRightDelay {
+    0%   {opacity: 0; -webkit-transform: translateX(100%);}
+    45%   {opacity: 0; -webkit-transform: translateX(100%);}
+    80%   {opacity: 1; -webkit-transform: translateX(-5%);}
+    100% {opacity: 1; -webkit-transform: translateX(0%);}
+} 
+
+@-ms-keyframes slideRightDelay {
+    0%   {opacity: 0; -ms-transform: translateX(100%);}
+    45%   {opacity: 0; -ms-transform: translateX(100%);}
+    80%   {opacity: 1; -ms-transform: translateX(-5%);}
+    100% {opacity: 1; -ms-transform: translateX(0%);}
+} 
+
+@-o-keyframes slideRightDelay {
+    0%   {opacity: 0; -o-transform: translateX(100%);}
+    45%   {opacity: 0; -o-transform: translateX(100%);}
+    80%   {opacity: 1; -o-transform: translateX(-5%);}
+    100% {opacity: 1; -o-transform: translateX(0%);}
+} 
+
+@-moz-keyframes slideRightDelay {
+    0%   {opacity: 0; -moz-transform: translateX(100%);}
+    45%   {opacity: 0; -moz-transform: translateX(100%);}
+    80%   {opacity: 1; -moz-transform: translateX(-5%);}
+    100% {opacity: 1; -moz-transform: translateX(0%);}
+} 
+
+
+@keyframes slideRight {
+    0%   {opacity: 0; transform: translateX(100%);}
+    45%   {opacity: 0; transform: translateX(100%);}
+    80%   {opacity: 1; transform: translateX(-5%);}
+    100% {opacity: 1; transform: translateX(0%);}
+}
+
+/* fadeDownSmall */
+
+@-webkit-keyframes fadeDownSmall {
+    0% {opacity: 0; -webkit-transform: translateY(-50%);}
+    100% {opacity: 1; -webkit-transform: translateY(0%);}
+} 
+
+@-ms-keyframes fadeDownSmall {
+    0% {opacity: 0; -ms-transform: translateY(-50%);}
+    100% {opacity: 1; -ms-transform: translateY(0%);}
+} 
+
+@-o-keyframes fadeDownSmall {
+    0% {opacity: 0; -o-transform: translateY(-50%);}
+    100% {opacity: 1; -o-transform: translateY(0%);}  
+} 
+
+@-moz-webkit-keyframes fadeDownSmall {
+    0% {opacity: 0; -moz-transform: translateY(-50%);}
+    100% {opacity: 1; -moz-transform: translateY(0%);}
+} 
+
+
+@keyframes fadeDownSmall {
+    0% {opacity: 0; transform: translateY(-50%);}
+    100% {opacity: 1; transform: translateY(0%);}
+}
+
+/* fadeDownList */
+
+.fadeDownList {
+    animation: fadeDownList 0.5s ease-in-out;
+    -webkit-animation: fadeDownList 0.5s ease-in-out;
+    -moz-animation: fadeDownList 0.5s ease-in-out;
+    -ms-animation: fadeDownList 0.5s ease-in-out;
+    -o-animation: fadeDownList 0.5s ease-in-out;
+    opacity: 0;
+}
+
+@keyframes fadeDownList {
+    0% {opacity: 1; transform: translateY(0%);}
+    100% {opacity: 0; transform: translateY(50%);}
+} 
+
+@-webkit-keyframes fadeDownList {
+    0% {opacity: 1; -webkit-transform: translateY(0%);}
+    100% {opacity: 0; -webkit-transform: translateY(50%);}
+} 
+
+@-ms-keyframes fadeDownList {
+    0% {opacity: 1; -ms-transform: translateY(0%);}
+    100% {opacity: 0; -ms-transform: translateY(50%);}
+} 
+
+@-moz-keyframes fadeDownList {
+    0% {opacity: 1; -moz-transform: translateY(0%);}
+    100% {opacity: 0; -moz-transform: translateY(50%);}
+} 
+
+@-o-keyframes fadeDownList {
+    0% {opacity: 1; -o-transform: translateY(0%);}
+    100% {opacity: 0; -o-transform: translateY(50%);}
+} 

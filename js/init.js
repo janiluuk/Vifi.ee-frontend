@@ -58,7 +58,6 @@ $(document).ready(function() {
 });
 
 function init() {
-
     var url = App.Settings.api_url+"search?&short=1&limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?";
     $.getJSON(url, initApp, "jsonp");
 

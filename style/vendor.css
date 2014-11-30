@@ -952,12 +952,12 @@ div.fancy-select ul.options li.hover {
 .ns-box {
   position: fixed;
   background: rgba(42,45,50,0.85);
-  padding: 22px;
-  line-height: 1.4;
+  padding: 20px;
   z-index: 1000;
   pointer-events: none;
   color: rgba(250,251,255,0.95);
-  font-size: 90%;
+  /*font-size: 90%;
+  line-height: 1.4;*/
   font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 
@@ -969,11 +969,26 @@ div.fancy-select ul.options li.hover {
   color: inherit;
   opacity: 0.7;
   font-weight: 700;
+  color: blue;
+  text-decoration: underline;
 }
 
 .ns-box a:hover,
 .ns-box a:focus {
   opacity: 1;
+  cursor: pointer;
+}
+
+.ns-box.ns-type-error strong {
+  color: #D51212;
+}
+
+.ns-box.ns-type-success strong {
+  color: #269953;
+}
+
+.ns-box.ns-type-notice strong {
+  color: #1978B2;
 }
 
 .ns-box p {
@@ -1423,12 +1438,25 @@ div.fancy-select ul.options li.hover {
 }
 
 .ns-effect-thumbslider .ns-content {
-  background: #fff;
+  background: #f7f7f7;
   color: #727275;
   font-weight: bold;
   padding: 0 40px 0 80px;
   height: 64px;
-  line-height: 60px;
+  display: table;
+  /*line-height: 60px;*/
+}
+
+.ns-effect-thumbslider .ns-content .ns-message {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.ns-effect-thumbslider .ns-content .ns-message .ns-message-container {
+  max-height: 48px;
+  overflow: hidden;  
+  word-break: break-word;
+  text-overflow: ellipsis;
 }
 
 .ns-effect-thumbslider.ns-show .ns-content,
@@ -1480,8 +1508,8 @@ div.fancy-select ul.options li.hover {
 .ns-effect-thumbslider.ns-hide .ns-thumb {
   -webkit-animation-direction: reverse;
   animation-direction: reverse;
-  -webkit-animation-delay: 0.3s;
-  animation-delay: 0.3s;
+  /* -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s; */
 }
 
 /* Generated with Bounce.js. Edit at http://goo.gl/6iLZu5 */
@@ -1588,6 +1616,16 @@ div.fancy-select ul.options li.hover {
   95.833333% { -webkit-transform: matrix3d(0.99982, 0, 0, 0, 0, 0.99985, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.99982, 0, 0, 0, 0, 0.99985, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
   97.916667% { -webkit-transform: matrix3d(0.99983, 0, 0, 0, 0, 0.99984, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.99983, 0, 0, 0, 0, 0.99984, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
   100% { -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); } 
+}
+
+@media only screen and (max-width: 640px), only screen and (max-device-width: 640px), only screen and (min-resolution: 192dppx) {
+  .ns-box {
+    padding: 0px;
+  }
+
+  .ns-effect-thumbslider .ns-close {
+    right: 1em;
+  }
 }
 
 

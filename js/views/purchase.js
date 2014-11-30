@@ -119,7 +119,6 @@ App.Views.PaymentDialog = Backbone.View.extend({
     if (undefined !== $.cookie("vifi_payment_method")) {
       paymentMethod = $.cookie("vifi_payment_method");
     }
-
     return paymentMethod;
   },
   setSelectedMethod: function(method) {
