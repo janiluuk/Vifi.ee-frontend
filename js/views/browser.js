@@ -63,7 +63,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             layoutMode: 'fitRows',
             resizable: true,
             itemSelector: '.item',
-            transitionDuration: '0.7s',
+            transitionDuration: '0.5s',
               // disable scale transform transition when hiding
               hiddenStyle: {
                 opacity: 0,
@@ -190,13 +190,20 @@ App.Views.BrowserPage = Backbone.View.extend({
     addOne : function ( item ) {
         var view = new App.Views.FilmView({model:item});
         var el = view.render().el;
-        this.$isotope.append(el).isotope('insert', el);
+        return el;
     },
     addSet : function ( collection ) {
+        var container = document.createDocumentFragment();
+
         var _this = this;
+        var items = [];
         collection.each(function(film, id) { 
-            _this.addOne(film);
+            var el = _this.addOne(film);
+            items.push(el);
+            container.appendChild(el);
         });
+
+        this.$isotope.append(container).isotope('insert', items);
 
         return true;
 
@@ -213,27 +220,39 @@ App.Views.BrowserPage = Backbone.View.extend({
                 $("#loadMore").hide();
             }
         }.bind(this),300);
-
+        return false;
+        
     },
 
     renderResults: function(el) {
 
-        if (this.rendering) return false;
-        this.rendering = true;
-        $("#content-body-list").empty();
+        if (!this.rendering) {
+            this.rendering = true;
+            $("#content-body-list").empty();
+            this.$isotope.isotope("reloadItems");
 
-        this.collection.getFirstPage();
-        this.addSet(this.collection);
-        
-        if (!this.collection.hasNextPage()) {
-            $("#loadMore").hide();
-        } else { 
-            $("#loadMore").show();
-        }
+            this.collection.getFirstPage();
+            
+            /* Empty result set */
+            if (this.collection.length == 0) {
 
-        $("#content-body-list").removeClass("fadeDownList");
+                $("#content-body-list").append(ich.emptyListTemplate({text: t("No results")}));
+                
+            }   
+            this.addSet(this.collection);
+            
+            if (!this.collection.hasNextPage()) {
+                $("#loadMore").hide();
+            } else { 
+                $("#loadMore").show();
+            }
+
+            $("#content-body-list").removeClass("fadeDownList");
 
         this.rendering = false;
+        } else $("#content-body-list").removeClass("fadeDownList");
+
+        return false;        
     },
     updateUIToState: function() {
         var state = this.collection.querystate;

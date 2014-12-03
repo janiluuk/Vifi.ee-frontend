@@ -143,7 +143,7 @@ App.Utils = {
 
 //A utility model to track state using the hash and also generate a url
 App.Utils.State = Backbone.Model.extend({
-    defaults: {},
+    defaults: { q:""},
     getQueryString: function(addParams) {
         var hashables = [];
         var dict = this.toJSON();

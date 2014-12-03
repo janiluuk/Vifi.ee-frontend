@@ -20,6 +20,12 @@
             </div>
         </div>
 </script>
+<!-- Empty list item -->
+<script type="text/html" id="emptyListTemplate">
+        <div class="card-heading">
+                <span class="">{{ text }}</span>
+        </div>
+</script>
 <script id="languageFormat" class="helper" data-args="arg1" type="text/html">
       
       languageString = arg1.toString();      
@@ -32,8 +38,6 @@
       if (sel == arg2) { 
         return "selected";
       }
-
-
 </script>
 <script id="ifCond" class="helper" data-args="arg1,arg2,options" type="text/html">
  if(arg1 === arg2) {

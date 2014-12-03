@@ -152,7 +152,12 @@ App.Views.TopMenu = Backbone.View.extend({
     },
     toggleSearchBox: function(e) {
         e.preventDefault();
-        $('#toolbar-search-group').toggle({ "display": "block"}, {"display":"none"});
+
+        $('#toolbar-search-group').toggleClass("pullDownRight");
+
+        $('#toolbar-search-group').toggleClass("pullUpRight",!$('#toolbar-search-group').hasClass("pullDownRight") );
+
+
         return false;
     },
     toggleSideBar: function(e) {

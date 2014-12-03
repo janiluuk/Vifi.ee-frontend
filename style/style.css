@@ -320,10 +320,10 @@ ul#payment-list li {
     border: 2px solid transparent;
     box-sizing: border-box;
     background-color: silver;
-    -webkit-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
-    -moz-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
-    -ms-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
-    -o-transition: background-color .2s ease-in-out, transform .2s ease-in-out;
+    -webkit-transition: background-color .2s ease-in-out, -webkit-transform .2s ease-in-out;
+    -moz-transition: background-color .2s ease-in-out, -moz-transform .2s ease-in-out;
+    -ms-transition: background-color .2s ease-in-out, -ms-transform .2s ease-in-out;
+    -o-transition: background-color .2s ease-in-out, -o-transform .2s ease-in-out;
     transition: background-color .2s ease-in-out, transform .2s ease-in-out;
     color: #000;
 }
@@ -338,12 +338,7 @@ ul#payment-list li:hover {
 }
 
 ul#payment-list li.selected {
-    background-color: #42BE6A;  
-    transform: scale(0.9,0.9);
-    -webkit-transform: scale(0.9,0.9);
-    -moz-transform: scale(0.9,0.9);
-    -ms-transform: scale(0.9,0.9);
-    -o-transform: scale(0.9,0.9);
+    background-color: #42BE6A;
 }
 
 ul#payment-list li .payment-item-image {
@@ -1408,16 +1403,21 @@ a.arrow-right {
     border-radius: 2em;
     opacity: 0.5;
     filter: alpha(opacity=50);
-    transition: opacity 0.2s ease-in-out;
-    -moz-transition: opacity 0.2s ease-in-out;
-    -o-transition: opacity 0.2s ease-in-out;
-    -ms-transition: opacity 0.2s ease-in-out;
-    -webkit-transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    -moz-transition: opacity 0.2s ease-in-out, -moz-transform 0.2s ease-in-out;
+    -o-transition: opacity 0.2s ease-in-out, -o-transform 0.2s ease-in-out;
+    -ms-transition: opacity 0.2s ease-in-out, -ms-transform 0.2s ease-in-out;
+    -webkit-transition: opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
 }
 
-.selection:hover .selection:after {
+.selection:hover:after {
     opacity: 0.9;
     filter: alpha(opacity=90);
+    transform: scale(1.2,1.2);
+    -webkit-transform: scale(1.2,1.2);
+    -moz-transform: scale(1.2,1.2);
+    -ms-transform: scale(1.2,1.2);
+    -o-transform: scale(1.2,1.2);
 }
 
 .selection.toggle-on:after {
@@ -2604,6 +2604,11 @@ ul#subscription-benefit-list li .icon {
         width: 233%;
         left: 100%; 
         background-color: transparent;
+        transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        -o-transform: translateY(0);
     }
 
     #loginmodal form#user-login, #loginmodal form#user-register {
@@ -2715,3 +2720,90 @@ ul#subscription-benefit-list li .icon {
     0% {opacity: 1; -o-transform: translateY(0%);}
     100% {opacity: 0; -o-transform: translateY(50%);}
 } 
+
+/* pullDownRight */
+
+.pullDownRight {
+    animation: pullDownRight 0.5s ease-in-out;
+    -webkit-animation: pullDownRight 0.5s ease-in-out;
+    -moz-animation: pullDownRight 0.5s ease-in-out;
+    -ms-animation: pullDownRight 0.5s ease-in-out;
+    -o-animation: pullDownRight 0.5s ease-in-out;
+    display: block !important;
+    transform-origin: 100% 0%;
+    opacity: 1;
+    -webkit-transform-origin: 100% 0%;
+    -moz-transform-origin: 100% 0%;
+    -ms-transform-origin: 100% 0%;
+    -o-transform-origin: 100% 0%;
+}
+
+@keyframes pullDownRight {
+    0% {opacity: 0; transform: scale(0.1,0.1);}
+    100% {opacity: 1; transform: scale(1,1);}
+} 
+
+@-webkit-keyframes pullDownRight {
+    0% {opacity: 0; -webkit-transform: scale(0.1,0.1);}
+    100% {opacity: 1; -webkit-transform: scale(1,1);}
+} 
+
+@-moz-keyframes pullDownRight {
+    0% {opacity: 0; -moz-transform: scale(0.1,0.1);}
+    100% {opacity: 1; -moz-transform: scale(1,1);}
+} 
+
+@-ms-keyframes pullDownRight {
+    0% {opacity: 0; -ms-transform: scale(0.1,0.1);}
+    100% {opacity: 1; -ms-transform: scale(1,1);}
+} 
+
+@-o-keyframes pullDownRight {
+    0% {opacity: 0; -o-transform: scale(0.1,0.1);}
+    100% {opacity: 1; -o-transform: scale(1,1);}
+} 
+
+/* pullUpRight */
+
+.pullUpRight
+ {
+    animation: pullDownRight 0.5s ease-in-out;
+    -webkit-animation: pullUpRight 0.5s ease-in-out;
+    -moz-animation: pullDownRight 0.5s ease-in-out;
+    -ms-animation: pullDownRight 0.5s ease-in-out;
+    -o-animation: pullDownRight 0.5s ease-in-out;
+    display: block !important;
+    opacity: 0;
+    -webkit-transform-origin: 100% 0%;
+    -moz-transform-origin: 100% 0%;
+    -ms-transform-origin: 100% 0%;
+    -o-transform-origin: 100% 0%;
+}
+
+@keyframes pullUpRight {
+    0% {opacity: 1; transform: scale(1,1);}
+    100% {opacity: 0; transform: scale(0.1,0.1);}
+} 
+
+@-webkit-keyframes pullUpRight {
+    0% {opacity: 1; -webkit-transform: scale(1,1);}
+    100% {opacity: 0; -webkit-transform: scale(0.1,0.1);}
+} 
+
+@-moz-keyframes pullUpRight {
+    0% {opacity: 1; -moz-transform: scale(1,1);}
+    100% {opacity: 0; -moz-transform: scale(0.1,0.1);}
+} 
+
+@-ms-keyframes pullUpRight {
+    0% {opacity: 1; -ms-transform: scale(1,1);}
+    100% {opacity: 0; -ms-transform: scale(0.1,0.1);}
+} 
+
+@-o-keyframes pullUpRight {
+    0% {opacity: 1; -o-transform: scale(1,1);}
+    100% {opacity: 0; -o-transform: scale(0.1,0.1);}
+} 
+
+
+

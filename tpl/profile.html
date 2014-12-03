@@ -160,7 +160,10 @@
                     <div class="card-heading">
                         <span>My subscription</span>
                     </div>
+
                     <div class="card-body">
+                    
+                    {{#ifCond subscriber false }}
                         <!--Subscribe = NO-->
                         <div id="subscribe-negative">
                             <div class="row-fluid">
@@ -172,6 +175,8 @@
                                 </a>
                             </div>
                         </div>
+                        {{/ifCond}}
+                        {{#ifCond subscriber true}}
 
                         <!--Subscribe = YES-->
                         <div id="subscribe-positive">
@@ -182,6 +187,7 @@
                                 <button id="subscription-extend" class="btn green float_right">Extend my subscription</button>
                             </div>
                         </div>
+                        {{/ifCond}}
                     </div>
                 </div>
                 <div id="user-pairtv-info" class="card float_left">

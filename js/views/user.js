@@ -177,7 +177,6 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
     },
     renderCollection: function() { 
       $("#profilepage-mymovies-container").empty();
-
       this.collectionview.render().$el.appendTo("#profilepage-mymovies-container");
 
     },
@@ -241,11 +240,18 @@ App.Views.UserCollectionView = Backbone.View.extend({
     },
     renderFilmViews: function() {
 
-        this.$filmCollectionHolder.html('');
-        this.collection.each(function(model) {
+        this.$filmCollectionHolder.empty();
+        if (this.collection.length > 0 ) { 
+            this.collection.each(function(model) {
                 this.addChildView(model);
     
-        }, this);
+            }, this);
+        } else {
+
+            this.$filmCollectionHolder.append(ich.emptyListTemplate({text: t("No purchases")}));
+
+        }
+
     },
     addChildView: function(model) {
         var filmView = new App.Views.UserFilmView({

@@ -19,7 +19,6 @@ App.Views.FilterView = Backbone.View.extend({
         this.trigger("filter-bar:sort", val, desc);
     },
     onClearFilter: function() {
-        this.options.state.clearState();
         this.trigger("filter-bar:clear");
     },
     onChangeFilter: function(field, val) {
