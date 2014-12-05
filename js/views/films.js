@@ -9,7 +9,7 @@ App.Views.FilmView = Backbone.View.extend({
         this.listenTo(this.model, 'remove', this.remove, this);
         this.listenTo(this.model, 'destroy', this.remove, this);
         
-    },
+    }, 
     showMoviePage: function(e) {
         var url = this.model.get("film").seo_friendly_url;
 
@@ -29,14 +29,13 @@ App.Views.UserFilmView = Backbone.View.extend({
     className: 'item',
     events: { 'click a' : 'showMoviePage'},
     initialize: function() {
-        this.model.bind('change', this.render, this);
-        this.model.bind('remove', this.remove, this);
+        this.listenTo(this.model,'change', this.render, this);
+        this.listenTo(this.model,'remove', this.remove, this);
 
     },
     showMoviePage: function(e) {
 
         var url = app.collection.originalCollection.get(this.model.get("id")).get("film").seo_friendly_url;
-
         app.router.navigate(url, {trigger: true });
         e.preventDefault();
         return false;
@@ -100,8 +99,6 @@ App.Views.FeaturedView = Backbone.View.extend({
         e.preventDefault()
         mySwiper.swipeNext()
       });
-
-
 
       window.searchnavSwiper = new Swiper('#search-tabbar-swiper-container',{
         slidesPerView:'auto',

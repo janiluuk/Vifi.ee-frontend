@@ -69,6 +69,9 @@ App.Views.LoginDialog = Backbone.View.extend({
   showPayment: function() {
     this.parent.showPayment();
   },
+  close: function() { 
+
+  },
   render: function() {
     this.$el.html(ich.loginDialogTemplate(this.session.toJSON()));
     this.assign(this.loginForm, "#popup-login-register-form");
@@ -171,10 +174,10 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
   },
   remove: function() {
-        // Remove the validation binding
-        Backbone.Validation.unbind(this);
-        this.parent.close();
-        return Backbone.View.prototype.remove.apply(this, arguments);
+      // Remove the validation binding
+      Backbone.Validation.unbind(this);
+      this.parent.close();
+      return Backbone.View.prototype.remove.apply(this, arguments);
   },
   render: function() {
     this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
@@ -182,7 +185,6 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
     return this;
   },
-
 });
 
 App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
@@ -206,8 +208,6 @@ App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
     this.render();
 
   }
-
-
 });
 App.Views.SubscriptionPaymentDialog = App.Views.PaymentDialog.extend({
   render: function() {

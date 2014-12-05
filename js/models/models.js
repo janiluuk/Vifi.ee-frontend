@@ -71,11 +71,13 @@ App.Models.ApiModel = Backbone.Model.extend({
 });
 
 
-App.Models.Film = App.Models.ApiModel.extend({
+App.Models.Product = App.Models.ApiModel.extend({ });
+App.Models.Subscription = App.Models.Product.extend({ });
+
+App.Models.Film = App.Models.Product.extend({
     path: 'details/',
     initialize: function(options) {
         this.refresh();
-
     },
     refresh: function() {
             this.path = "details/" + this.get("id");

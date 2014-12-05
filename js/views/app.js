@@ -154,10 +154,7 @@ App.Views.TopMenu = Backbone.View.extend({
         e.preventDefault();
 
         $('#toolbar-search-group').toggleClass("pullDownRight");
-
         $('#toolbar-search-group').toggleClass("pullUpRight",!$('#toolbar-search-group').hasClass("pullDownRight") );
-
-
         return false;
     },
     toggleSideBar: function(e) {
@@ -251,6 +248,7 @@ App.Views.CarouselView = Backbone.View.extend({
     swiperState: false,
     changeTab: function(e) {
         e.preventDefault();
+
         var attr = $(e.currentTarget).attr("data-rel");
         var el = $("#"+attr);
         $(e.currentTarget).siblings().removeClass("active");
@@ -271,6 +269,7 @@ App.Views.CarouselView = Backbone.View.extend({
         initialSlide: initialSlide,
          onTouchEnd : function(e) {
                 var idx = e.activeIndex;
+
                 $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child("+(idx+1)+")").click().siblings().removeClass("active");
 
         },
@@ -280,7 +279,6 @@ App.Views.CarouselView = Backbone.View.extend({
                 el.click();
                 var tab = el.attr("data-rel");
                 $("#"+tab).show().siblings().hide();
-                console.log(tab);
 
             }
             
@@ -290,7 +288,9 @@ App.Views.CarouselView = Backbone.View.extend({
         this.$('.swiper-slide').on('click', this.changeTab);
 
       $(this.options.swiperEl + " .swiper-slide").each(function(item) { 
+
             $(this).click(function(e) {
+                _this.options.swipeTo = item;
                 e.preventDefault();
                 _this.swiper.swipeTo(item);
             })  

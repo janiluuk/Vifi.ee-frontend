@@ -187,7 +187,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.renderCollection();
 
       setTimeout(function() { 
-            var swiper = this.startCarousel(this.options.swipeTo);
+            this.swiper = this.startCarousel(this.options.swipeTo);
         }.bind(this),100);
       return this;
     }
