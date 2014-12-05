@@ -85,7 +85,7 @@ App.Router = Backbone.Router.extend({
     },
     search: function(searchStateHash) {
         app.homepage.browserview.trigger("minimize");
-
+        
         app.homepage.browserview.onSearchFieldChange();
         var currentPage = this.currentPage;
         if (currentPage != "homePage" && currentPage != "search") {
@@ -153,7 +153,7 @@ App.Router = Backbone.Router.extend({
     subscription: function() {
     
         if (!this.views.subscriptionview) 
-        this.views.subscriptionview = new App.Views.SubscriptionView();
+        this.views.subscriptionview = new App.Views.SubscriptionView({subscriptions: app.options.subscriptions});
 
         this.views.subscriptionview.render();
         app.showContentPage("subscription");

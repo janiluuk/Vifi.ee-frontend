@@ -100,12 +100,12 @@
     <script type="text/html" id="subscriptionPurchaseDialogTemplate">
        <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
      <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-            <div class="col-img" style="background-image: url('{{ image }}');">
+            <div class="col-img" style="background-image: url('/style/img/{{duration}}-{{units}}-cover.jpg');">
             </div>
             <div class="col-content">
                 <div class="popup-section">
-                    <div class="film-title">Subscription {{ title }}</div>
-                    <div class="film-description price">{{ price }} EUR / {{ duration_number }} {{ duration_text }} </div>
+                    <div class="film-title">{{ description }}</div>
+                    <div class="film-description price">{{ price }} EUR / {{ duration }} {{ units }} </div>
                 </div>
  
                 <div id="payment-section" class="popup-section">

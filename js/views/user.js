@@ -5,13 +5,14 @@ App.Views.SubscriptionView = Backbone.View.extend({
         'click .activatesubscription' : 'activatesubscription'
     },
     initialize: function(options) {
-          this.options = options;
+          this.options = options || {};
     },
 
     buysubscription: function(e) {
 
         var itemId = $(e.currentTarget).data("id");
         var item = app.subscriptions.findWhere({id: itemId});
+        
         if (!item) return false;
 
         if (!app.session.get("profile").hasSubscription()) {
@@ -34,7 +35,7 @@ App.Views.SubscriptionView = Backbone.View.extend({
     },
     render: function() { 
 
-      this.$el.html(ich.subscriptionPlansTemplate({}));
+      this.$el.html(ich.subscriptionPlansTemplate({subscriptions: this.options.subscriptions.toJSON()}));
      
       return this;
       

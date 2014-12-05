@@ -97,7 +97,8 @@ App.Platform.prototype.initready = function() {
     $log("<< Platform ready (" + this.name + " " + this.matrix() + " on " + window.screen.width + "x" + window.screen.height + " ) >>");
 
 }
-// override this if necessary
+// override this if necesng
+// ry
 App.Platform.prototype.keys = function() {
     return this._keys;
 }

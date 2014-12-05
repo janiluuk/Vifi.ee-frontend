@@ -43,7 +43,7 @@ App.Models.Purchase = Backbone.Model.extend({
         this.set("price", this.model.get("price"));
         _.bindAll(this, 'sendPurchase', 'purchase', 'onCodeAuth', 'sendCodeAuth', 'paymentCallback')
     },
-     validateMethod: function(value, attr, computedState) {
+    validateMethod: function(value, attr, computedState) {
         if(value === 'code' && this.get("code").length == 0) {
             return 'Code is invalid!';
         }
@@ -150,12 +150,16 @@ App.Models.Purchase = Backbone.Model.extend({
             return false;
         }
     },
-    sendPurchase: function(callback, info, price) {
+    purchaseSubscription: function() { 
 
+
+    },
+    sendPurchase: function(callback, info, price) {
         var url = App.Settings.api_url +"smartpay/?format=json&api_key="+App.Settings.api_key+"&";
         $.get(url, { price: price, transactionId: 001, customVar: info }, callback, "jsonp");
 
     },
+
     sendCodeAuth: function(callback, film_id,code) {  
         app.api.call(["authorize_film", film_id, code], {}, callback);
 

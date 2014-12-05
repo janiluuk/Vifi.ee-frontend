@@ -275,60 +275,30 @@
                         <li class="width-50"><i class="icon check-green"></i>24/7 hotline support</li>
                     </ul>
                 </div>
+                {{#subscriptions}}
+
                 <div class="width-25 float_left">
                     <div id="week-plan" class="card subscription float_left">
                         <div class="card-body">
+
+                
                             <div class="subscription-duration">
-                                <p class="duration-number">7</p>
-                                <p class="duration-text">days</p>
+                                <p class="duration-number">{{duration}} </p>
+                                <p class="duration-text">{{units}}</p>
                             </div>
                             <div class="break"></div>
                             <div class="subscription-price">
-                                <p>3,90 €</p>
-                                <p class="price-teaser">&nbsp;</p>
+                                <p> {{price}} €</p>
+                                <p class="price-teaser">{{notion}}&nbsp;</p>
                             </div>
                             <div class="row-fluid">
-                                <button data-id="1" class="btn buysubscription green full">Buy</button>
+                                <button data-id="{{id}}" class="btn buysubscription green full">Buy</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="width-25 float_left">
-                    <div id="month-plan" class="card subscription float_left">
-                        <div class="card-body">
-                            <div class="subscription-duration">
-                                <p class="duration-number">30</p>
-                                <p class="duration-text">days</p>
-                            </div>
-                            <div class="break"></div>
-                            <div class="subscription-price">
-                                <p>6,90 €</p>
-                                <p class="price-teaser">Save 55%</p>
-                            </div>
-                            <div class="row-fluid">
-                                <button data-id="2" class="btn buysubscription green full">Buy</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="width-25 float_left">
-                    <div id="year-plan" class="card subscription float_left">
-                        <div class="card-body">
-                            <div class="subscription-duration">
-                                <p class="duration-number">1</p>
-                                <p class="duration-text">year</p>
-                            </div>
-                            <div class="break"></div>
-                            <div class="subscription-price">
-                                <p>69,90 €</p>
-                                <p class="price-teaser">Save 15%</p>
-                            </div>
-                            <div class="row-fluid">
-                                <button data-id="3" class="btn buysubscription  green full">Buy</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{/subscriptions}}
+
                 <div class="width-25 float_left">
                     <div id="code-plan" class="card subscription float_left">
                         <div class="card-body">
