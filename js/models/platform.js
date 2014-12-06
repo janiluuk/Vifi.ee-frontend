@@ -224,7 +224,6 @@ App.Platform.prototype.proxy = function() {
     // browser.needsProxy = true;
 
     browser.detectPlatform = function() {
-
         if (jQuery.browser.mobile) return false;
         try {
             if (navigator.plugins != null && navigator.plugins.length > 0) {

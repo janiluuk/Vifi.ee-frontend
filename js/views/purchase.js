@@ -13,6 +13,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
     this.paymentView = new App.Views.PaymentDialog({
       model: options.model,
       session: options.session,
+      payment: new App.Models.Purchase({model: options.model, session: options.session}),
       parent: this
     });
     this.loginView = new App.Views.LoginDialog({
@@ -93,10 +94,9 @@ App.Views.PaymentDialog = Backbone.View.extend({
     this.parent = options.parent;
     this.session = options.session;
     this.model = options.model;
-    this.payment = new App.Models.Purchase({
-      model: this.model,
-      session: options.session
-    });
+    this.payment = options.payment;
+
+ 
     this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
 
     Backbone.Validation.configure({
@@ -187,6 +187,19 @@ App.Views.PaymentDialog = Backbone.View.extend({
   },
 });
 
+App.Views.SubscriptionPaymentDialog = App.Views.PaymentDialog.extend({
+  render: function() {
+    this.$el.html(ich.subscriptionPurchaseDialogTemplate(this.model.toJSON()));
+    this.updateUI();
+    return this;
+  },
+
+  onPaymentSuccess: function() {
+    this.remove();
+
+  },
+});
+
 App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
 
   initialize: function(options) {
@@ -195,6 +208,7 @@ App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
     this.session = options.session;
     this.paymentView = new App.Views.SubscriptionPaymentDialog({
       model: options.model,
+      payment: new App.Models.PurchaseSubscription({model: options.model, session: options.session}),
       session: options.session,
       parent: this
     });
@@ -208,14 +222,7 @@ App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
     this.render();
 
   }
-});
-App.Views.SubscriptionPaymentDialog = App.Views.PaymentDialog.extend({
-  render: function() {
-    this.$el.html(ich.subscriptionPurchaseDialogTemplate(this.model.toJSON()));
-    this.updateUI();
 
-    return this;
-  },
 });
 
 App.Views.ActivateSubscription = App.Views.DialogView.extend({

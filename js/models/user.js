@@ -443,7 +443,6 @@ App.User.Session = Backbone.Model.extend({
     },
     isLoggedIn: function() {
         return this.get("logged_in");
-
     }
 
 });

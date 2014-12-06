@@ -71,10 +71,15 @@ App.Models.ApiModel = Backbone.Model.extend({
 });
 
 
-App.Models.Product = App.Models.ApiModel.extend({ });
-App.Models.Subscription = App.Models.Product.extend({ });
+App.Models.Product = App.Models.ApiModel.extend({ 
+
+});
+App.Models.Subscription = App.Models.Product.extend({ 
+    type: 'subscription'
+});
 
 App.Models.Film = App.Models.Product.extend({
+    type: 'film',
     path: 'details/',
     initialize: function(options) {
         this.refresh();
@@ -157,11 +162,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         }
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
-
-
     },
-
-
     /*
      * Load defined film content to the player
      */
