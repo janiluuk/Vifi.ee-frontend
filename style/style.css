@@ -160,6 +160,19 @@ span.label {
     margin: 0 1em 1em 0;
 }
 
+.card-list {
+    margin: 0;
+    padding: 0;
+}
+
+.card-list li {
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #E5E5E5;
+    padding: 1em 3em 1em 1em;
+    position: relative;
+}
+
 .card-heading-icon {
     background: url('img/anonymous_user_avatar.jpg');
     background-size: 2em;
@@ -171,6 +184,27 @@ span.label {
 .card-heading span {
     margin-left: 0.5em;
     color: #88718E;
+}
+
+.button-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto 1em;
+    display: table;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    transition: opacity 0.3s ease-in-out;
+    -webkit-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    -o-transition: opacity 0.3s ease-in-out;
+    -ms-transition: opacity 0.3s ease-in-out;
+}
+
+.card-list li:hover .button-container {
+    opacity: 1;
+    filter: alpha(opacity=100);
 }
 
 #goTop {
@@ -671,27 +705,6 @@ button.btn.facebook:before {
     height: 25px;
 }
 
-@-webkit-keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
 input.vifi-text-input {
     box-sizing: border-box;
     color: #1b1b1b;
@@ -802,6 +815,62 @@ span.arrowup {
     background: url('img/vifi-tactic-images.png') no-repeat;
     background-position: -75px -55px;
 }
+
+span.css-icon {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #F04141;
+    border-radius: 100%;
+    box-sizing: border-box;
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    -webkit-transition: background-color 0.2s ease-in-out;
+    -moz-transition: background-color 0.2s ease-in-out;
+    -ms-transition: background-color 0.2s ease-in-out;
+    -o-transition: background-color 0.2s ease-in-out;
+}
+
+span.css-icon.delete:hover {
+    background-color: #F04141;
+}
+
+span.css-icon.delete:before {
+    content: ' ';
+    position: absolute;
+    width: 10px;
+    height: 2px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    background-color: #F04141;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    -webkit-transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    -moz-transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    -ms-transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    -o-transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+span.css-icon:hover:before {
+    background-color: #fff;
+}
+
+span.css-icon.loading {
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid #0CA94F;
+    border-left: 2px solid #0CA94F;
+    -webkit-animation: load8 0.7s infinite linear;
+    -moz-animation: load8 0.8s infinite linear;
+    -ms-animation: load8 0.8s infinite linear;
+    -o-animation: load8 0.8s infinite linear;
+    animation: load8 0.8s infinite linear;
+}
+
 /* DISQUS COMMENT */
 
 #disqus_thread {
@@ -957,7 +1026,7 @@ input#main-search-box {
 
 #side-menu h3 {
     color: #1AD630;
-    margin: 1.5em 0.5em 0.5em 1.5em;
+    margin: 20px 5px 5px 20px;
     padding: 0;
     border: none;
     font-size: 1.2em;
@@ -987,7 +1056,7 @@ ul.side-menu-list a {
 }
 
 .side-menu-list li {
-    padding: 0.3em 0.5em 0.3em 1.7em;
+    padding: 4px 5px 4px 20px;
     color: #EBDAE3;
     font-size: 1.1em;
     font-weight: 500;
@@ -1001,6 +1070,15 @@ ul.side-menu-list a {
 
 .side-menu-list li:hover, .side-menu-list li:focus,.side-menu-list a.active li {
     background: #634256;
+}
+
+.side-menu-list li#hotline-number {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.side-menu-list li#hotline-number:hover, .side-menu-list li#hotline-number:focus {
+    background: transparent;
 }
 
 form#user-login, form#user-register {
@@ -1062,6 +1140,20 @@ form .row-fluid.error {
     text-indent: 30px;
 }
 
+#side-menu form#user-register #confirm-password-row, .vifi-popup form#user-register .row-fluid  #confirm-password-row {
+    transform-origin: 50% 0;
+    -webkit-transform-origin: 50% 0;
+    -moz-transform-origin: 50% 0;
+    -ms-transform-origin: 50% 0;
+    -o-transform-origin: 50% 0;
+    animation: perspectiveFlipOutDown 0.7s;
+    -webkit-animation: perspectiveFlipOutDown 0.7s;
+    -moz-animation: perspectiveFlipOutDown 0.7s;
+    -ms-animation: perspectiveFlipOutDown 0.7s;
+    -o-animation: perspectiveFlipOutDown 0.7s;
+}
+
+
 #side-menu form .row-fluid i.icon, .vifi-popup form .row-fluid i.icon {
     top: 7px;
     left: 7px;
@@ -1074,6 +1166,54 @@ form .row-fluid.error {
 
 #social-login {
     padding: 1.5em 1.5em 0 1.5em;
+}
+
+ul#social-network-list {
+    margin: 30px 5px 40px 20px;
+    padding: 0;
+}
+
+#social-network-list li {
+    list-style-type: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    margin: 0 10px 0 0;
+    display: inline-block;
+    background: red;
+    background-color: rgba(117, 89, 124, 0.4);
+    background-image: url('img/vifi-icon-set-1.png');
+    background-repeat: no-repeat;
+    background-size: 20px;
+    transition: background-color 0.2s ease-in-out;
+    -webkit-transition: background-color 0.2s ease-in-out;
+    -moz-transition: background-color 0.2s ease-in-out;
+    -ms-transition: background-color 0.2s ease-in-out;
+    -o-transition: background-color 0.2s ease-in-out;
+}
+
+#social-network-list li#facebook {
+    background-position: 10px -227px;
+}
+
+#social-network-list li#twitter {
+    background-position: 10px -259px;
+}
+
+#social-network-list li#rss {
+    background-position: 10px -293px;
+}
+
+#social-network-list li#facebook:hover, #social-network-list li#facebook:active {
+    background-color: #113C80;
+}  
+
+#social-network-list li#twitter:hover, #social-network-list li#twitter:active {
+    background-color: #20B1E5;
+}
+
+#social-network-list li#rss:hover, #social-network-list li#rss:active {
+    background-color: #E56320;
 }
 
 /* SLIDER */
@@ -1469,7 +1609,6 @@ ul.user-filmcollection-list, #film-info-container,
     min-height: 40em;
 }
 
-
 .page-footer {
     background: #BEA2B1;
     padding: 1%;
@@ -1479,6 +1618,14 @@ ul.user-filmcollection-list, #film-info-container,
 
 ul#content-body-list li, ul#cast-content-body-list li {
     list-style-type: none;
+}
+
+.result-message {
+    font-size: 2em;
+    text-align: center;
+    font-weight: 100;
+    color: #482D3F;
+    padding: 1em;
 }
 
 .item {
@@ -2619,6 +2766,53 @@ ul#subscription-benefit-list li .icon {
 
 /* ANIMATIONS LIBRARY */
 
+/* load8 */
+
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes load8 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes load8 {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-ms-keyframes load8 {
+  0% {
+    -ms-transform: rotate(0deg);
+  }
+  100% {
+    -ms-transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes load8 {
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(360deg);
+  }
+}
+
 /* slideRightDelay */
 
 @-webkit-keyframes slideRightDelay {
@@ -2805,5 +2999,45 @@ ul#subscription-benefit-list li .icon {
     100% {opacity: 0; -o-transform: scale(0.1,0.1);}
 } 
 
+/* perspectiveFlipOutDown */
+
+.perspectiveFlipOutDown {
+    transform-origin: 50% 0;
+    -webkit-transform-origin: 50% 0;
+    -moz-transform-origin: 50% 0;
+    -ms-transform-origin: 50% 0;
+    -o-transform-origin: 50% 0;
+    animation: perspectiveFlipOutDown 0.7s;
+    -webkit-animation: perspectiveFlipOutDown 0.7s;
+    -moz-animation: perspectiveFlipOutDown 0.7s;
+    -ms-animation: perspectiveFlipOutDown 0.7s;
+    -o-animation: perspectiveFlipOutDown 0.7s;
+    display: block !important;
+}
+
+@keyframes perspectiveFlipOutDown {
+    0% {opacity: 0; transform: perspective(800px) rotateX(280deg);}
+    100% {opacity: 1; transform: perspective(800px) rotateX(360deg);}
+} 
+
+@-webkit-keyframes perspectiveFlipOutDown {
+    0% {opacity: 0; -webkit-transform: perspective(800px) rotateX(280deg);}
+    100% {opacity: 1; -webkit-transform: perspective(800px) rotateX(360deg);}
+} 
+
+@-moz-keyframes perspectiveFlipOutDown {
+    0% {opacity: 0; -moz-transform: perspective(800px) rotateX(280deg);}
+    100% {opacity: 1; -moz-transform: perspective(800px) rotateX(360deg);}
+} 
+
+@-ms-keyframes perspectiveFlipOutDown {
+    0% {opacity: 0; -ms-transform: perspective(800px) rotateX(280deg);}
+    100% {opacity: 1; -ms-transform: perspective(800px) rotateX(360deg);}
+} 
+
+@-o-keyframes perspectiveFlipOutDown {
+    0% {opacity: 0; -o-transform: perspective(800px) rotateX(280deg);}
+    100% {opacity: 1; -o-transform: perspective(800px) rotateX(360deg);}
+} 
 
 
