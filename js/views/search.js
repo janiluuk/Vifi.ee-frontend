@@ -13,7 +13,7 @@ App.Views.SearchView = Backbone.View.extend({
 
     render: function() { 
 
-          this.$el.append(ich.searchPageTemplate(this.collection.toJSON()));
+      this.$el.append(ich.searchPageTemplate(this.collection.toJSON()));
       return this;
       
     },

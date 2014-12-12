@@ -218,11 +218,8 @@ App.Views.PurchaseSubscriptionView = App.Views.PurchaseView.extend({
       session: options.session,
       parent: this
     });
-
     this.render();
-
   }
-
 });
 
 App.Views.ActivateSubscription = App.Views.DialogView.extend({

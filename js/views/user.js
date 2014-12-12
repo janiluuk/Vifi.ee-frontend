@@ -194,12 +194,22 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
     }
 });
 App.Views.UserPairView = Backbone.View.extend({ 
-      model: App.User.Profile,
-      el: '#contentpage',
-      events:  { 'submit #pair-form' : 'pair'},
+    model: App.User.Profile,
+    el: '#contentpage',
+    events:  { 
+        'submit #pair-form' : 'pair',
+        'click span.delete' : 'unpair'
+    },
     initialize: function(options) {
       this.options = options;
       this.listenTo(this.model, "change", this.render, this);
+    },
+    unpair: function(e) {
+        console.log(e);
+        var el = $(e.currentTarget).parent().parent();
+        el.fadeOut("slow");
+
+
     },
     pair: function(e) {
         e.preventDefault();
