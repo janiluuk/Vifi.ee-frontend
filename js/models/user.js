@@ -52,6 +52,8 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.on("change:tickets", this.updateUserCollection);
         this.on("user:facebook-connect", this.connectFB, this);
         this.on("user:pair", this.pair, this);
+        this.on("user:unpair", this.unpair, this);
+
     },
 
     connectFB: function(data) {
@@ -142,12 +144,25 @@ App.User.Profile = App.Models.ApiModel.extend({
         var email = this.get("email");
         if (email == "" || code == "") return false;
 
-        var url = App.Settings.api_url + 'user/' + email + '/pair/' + code + '?callback=?';
-        var options = this.getParams();
+        app.api.call(["user", email, "pair", code], {}, function(res) {
+            if (res.status && res.status == "ok") {
+                setTimeout(function() {  
+                    this.trigger("user:pair:successful");
+                    this.fetch();
+                }.bind(this), 1500);
 
-        $.getJSON(url, options.data, "jsonp").done(function(data) {
-            this.session.trigger("success", "You have successfully paired the device!");
-        }.bind(this), "jsonp");
+            }
+         }.bind(this));
+
+    },
+
+    unpair: function(id) {
+        callback = function() {};
+
+        var email = this.get("email");
+        if (email == "" || id == "") return false;
+        app.api.call(["user", email, "unpair", id], {}, function(res) { if (res.status && res.status == "ok") this.trigger("user:unpair:success")}.bind(this));
+
     },
     updateUserCollection: function() {
         if (!app || !app.usercollection) return false;

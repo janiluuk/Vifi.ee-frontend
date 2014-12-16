@@ -79,7 +79,7 @@ App.Views.BaseAppView = Backbone.View.extend({
             $(".side-menu-list a.active").removeClass("active");
             $(".side-menu-list a#menu-"+id).addClass("active");
 
-        }
+        }   
         this.$("#content-container").scrollTop(0);
 
         $("#contentpage").show();
@@ -194,8 +194,9 @@ App.Views.SideMenu = Backbone.View.extend({
         if (options.session) this.session = options.session;
 
         _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
-        this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.session.profile, "user:login", this.render, this);
+        this.listenTo(this.session.profile, "user:logout", this.render, this);
+
         this.loginForm = new App.Views.LoginForm({session: this.session});
 
         this.enableSideMenu();
@@ -212,6 +213,8 @@ App.Views.SideMenu = Backbone.View.extend({
     logout: function(e) { 
         e.preventDefault();
         $(document).trigger("logout");
+        this.render();
+        
     },
     toggleSideBar: function() {
 
@@ -233,12 +236,19 @@ App.Views.SideMenu = Backbone.View.extend({
 
     },
  
-    render: function() {   
+    render: function() {
+        var activeEl = this.$el.find("a.active:first");
+
         this.$el.html(ich.sidemenuTemplate(this.model.toJSON()));
-        $("#side-menu-content-pages li:first").click(function(e) { e.preventDefault(); app.trigger("error", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links."); return false;} );
+        var activeId = false;
+
+        if (activeEl) var activeId = $(activeEl).attr("id");
+
         $("#side-menu-content-pages li:nth(1)").click(function(e) {  e.preventDefault();app.trigger("notice", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links.");return false;  } );
         $("#side-menu-content-pages li:nth(2)").click(function(e) { e.preventDefault(); app.trigger("success", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links. Remember that the textbox wont get over 3 lines.");return false; } );
         this.assign(this.loginForm, "#login-register-form");
+        if (activeId) $("#"+activeId).addClass("active");
+        
         return this;  
     }
 
@@ -337,7 +347,23 @@ App.Views.DialogView = Backbone.View.extend({
 
     
 });
+App.Views.ContentView = Backbone.View.extend({ 
 
+    el: "#contentpage",
+    initialize: function(options) {
+
+        this.template = eval("ich."+options.template);
+
+
+    },
+    render: function() {
+
+        this.$el.empty().append(this.template().html());
+        return this;
+    }
+
+    
+});
 App.Views.Error = Backbone.View.extend({
     text: {error_description: ''},
     initialize: function (options) {

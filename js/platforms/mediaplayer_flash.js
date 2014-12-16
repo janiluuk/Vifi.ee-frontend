@@ -189,7 +189,7 @@ App.MediaPlayer = {
         if (typeof($f) == "undefined") return false;
         setTimeout(function() { 
             this.plugin.getPlugin("captions").loadCaptions(0,file);
-        }.bind(this),1000);
+        }.bind(this),2300);
     },
     stop: function(forced) {
         if (this.plugin) {

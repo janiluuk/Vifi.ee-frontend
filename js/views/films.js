@@ -45,11 +45,12 @@ App.Views.UserFilmView = Backbone.View.extend({
         var film = app.collection.originalCollection.get(this.model.get("id")).get("film");
         this.model.set("seo_friendly_url", film.seo_friendly_url);
         this.model.set("poster_url", film.poster_url);
+        if (this.model.get("validto"))
         var date = App.Utils.stringToDate(this.model.get("validto"));
-
-        var validtotext = App.Utils.dateToHumanreadable(date);
-        this.model.set("validtotext", validtotext);
-       
+        if (date) { 
+            var validtotext = App.Utils.dateToHumanreadable(date);
+            this.model.set("validtotext", validtotext);
+        }
         this.$el.html(ich.userfilmitemTemplate(this.model.toJSON()));
 
         return this;  

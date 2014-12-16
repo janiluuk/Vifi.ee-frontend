@@ -167,7 +167,7 @@ App.Views.SortItemView = App.Views.FilterItemView.extend({
 
 });
 App.Views.ClearFiltersView = Backbone.View.extend({
-    template: '<a href="#"><button class="clear btn" href="#">' + t("Clear") + '</button></a>',
+    template: '<a href="#"><button class="clear btn" href="#">' + tr("Clear") + '</button></a>',
     events: {
         'click button': 'onClear'
     },

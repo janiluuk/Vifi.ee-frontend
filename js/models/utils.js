@@ -286,7 +286,7 @@ App.Utils.Notification = Backbone.Model.extend({
     }
 }, Backbone.Events);
 
-window.t = App.Utils.translate;
+window.tr = App.Utils.translate;
 
  
 _.extend(Backbone.Validation.callbacks, {

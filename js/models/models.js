@@ -127,9 +127,7 @@ App.Models.FilmSession = App.Models.ApiModel.extend({
         }
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
-
-
-    },
+    }
 
 });
 

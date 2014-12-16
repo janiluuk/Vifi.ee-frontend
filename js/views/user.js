@@ -177,8 +177,9 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
         return false;
     },
     renderCollection: function() { 
-      $("#profilepage-mymovies-container").empty();
-      this.collectionview.render().$el.appendTo("#profilepage-mymovies-container");
+
+      this.collectionview.setElement("#profilepage-mymovies-container");
+      this.collectionview.render();
 
     },
     render: function() { 
@@ -198,16 +199,27 @@ App.Views.UserPairView = Backbone.View.extend({
     el: '#contentpage',
     events:  { 
         'submit #pair-form' : 'pair',
+        'click .confirm-button' : 'confirmunpair',
         'click span.delete' : 'unpair'
     },
     initialize: function(options) {
       this.options = options;
       this.listenTo(this.model, "change", this.render, this);
+      this.listenTo(this.model, "user:pair:successful", function() { this.model.fetch(); }.bind(this), this);
+
     },
     unpair: function(e) {
         console.log(e);
         var el = $(e.currentTarget).parent().parent();
-        el.fadeOut("slow");
+        $(el).addClass("confirm-open");
+
+
+    },
+    confirmunpair: function(e) {
+        var el = $(e.currentTarget).parent().parent();
+        el.addClass("fadeOutLeft140").fadeOut();
+        var id = $(el).data("id");
+        this.model.trigger("user:unpair", id);
 
 
     },
@@ -222,6 +234,7 @@ App.Views.UserPairView = Backbone.View.extend({
         return false;
     },
     render: function() { 
+        
       this.$el.html(ich.pairDeviceTemplate(this.model.toJSON()));
 
       return this;
@@ -237,9 +250,11 @@ App.Views.UserCollectionView = Backbone.View.extend({
  
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
-        this.options = options;
+        this.options = options || {};
+
     },
     render: function() {
+
         this.$el.empty();       
         this.$el.append('<ul class="user-filmcollection-list"></ul>');
         this.$filmCollectionHolder = this.$('.user-filmcollection-list');
@@ -254,6 +269,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.$filmCollectionHolder.empty();
         if (this.collection.length > 0 ) { 
             this.collection.each(function(model) {
+
                 this.addChildView(model);
     
             }, this);
@@ -306,7 +322,7 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
             }
         },
         '[name=newPassword]': {
-            observe: 'newPassword',
+            observe: 'newPassword', 
             setOptions: {
                 validate: false
             }
