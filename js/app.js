@@ -23,7 +23,7 @@ App = {
         version: "061014",
         debug: true,
         language: 'est',
-        api_key: '12345',
+        api_key: '298fh23hhdff11',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         api_url: "http://gonzales.vifi.ee/api/",
         rtmp_url: "rtmp://media.vifi.ee/tv",
