@@ -1150,7 +1150,7 @@ ul.side-menu-list a {
     background: transparent;
 }
 
-form#user-login, form#user-register {
+form#user-login, form#user-register, form#user-forgot-password {
     padding: 0 1.5em;
 }
 
@@ -1179,7 +1179,7 @@ form#user-login, form#user-register {
     text-decoration: underline;
 }
 
-form#user-register, form#popup-user-register {
+form#user-register, form#popup-user-register, form#user-forgot-password, form#popup-user-forgot-password {
     display:none;
 }
 

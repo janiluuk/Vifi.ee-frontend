@@ -117,6 +117,7 @@ App.Utils = {
             }
         },
         stringToDate: function(s) {
+            if (!s) return false;
             var dateParts = s.split(' ')[0].split('-');
             var timeParts = s.split(' ')[1].split(':');
             return new Date(dateParts[0], dateParts[1], dateParts[2], timeParts[0], timeParts[1], 00, 0);
@@ -124,6 +125,7 @@ App.Utils = {
         /* Return date as human readable format */
 
         dateToHumanreadable: function(s) {
+            if (!s) return false;
             return s.getDate() + "." + s.getMonth() + " " + s.getHours() + ":" + ("0" + s.getMinutes()).slice(-2);
         },
         /* Return time after certain duration in minutes */
@@ -229,6 +231,13 @@ App.Utils.Api = Backbone.Model.extend({
         if (data.status == "ok") {
             this.onSuccess(msg);
         }
+        if (data.status == "error") {
+            this.onError(msg);
+        }
+        if (data.status == "notice") {
+            this.onNotice(msg);
+        }
+        
         if (callback) callback(data);
 
     },

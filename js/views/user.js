@@ -44,9 +44,11 @@ App.Views.SubscriptionView = Backbone.View.extend({
 
 App.Views.LoginForm = Backbone.View.extend({ 
     events: { 
-        'click a.register-button' : 'toggleRegisterForm',        
+        'click a.register-button' : 'toggleRegisterForm',
+        'click a.forgot-password-button' : 'toggleResetForm',        
         'click .btn.facebook' : 'loginFacebook',
         'submit form#user-register' : 'register',
+        'submit form#user-forgot-password' : 'resetPassword',
         'submit form#user-login': 'login'
     },
 
@@ -124,6 +126,11 @@ App.Views.LoginForm = Backbone.View.extend({
     toggleRegisterForm: function(e) {
         e.preventDefault();
         this.$("form#user-register, form#user-login").toggle(); 
+        return false;
+    },
+    toggleResetForm: function(e) {
+        e.preventDefault();
+        this.$("form#user-forgot-password, form#user-login").toggle(); 
         return false;
     },
 });
