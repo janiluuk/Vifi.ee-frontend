@@ -1,19 +1,5 @@
 App.User = {};
 
-App.User.FBPerson = Backbone.Model.extend({
-    defaults: {
-        "id": "",
-        "name": "",
-        "first_name": "",
-        "last_name": "",
-        "gender": "",
-        "username": "",
-        "link": "",
-        "locale": "",
-        "timezone": ""
-    }
-});
-
 
 App.User.Profile = App.Models.ApiModel.extend({
     path: 'profile',
@@ -157,7 +143,6 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
 
     unpair: function(id) {
-        callback = function() {};
 
         var email = this.get("email");
         if (email == "" || id == "") return false;
@@ -227,9 +212,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         return false;
     },
     hasSubscription: function() { 
-
-        return false;
-
+        return this.get("subscriber") === true ? true : false;
     },
     isRegisteredUser: function() {
 
@@ -281,16 +264,25 @@ App.User.Profile = App.Models.ApiModel.extend({
 
         this.reset();
         this.fetch().done(function() { 
-
-
             return false;
-
         }.bind(this));
-
-
     }
 
 
+});
+
+App.User.FBPerson = Backbone.Model.extend({
+    defaults: {
+        "id": "",
+        "name": "",
+        "first_name": "",
+        "last_name": "",
+        "gender": "",
+        "username": "",
+        "link": "",
+        "locale": "",
+        "timezone": ""
+    }
 });
 
 App.User.Session = Backbone.Model.extend({
@@ -462,6 +454,7 @@ App.User.Session = Backbone.Model.extend({
 
 });
 App.User.Cookie = {
+
     parse: function() {
 
         var cookie = this.get();
@@ -485,7 +478,6 @@ App.User.Cookie = {
         return false;
     },
     write: function(user_id, auth_id, session_id) {
-
 
         if (user_id != "" && auth_id != "") {
             this.set(user_id + "|" + auth_id + "|"+ session_id);

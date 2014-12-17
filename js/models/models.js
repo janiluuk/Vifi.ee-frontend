@@ -1,5 +1,17 @@
-App.Models = {};
+var oldSaveFunction = Backbone.Model.prototype.save;
+Backbone.Model.prototype.save = function(){
+    var returnedValue = oldSaveFunction.apply(this, arguments),
+        deferred = new $.Deferred();
 
+    if(_.isBoolean(returnedValue)){
+        deferred.reject();
+        return deferred.promise();
+    }
+
+    return returnedValue;
+}
+
+App.Models = {};
 
 App.Models.ApiModel = Backbone.Model.extend({
     defaults: {
@@ -193,5 +205,4 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         }
     }
 });
-App.Models.User = Backbone.Model.extend({});
 

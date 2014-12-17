@@ -1480,7 +1480,7 @@ a.arrow-right {
 .sub-tabbar {
     width: 100%;
     text-align:center;
-    background: rgba(97, 58, 87, 0.8);
+    background: rgb(111, 72, 98);
 }
 
 .swiper-nav .swiper-slide-active:after {
@@ -1489,7 +1489,7 @@ a.arrow-right {
     width: 0;
     height: 0;
     border: 8px solid transparent;
-    border-bottom-color: rgba(230, 230, 230, 0.9);
+    border-bottom-color: #DFDBDB;
     position: absolute;
     bottom: 0;
     left: 45%;
@@ -1501,14 +1501,14 @@ a.arrow-right {
 }
 
 #front-tabbar-swiper-container.swiper-nav .swiper-slide-active:after {
-    border-bottom-color: rgba(49, 34, 53, 0.7);
+    border-bottom-color: rgb(68, 49, 67);
 }
 
 
 .selection-container {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(49, 34, 53, 0.85);
+    background: rgb(68, 49, 67);
     padding: 1%;
 }
 
@@ -1657,7 +1657,7 @@ filter: alpha(opacity=90);
 
 #content-body {
     position: relative;
-    background: rgba(230, 230, 230, 0.75);
+    background: rgb(227, 211, 203);
 }
 
 ul#content-body-list,
@@ -1852,6 +1852,21 @@ ul#cast-content-body-list li .item-image {
     text-align: right;
     color: #00A843;
     font-size: 1.1em;
+}
+
+.singlepage-title {
+    font-size: 2.5em;
+    color: #fff;
+    text-shadow: 0 1px 1px #333;
+    font-weight: 100;
+    text-align: center;
+    width: 90%;
+    margin: 1em auto;
+}
+
+.singlepage-body.main-singlepage {
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 /* MOVIE PAGE */
@@ -2102,7 +2117,7 @@ ul#movie-interactive-button-row li {
     margin: 0;
 }
 
-#user-profile-edit, #subscribe-positive, #change-password-edit, #profilepage-mymovies-container {
+#user-profile-edit, #change-password-edit, #profilepage-mymovies-container {
     display:none;
 }
 

@@ -351,14 +351,30 @@ App.Views.ContentView = Backbone.View.extend({
 
     el: "#contentpage",
     initialize: function(options) {
-
-        this.template = eval("ich."+options.template);
+        this.content = eval("ich."+options.template+"().html()");
+        this.template = ich.contentPageTemplate({content: this.content, title: options.title });
 
 
     },
     render: function() {
 
-        this.$el.empty().append(this.template().html());
+        this.$el.empty().append(this.template.html());
+        return this;
+    }
+
+    
+});
+App.Views.ContactView = App.Views.ContentView.extend({ 
+
+    el: "#contentpage",
+    initialize: function(options) {
+        this.template = ich.contactPageTemplate();
+
+
+    },
+    render: function() {
+
+        this.$el.empty().append(this.template.html());
         return this;
     }
 

@@ -102,7 +102,6 @@ App.Views.LoginForm = Backbone.View.extend({
         $(document).trigger("logout");
     },
     loginFacebook: function(e) { 
-
         e.preventDefault();
         $(document).trigger("login");
     },
@@ -128,14 +127,13 @@ App.Views.LoginForm = Backbone.View.extend({
         return false;
     },
 });
-
 App.Views.ProfileView =  App.Views.CarouselView.extend({ 
     model: App.User.Profile,
     el: '#contentpage',
     events: {
         'click #edit-profile-button, #edit-profile-cancel-button': 'editProfile',
         'submit #profile-update-form' : 'updateProfile',
-        "click .revoke": "revoke"
+        'click .revoke': 'revoke'
     },
     initialize: function(options) {
       this.options = options;
@@ -145,8 +143,10 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.listenTo(this.model, "change:id", this.render, this);
       this.listenTo(this.collection, "add", this.renderCollection, this);
       this.listenTo(this.collection, "reset", this.renderCollection, this);
+      this.profileview = new App.Views.UserProfileView({model: this.model});
       this.resetpasswordview = new App.Views.ResetPasswordView({model: this.model});
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
+
       this.render();
 
     },
@@ -158,8 +158,11 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
         this.model.save(null, {
             type: 'POST',
             data: formData
-        });
-        this.render();
+        }).always(function(e) { 
+            app.session.trigger("success", "Profile updated!");
+            this.renderProfile();
+        }.bind(this));
+
         return false;
     },
     editProfile: function(e) {
@@ -180,23 +183,30 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
 
       this.collectionview.setElement("#profilepage-mymovies-container");
       this.collectionview.render();
+      return this;
 
     },
+
+    renderProfile: function() { 
+
+      this.profileview.setElement("#user-profile");
+      this.profileview.render();
+      return this;
+    },
+
     render: function() { 
       this.$el.html(ich.profileTemplate(this.model.toJSON()));
-      this.resetpasswordview.setElement($("#reset-password")).render();
-
+      this.resetpasswordview.setElement("#reset-password").render();
+      this.renderProfile();
       this.renderCollection();
-
       setTimeout(function() { 
             this.swiper = this.startCarousel(this.options.swipeTo);
-        }.bind(this),100);
+        }.bind(this),50);
       return this;
     }
 });
 App.Views.UserPairView = Backbone.View.extend({ 
     model: App.User.Profile,
-    el: '#contentpage',
     events:  { 
         'submit #pair-form' : 'pair',
         'click .confirm-button' : 'confirmunpair',
@@ -209,10 +219,8 @@ App.Views.UserPairView = Backbone.View.extend({
 
     },
     unpair: function(e) {
-        console.log(e);
         var el = $(e.currentTarget).parent().parent();
         $(el).addClass("confirm-open");
-
 
     },
     confirmunpair: function(e) {
@@ -240,6 +248,21 @@ App.Views.UserPairView = Backbone.View.extend({
       return this;
     },
 });
+App.Views.UserProfileView =  Backbone.View.extend({
+    el: '#user-profile',
+
+    initialize: function(options) {
+        this.options = options || {};
+        this.model = options.model;
+
+    },
+    render: function() {
+        this.$el.empty();       
+        this.$el.html(ich.profileTabTemplate(this.model.toJSON()));
+        return this;
+    },
+
+})
 
 App.Views.UserCollectionView = Backbone.View.extend({
 
@@ -269,22 +292,16 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.$filmCollectionHolder.empty();
         if (this.collection.length > 0 ) { 
             this.collection.each(function(model) {
-
                 this.addChildView(model);
-    
             }, this);
         } else {
-
-            this.$filmCollectionHolder.append(ich.emptyListTemplate({text: t("No purchases")}));
-
+            this.$filmCollectionHolder.append(ich.emptyListTemplate({text: tr("No purchases")}));
         }
 
     },
     addChildView: function(model) {
         var filmView = new App.Views.UserFilmView({
             model: model,
-            user_is_authenticated: true,
-            queue: this.options.queue
         });
         this.$filmCollectionHolder.append(filmView.render().el);
     },

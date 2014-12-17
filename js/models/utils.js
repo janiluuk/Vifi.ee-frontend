@@ -239,9 +239,6 @@ App.Utils.Api = Backbone.Model.extend({
         var url = App.Settings.api_url+action+"/?format=json&callback=?&api_key="+App.Settings.api_key+"&";
         $.getJSON(url,params, function(data) {  _this.parseResponse(data, callback);  }, "jsonp");
 
-
-
-
     }
 
 
@@ -251,7 +248,6 @@ App.Utils.Api = Backbone.Model.extend({
 App.Utils.Notification = Backbone.Model.extend({ 
 
     initialize: function(options) {
-        console.log(options);
 
         if (options && options.model) this.attach(options.model);
     },

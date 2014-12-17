@@ -26,47 +26,7 @@
                 <span class="">{{ text }}</span>
         </div>
 </script>
-<script id="languageFormat" class="helper" data-args="arg1" type="text/html">
-      
-      languageString = arg1.toString();      
-      if (languageString == "en") return tr("English");
-      return tr("Estonian");
 
-</script>
-<script id="selectedHelper" class="helper" data-args="arg1,arg2" type="text/html">
-      var sel = arg1;
-      if (sel == arg2) { 
-        return "selected";
-      }
-</script>
-<script id="ifCond" class="helper" data-args="arg1,arg2,options" type="text/html">
- if(arg1 === arg2) {
-    return options.fn(this);
-  }
-  return options.inverse(this);
-</script>
-<script id="trans" class="helper" data-args="arg1,arg2" type="text/html">
-    return tr(arg1);
-</script>
-<script id="checkboxFormat" class="helper" data-args="arg1" type="text/html">
-      
-      checkboxString = arg1.toString();      
-      if (checkboxString == "0") return tr("No");
-      return tr("Yes");
-
-</script>
-
-<script id="lastModified" type="text/html">
-    <div class="modified-date">This page last modified on {{{dateformat aspDate}}}</div>
-</script>
- 
-<script id="dateformat" class="helper" data-args="aspDate" type="text/html">
-//<![CDATA[ // Optional if there are no &, <, or > in your javascript.
-      aspDateString = aspDate.toString()
-      var dateObject = new Date(parseInt(aspDateString.substr(6)));
-      return (dateObject.getMonth()+1) + '/' + dateObject.getDay() + '/' + dateObject.getFullYear();
-//]]>
-</script>
 <script type="text/html" id="errorPageTemplate">
     <div class="span4"><img src="img/oops.jpg"/></div>
     <div class="span8" style="padding-top: 60px;">
@@ -133,112 +93,121 @@
                     </div>
             </div>
 </script>
-<script type="text/template" id="termsandconditionsTemplate">
-
-<div class="editor-content">
-    <h1>Kasutustingimused</h1>  
-    <p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <b>1.&nbsp;&nbsp; &nbsp;Üldsätted</b><br>
-    <br>
-    1.1&nbsp;&nbsp; &nbsp;Käesolevad kasutustingimused kehtivad ettevõtte Vificom OÜ veebipõhise videolaenutuse (Video-on-Demand) teenuse kasutamise kohta (edaspidi “teenus”).<br>
-    <br>
-    1.2&nbsp;&nbsp; &nbsp;Teenuse pakkuja on ettevõte Vificom OÜ aadressiga Rotermanni 5/128 10111 Tallinn, Eesti (edaspidi “Vificom”).<br>
-    <br>
-    1.3&nbsp;&nbsp; &nbsp;Teenust kasutades nõustute järgima käesolevaid kasutustingimusi. Vificom jätab endale õiguse muuta käesolevaid kasutustingimusi igal ajal omal äranägemisel. Sellised muudatused jõustuvad nende avaldamisel veebisaidil www.vifi.ee (edaspidi “veebisait”) või nende esitamisel teile mingil muul sobival viisil. Teenuse kasutamise jätkamist pärast selliseid muudatusi peetakse samuti nõusolekuks järgida kasutustingimusi. Külastage veebisaiti regulaarselt, kontrollimaks, kas kasutustingimusi on muudetud. Kui te ei nõustu käesolevaid kasutustingimusi järgima, ei ole teil õigust teenust kasutada ega sisule juurde pääseda.<br>
-    <br>
-    1.4&nbsp;&nbsp; &nbsp;Kui olete alla 18-aastane, peab teil teenuse kasutamiseks olema vanema või hooldaja luba. Teenust kasutades esitate kinnituse, et olete vähemalt 18 aasta vanune või et teil on vanema või hooldaja luba teenust kasutada. Vanematel on soovitatav jälgida lapse tegevusi internetis.<br>
-    <br>
-    1.5&nbsp;&nbsp; &nbsp;Käesolevate kasutustingimuste tõlked inglise keelest teistesse keeltesse on mõeldud teie kasutusmugavuse tagamiseks ja neid tõlkeid ei peeta lepinguna kehtivateks. Ingliskeelne versioon on igal ajal ülim ning selle näol on tegemist lepingu või kasutustingimuste ainukese kehtiva versiooniga.<br>
-    <br>
-    <b>2.&nbsp;&nbsp; &nbsp;Teenus</b><br>
-    <br>
-    2.1&nbsp;&nbsp; &nbsp;Teenuse näol on tegemist videolaenutuse teenusega internetis (Video-on-Demand), mille kaudu Vificom teeb kättesaadavaks ja levitab digitaalselt filme ning muud meediasisu (nii ühiselt kui ka eraldi edaspidi "sisu") üksiktarbijatele isiklikuks kasutamiseks vastavalt käesolevatele kasutustingimustele. Juurdepääs teenusele ja sisule on tagatud läbi meediaprogrammi (Media Player), mille saate Vificom veebisaidilt alla laadida ja oma arvutisse installeerida.<br>
-    <br>
-    2.2&nbsp;&nbsp; &nbsp;Olenevalt sellest, millise osa teenusest olete tellinud, saate valida erinevat sisu ja funktsioone ning kasutusaegu.<br>
-    <br>
-    2.3&nbsp;&nbsp; &nbsp;Osa teenusest on saadaval ainult tasulisena, teised osad on saadaval tasuta. Teenuse erinevate osade tasud kehtivad vastavalt meie veebisaidil või mujal teenuses toodule ajal, kui teenuse või selle osa tellite.<br>
-    <br>
-    2.4&nbsp;&nbsp; &nbsp;Teenuse eest tuleb tasuda vastavalt meie veebisaidil või mujal teenuses toodud juhistele ajal, kui teenuse või selle osa tellite.<br>
-    <br>
-    2.5&nbsp;&nbsp; &nbsp;Teie poolt tellitud teenuse osa tellimuse tähtaeg ja lõppemine vastab veebilehel või mujal teenuses toodud teabele ajal, kui teenuse või selle osa tellite.<br>
-    <br>
-    2.6&nbsp;&nbsp; &nbsp; Vificom võib sisu valikut igal ajal muuta, kusjuures Vificomil puudub kohustus kasutajat sellest teavitada. Nõustute, et sisu, mis on saadaval ajal, kui te teenuse või selle osa tellite, ei pruugi olla saadaval hiljem.<br>
-    <br>
-    2.7&nbsp;&nbsp; &nbsp;Lisateavet teenuse, selle tasude ja erinevate funktsioonide kohta saab veebilehelt.<br>
-    <br>
-    <b>3.&nbsp;&nbsp; &nbsp;Teenuse kasutamine</b><br>
-    <br>
-    3.1&nbsp;&nbsp; &nbsp;Teenuse kasutamiseks tuleb alla laadida ning installeerida Vificomi tarkvara ja meediaprogramm, mis on mõlemad saadaval veebilehel; sealjuures peate nõustuma järgima Vificomi tarkvara ja meediaprogrammi litsentsilepinguid ning kasutusjuhiseid, mis esitatakse installeerimisprotsessi käigus. Teenuse kasutamiseks peate alla laadima ning installeerima kõige uuema Vificomi tarkvara ja meediaprogrammi versiooni. Vificomi tarkvara ja meediaprogrammi kõige uuem versioon on saadaval ainult meie veebilehel.<br>
-    <br>
-    3.2&nbsp;&nbsp; &nbsp;Teenuse kasutamiseks on vaja ka vastavat riistvara, tarkvara ja tingimustele vastavat internetiühendust; kõik tingimused on toodud meie veebilehel. Vificom ei vastuta sellise riistvara, tarkvara ja internetiühenduse tagamise eest.<br>
-    <br>
-    3.3&nbsp;&nbsp; &nbsp;Teenuse kasutamiseks tuleb luua personaalne konto ja registreeruda kasutajaks vastavalt meie veebilehel toodud juhistele. Teie konto sisaldab olulist kontoinformatsiooni, sealhulgas teie kasutajanime ja salasõna. Teie poolt valitav salasõna peab olema unikaalne ja erinev. Te vastutate oma kasutajanime ja salasõna eest ega tohiks oma salasõna kunagi kellelegi teisele avaldada. Teil ei ole õigust valida mõne teise isiku identiteeti või kasutada seda eesmärgiga selle inimesena esineda. Peate esitama kehtiva e-posti aadressi, kusjuures Vificom jätab endale õiguse selle õigsust igal ajal kontrollida ja kinnitada. Teil ei ole õigust omada rohkem kui ühte kontot. Keelatud on leppida kolmandate pooltega kokku kontode, ressursside või juurdepääsuandmete ülekandmises, kasutamises või pakkumises.<br>
-    <br>
-    <b>4.&nbsp;&nbsp; &nbsp;Intellektuaalse omandi õigus</b><br>
-    <br>
-    4.1&nbsp;&nbsp; &nbsp;Tingimusel, et olete tasunud kõik nõuetekohased tasud teenuse eest vastavalt käesolevatele kasutustingimustele, võimaldab Vificom teile isikliku, limiteeritud, mittevälistava, mitteedasiantava ja ülekandmatu õiguse vaadata ning kasutada privaatselt ja eraviisiliselt mittekommertslikel eesmärkidel tellitud sisu, kasutades selle sisu kuvamiseks meediaprogrammi, mille kaudu saab vaadata interneti vahendusel striimitavat sisu. Sisu kuvamine peab piirduma privaatse vaatamisega teie kodus teie enda ja teie pere või sõprade poolt, kusjuures te ei saa selle eest mingit tasu ega hüvitist.<br>
-    <br>
-    4.2&nbsp;&nbsp; &nbsp;Teil ei ole õigust kasutada sisu, seda üle kanda, kuvada, esitada või mingil muul viisil kättesaadavaks teha mingil muul kui ainult kasutustingimustes lubatud viisil. Näiteks ei või te ilma piiranguteta (a) müüa, rentida, liisida, levitada, eetrisse anda, all-litsentseerida sisu kolmandatele isikutele või neile mingil muul viisil sisule juurdepääsu võimaldada; (b) sisu kopeerida, üle kanda, levitada või üles laadida vaatamata sellele, kas kasutatav sisu on tasuline või mitte; (c) kuvada sisu kommertsasutustes või avalikel pindadel vaatamata sellele, kas kasutatav sisu on tasuline või mitte; (d) üritada blokeerida teenuse või sisu osaks olevaid juhtimissüsteemi digitaalseid õigusi, neist kõrvale hiilida, neid muuta, tõrjuda või mingil muul viisil vältida; (e) kasutada teenust või sisu mingis kommertstegevuses või illegaalses tegevuses.<br>
-    <br>
-    4.3&nbsp;&nbsp; &nbsp;Sisu ja igasugune muu teenuse kaudu või veebisaidilt saada olev sisu, sh disain, tekst, graafika, pildid, videod, teave, rakendused, tarkvara, muusika, heli ja muud failid on Vificom OÜ või selle litsentsiandjate vara. Teile ei kuulu mingit õigust teenusele või sisule peale õiguse, mis on teile käesolevate kasutustingimustega üheseltmõistetavalt antud, ning kogu õigus teenuse ja sisu üle, nende omand ning osalus kuuluvad Vificomile ja selle litsentsiandjatele. Vificom või selle litsentsiandjad ei anna mingil tingimusel teile üle ühtegi õigust sisu üle, selle omandit ega osalust ning sisu digitaalse vaatamise õigus ei anna teile mingit omandiõigust teenuse või sisu üle. Vificomi tarkvara ja meediaprogrammiga seotud õigusi on täpsustatud nende eraldiseisvates litsentsilepingutes.<br>
-    <br>
-    <b>5.&nbsp;&nbsp; &nbsp;Arvutiressursside kasutamine</b><br>
-    <br>
-    5.1&nbsp;&nbsp; &nbsp;Nõustute, et Vificomil on õigus lubada teenusel kasutada teie riistvara salvestusruumi, protsessorit ja teie internetiühenduse ribalaiust, arvutit, mängukonsooli, tööjaama või muud meediaseadet. Kuid seda võib teha ainult eesmärgiga vahendada selle võrgu protsessi, funktsioone ja tegevusi, millega teenus on ühendatud ning mille abil see töötab, samuti selleks, et hõlbustada andmete või muude artiklite ülekandmist ja edastamist teile ning teistele teenuse kasutajatele.<br>
-    <br>
-    5.2&nbsp;&nbsp; &nbsp;Kui kasutate internetti välisriigis, võib teenus samamoodi kasutada teie kasutatava riistvara salvestusruumi, protsessorit ja teie internetiühenduse ribalaiust, arvutit, mängukonsooli, tööjaama või muud meediaseadet. Sellega võivad kaasneda teie internetiteenuse pakkuja poolt nõutavad lisatasud. Lisateavet lisatasude kohta saate oma internetiteenuse pakkujalt. Teenuse kasutamisega nõustute võtma vastutuse nende lisatasude eest oma internetiteenuse pakkuja ees ning nõustute hüvitama Vificomile igasugused kolmandate osapoolte esitatud nõuded lisatasu kohta, mis puudutavad teie internetiteenuse pakkuja poolt nõutavat lisatasu.<br>
-    <br>
-    <b>7.&nbsp;&nbsp; &nbsp;Tugi</b><br>
-    <br>
-    7.1&nbsp;&nbsp; &nbsp;Vastused korduma kippuvatele küsimustele teenuse kohta on toodud meie veebisaidil. Olete alati oodatud Vificomiga ühendust võtma vormi “kasutajatugi” kaudu.<br>
-    <br>
-    <b>8.&nbsp;&nbsp; &nbsp;Privaatsus ja isikuandmed</b><br>
-    <br>
-    8.1&nbsp;&nbsp; &nbsp;Nõustute, et Vificomil on õigus aeg-ajalt teie isikuandmeid ja teenuse kasutamise andmeid koguda ning neid analüüsida, kui seda tehes järgitakse Vificomi kehtivaid privaatsuspõhimõtteid. Vificomi kehtivad privaatsuspõhimõtted on saadaval meie veebisaidil.<br>
-    <br>
-    <b>9.&nbsp;&nbsp; &nbsp;Teenuse tase ja vastutus</b><br>
-    <br>
-    9.1&nbsp;&nbsp; &nbsp;Vificom teeb endast oleneva, et teenus toimiks. Siiski võib vahel ette tulla tehnilisi probleeme või hooldusvajadust, mis võivad tuua kaasa katkestusi teenuse pakkumises.<br>
-    <br>
-    9.2&nbsp;&nbsp; &nbsp;Kui teenus ei ole kättesaadav ja selline olukord on põhjustatud Vificomii veast, on teil õigus hüvitusele proportsionaalselt teie poolt makstud tasuga selle aja kohta, mille jooksul teenus ei olnud kättesaadav. Rahalise hüvituse asemel on Vificomil õigus esitada hüvitus tasuta juurdepääsu näol teenusele vastavalt ajale, mille jooksul teenus ei olnud kättesaadav. Hüvituse või muu kompensatsiooni saamiseks tuleb esitada vastav nõue vähemalt 14 päeva jooksul ajast, mil teenus ei olnud kättesaadav. Vaatamata käesolevas punktis sätestatule või käesolevate kasutustingimuste muudele sätetele, ei võta Vificom vastutust teenuse mittekättesaadavuse või puudujääkide eest, kui need on kasutaja põhjustatud, tulenevad internetiühenduse probleemidest või mõnest muust tingimusest, mis ei allu Vificomi kontrollile.<br>
-    <br>
-    9.3&nbsp;&nbsp; &nbsp;Vificom viib aeg-ajalt läbi teenuse uuendamist ja hooldust; sellel ajal võib teenus olla kättesaamatu. Vificom üritab korraldada uuenduste sisseviimist ja hooldustöid väljaspool kasutuse tippaegu. Vaatamata punktis 9.2 sätestatule või käesolevate kasutustingimuste muudele sätetele, ei ole teil õigust hüvitusele või muule kompensatsioonile, kui teenus oli kättesaamatu uuenduste sisseviimise või hooldustööde tõttu.<br>
-    <br>
-    9.4&nbsp;&nbsp; &nbsp;Teenust pakutakse “nii, nagu on” ning sisu ja muude pakutavate andmete ning teenuse kvaliteedi ja kättesaadavuse, sobivuse või eesmärgipärasuse osas ei anta mingit otsest ega kaudset garantiid. Tunnistate ka seda, et tarkvaratööstus ei saa tagada täielikku vabadust programmi vigadest.<br>
-    <br>
-    9.5&nbsp;&nbsp; &nbsp;VÄLJA ARVATUD PUNKTIS 9.2 SÄTESTATU, EI VÕTA VIFICOM (SEALHULGAS, KUID MITTE AINULT, SELLE SIDUSETTEVÕTTED JA NENDE ALLTÖÖVÕTJAD, TÖÖTAJAD, JUHID JA AMETNIKUD) VÕI SELLE LITSENTSIANDJAD MINGIL JUHUL VASTUTUST MINGISUGUSTE VIGASTUSTE EEST, MIS ON PÕHJUSTATUD TÖÖSEISAKUTEST, ANDMETE KAOST VÕI KASUTAMISEST, SAAMATA JÄÄNUD KASUMIST VÕI KOLMANDATE POOLTE KAHJUNÕUETEST VÕI MUUDEST KAUDSETEST KAHJUDEST.<br>
-    <br>
-    9.6&nbsp;&nbsp; &nbsp;Vificom jätab endale õiguse igal ajal teenuse funktsioone ja omadusi ajutiselt või alaliselt muuta või katkestada, teavitades sellest omal äranägemisel, kusjuures Vificomil ei ole sellise õiguse kasutamise korral teie ees mingisuguseid kohustusi.<br>
-    <br>
-    <b>10.&nbsp;&nbsp; &nbsp;Hüvitis</b><br>
-    <br>
-    10.1&nbsp;&nbsp; &nbsp;Vificomi nõudmisel nõustute hüvitama Vificomile kõik nõuded, kohustused ja kulutused (sealhulgas mõistlikud õiguskulud), mis tulenevad teiepoolsest teenuse väärkasutamisest viisil, mis selgelt ei vasta käesolevatele kasutustingimustele, kaitsma Vificomi nende nõuete, kohutuste ja kulutuste eest ning tagama Vificomi süütuse sellises olukorras (sealhulgas, kuid mitte ainult, kehtib sama ka Vificomi sidusettevõtetele ja nende alltöövõtjatele, töötajatele, juhtidele ja ametnikele).<br>
-    <br>
-    <b>11.&nbsp;&nbsp; &nbsp;Lisasätted</b><br>
-    <br>
-    11.1&nbsp;&nbsp; &nbsp;Käesolevate kasutustingimuste või Vificomi tarkvara või meediaprogrammi litsentsilepingu rikkumisel lõpetatakse koheselt teie teenuse kasutusõigus ja peatatakse teie juurdepääs sisule ilma makstud tasusid hüvitamata.<br>
-    <br>
-    11.2&nbsp;&nbsp; &nbsp;Nõustute kasutama teenust oma riskil, mõistes, et teenust kasutades võite kokku puutuda sisuga, mida võite pidada solvavaks, kõlvatuks, teotavaks, laimavaks, ahistavaks, hirmutavaks, kuritahtlikuks või taunitavaks. Vificomil ei ole teie ees sellise sisu eest mingit vastutust. Sisu tüübid ja kirjeldused, näiteks žanrid ja kategooriad, on toodud vaid eesmärgiga tagada teie kasutajamugavus ning Vificom ei vastuta nende täpsuse eest.<br>
-    <br>
-    <b>12.&nbsp;&nbsp; &nbsp;Õiguste üleandmine</b><br>
-    <br>
-    12.1&nbsp;&nbsp; &nbsp;Vificomil on õigus oma käesolevatest kasutustingimustest tulenevad õigused ja kohustused osaliselt või täielikult kolmandale poolele üle anda.<br>
-    <br>
-    <b>13.&nbsp;&nbsp; &nbsp;Osaline kehtetus</b><br>
-    <br>
-    13.1&nbsp;&nbsp; &nbsp;Kui mõni käesolevate kasutustingimuste säte osutub ükskõik mis ajal või millises ulatuses kehtetuks või jõustamatuks, jäävad käesolevate kasutustingimuste ülejäänud sätted muutumatult kehtima. Kõik käesolevate kasutustingimuste sätted kehtivad ning neid rakendatakse maksimaalses seaduse poolt lubatud ulatuses.<br>
-    <br>
-    <b>14.&nbsp;&nbsp; &nbsp;Kohaldatav õigus ja vaidluste lahendamine</b><br>
-    <br>
-    14.1&nbsp;&nbsp; &nbsp;Käesolevate kasutustingimuste osas kehtib Eesti Vabariigi õigus, välja arvatud osas, mis võivad seadustes olla konfliktsed. Kõik käesolevatest kasutustingimustest tulenevad või neisse või nende rikkumisse, lõpetamisse või kehtetusse puutuvad vaidlused, vastuolud ja nõuded lahendatakse Eesti üldkohtutes, kusjuures esimese astme kohtuks on Tallinna piirkonnakohus.<br>
-    <br>
-    14.2&nbsp;&nbsp; &nbsp;Seoses sisu või teenuse illegaalse kopeerimise või levitamisega on Vificomil õigus algatada kahju- või kohtumenetlus igas vastavat pädevust omavas kohtus.</p>
-    
-    
+<script type="text/template" id="contentPageTemplate">
+<div class="contentpage-content">
+    <div class="singlepage-header">
+        <div class="singlepage-title">{{title}}</div>  
+    </div>
+    <div class="singlepage-body main-singlepage">
+    {{{ content }}}
+    </div>
 </div>
 </script>
+<script type="text/template" id="termsandconditionsTemplate">
 
-<script type="text/template" id="contactTemplate">
+
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+        <b>1.&nbsp;&nbsp; &nbsp;Üldsätted</b><br>
+        <br>
+        1.1&nbsp;&nbsp; &nbsp;Käesolevad kasutustingimused kehtivad ettevõtte Vificom OÜ veebipõhise videolaenutuse (Video-on-Demand) teenuse kasutamise kohta (edaspidi “teenus”).<br>
+        <br>
+        1.2&nbsp;&nbsp; &nbsp;Teenuse pakkuja on ettevõte Vificom OÜ aadressiga Rotermanni 5/128 10111 Tallinn, Eesti (edaspidi “Vificom”).<br>
+        <br>
+        1.3&nbsp;&nbsp; &nbsp;Teenust kasutades nõustute järgima käesolevaid kasutustingimusi. Vificom jätab endale õiguse muuta käesolevaid kasutustingimusi igal ajal omal äranägemisel. Sellised muudatused jõustuvad nende avaldamisel veebisaidil www.vifi.ee (edaspidi “veebisait”) või nende esitamisel teile mingil muul sobival viisil. Teenuse kasutamise jätkamist pärast selliseid muudatusi peetakse samuti nõusolekuks järgida kasutustingimusi. Külastage veebisaiti regulaarselt, kontrollimaks, kas kasutustingimusi on muudetud. Kui te ei nõustu käesolevaid kasutustingimusi järgima, ei ole teil õigust teenust kasutada ega sisule juurde pääseda.<br>
+        <br>
+        1.4&nbsp;&nbsp; &nbsp;Kui olete alla 18-aastane, peab teil teenuse kasutamiseks olema vanema või hooldaja luba. Teenust kasutades esitate kinnituse, et olete vähemalt 18 aasta vanune või et teil on vanema või hooldaja luba teenust kasutada. Vanematel on soovitatav jälgida lapse tegevusi internetis.<br>
+        <br>
+        1.5&nbsp;&nbsp; &nbsp;Käesolevate kasutustingimuste tõlked inglise keelest teistesse keeltesse on mõeldud teie kasutusmugavuse tagamiseks ja neid tõlkeid ei peeta lepinguna kehtivateks. Ingliskeelne versioon on igal ajal ülim ning selle näol on tegemist lepingu või kasutustingimuste ainukese kehtiva versiooniga.<br>
+        <br>
+        <b>2.&nbsp;&nbsp; &nbsp;Teenus</b><br>
+        <br>
+        2.1&nbsp;&nbsp; &nbsp;Teenuse näol on tegemist videolaenutuse teenusega internetis (Video-on-Demand), mille kaudu Vificom teeb kättesaadavaks ja levitab digitaalselt filme ning muud meediasisu (nii ühiselt kui ka eraldi edaspidi "sisu") üksiktarbijatele isiklikuks kasutamiseks vastavalt käesolevatele kasutustingimustele. Juurdepääs teenusele ja sisule on tagatud läbi meediaprogrammi (Media Player), mille saate Vificom veebisaidilt alla laadida ja oma arvutisse installeerida.<br>
+        <br>
+        2.2&nbsp;&nbsp; &nbsp;Olenevalt sellest, millise osa teenusest olete tellinud, saate valida erinevat sisu ja funktsioone ning kasutusaegu.<br>
+        <br>
+        2.3&nbsp;&nbsp; &nbsp;Osa teenusest on saadaval ainult tasulisena, teised osad on saadaval tasuta. Teenuse erinevate osade tasud kehtivad vastavalt meie veebisaidil või mujal teenuses toodule ajal, kui teenuse või selle osa tellite.<br>
+        <br>
+        2.4&nbsp;&nbsp; &nbsp;Teenuse eest tuleb tasuda vastavalt meie veebisaidil või mujal teenuses toodud juhistele ajal, kui teenuse või selle osa tellite.<br>
+        <br>
+        2.5&nbsp;&nbsp; &nbsp;Teie poolt tellitud teenuse osa tellimuse tähtaeg ja lõppemine vastab veebilehel või mujal teenuses toodud teabele ajal, kui teenuse või selle osa tellite.<br>
+        <br>
+        2.6&nbsp;&nbsp; &nbsp; Vificom võib sisu valikut igal ajal muuta, kusjuures Vificomil puudub kohustus kasutajat sellest teavitada. Nõustute, et sisu, mis on saadaval ajal, kui te teenuse või selle osa tellite, ei pruugi olla saadaval hiljem.<br>
+        <br>
+        2.7&nbsp;&nbsp; &nbsp;Lisateavet teenuse, selle tasude ja erinevate funktsioonide kohta saab veebilehelt.<br>
+        <br>
+        <b>3.&nbsp;&nbsp; &nbsp;Teenuse kasutamine</b><br>
+        <br>
+        3.1&nbsp;&nbsp; &nbsp;Teenuse kasutamiseks tuleb alla laadida ning installeerida Vificomi tarkvara ja meediaprogramm, mis on mõlemad saadaval veebilehel; sealjuures peate nõustuma järgima Vificomi tarkvara ja meediaprogrammi litsentsilepinguid ning kasutusjuhiseid, mis esitatakse installeerimisprotsessi käigus. Teenuse kasutamiseks peate alla laadima ning installeerima kõige uuema Vificomi tarkvara ja meediaprogrammi versiooni. Vificomi tarkvara ja meediaprogrammi kõige uuem versioon on saadaval ainult meie veebilehel.<br>
+        <br>
+        3.2&nbsp;&nbsp; &nbsp;Teenuse kasutamiseks on vaja ka vastavat riistvara, tarkvara ja tingimustele vastavat internetiühendust; kõik tingimused on toodud meie veebilehel. Vificom ei vastuta sellise riistvara, tarkvara ja internetiühenduse tagamise eest.<br>
+        <br>
+        3.3&nbsp;&nbsp; &nbsp;Teenuse kasutamiseks tuleb luua personaalne konto ja registreeruda kasutajaks vastavalt meie veebilehel toodud juhistele. Teie konto sisaldab olulist kontoinformatsiooni, sealhulgas teie kasutajanime ja salasõna. Teie poolt valitav salasõna peab olema unikaalne ja erinev. Te vastutate oma kasutajanime ja salasõna eest ega tohiks oma salasõna kunagi kellelegi teisele avaldada. Teil ei ole õigust valida mõne teise isiku identiteeti või kasutada seda eesmärgiga selle inimesena esineda. Peate esitama kehtiva e-posti aadressi, kusjuures Vificom jätab endale õiguse selle õigsust igal ajal kontrollida ja kinnitada. Teil ei ole õigust omada rohkem kui ühte kontot. Keelatud on leppida kolmandate pooltega kokku kontode, ressursside või juurdepääsuandmete ülekandmises, kasutamises või pakkumises.<br>
+        <br>
+        <b>4.&nbsp;&nbsp; &nbsp;Intellektuaalse omandi õigus</b><br>
+        <br>
+        4.1&nbsp;&nbsp; &nbsp;Tingimusel, et olete tasunud kõik nõuetekohased tasud teenuse eest vastavalt käesolevatele kasutustingimustele, võimaldab Vificom teile isikliku, limiteeritud, mittevälistava, mitteedasiantava ja ülekandmatu õiguse vaadata ning kasutada privaatselt ja eraviisiliselt mittekommertslikel eesmärkidel tellitud sisu, kasutades selle sisu kuvamiseks meediaprogrammi, mille kaudu saab vaadata interneti vahendusel striimitavat sisu. Sisu kuvamine peab piirduma privaatse vaatamisega teie kodus teie enda ja teie pere või sõprade poolt, kusjuures te ei saa selle eest mingit tasu ega hüvitist.<br>
+        <br>
+        4.2&nbsp;&nbsp; &nbsp;Teil ei ole õigust kasutada sisu, seda üle kanda, kuvada, esitada või mingil muul viisil kättesaadavaks teha mingil muul kui ainult kasutustingimustes lubatud viisil. Näiteks ei või te ilma piiranguteta (a) müüa, rentida, liisida, levitada, eetrisse anda, all-litsentseerida sisu kolmandatele isikutele või neile mingil muul viisil sisule juurdepääsu võimaldada; (b) sisu kopeerida, üle kanda, levitada või üles laadida vaatamata sellele, kas kasutatav sisu on tasuline või mitte; (c) kuvada sisu kommertsasutustes või avalikel pindadel vaatamata sellele, kas kasutatav sisu on tasuline või mitte; (d) üritada blokeerida teenuse või sisu osaks olevaid juhtimissüsteemi digitaalseid õigusi, neist kõrvale hiilida, neid muuta, tõrjuda või mingil muul viisil vältida; (e) kasutada teenust või sisu mingis kommertstegevuses või illegaalses tegevuses.<br>
+        <br>
+        4.3&nbsp;&nbsp; &nbsp;Sisu ja igasugune muu teenuse kaudu või veebisaidilt saada olev sisu, sh disain, tekst, graafika, pildid, videod, teave, rakendused, tarkvara, muusika, heli ja muud failid on Vificom OÜ või selle litsentsiandjate vara. Teile ei kuulu mingit õigust teenusele või sisule peale õiguse, mis on teile käesolevate kasutustingimustega üheseltmõistetavalt antud, ning kogu õigus teenuse ja sisu üle, nende omand ning osalus kuuluvad Vificomile ja selle litsentsiandjatele. Vificom või selle litsentsiandjad ei anna mingil tingimusel teile üle ühtegi õigust sisu üle, selle omandit ega osalust ning sisu digitaalse vaatamise õigus ei anna teile mingit omandiõigust teenuse või sisu üle. Vificomi tarkvara ja meediaprogrammiga seotud õigusi on täpsustatud nende eraldiseisvates litsentsilepingutes.<br>
+        <br>
+        <b>5.&nbsp;&nbsp; &nbsp;Arvutiressursside kasutamine</b><br>
+        <br>
+        5.1&nbsp;&nbsp; &nbsp;Nõustute, et Vificomil on õigus lubada teenusel kasutada teie riistvara salvestusruumi, protsessorit ja teie internetiühenduse ribalaiust, arvutit, mängukonsooli, tööjaama või muud meediaseadet. Kuid seda võib teha ainult eesmärgiga vahendada selle võrgu protsessi, funktsioone ja tegevusi, millega teenus on ühendatud ning mille abil see töötab, samuti selleks, et hõlbustada andmete või muude artiklite ülekandmist ja edastamist teile ning teistele teenuse kasutajatele.<br>
+        <br>
+        5.2&nbsp;&nbsp; &nbsp;Kui kasutate internetti välisriigis, võib teenus samamoodi kasutada teie kasutatava riistvara salvestusruumi, protsessorit ja teie internetiühenduse ribalaiust, arvutit, mängukonsooli, tööjaama või muud meediaseadet. Sellega võivad kaasneda teie internetiteenuse pakkuja poolt nõutavad lisatasud. Lisateavet lisatasude kohta saate oma internetiteenuse pakkujalt. Teenuse kasutamisega nõustute võtma vastutuse nende lisatasude eest oma internetiteenuse pakkuja ees ning nõustute hüvitama Vificomile igasugused kolmandate osapoolte esitatud nõuded lisatasu kohta, mis puudutavad teie internetiteenuse pakkuja poolt nõutavat lisatasu.<br>
+        <br>
+        <b>7.&nbsp;&nbsp; &nbsp;Tugi</b><br>
+        <br>
+        7.1&nbsp;&nbsp; &nbsp;Vastused korduma kippuvatele küsimustele teenuse kohta on toodud meie veebisaidil. Olete alati oodatud Vificomiga ühendust võtma vormi “kasutajatugi” kaudu.<br>
+        <br>
+        <b>8.&nbsp;&nbsp; &nbsp;Privaatsus ja isikuandmed</b><br>
+        <br>
+        8.1&nbsp;&nbsp; &nbsp;Nõustute, et Vificomil on õigus aeg-ajalt teie isikuandmeid ja teenuse kasutamise andmeid koguda ning neid analüüsida, kui seda tehes järgitakse Vificomi kehtivaid privaatsuspõhimõtteid. Vificomi kehtivad privaatsuspõhimõtted on saadaval meie veebisaidil.<br>
+        <br>
+        <b>9.&nbsp;&nbsp; &nbsp;Teenuse tase ja vastutus</b><br>
+        <br>
+        9.1&nbsp;&nbsp; &nbsp;Vificom teeb endast oleneva, et teenus toimiks. Siiski võib vahel ette tulla tehnilisi probleeme või hooldusvajadust, mis võivad tuua kaasa katkestusi teenuse pakkumises.<br>
+        <br>
+        9.2&nbsp;&nbsp; &nbsp;Kui teenus ei ole kättesaadav ja selline olukord on põhjustatud Vificomii veast, on teil õigus hüvitusele proportsionaalselt teie poolt makstud tasuga selle aja kohta, mille jooksul teenus ei olnud kättesaadav. Rahalise hüvituse asemel on Vificomil õigus esitada hüvitus tasuta juurdepääsu näol teenusele vastavalt ajale, mille jooksul teenus ei olnud kättesaadav. Hüvituse või muu kompensatsiooni saamiseks tuleb esitada vastav nõue vähemalt 14 päeva jooksul ajast, mil teenus ei olnud kättesaadav. Vaatamata käesolevas punktis sätestatule või käesolevate kasutustingimuste muudele sätetele, ei võta Vificom vastutust teenuse mittekättesaadavuse või puudujääkide eest, kui need on kasutaja põhjustatud, tulenevad internetiühenduse probleemidest või mõnest muust tingimusest, mis ei allu Vificomi kontrollile.<br>
+        <br>
+        9.3&nbsp;&nbsp; &nbsp;Vificom viib aeg-ajalt läbi teenuse uuendamist ja hooldust; sellel ajal võib teenus olla kättesaamatu. Vificom üritab korraldada uuenduste sisseviimist ja hooldustöid väljaspool kasutuse tippaegu. Vaatamata punktis 9.2 sätestatule või käesolevate kasutustingimuste muudele sätetele, ei ole teil õigust hüvitusele või muule kompensatsioonile, kui teenus oli kättesaamatu uuenduste sisseviimise või hooldustööde tõttu.<br>
+        <br>
+        9.4&nbsp;&nbsp; &nbsp;Teenust pakutakse “nii, nagu on” ning sisu ja muude pakutavate andmete ning teenuse kvaliteedi ja kättesaadavuse, sobivuse või eesmärgipärasuse osas ei anta mingit otsest ega kaudset garantiid. Tunnistate ka seda, et tarkvaratööstus ei saa tagada täielikku vabadust programmi vigadest.<br>
+        <br>
+        9.5&nbsp;&nbsp; &nbsp;VÄLJA ARVATUD PUNKTIS 9.2 SÄTESTATU, EI VÕTA VIFICOM (SEALHULGAS, KUID MITTE AINULT, SELLE SIDUSETTEVÕTTED JA NENDE ALLTÖÖVÕTJAD, TÖÖTAJAD, JUHID JA AMETNIKUD) VÕI SELLE LITSENTSIANDJAD MINGIL JUHUL VASTUTUST MINGISUGUSTE VIGASTUSTE EEST, MIS ON PÕHJUSTATUD TÖÖSEISAKUTEST, ANDMETE KAOST VÕI KASUTAMISEST, SAAMATA JÄÄNUD KASUMIST VÕI KOLMANDATE POOLTE KAHJUNÕUETEST VÕI MUUDEST KAUDSETEST KAHJUDEST.<br>
+        <br>
+        9.6&nbsp;&nbsp; &nbsp;Vificom jätab endale õiguse igal ajal teenuse funktsioone ja omadusi ajutiselt või alaliselt muuta või katkestada, teavitades sellest omal äranägemisel, kusjuures Vificomil ei ole sellise õiguse kasutamise korral teie ees mingisuguseid kohustusi.<br>
+        <br>
+        <b>10.&nbsp;&nbsp; &nbsp;Hüvitis</b><br>
+        <br>
+        10.1&nbsp;&nbsp; &nbsp;Vificomi nõudmisel nõustute hüvitama Vificomile kõik nõuded, kohustused ja kulutused (sealhulgas mõistlikud õiguskulud), mis tulenevad teiepoolsest teenuse väärkasutamisest viisil, mis selgelt ei vasta käesolevatele kasutustingimustele, kaitsma Vificomi nende nõuete, kohutuste ja kulutuste eest ning tagama Vificomi süütuse sellises olukorras (sealhulgas, kuid mitte ainult, kehtib sama ka Vificomi sidusettevõtetele ja nende alltöövõtjatele, töötajatele, juhtidele ja ametnikele).<br>
+        <br>
+        <b>11.&nbsp;&nbsp; &nbsp;Lisasätted</b><br>
+        <br>
+        11.1&nbsp;&nbsp; &nbsp;Käesolevate kasutustingimuste või Vificomi tarkvara või meediaprogrammi litsentsilepingu rikkumisel lõpetatakse koheselt teie teenuse kasutusõigus ja peatatakse teie juurdepääs sisule ilma makstud tasusid hüvitamata.<br>
+        <br>
+        11.2&nbsp;&nbsp; &nbsp;Nõustute kasutama teenust oma riskil, mõistes, et teenust kasutades võite kokku puutuda sisuga, mida võite pidada solvavaks, kõlvatuks, teotavaks, laimavaks, ahistavaks, hirmutavaks, kuritahtlikuks või taunitavaks. Vificomil ei ole teie ees sellise sisu eest mingit vastutust. Sisu tüübid ja kirjeldused, näiteks žanrid ja kategooriad, on toodud vaid eesmärgiga tagada teie kasutajamugavus ning Vificom ei vastuta nende täpsuse eest.<br>
+        <br>
+        <b>12.&nbsp;&nbsp; &nbsp;Õiguste üleandmine</b><br>
+        <br>
+        12.1&nbsp;&nbsp; &nbsp;Vificomil on õigus oma käesolevatest kasutustingimustest tulenevad õigused ja kohustused osaliselt või täielikult kolmandale poolele üle anda.<br>
+        <br>
+        <b>13.&nbsp;&nbsp; &nbsp;Osaline kehtetus</b><br>
+        <br>
+        13.1&nbsp;&nbsp; &nbsp;Kui mõni käesolevate kasutustingimuste säte osutub ükskõik mis ajal või millises ulatuses kehtetuks või jõustamatuks, jäävad käesolevate kasutustingimuste ülejäänud sätted muutumatult kehtima. Kõik käesolevate kasutustingimuste sätted kehtivad ning neid rakendatakse maksimaalses seaduse poolt lubatud ulatuses.<br>
+        <br>
+        <b>14.&nbsp;&nbsp; &nbsp;Kohaldatav õigus ja vaidluste lahendamine</b><br>
+        <br>
+        14.1&nbsp;&nbsp; &nbsp;Käesolevate kasutustingimuste osas kehtib Eesti Vabariigi õigus, välja arvatud osas, mis võivad seadustes olla konfliktsed. Kõik käesolevatest kasutustingimustest tulenevad või neisse või nende rikkumisse, lõpetamisse või kehtetusse puutuvad vaidlused, vastuolud ja nõuded lahendatakse Eesti üldkohtutes, kusjuures esimese astme kohtuks on Tallinna piirkonnakohus.<br>
+        <br>
+        14.2&nbsp;&nbsp; &nbsp;Seoses sisu või teenuse illegaalse kopeerimise või levitamisega on Vificomil õigus algatada kahju- või kohtumenetlus igas vastavat pädevust omavas kohtus.
+        </p>
+ 
+    
+</script>
+
+<script type="text/template" id="contactPageTemplate">
 
 <div id="contact_letter">
         <div id="contact_left">
@@ -261,7 +230,7 @@
             </form>
         </div>
         <div id="contact_right" style="float:left">
-            <div style="overflow:hidden;height:300px;width:300px;"><div id="gmap_canvas" style="height:300px;width:300px;"></div>
+            <div style="overflow:hidden;height:500px;width:300px;"><div id="gmap_canvas" style="height:300px;width:300px;"></div>
             <style>#gmap_canvas img{max-width:none!important;background:none!important}</style><a class="google-map-code" href="http://www.trivoo.net/gutscheine/schwab/" id="get-map-data">schwab</a></div>
             <br>
             <div class="vcard">

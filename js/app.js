@@ -45,9 +45,12 @@ App = {
             'eesti' : 'Estonian',
             'english' : 'English'
         }
-
-
     },
+    ContentPages: {
+        'termsandconditions' : 'Kasutustingimused'
+
+
+    }
 }
 
 
@@ -55,18 +58,18 @@ App.Router = Backbone.Router.extend({
     views: {},
     models: {},
     routes: {
-        '': 'homePage', //
+        '': 'homePage',
         'search': 'search',
         'search/:searchStateHash': 'search',
         'film/:id': 'showFilm',
         'films/:id': 'showFilm',
-        "me": "me",
-        "contact" : "showContactPage",
-        "me/my-films": "filmcollection",
-        "me/pair-device": "pairdevice",
-        "subscription-plans": "subscription",
-        "revoke": "revoke",
-        "page/:id": "showContentPage"
+        'me': 'me',
+        'contact' : 'showContactPage',
+        'me/my-films': 'filmcollection',
+        'me/pair-device': 'pairdevice',
+        'subscription-plans': 'subscription',
+        'revoke': 'revoke',
+        'page/:id': 'showContentPage'
     },
     initialize: function(options) {
         options = options || {};
@@ -206,23 +209,30 @@ App.Router = Backbone.Router.extend({
             src: 'http://maps.google.com/maps/api/js?sensor=false',
             type: 'text/javascript'
         }).appendTo("head");
-        this.views.contactview = new App.Views.ContentView({template: "contactTemplate"});
+        this.views.contactview = new App.Views.ContactView();
         this.views.contactview.render().$el.fadeIn();
-
-        app.showContentPage("contact");
         this.init_map();
 
-
-    
     },
     init_map: function() {
-        var myOptions = {zoom:15,center:new google.maps.LatLng(59.43795770000001,24.75549920000003),mapTypeId: google.maps.MapTypeId.ROADMAP};map = new google.maps.Map(document.getElementById("gmap_canvas"), myOptions);marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(59.43795770000001, 24.75549920000003)});infowindow = new google.maps.InfoWindow({content:"<b>Vificom</b><br/>Roseni 5<br/> Tallinn" });google.maps.event.addListener(marker, "click", function(){infowindow.open(map,marker);});infowindow.open(map,marker);
+        if (typeof(google) == "undefined") { 
+            setTimeout(function() { this.init_map(); }.bind(this),500);
+            return false;
+        }
+
+        var myOptions = {zoom:15,center:new google.maps.LatLng(59.43795770000001,24.75549920000003),mapTypeId: google.maps.MapTypeId.ROADMAP};
+        var map = new google.maps.Map(document.getElementById("gmap_canvas"), myOptions);
+        var marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(59.43795770000001, 24.75549920000003)});
+        var infowindow = new google.maps.InfoWindow({content:"<b>Vificom</b><br/>Roseni 5<br/> Tallinn" });google.maps.event.addListener(marker, "click", function(){infowindow.open(map,marker);});
+        infowindow.open(map,marker);
     },
     showContentPage: function(template) {
 
         var name = template.split("-").join("");
+        var title = _.find(App.ContentPages, function(title, idx) { return idx == name });
 
-        this.views.contentview = new App.Views.ContentView({template: name+"Template"});
+
+        this.views.contentview = new App.Views.ContentView({title: title, template: name+"Template"});
         this.views.contentview.render().$el.fadeIn();
         app.showContentPage(name);
 
