@@ -59,7 +59,6 @@ App.Views.LoginForm = Backbone.View.extend({
         
         if (options.session) {
             this.session = options.session;
-
             this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
             this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
 
@@ -69,6 +68,11 @@ App.Views.LoginForm = Backbone.View.extend({
             }.bind(this), this);
             this.listenTo(this.session.profile, "user:login", this.onSuccess, this);
         }    
+    },
+    onSuccess: function(data) {
+        
+        return false;
+
     },
     onFail: function(data) {
         if (!data) return false;
@@ -83,11 +87,7 @@ App.Views.LoginForm = Backbone.View.extend({
         $(document).trigger('logout');
         return false;
     },
-    onSuccess: function(data) {
-        
-        return false;
-
-    },
+   
     login: function(e) {
 
         e.preventDefault();
@@ -184,7 +184,6 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.collectionview.setElement("#profilepage-mymovies-container");
       this.collectionview.render();
       return this;
-
     },
 
     renderProfile: function() { 
@@ -224,27 +223,24 @@ App.Views.UserPairView = Backbone.View.extend({
 
     },
     confirmunpair: function(e) {
+        e.preventDefault();        
         var el = $(e.currentTarget).parent().parent();
         el.addClass("fadeOutLeft140").fadeOut();
         var id = $(el).data("id");
         this.model.trigger("user:unpair", id);
-
-
     },
     pair: function(e) {
         e.preventDefault();
         var code = $("#pairing-code").val();
         if (code == "") { 
-            alert("Empty code :/");
+            app.session.trigger("error", "You entered empty value :/");
         }
         this.model.trigger("user:pair", code);
 
         return false;
     },
     render: function() { 
-        
       this.$el.html(ich.pairDeviceTemplate(this.model.toJSON()));
-
       return this;
     },
 });
@@ -274,7 +270,6 @@ App.Views.UserCollectionView = Backbone.View.extend({
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
         this.options = options || {};
-
     },
     render: function() {
 
@@ -284,49 +279,31 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.renderFilmViews();
         return this;
     },
-    getTotalPages: function() {
-        return Math.ceil(this.collection.length / this.options.carouselShowFilms) || 1;
-    },
-    renderFilmViews: function() {
 
+    renderFilmViews: function() {
+        this.fragment = document.createDocumentFragment();
         this.$filmCollectionHolder.empty();
+        
         if (this.collection.length > 0 ) { 
             this.collection.each(function(model) {
                 this.addChildView(model);
-            }, this);
+            }.bind(this), this);
+
+             this.$filmCollectionHolder.append(this.fragment);
+
         } else {
             this.$filmCollectionHolder.append(ich.emptyListTemplate({text: tr("No purchases")}));
         }
-
+        return this;
     },
     addChildView: function(model) {
         var filmView = new App.Views.UserFilmView({
             model: model,
         });
-        this.$filmCollectionHolder.append(filmView.render().el);
+        $(this.fragment).append(filmView.render().el);
+
     },
-    previousPage: function() {
-        if (this.page > 1) {
-            this.page--;
-            this.renderFilmViews();
-        }
-    },
-    nextPage: function() {
-        if (this.page < this.getTotalPages()) {
-            this.page++;
-            this.renderFilmViews();
-        }
-    },
-    addAndShowFirstPage: function() {
-        this.page = 1;
-        this.renderFilmViews();
-    },
-    addAndShowLastPage: function() {
-        if (this.page < this.getTotalPages()) {
-            this.page = this.getTotalPages();
-        }
-        this.renderFilmViews();
-    }
+
 });
 
 App.Views.ResetPasswordForm = Backbone.View.extend({ 
