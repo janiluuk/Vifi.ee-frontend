@@ -209,15 +209,20 @@ App.Router = Backbone.Router.extend({
             src: 'http://maps.google.com/maps/api/js?sensor=false',
             type: 'text/javascript'
         }).appendTo("head");
-        this.views.contactview = new App.Views.ContactView();
-        this.views.contactview.render().$el.fadeIn();
-        this.init_map();
+        if (!this.views.contactview) { 
+            this.views.contactview = new App.Views.ContactView();
+            this.views.contactview.render();
+            this.init_map();
+        }
+        this.views.contactview.$el.fadeIn();
+        this.trigger("change:title", "Contact Us!");
+
         app.showContentPage("contact");
 
     },
     init_map: function() {
         if (typeof(google) == "undefined") { 
-            setTimeout(function() { this.init_map(); }.bind(this),500);
+            setTimeout(function() { this.init_map(); }.bind(this),400);
             return false;
         }
 
