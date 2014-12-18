@@ -243,10 +243,11 @@ App.Utils.Api = Backbone.Model.extend({
     },
     call: function(action, params, callback) {  
         if (_.isArray(action)) action = action.join("/");
-        var _this = this;
-        params = params || {};
+        var sessionParams = app.session.getParams();
+        params = _.extend(params, sessionParams.data);
+
         var url = App.Settings.api_url+action+"/?format=json&callback=?&api_key="+App.Settings.api_key+"&";
-        $.getJSON(url,params, function(data) {  _this.parseResponse(data, callback);  }, "jsonp");
+        $.getJSON(url,params, function(data) {  this.parseResponse(data, callback);  }.bind(this), "jsonp");
 
     }
 

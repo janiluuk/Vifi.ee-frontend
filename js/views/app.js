@@ -353,12 +353,10 @@ App.Views.ContentView = Backbone.View.extend({
     initialize: function(options) {
         this.content = eval("ich."+options.template+"().html()");
         this.template = ich.contentPageTemplate({content: this.content, title: options.title });
-
-
     },
     render: function() {
 
-        this.$el.empty().append(this.template.html());
+        this.$el.empty().append(this.template);
         return this;
     }
 
@@ -372,11 +370,6 @@ App.Views.ContactView = App.Views.ContentView.extend({
 
 
     },
-    render: function() {
-
-        this.$el.empty().append(this.template.html());
-        return this;
-    }
 
     
 });

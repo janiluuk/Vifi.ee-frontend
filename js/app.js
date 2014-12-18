@@ -212,6 +212,7 @@ App.Router = Backbone.Router.extend({
         this.views.contactview = new App.Views.ContactView();
         this.views.contactview.render().$el.fadeIn();
         this.init_map();
+        app.showContentPage("contact");
 
     },
     init_map: function() {

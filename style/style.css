@@ -525,7 +525,7 @@ button, .btn {
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    font-size: 1.3em;
+    font-size: 16px;
     cursor: pointer;
     -webkit-transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
     -moz-transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
@@ -774,7 +774,7 @@ button.btn.facebook:before {
     height: 25px;
 }
 
-input.vifi-text-input {
+input.vifi-text-input, textarea.vifi-text-input {
     box-sizing: border-box;
     color: #1b1b1b;
     background-color: #E1E0ED;
@@ -787,11 +787,18 @@ input.vifi-text-input {
     box-shadow: none !important;
 }
 
-input.vifi-text-input:focus {
+input.vifi-text-input:focus, textarea.vifi-text-input:focus {
     background-color: #fff;
     color: black;
 }
 
+textarea.vifi-text-input {
+    width: 100%;
+    min-height: 100px;    
+    border-color: #B5AAC4;
+    border-radius: 0.5em;
+    font-family: Arial;
+}
 .warning {
     color: #DF2929;
 }
@@ -1869,6 +1876,10 @@ ul#cast-content-body-list li .item-image {
     line-height: 1.5;
 }
 
+.singlepage-container {
+    padding: 1%;
+}
+
 /* MOVIE PAGE */
 
 #moviepage-body, #profilepage-body, .singlepage-body {
@@ -2111,7 +2122,7 @@ ul#movie-interactive-button-row li {
     text-shadow: 0 1px 1px #333;   
 }
 
-#user-profile .card-body .row-fluid, .card-body #change-password-edit .row-fluid {
+#user-profile .card-body .row-fluid, .card-body #change-password-edit .row-fluid, .singlepage-body .card-body .row-fluid {
     height: 3em;
     line-height: 3em;
     margin: 0;
@@ -2269,6 +2280,35 @@ ul#subscription-benefit-list li .icon {
 #contentpage .singlepage-text ul.simple-list li{
     list-style-type: disc;
 }
+
+
+
+/* CONTACT PAGE */
+
+#contactpage-header {
+    height: 300px;
+    border-bottom: 1px solid #9F7A9B;
+}
+
+.card-body div#contact_step1 .row-fluid {
+    height: auto;
+    line-height: 2;
+    margin: 5px 0 10px 0;
+}
+
+.card-body div#contact_step1 .row-fluid span.label {
+    margin-left: 0;
+}
+
+.card-body div#contact_step1 .row-fluid input, .card-body div#contact_step1 .row-fluid textarea {
+    text-indent: 10px;
+}
+
+.card-body div#contact_step1 .row-fluid .btn {
+    margin: 0 0 1em 0;
+}
+
+/* RESPONSIVE CSS */
 
 @media (max-width: 3840px) {
     html {

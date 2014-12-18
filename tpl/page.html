@@ -93,19 +93,22 @@
                     </div>
             </div>
 </script>
+
 <script type="text/template" id="contentPageTemplate">
 <div class="contentpage-content">
     <div class="singlepage-header">
         <div class="singlepage-title">{{title}}</div>  
     </div>
     <div class="singlepage-body main-singlepage">
-    {{{ content }}}
+        <div class="singlepage-container">
+            {{{ content }}}
+        </div>
     </div>
 </div>
 </script>
 <script type="text/template" id="termsandconditionsTemplate">
 
-
+    <div class="singlepage-container">
         <p class="western" lang="et-EE" style="margin-bottom: 0in">
         <b>1.&nbsp;&nbsp; &nbsp;Üldsätted</b><br>
         <br>
@@ -203,43 +206,76 @@
         <br>
         14.2&nbsp;&nbsp; &nbsp;Seoses sisu või teenuse illegaalse kopeerimise või levitamisega on Vificomil õigus algatada kahju- või kohtumenetlus igas vastavat pädevust omavas kohtus.
         </p>
- 
+    </div>
     
 </script>
 
 <script type="text/template" id="contactPageTemplate">
 
 <div id="contact_letter">
-        <div id="contact_left">
-            <span class="contact_title">Give us a ring</span><br>
-            <span class="contact_detail">+372 58 667 570</span><br><br>
-
-            <span class="contact_title">Pop us an email</span><br>
-            <span class="contact_detail"><a href="mailto:tugi@vifi.ee">tugi@vifi.ee</a></span><br><br>
-        </div>
-        <div id="contact_middle">
-            <form id="contact_form">
-            <div id="contact_middle_step1">
-                <input id="contact_name" placeholder="Your name"><br>
-                <input id="contact_email" placeholder="Your email"><br>
-                <input id="contact_phone" placeholder="Your phone"><br>
-                <textarea placeholder="How can we help?"></textarea><br>
+    <div id="contactpage-header" class="singlepage-header float_left">
+            <div style="overflow:hidden;height:100%;width:100%;"><div id="gmap_canvas" style="height:100%;width:100%;"></div>
+            <style>#gmap_canvas img{max-width:none!important;background:none!important}</style>
             </div>
-
-                <input id="submit_contact_form" class="btn" type="submit" value="Send Message">
-            </form>
-        </div>
-        <div id="contact_right" style="float:left">
-            <div style="overflow:hidden;height:500px;width:300px;"><div id="gmap_canvas" style="height:300px;width:300px;"></div>
-            <style>#gmap_canvas img{max-width:none!important;background:none!important}</style><a class="google-map-code" href="http://www.trivoo.net/gutscheine/schwab/" id="get-map-data">schwab</a></div>
-            <br>
-            <div class="vcard">
-                <div class="adr">
-                    <span class="fn org" style="display:none;">Vificom OÜ</span>
-                    <span class="extended-address">Roseni 5</span><br>
-                    <span class="street-address">Tallinn, Estonia</span><br>
+    </div>
+    <div id="contactpage-body" class="singlepage-body float_left">
+        <div id="contactpage-container" class="singlepage-body-container float_left">
+            <div class="width-50 float_left">
+                <div id="contact-info" class="card float_left">
+                    <div class="card-heading">
+                        <span>Contact information</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row-fluid">
+                            <i class="icon phone"></i>
+                            <span class="label">Telephone</span>
+                            <span>+372 58 667 570</span>
+                        </div>
+                        <div class="break"></div>
+                        <div class="row-fluid">
+                            <i class="icon email"></i>
+                            <span class="label">Email</span>
+                            <span><a href="mailto:tugi@vifi.ee">tugi@vifi.ee</a></span>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            <div class="width-50 float_left">
+                <div id="contact-form-container" class="card float_left">
+                    <div class="card-heading">
+                        <span>Send us a message</span>
+                    </div>
+                    <div class="card-body">
+                        <form id="contact_form">
+                            <div id="contact_step1">
+                                <div class="row-fluid">
+                                    <span class="label">Your name</span>
+                                    <input id="contact_name" class="vifi-text-input" type="text" placeholder="Your name">
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid">
+                                    <span class="label">Your email</span>
+                                    <input id="contact_name" class="vifi-text-input" type="text" placeholder="Your email">
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid">
+                                    <span class="label">Your phone</span>
+                                    <input id="contact_name" class="vifi-text-input" type="text" placeholder="Your phone">
+                                </div>
+                                <div class="break"></div>
+                                <div class="row-fluid">
+                                    <span class="label">How can we help?</span>
+                                    <textarea placeholder="How can we help?" class="vifi-text-input"></textarea>
+                                </div>
+                                <div class="row-fluid">
+                                    <button id="submit_contact_form" class="btn green float_right">Send message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    </script>
+</div>
+</script>

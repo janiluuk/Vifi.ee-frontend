@@ -60,10 +60,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         if (!password || !email) return false;
         this.logout();
 
-        var url = App.Settings.api_url + 'user/login/' + email + '/' + password + '?callback=?';
-        var options = this.getParams();
-
-        $.getJSON(url, options.data, "jsonp").done(function(data) {
+        app.api.call(["user","login", email, password], {}, function(data) {
 
             if (data.status == 2) {
                 this.set("user_id", data.user_id);
@@ -72,12 +69,9 @@ App.User.Profile = App.Models.ApiModel.extend({
                 this.set("activationCode", data.activationCode);
              //   this.enable();
             } else {
-
                 this.trigger("user:login:fail", data);
             }
-
-
-        }.bind(this), "jsonp");
+        });
 
     },
     logout: function() {
@@ -93,7 +87,6 @@ App.User.Profile = App.Models.ApiModel.extend({
         $.getJSON(url, options.data, "jsonp").done(function(data) {
 
             if (data.status == "ok") {
-
                 this.trigger("user:changepassword:success", data.message);
             } else {
                 this.trigger("user:changepassword:fail", data.message);
@@ -102,6 +95,17 @@ App.User.Profile = App.Models.ApiModel.extend({
         }.bind(this), "jsonp").error(function(data) { 
 
                 this.trigger("user:changepassword:fail", "Error making query");
+        }.bind(this));
+
+    },
+    resetPassword: function(email) {  
+        if (!email) return false;
+        app.api.call(["user","recovery"], {email: email}, function(data) {
+             if (data.status == "ok") {
+                this.trigger("user:resetpassword:success", data);
+            } else {
+                this.trigger("user:resetpassword:fail", data);
+            }
         }.bind(this));
 
     },

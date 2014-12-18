@@ -103,6 +103,19 @@ App.Views.LoginForm = Backbone.View.extend({
         e.preventDefault();
         $(document).trigger("login");
     },
+    resetPassword: function(e) { 
+        e.preventDefault();
+        var email = this.$("#forgot-password-email").val();
+
+        if (email =="") {  
+            this.onFail({message: "E-mail is empty!"});
+        } else { 
+            this.session.get("profile").resetPassword(email);
+        }
+
+        return false;
+
+    },
     register: function(e) {
         e.preventDefault();
         var email = this.$("#register-email").val();
