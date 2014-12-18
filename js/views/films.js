@@ -81,6 +81,7 @@ App.Views.FeaturedView = Backbone.View.extend({
         $(this.swiperel).append(this.fragment);
         setTimeout(function() { _this.startCarousel(); }, 150);
 
+        return this;
     },
     startCarousel: function() {
         window.mySwiper = $('#featured-swiper-container').swiper({

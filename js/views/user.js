@@ -63,7 +63,6 @@ App.Views.LoginForm = Backbone.View.extend({
             this.session = options.session;
             this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
             this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
-
             this.listenTo(this.session.profile, "user:register:success", function(data) {
                 this.session.trigger("success", "You have registered successfully!");
                 return false;
@@ -82,7 +81,6 @@ App.Views.LoginForm = Backbone.View.extend({
         var div = $("<div>").addClass("row-fluid error").html(data.message);
         this.$("form:visible:first h3").append(div);
         return false;
-
     },
     logout: function (e) {
         app.router.navigate("/", {trigger:true});
@@ -91,13 +89,11 @@ App.Views.LoginForm = Backbone.View.extend({
     },
    
     login: function(e) {
-
         e.preventDefault();
         var email = this.$("#login-email").val();
         var pass = this.$("#login-password").val();
         this.session.get("profile").login(email, pass);
         return false;
-
     },
     logout: function(e) { 
         e.preventDefault();
@@ -114,8 +110,8 @@ App.Views.LoginForm = Backbone.View.extend({
         var passverify = this.$("#register-password-verify").val();
         if (pass != passverify) {
                 this.onFail({message: "Passwords do not match!"});
+        }
 
-        }        
         if (email =="" || pass == "" || passverify == "") {  
             this.onFail({message: "Fill all the fields!"});
         } else { 
