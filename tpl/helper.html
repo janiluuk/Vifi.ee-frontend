@@ -5,6 +5,14 @@
       return tr("Estonian");
 
 </script>
+<script id="dateFormat" class="helper" data-args="arg1" type="text/html">
+      
+      var date = arg1.toString().split(" ");
+
+      return date[0];
+      
+      
+</script>
 <script id="selectedHelper" class="helper" data-args="arg1,arg2" type="text/html">
       var sel = arg1;
       if (sel == arg2) { 

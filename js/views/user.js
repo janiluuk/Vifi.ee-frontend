@@ -11,8 +11,8 @@ App.Views.SubscriptionView = Backbone.View.extend({
     buysubscription: function(e) {
 
         var itemId = $(e.currentTarget).data("id");
-        var item = this.options.subscriptions.findWhere({id: itemId});
-        
+        var item = app.subscriptions.findWhere({id: itemId});
+
         if (!item) return false;
 
         if (!app.session.get("profile").hasSubscription()) {
@@ -21,6 +21,8 @@ App.Views.SubscriptionView = Backbone.View.extend({
                 session: app.session
             });
             return false;
+        } else {
+            app.session.trigger("notice", "You already have a valid subscription!")
         }
     },
     activatesubscription: function() {
