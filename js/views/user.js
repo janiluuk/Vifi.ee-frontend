@@ -11,7 +11,7 @@ App.Views.SubscriptionView = Backbone.View.extend({
     buysubscription: function(e) {
 
         var itemId = $(e.currentTarget).data("id");
-        var item = app.subscriptions.findWhere({id: itemId});
+        var item = this.options.subscriptions.findWhere({id: itemId});
 
         if (!item) return false;
 
