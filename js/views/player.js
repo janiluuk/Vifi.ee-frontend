@@ -24,7 +24,6 @@ App.Views.PlayerView = Backbone.View.extend({
             var player_width = $(window).width();
             this.$el.parent().width(player_width);
         }
-        alert("setting height");
         
         var player_height = player_width*this.model.ratio;
         $log("setting height "+ player_height);

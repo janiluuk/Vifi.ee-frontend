@@ -12,7 +12,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
     initialize: function(options) {
 
         this.listenTo(this.model, 'change:id', this.render);
-
         this.listenTo(this.model, 'change:rt_ratings', this.renderRatings);
 
         _.bindAll(this, 'playMovie', 'render');
@@ -21,7 +20,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
             this.enableComments();
         }
         this.template = _.template(app.template.get("film"));
-
 
     },
     enableRatings: function() {
@@ -87,14 +85,11 @@ App.Views.MovieDetailView = Backbone.View.extend({
     },
     render: function() {
         this.model.fetchRT();
-
-
         this.$el.html(this.template(this.model.toJSON()));
         setTimeout(function() {
             this.startCarousel();
             this.resetComments();
             this.enableRatings();
-
             this.enableAddThis();
 
         }.bind(this), 100);
@@ -122,20 +117,20 @@ App.Views.MovieDetailView = Backbone.View.extend({
             })
             return false;
         }
+
         $("#gallery-swiper-container").hide();
 
-       
-    
+
         if (!this.playerView) {
             this.playerView = new App.Views.PlayerView({
                 model: app.player
             });
+        } else { 
+            this.playerView.initialize();
         }
-        
+
         app.player.load(this.model);
-
         this.playerView.render();
-
         if (e) e.stopPropagation();
         return false;
 
