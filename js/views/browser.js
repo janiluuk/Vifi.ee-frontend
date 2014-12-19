@@ -10,23 +10,22 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     initialize: function(options) {
         this.options = options;
-        var querystring = this.collection.querystate.getQueryString();
-        if (querystring != "") this.collection.update();
         this.collection = options.collection;
+        if (this.collection.querystate.getQueryString() != "") this.collection.update();
         this.collection.options.genres.bind('all', this.setGenreDropDown, this);
         this.collection.bind('sync', this.renderResults, this);
-        
         this.collection.querystate.bind('change', this.onChangeCollectionState, this);
         this.collection.querystate.bind('change:genres', this.onChangeGenre, this);
         this.collection.querystate.bind('change:durations', this.onChangeDuration, this);
         this.collection.querystate.bind('change:years', this.onChangeYear, this);
         this.collection.querystate.bind('change:q', this.onChangeText, this);
-        _.bindAll(this,'render', 'renderResults', 'applyIsotope');
+
         this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort, state: this.collection.querystate});
         this.filterview.bind('filter-bar:sort', this.onSort, this);
         this.filterview.bind('filter-bar:clear', this.onClear, this);
 
- 
+         _.bindAll(this,'render', 'renderResults', 'applyIsotope');
+
       //  this.initEvents();
 
     },
@@ -40,9 +39,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         
         this.on("minimize", function() {  
             $("#front-page-slider").css("display", "none");
-
             $("#front-page-search-header").css("display", "block").html("you searched for sum shitz");
-
         } );
 
     },
@@ -61,15 +58,15 @@ App.Views.BrowserPage = Backbone.View.extend({
             resizable: true,
             itemSelector: '.item',
             transitionDuration: '0.5s',
-              // disable scale transform transition when hiding
-              hiddenStyle: {
-                opacity: 0,
-                'transform': 'translateY(100%)',
-              },
-              visibleStyle: {
-                opacity: 1,
-                'transform': 'translateY(0%)',
-              },
+            // disable scale transform transition when hiding
+            hiddenStyle: {
+            opacity: 0,
+            'transform': 'translateY(100%)',
+            },
+            visibleStyle: {
+            opacity: 1,
+            'transform': 'translateY(0%)',
+            },
             animationOptions: {
                 duration: 250,
                 easing: 'linear',
@@ -140,7 +137,6 @@ App.Views.BrowserPage = Backbone.View.extend({
             effectspeed: 900
         });
     },
-    
     // Handle preloading imags on browser
     onBrowserPaginationEvent: function(e) {
         var images = $("#content-body-list div.lazy.loading:in-viewport");
@@ -151,13 +147,13 @@ App.Views.BrowserPage = Backbone.View.extend({
         $("#content-body-list").addClass("fadeDownList");
 
         var value = $("#main-search-box").val();
-
         var search_array = {
             genres: undefined,
             durations: undefined,
             periods: undefined,
             q: value
         };
+
         var search_dict = _.extend({}, search_array);
 
         if (value != "") {
@@ -167,11 +163,9 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
 
         $("#search-form select :selected").each(function() {
-
             var fieldid = $(this).parent().attr("id");
             var fieldname = fieldid.replace("id_", "");
             var val = $(this).val();
-
             search_dict[fieldname] = search_dict[fieldname] == undefined ? val : search_dict[fieldname] += ";" + val;
         });
 
@@ -212,6 +206,7 @@ App.Views.BrowserPage = Backbone.View.extend({
                 $("#loadMore").hide();
             }
         }.bind(this),250);
+
         return false;
         
     },
@@ -220,6 +215,7 @@ App.Views.BrowserPage = Backbone.View.extend({
 
         if (!this.rendering) {
             this.rendering = true;
+
             $("#content-body-list").empty();
             this.$isotope.isotope("reloadItems");
 
@@ -227,9 +223,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             
             /* Empty result set */
             if (this.collection.length == 0) {
-
                 $("#content-body-list").append(ich.emptyListTemplate({text: tr("No results")}));
-                
             }   
             this.addSet(this.collection);
             
@@ -238,16 +232,15 @@ App.Views.BrowserPage = Backbone.View.extend({
             } else { 
                 $("#loadMore").show();
             }
-
             this.rendering = false;
-        } 
+        }
 
         $("#content-body-list").removeClass("fadeDownList");
 
         return false;        
     },
     updateUIToState: function() {
-        var state = this.collection.querystate;
+        var state = this.collection.querystate.get('q');
         // main search text box
         var query = state.get('q');
 
@@ -257,7 +250,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         if (query != "") {
             $("#clear-search-text-button").show();
         } else {
-
             $("#clear-search-text-button").hide();
         }
     },
@@ -267,7 +259,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.updateUIToState();
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);        
         //Update the url of the browser using the router navigate method
-        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {trigger: true});
+        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), { trigger: true });
     },
 
     //Set the search state from the url
