@@ -191,7 +191,8 @@ App.Router = Backbone.Router.extend({
 
         if (!this.views.pairview)
         this.views.pairview = new App.Views.UserPairView({
-            model: profile
+            model: profile,
+            el: "#contentpage"
         });
 
         $('#contentpage').empty().append(this.views.pairview.render().$el.html());

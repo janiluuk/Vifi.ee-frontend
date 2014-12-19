@@ -82,7 +82,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     changePassword: function(oldpass, password) {
         if (!password) return false;
         
-        app.api.call(["user","changepassword"], {password: password, oldpassword: oldpass}, function(data) {
+        app.api.call(["user","changepassword", this.get("email")], {password: password, oldpassword: oldpass}, function(data) {
 
             if (data.status == "ok") {
                 this.trigger("user:changepassword:success", data.message);
@@ -134,7 +134,7 @@ App.User.Profile = App.Models.ApiModel.extend({
 
     },
     pair: function(code) {
-
+        
         var email = this.get("email");
         if (email == "" || code == "") return false;
 
