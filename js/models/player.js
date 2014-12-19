@@ -1,6 +1,5 @@
 App.Player = {};
 App.Player.Platforms = {};
-
 App.Player.MediaPlayer = Backbone.Model.extend({
     session: false,
     content: false,
@@ -8,60 +7,56 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     subtitles: {},
     playlist: {},
     ready: false,
-    ratio: 9/16,
+    ratio: 9 / 16,
     initialize: function(options) {
         if (this.ready) return false;
-        this.content = new App.Models.FilmContent({ session: options.session});
+        this.content = new App.Models.FilmContent({
+            session: options.session
+        });
         this.subtitles = new App.Player.Subtitles();
         this.playlist = new App.Player.Playlist;
-
         if (options && undefined != options.session) {
             this.set("session", options.session);
-
         }
         if (options && undefined != options.movie) {
             this.set("movie", options.movie);
             this.load(options.movie);
-
         }
         this.player = App.MediaPlayer;
-        _.bindAll( this, 'load', 'onSubtitlesLoad');
-
+        _.bindAll(this, 'load', 'onSubtitlesLoad');
         this.content.on('subtitles:ready', this.onSubtitlesReady, this);
         this.content.on("content:ready", this.onContentReady, this);
         this.subtitles.on("subtitles:loadfile", this.onSubtitlesLoad, this);
         this.player.on("mediaplayer:pause", this.disableSubtitles, this);
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
         this.player.on("mediaplayer:ratio:change", this.onChangeRatio, this);
-
         this.on("mediaplayer:stop", this.stop, this);
         this.on("mediaplayer:resume", this.play, this);
         this.on("change:movie", this.load, this);
         this.ready = true;
-
     },
     onChangeRatio: function(video) {
-        if (undefined !== video) { 
-            var ratio = video.height/video.width;
+        if (undefined !== video) {
+            var ratio = video.height / video.width;
             this.ratio = ratio;
-            $log("setting ratio to"+ratio);
+            $log("setting ratio to" + ratio);
             this.trigger("player:resize", ratio);
-        } 
+        }
     },
     onSubtitlesReady: function(subtitles) {
         this.subtitles.load(subtitles);
     },
     onSubtitlesLoad: function(filename) {
-        this.once("player:ready", function() { 
+        this.once("player:ready", function() {
             this.player.loadSubtitles(filename);
         }.bind(this), this);
     },
-    disableSubtitles: function() { 
+    disableSubtitles: function() {
         if (this.subtitles) {
             this.subtitles.disable();
         }
     },
-    enableSubtitles: function() { 
+    enableSubtitles: function() {
         if (this.subtitles) {
             this.subtitles.enable();
         }
@@ -71,7 +66,6 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         var id = movie.get("id");
         this.content.load(id);
     },
-
     play: function() {
         this.player.play();
     },
@@ -79,14 +73,12 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.player.stop();
     },
     onContentReady: function(content) {
-
         this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
         this.playlist.addFiles(this.content);
-        if (this.player.init(this.playlist)) { 
+        if (this.player.init(this.playlist)) {
             this.trigger("player:ready", this.content);
         }
     },
-
     /*
      * Calculate ending time for the film.
      * @params duration - total length of film in minutes
@@ -98,24 +90,16 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         duration = duration - offset;
         return App.Utils.minutesToTime(duration);
     },
-
     getCurrentTime: function() {
         return this.player.getCurrentTime();
-
     },
     updateCurrentTime: function() {
-
         var currentTime = App.Player.getCurrentTime();
-
     },
-
     verifyContent: function() {
-
         return true;
-
     },
     verifySession: function(movie) {
-
         // Check if user is paired at all
         if (!this.session.get("profile").hasMovie(movie)) {
             return false;
@@ -123,10 +107,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         return true;
     },
 });
-
-
 _.extend(App.Player.MediaPlayer, Backbone.Events);
-
 /**
  *
  *  Vifi Media Player
@@ -135,7 +116,6 @@ _.extend(App.Player.MediaPlayer, Backbone.Events);
  *  janiluuk@gmail.com
  *
  */
-
 App.Player.Platforms.Core = {
     _active: false,
     _eventsToTrack: ['loadstart', 'ended', 'timeupdate', 'play', 'pause', 'loadstart', 'timeupdate', 'error', 'loadeddata', 'volumechange', 'duration'],
@@ -146,45 +126,33 @@ App.Player.Platforms.Core = {
     userBitrate: 1000,
     _testSize: 200000,
     speedtest: function(callback) {
-
         callback = callback || $noop;
-        
         if (!App.Settings.speedtest_url) return;
         $log(" ___ PERFORMING SPEEDTEST ___ ");
-
         var _this = this;
-        var imageAddr = App.Settings.speedtest_url +"?n=" + Math.random();
+        var imageAddr = App.Settings.speedtest_url + "?n=" + Math.random();
         var startTime, endTime;
         startTime = (new Date()).getTime();
 
         function getResults() {
             $log(" ___ SPEEDTEST SUCCESS ___ ");
-
             var duration = Math.round((endTime - startTime) / 1000);
             var bitsLoaded = _this._testSize * 8;
             var speedBps = Math.round(bitsLoaded / duration);
             var bitrate = (speedBps / 1024).toFixed(2);
-            if (parseInt(bitrate) > 100)
-                _this.userBitrate = bitrate;
-
-            $log( "___ USER BITRATE DETECTED: " + bitrate + " ____");
-
-
+            if (parseInt(bitrate) > 100) _this.userBitrate = bitrate;
+            $log("___ USER BITRATE DETECTED: " + bitrate + " ____");
         }
         var download = new Image();
-        download.onload = function () {
+        download.onload = function() {
             endTime = (new Date()).getTime();
             getResults();
         }
         download.src = imageAddr;
-
-        
     },
-
     setVideoElement: function(element) {
         this._videoElement = $(element);
     },
-
     _trackEvents: function() {
         $log("___ TRACK EVENTS CALLED ___ ");
         if (this.eventsBound) return;
@@ -196,17 +164,15 @@ App.Player.Platforms.Core = {
     _stopTrackingEvents: function() {
         $log(" UNBINDING MEDIA EVENTS TO FLASH VIDEO PLAYER ")
         this.eventsBound = false;
-    },   
+    },
     active: function() {
         this._active = true;
-//        App.KeyHandler.bind("all", this._keyhandler, this);
+        //        App.KeyHandler.bind("all", this._keyhandler, this);
     },
-
     deactive: function() {
         this._active = false;
-  //      App.KeyHandler.unbind("all", this._keyhandler);
+        //      App.KeyHandler.unbind("all", this._keyhandler);
     },
-
     setPlaylist: function(playlist) {
         $log(" Setting new Playlist ");
         this.trigger("mediaplayer:onnewplaylist", playlist);
@@ -216,7 +182,6 @@ App.Player.Platforms.Core = {
         this.currentStream = null;
         $(this._videoElement).show();
     },
-
     setCurrentIndex: function(index) {
         $log(" Setting current Index ");
         if (this.playlist) {
@@ -234,28 +199,23 @@ App.Player.Platforms.Core = {
         }
     },
     play: function() {
-            
         if (!this.currentStream) {
             $log(" Can't press play on a mediaplayer without a content")
             return;
         }
         if (!this.plugin) {
             alert("no player found");
-
             return false;
         }
         this._trackEvents();
-
         if (this.plugin && !this.plugin.paused && (typeof(this._videoElement.playbackRate) != 'undefined' && this._videoElement.playbackRate != 1)) {
             $log(" Restting Playback Rate");
             this._videoElement.playbackRate = 1;
         } else if (this._videoElement && this.currentStream == null) {
-
             $log(" Playing Next File ")
             this._playVideo();
         } else if (this._videoElement) {
             if (!this.plugin.playing) {
-
                 $log(" Calling Video Element Play")
                 this.resume();
             } else {
@@ -264,8 +224,6 @@ App.Player.Platforms.Core = {
             }
         }
     },
-    
-
     resume: function() {
         try {
             this.plugin.play();
@@ -277,7 +235,6 @@ App.Player.Platforms.Core = {
     pause: function() {
         // May get called without the correct initialization, so wrapping in block.
         // This should always fail gracefully.
-
         try {
             this.plugin.pause();
             this.trigger("mediaplayer:onpause");
@@ -292,7 +249,6 @@ App.Player.Platforms.Core = {
         'onFF': this.fastforward,
         'onStop': this.stop,
     },
-
     _keyhandler: function(event) {
         $log("MediaPlayer Event Handler Got: " + event);
         var event = event.replace("keyhandler:", "");
@@ -312,7 +268,6 @@ App.Player.Platforms.Core = {
             case 'onMute':
                 this.mute();
                 break;
-
             case 'onFF':
                 this.fastforward();
                 break;
@@ -371,19 +326,11 @@ App.Player.Platforms.Core = {
         this.plugin.unbind();
         this.eventsBound = false;
     }
-
 }
-
-
-
-
-
-
 App.Player.Playlist = function() {
     this.files = [];
     this.currentIndex = 0;
     this.looping = true;
-
     /*
     A Playlist Format, an Array of Arrays of Hashes
     
@@ -414,23 +361,18 @@ App.Player.Playlist = function() {
     this.currentItemIndex = function() {
         return this.currentIndex - 1;
     }
-
-
     this.nextFile = function() {
         if (this.currentIndex == this.files.length) {
             $log(" REACHED THE END OF PLAYLIST");
             this.resetIndex();
             if (!this.looping) return null;
         }
-         // Should be the largest bitrate
-
+        // Should be the largest bitrate
         var file = this.getPlaylistItem(this.files[this.currentIndex]);
-
-        this.currentIndex+=1;
-
+        this.currentIndex += 1;
         return file;
     }
-    this.getPlaylistItem = function(content) { 
+    this.getPlaylistItem = function(content) {
         if (!content) return false;
         var profiles = content.get("videos");
         var bitrate = App.MediaPlayer.userBitrate || 10000;
@@ -443,35 +385,30 @@ App.Player.Playlist = function() {
         });
         return file;
     },
-
-    this.getPlaylistFiles = function() { 
-
+    this.getPlaylistFiles = function() {
         var content = this.nextFile();
         var files = this.generatePlaylistItem(content.mp4);
         return files;
     }
-    this.getBitrates = function() { 
-
+    this.getBitrates = function() {
         var profiles = this.files[this.currentIndex].get("videos");
         var bitrates = _.pluck(profiles, "bitrate");
         return bitrates;
     }
     this.generatePlaylistItem = function(file) {
         if (!file) return false;
-
         if (file[0] == '/') file = file.substring(1);
-        var mp4_url = App.Settings.mp4_url +file;
-        var mpegurl = App.Settings.hls_url+'/_definst_/'+file+'/playlist.m3u8'
-        var playlist_item = [ 
-
-                {    mpegurl: mpegurl },
-                {    mp4: mp4_url },
-                {    flash: 'mp4:'+ file.replace('.mp4','') },
-        ];
+        var mp4_url = App.Settings.mp4_url + file;
+        var mpegurl = App.Settings.hls_url + '/_definst_/' + file + '/playlist.m3u8'
+        var playlist_item = [{
+            mpegurl: mpegurl
+        }, {
+            mp4: mp4_url
+        }, {
+            flash: 'mp4:' + file.replace('.mp4', '')
+        }, ];
         return playlist_item;
-
     },
-
     this.addFiles = function(files) {
         this.files.push(files);
     }
@@ -483,7 +420,6 @@ App.Player.Playlist = function() {
             videos: videos
         });
     }
-
     this.addItem = function(videos, isAd) {
         var isAd = _.isNull(isAd) ? false : isAd;
         if (!_.isArray(videos)) videos = [videos];
@@ -492,7 +428,6 @@ App.Player.Playlist = function() {
             videos: videos
         });
     }
-
     this.setUserBitrate = function(bitrate) {
         this.userBitrate = bitrate;
     }
@@ -513,7 +448,6 @@ App.Player.Playlist = function() {
     };
     return this;
 };
-
 App.Player.Subtitles = Backbone.Model.extend({
     videoElement: 'player-container',
     subtitleElement: 'subtitles',
@@ -547,21 +481,17 @@ App.Player.Subtitles = Backbone.Model.extend({
         }
     },
     disable: function() {
-
         $("#" + this.subtitleElement).html('');
         this.enabled = false;
         this.trigger("subtitles:disable");
         $log("Disabling subtitles");
-
     },
     enable: function() {
-
         $("#" + this.subtitleElement).html('');
         this.enabled = true;
         this.trigger("subtitles:enable");
         $log("Enabling subtitles");
         this.start();
-
     },
     playSubtitles: function(subtitleElement) {
         var videoId = this.videoElement;
@@ -618,15 +548,13 @@ App.Player.Subtitles = Backbone.Model.extend({
         this.ival = ival;
     },
     start: function() {
-        $("<div>").attr("id", this.subtitleElement).appendTo("#"+this.videoElement);
-        
+        $("<div>").attr("id", this.subtitleElement).appendTo("#" + this.videoElement);
         this.enabled = true;
         var subtitleElement = document.getElementById(this.subtitleElement);
         var videoId = this.videoElement;
         if (!videoId || !subtitleElement) {
             $log("Aborting subtitle loading");
             return;
-
         }
         var srtUrl = this.subtitleFile;
         var that = this;
@@ -648,11 +576,9 @@ App.Player.Subtitles = Backbone.Model.extend({
             that.subtitles[code] = this;
             i++;
         });
-
         $log("Downloaded " + i + " subtitles");
         if (!nodefault) this.loadLanguage(this.defaultCode);
     },
-
     loadLanguage: function(code) {
         if (this.subtitles && this.subtitles[code]) {
             this.subtitleFile = this.srtUrl + this.subtitles[code].file;
@@ -662,7 +588,6 @@ App.Player.Subtitles = Backbone.Model.extend({
             this.language = code;
             this.trigger("subtitles:load", code);
             this.trigger("subtitles:loadfile", this.subtitleFile);
-
             return true;
         }
         return false;

@@ -47,13 +47,10 @@ App.Views.BrowserPage = Backbone.View.extend({
 
     },
     render: function() {
-
         this.$el.html(ich.browserPageTemplate());
         this.filterview.render();
         this.applyIsotope();
         this.updateUIToState();
-
-
         return this;  
     },
     applyIsotope: function() {
@@ -80,7 +77,6 @@ App.Views.BrowserPage = Backbone.View.extend({
             }
         });
 
-    
         return true;
     },
 
@@ -112,19 +108,14 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
     },
     onSort: function(field, desc) {
-
         this.collection.sortByAttribute(field, desc);
         $("#content-body-list").empty();
         this.renderResults();
         return false;
-
     },
     onClear: function(e) {
-
         this.clearSearch();
-
         return false;
-
     },   
     onChangeGenre: function(model, genre) {
         // this function is a model state change, not the dom event: change
@@ -138,8 +129,6 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     onChangeText:function(item) {
         //console.log(item);
-
-
     },
     handleSearchFormSubmit: function(event) {
         event.preventDefault();
@@ -160,6 +149,7 @@ App.Views.BrowserPage = Backbone.View.extend({
     onSearchFieldChange: function(event) {
 
         $("#content-body-list").addClass("fadeDownList");
+
         var value = $("#main-search-box").val();
 
         var search_array = {
@@ -177,9 +167,11 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
 
         $("#search-form select :selected").each(function() {
+
             var fieldid = $(this).parent().attr("id");
             var fieldname = fieldid.replace("id_", "");
             var val = $(this).val();
+
             search_dict[fieldname] = search_dict[fieldname] == undefined ? val : search_dict[fieldname] += ";" + val;
         });
 
@@ -194,7 +186,6 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     addSet : function ( collection ) {
         var container = document.createDocumentFragment();
-
         var _this = this;
         var items = [];
         collection.each(function(film, id) { 
@@ -212,14 +203,15 @@ App.Views.BrowserPage = Backbone.View.extend({
         e.preventDefault();
 
         $("#loadMore").addClass("loading");
+
         setTimeout(function() { 
             if (this.addSet(this.collection.getNextPage())) {
                 $("#loadMore").removeClass("loading"); 
             }
-            if (!app.homepage.browserview.collection.hasNextPage()) {
+            if (!this.collection.hasNextPage()) {
                 $("#loadMore").hide();
             }
-        }.bind(this),300);
+        }.bind(this),250);
         return false;
         
     },
@@ -236,7 +228,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             /* Empty result set */
             if (this.collection.length == 0) {
 
-                $("#content-body-list").append(ich.emptyListTemplate({text: t("No results")}));
+                $("#content-body-list").append(ich.emptyListTemplate({text: tr("No results")}));
                 
             }   
             this.addSet(this.collection);
@@ -247,10 +239,10 @@ App.Views.BrowserPage = Backbone.View.extend({
                 $("#loadMore").show();
             }
 
-            $("#content-body-list").removeClass("fadeDownList");
+            this.rendering = false;
+        } 
 
-        this.rendering = false;
-        } else $("#content-body-list").removeClass("fadeDownList");
+        $("#content-body-list").removeClass("fadeDownList");
 
         return false;        
     },
@@ -268,20 +260,14 @@ App.Views.BrowserPage = Backbone.View.extend({
 
             $("#clear-search-text-button").hide();
         }
-       
     },
 
     onChangeCollectionState: function(state) {
 
-        var changed_keys = _.keys(state.changedAttributes());
-        var genre_is_changed = _.contains(changed_keys, 'genres');
-
-        if (this.options.redirect_on_genre_change && (genre_is_changed)) {
-            return this.redirectToBaseURL();
-        }
+        this.updateUIToState();
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);        
         //Update the url of the browser using the router navigate method
-        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {trigger:true});
+        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {trigger: true});
     },
 
     //Set the search state from the url
@@ -292,8 +278,8 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
 
     clearSearch: function() {
-        this.updateUIToState();
-        this.onSearchFieldChange();
+        app.collection.querystate.clear({silent:true});
+        this.onChangeCollectionState(app.collection.querystate);
         return false;
     }
 });

@@ -11,7 +11,6 @@ App.Views.FilterView = Backbone.View.extend({
         });
         this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this);
         this.filterlistview.bind('filter-bar:clear', this.onClearFilter, this);
-
         this.filterlistview.bind('filter-bar:sort', this.onChangeSort, this);
         _.bindAll(this, 'render');
     },
@@ -39,20 +38,21 @@ App.Views.FilterView = Backbone.View.extend({
     },
     updateUI: function() {
         var _this = this;
+        if (this.options.state.isEmpty() === true) { 
+            $("button.clear").addClass("disabled");
+        } else {
+            $("button.clear").removeClass("disabled");
+        }
 
         $.each(this.options.filters, function(option, idx) {
 
             var val = decodeURIComponent(_this.options.state.get(option));
 
-
             if ("undefined" != val && val != "") {
                 var parts = val.split(';');
-
-
                 if (parts.length > 0 && parts != "undefined") {
                     $.each(parts, function(idx, item) {
                         $('#id_' + option + ' option[value="' + item + '"]').attr('selected', 'selected');
-
                         $(".selection-wrapper[data-field='" + option + "'] div[data-val=" + item + "]").addClass("toggle-on");
 
                     });
@@ -61,9 +61,7 @@ App.Views.FilterView = Backbone.View.extend({
             } else {
                 
                 $('#id_' + option + ' option').attr('selected', false);
-
                 $(".selection-wrapper[data-field='" + option + "'] div").removeClass("toggle-on");
-
                 $(".selection-wrapper[data-field='" + option + "'] div[data-val=reset]").addClass("toggle-on");
 
             }
@@ -72,9 +70,7 @@ App.Views.FilterView = Backbone.View.extend({
     render: function() {
         this.filterbarview.render();
         this.filterlistview.render();
-
         return this;
-
     }
 
 });
@@ -178,7 +174,6 @@ App.Views.ClearFiltersView = Backbone.View.extend({
         this.render();
     },
     onClear: function(e) {
-
         e.preventDefault();
         this.trigger("filter-bar:clear");
         return false;
@@ -213,8 +208,8 @@ App.Views.FilterlistView = Backbone.View.extend({
 
     },
     render: function() {
-        this.setElement($("#filter-list"));
 
+        this.setElement($("#filter-list"));
         var _this = this;
 
         $("<div>").attr("id", "sort-list").appendTo(this.$el);
@@ -265,19 +260,16 @@ App.Views.FilterbarView = Backbone.View.extend({
         this.options = options || {};
 
     },
-
-
     render: function() {
         this.setElement($("#filter-bar"));
 
         this.$el.html(ich.filterBarTemplate());
         this.$(".swiper-slide:first").addClass("active swiper-slide-active");
         var _this = this;
-        var width = 0;
 
         setTimeout(function() { 
             _this.enableCarosel();
-        }, 600);
+        }, 500);
 
         return this;
     },
@@ -306,7 +298,6 @@ App.Views.FilterbarView = Backbone.View.extend({
 
     },
     enableCarosel: function() {
-
 
         /* Categories / Filters */
         window.frontnavSwiper = new Swiper('#front-tabbar-swiper-container', {

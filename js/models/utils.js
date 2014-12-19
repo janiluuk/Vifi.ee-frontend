@@ -146,6 +146,7 @@ App.Utils = {
 //A utility model to track state using the hash and also generate a url
 App.Utils.State = Backbone.Model.extend({
     defaults: { q:""},
+
     getQueryString: function(addParams) {
         var hashables = [];
         var dict = this.toJSON();
@@ -162,6 +163,12 @@ App.Utils.State = Backbone.Model.extend({
         }
         var params = hashables.join('&');
         return params.length ? '?' + params : "";
+    },
+    isEmpty: function() {
+       var len =  _.values(this.attributes).join("").length;
+
+       return len > 0 ? false : true;
+
     },
     //A hash to use in the url to create a bookmark or link
     //Makes somehting like prop1:value1|prop2:value2

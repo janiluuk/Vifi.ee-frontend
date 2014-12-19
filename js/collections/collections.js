@@ -49,7 +49,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         update: function() {
 
            _.extend(this.queryParams,this.querystate.attributes);
-
+           
             this.fetch({ reset: true, url: this.url, dataType: 'jsonp'});
         },
 
