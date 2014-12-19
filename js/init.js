@@ -36,12 +36,12 @@ window.app = _.extend({}, Backbone.Events);
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Most recent', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Most watched'}]);
         var eventhandler = _.extend({}, Backbone.Events);
+        initFB();
 
         App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() { 
             app.template.load(['film'], function () {
                 window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile,player: player, subscriptions: subscriptions, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
-                initFB();
             }); 
         });
 
@@ -85,6 +85,7 @@ function initFB() {
 
     FB.Event.subscribe('auth.statusChange', function (response) {
         $(document).trigger('fbStatusChange', response);
+        
     });
 
     FB.init({
@@ -126,6 +127,7 @@ function initFB() {
     $(document).on('logout', function () {
         if (FB.getAccessToken() != null) {
             FB.logout();
+            app.fbuser.set(app.fbuser.defaults);
         }
         app.session.logout();
         return false;
@@ -135,6 +137,7 @@ function initFB() {
         app.session.reset();
         app.session.enable();
         FB.login(function(response) {
+
         }, {scope: 'email,publish_actions'});
         return false;
     });

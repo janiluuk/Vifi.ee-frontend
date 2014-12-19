@@ -58,7 +58,6 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
     login: function(email, password) {
         if (!password || !email) return false;
-        this.logout();
 
         app.api.call(["user","login", email, password], {}, function(data) {
 
@@ -67,6 +66,7 @@ App.User.Profile = App.Models.ApiModel.extend({
                 this.set("session_id", data.cookie);
                 this.set("auth_id", data.activationKey);
                 this.set("activationCode", data.activationCode);
+
              //   this.enable();
             } else {
                 this.trigger("user:login:fail", data);
@@ -82,9 +82,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     changePassword: function(oldpass, password) {
         if (!password) return false;
         
-        var url = App.Settings.api_url + 'user/changepassword/'+this.get("email")+'?callback=?';
-        var options = this.getParams({password: password, oldpassword: oldpass});
-        $.getJSON(url, options.data, "jsonp").done(function(data) {
+        app.api.call(["user","changepassword"], {password: password, oldpassword: oldpass}, function(data) {
 
             if (data.status == "ok") {
                 this.trigger("user:changepassword:success", data.message);
@@ -92,9 +90,6 @@ App.User.Profile = App.Models.ApiModel.extend({
                 this.trigger("user:changepassword:fail", data.message);
             }
 
-        }.bind(this), "jsonp").error(function(data) { 
-
-                this.trigger("user:changepassword:fail", "Error making query");
         }.bind(this));
 
     },
@@ -109,13 +104,22 @@ App.User.Profile = App.Models.ApiModel.extend({
         }.bind(this));
 
     },
+    recoverPassword: function(email, key, password) {  
+        if (!password || !email || !key) return false;
+
+        app.api.call(["user","recovery"], {email: email, key:key, password:password}, function(data) {
+             if (data.status == "ok") {
+                this.trigger("user:recoverpassword:success", data);
+            } else {
+                this.trigger("user:recoverpassword:fail", data);
+            }
+        }.bind(this));
+
+    },
     register: function(email, password) {
         if (!password || !email) return false;
 
-        var url = App.Settings.api_url + 'user/register/' + email + '/' + password + '?callback=?';
-        var options = this.getParams();
-
-        $.getJSON(url, options.data, "jsonp").done(function(data) {
+        app.api.call(["user", "register", email, password], {}, function(data) {
 
             if (data.status == "ok") {
                 this.set("user_id", data.user_id);
@@ -126,7 +130,7 @@ App.User.Profile = App.Models.ApiModel.extend({
                 this.trigger("user:register:fail", data);
             }
 
-        }.bind(this), "jsonp");
+        }.bind(this));
 
     },
     pair: function(code) {
@@ -255,6 +259,9 @@ App.User.Profile = App.Models.ApiModel.extend({
             success: function(data) {
                 if (this.get("user_id") != "") {
                     this.trigger("user:login", this);
+                    if (app.fbuser) 
+                    this.trigger("user:facebook-connect", app.fbuser);
+
                     $log("Logging in with user " + this.get("email"));
                     return true;
                 }
@@ -329,9 +336,8 @@ App.User.Session = Backbone.Model.extend({
         if (!this.isLoggedIn()) {
             this.cookie.clear();
 
-            var url = App.Settings.api_url + 'get_token/' + email + '/' + password + '?callback=?';
-            var options = this.getParams();
-            $.getJSON(url, options.data, "jsonp").done(function(data) {
+            app.api.call(["get_token", email, password], {}, function(data) {
+
                 if (data.token) {
 
                     this.set("auth_id", data.token);
@@ -339,8 +345,7 @@ App.User.Session = Backbone.Model.extend({
 
                     if (email == "anonymous@vifi.ee") this.disable();
                 }
-            }.bind(this), "jsonp");
-
+            }.bind(this), true);
         }
     },
  
@@ -392,6 +397,7 @@ App.User.Session = Backbone.Model.extend({
         return false;
     },
     reset: function() {
+
         this.set(this.defaults());
         this.cookie.clear();
 

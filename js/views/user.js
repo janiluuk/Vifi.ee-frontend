@@ -11,7 +11,7 @@ App.Views.SubscriptionView = Backbone.View.extend({
     buysubscription: function(e) {
 
         var itemId = $(e.currentTarget).data("id");
-        var item = app.subscriptions.findWhere({id: itemId});
+        var item = this.options.subscriptions.findWhere({id: itemId});
         
         if (!item) return false;
 
@@ -35,7 +35,7 @@ App.Views.SubscriptionView = Backbone.View.extend({
     },
     render: function() { 
 
-      this.$el.html(ich.subscriptionPlansTemplate({subscriptions: this.options.subscriptions.toJSON()}));
+      this.$el.empty().append(ich.subscriptionPlansTemplate({subscriptions: this.options.subscriptions.toJSON()}));
      
       return this;
       
@@ -322,6 +322,51 @@ App.Views.UserCollectionView = Backbone.View.extend({
 
 });
 
+App.Views.RecoveryView = App.Views.ContentView.extend({ 
+    events: {
+        'submit #recovery-form':'recover'
+    },
+    initialize: function(options) {
+        this.content = ich.recoveryPageTemplate(options).html();
+        this.template = ich.contentPageTemplate({content: this.content, title: "Recovery" });
+        this.model = app.session.get("profile");
+
+        this.listenTo(this.model, "user:recoverpassword:success", this.onSuccess, this);
+        this.listenTo(this.model, "user:recoverpassword:fail", this.onFail, this);
+
+
+    },
+    onFail: function(data) {
+        if (!data) return false;
+        this.$("form .error").remove();
+        var div = $("<div>").addClass("row-fluid error").html(data.message);
+        this.$("form:visible:first").prepend(div);
+        return false;
+    },
+    recover: function(e) {
+        e.preventDefault();
+        var email = this.$("#recover-email").val();
+        var key = this.$("#recover-key").val();
+        var pass = this.$("#recover-password").val();
+        var passverify = this.$("#recover-password-confirm").val();
+
+        if (pass != passverify) {
+                this.onFail({message: "Passwords do not match!"});
+        }
+
+        if (pass == "" || passverify == "") {  
+            this.onFail({message: "Fill all the fields!"});
+        } else { 
+            app.session.get("profile").recoverPassword(email, key, pass);
+        }
+        return false;
+
+    },
+    onSuccess: function(e) {
+        app.router.navigate("/", {trigger:true});
+
+    }
+});
 App.Views.ResetPasswordForm = Backbone.View.extend({ 
 
     bindings: {

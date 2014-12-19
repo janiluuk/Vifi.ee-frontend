@@ -64,6 +64,8 @@ App.Router = Backbone.Router.extend({
         'film/:id': 'showFilm',
         'films/:id': 'showFilm',
         'me': 'me',
+        'recovery/:key/:email' : 'showRecoveryPage',
+
         'contact' : 'showContactPage',
         'me/my-films': 'filmcollection',
         'me/pair-device': 'pairdevice',
@@ -159,7 +161,6 @@ App.Router = Backbone.Router.extend({
     
         if (!this.views.subscriptionview) 
         this.views.subscriptionview = new App.Views.SubscriptionView({subscriptions: app.options.subscriptions});
-
         this.views.subscriptionview.render();
         app.showContentPage("subscription");
         this.trigger("change:title", "Subscription");
@@ -203,6 +204,13 @@ App.Router = Backbone.Router.extend({
     showErrorPage: function() {
         $('#contentpage').append(new App.Views.FB.Error().el);
     },
+    showRecoveryPage: function(key, email) {
+            this.views.recoveryview = new App.Views.RecoveryView({key: key, email: email});
+            this.views.recoveryview.render();
+            this.trigger("change:title", "Recovery form");
+            app.showContentPage("recovery");
+            
+    },
     showContactPage: function() {
         if (typeof(google) == "undefined")
        $("<script />", {
@@ -229,7 +237,7 @@ App.Router = Backbone.Router.extend({
         var myOptions = {zoom:15,center:new google.maps.LatLng(59.43795770000001,24.75549920000003),mapTypeId: google.maps.MapTypeId.ROADMAP};
         var map = new google.maps.Map(document.getElementById("gmap_canvas"), myOptions);
         var marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(59.43795770000001, 24.75549920000003)});
-        var infowindow = new google.maps.InfoWindow({content:"<b>Vificom</b><br/>Roseni 5<br/> Tallinn" });google.maps.event.addListener(marker, "click", function(){infowindow.open(map,marker);});
+        var infowindow = new google.maps.InfoWindow({content:"<b>Vifi OÜ</b><br/>Roseni 5<br/> Tallinn" });google.maps.event.addListener(marker, "click", function(){infowindow.open(map,marker);});
         infowindow.open(map,marker);
     },
     showContentPage: function(template) {

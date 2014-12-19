@@ -225,29 +225,29 @@ App.Utils.Api = Backbone.Model.extend({
         app.trigger("notify", data);
 
     },
-    parseResponse: function(data, callback) { 
+    parseResponse: function(data, callback, silent) { 
         var msg = data.message || JSON.stringify(data);
-
-        if (data.status == "ok") {
-            this.onSuccess(msg);
+        if (!silent) { 
+            if (data.status == "ok") {
+                this.onSuccess(msg);
+            }
+            if (data.status == "error") {
+                this.onError(msg);
+            }
+            if (data.status == "notice") {
+                this.onNotice(msg);
+            }
         }
-        if (data.status == "error") {
-            this.onError(msg);
-        }
-        if (data.status == "notice") {
-            this.onNotice(msg);
-        }
-        
         if (callback) callback(data);
 
     },
-    call: function(action, params, callback) {  
+    call: function(action, params, callback, silent) {  
         if (_.isArray(action)) action = action.join("/");
         var sessionParams = app.session.getParams();
         params = _.extend(params, sessionParams.data);
 
         var url = App.Settings.api_url+action+"/?format=json&callback=?&api_key="+App.Settings.api_key+"&";
-        $.getJSON(url,params, function(data) {  this.parseResponse(data, callback);  }.bind(this), "jsonp");
+        $.getJSON(url,params, function(data) {  this.parseResponse(data, callback, silent);  }.bind(this), "jsonp");
 
     }
 

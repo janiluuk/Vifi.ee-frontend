@@ -78,7 +78,6 @@ App.Views.BaseAppView = Backbone.View.extend({
         if (id) {
             $(".side-menu-list a.active").removeClass("active");
             $(".side-menu-list a#menu-"+id).addClass("active");
-
         }   
         this.$("#content-container").scrollTop(0);
 
@@ -364,13 +363,48 @@ App.Views.ContentView = Backbone.View.extend({
 });
 App.Views.ContactView = App.Views.ContentView.extend({ 
 
-    el: "#contentpage",
     initialize: function(options) {
         this.template = ich.contactPageTemplate();
+    },
+
+    
+});
+App.Views.RecoveryView = App.Views.ContentView.extend({ 
+    events: {
+        'submit #recovery-form':'recover'
+    },
+    initialize: function(options) {
+        this.content = ich.recoveryPageTemplate(options).html();
+        this.template = ich.contentPageTemplate({content: this.content, title: "Recovery" });
 
 
     },
+    onFail: function(data) {
+        if (!data) return false;
+        this.$("form .error").remove();
+        var div = $("<div>").addClass("row-fluid error").html(data.message);
+        this.$("form:visible:first").prepend(div);
+        return false;
+    },
+    recover: function(e) {
+        e.preventDefault();
+        var email = this.$("#recover-email").val();
+        var key = this.$("#recover-key").val();
+        var pass = this.$("#recover-password").val();
+        var passverify = this.$("#recover-password-confirm").val();
 
+        if (pass != passverify) {
+                this.onFail({message: "Passwords do not match!"});
+        }
+
+        if (pass == "" || passverify == "") {  
+            this.onFail({message: "Fill all the fields!"});
+        } else { 
+            app.session.get("profile").recoverPassword(email, key, pass);
+        }
+        return false;
+
+    }
     
 });
 App.Views.Error = Backbone.View.extend({

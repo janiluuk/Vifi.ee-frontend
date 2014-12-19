@@ -2,7 +2,7 @@ App.Collections = {};
     // Create a new collection using one of Backbone.Paginator's
     // pagers. We're going to begin using the requestPager first.
 App.Collections.FilmCollection = Backbone.Collection.extend({
-
+    model: App.Models.Film
 });
 
 App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
@@ -22,7 +22,6 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             if (options.pagination) {
                 this.pagination = options.pagination;
             }
-            
         },
  
         url: App.Settings.api_url + "search?api_key=" +App.Settings.api_key+ "&",
@@ -43,7 +42,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
           totalPages: null,
           totalRecords: null,
           sortKey: "sort",
-          limit: 500
+          limit: 550
 
         },
 
