@@ -188,8 +188,19 @@ App.MediaPlayer = {
 
         if (typeof($f) == "undefined") return false;
         setTimeout(function() { 
-            this.plugin.getPlugin("captions").loadCaptions(0,file);
-        }.bind(this),2300);
+            if (typeof(this.plugin) == "undefined" || typeof(this.plugin.getPlugin("captions")) == "undefined") {
+                $log("PLUGIN NOT FOUND");
+                setTimeout(function() { 
+                    this.loadSubtitles(file);
+
+                }.bind(this),2000);
+
+                return false;
+            } else { 
+                $log("Enabling subtitles...");
+                this.plugin.getPlugin("captions").loadCaptions(0,file);
+            }
+        }.bind(this),2500);
     },
     stop: function(forced) {
         if (this.plugin) {
@@ -226,7 +237,6 @@ App.MediaPlayer = {
     },
 
     fastforward: function() {
-
         var currentTime = this.plugin.getTime();
         this.plugin.seek(currentTime + 10);
         this.trigger("mediaplayer:onfastforward");

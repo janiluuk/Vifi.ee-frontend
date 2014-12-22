@@ -39,7 +39,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         if (undefined !== video) {
             var ratio = video.height / video.width;
             this.ratio = ratio;
-            $log("setting ratio to" + ratio);
+//            $log("setting ratio to " + ratio);
             this.trigger("player:resize", ratio);
         }
     },
@@ -128,20 +128,20 @@ App.Player.Platforms.Core = {
     speedtest: function(callback) {
         callback = callback || $noop;
         if (!App.Settings.speedtest_url) return;
-        $log(" ___ PERFORMING SPEEDTEST ___ ");
+        //$log(" ___ PERFORMING SPEEDTEST ___ ");
         var _this = this;
         var imageAddr = App.Settings.speedtest_url + "?n=" + Math.random();
         var startTime, endTime;
         startTime = (new Date()).getTime();
 
         function getResults() {
-            $log(" ___ SPEEDTEST SUCCESS ___ ");
+          //  $log(" ___ SPEEDTEST SUCCESS ___ ");
             var duration = Math.round((endTime - startTime) / 1000);
             var bitsLoaded = _this._testSize * 8;
             var speedBps = Math.round(bitsLoaded / duration);
             var bitrate = (speedBps / 1024).toFixed(2);
             if (parseInt(bitrate) > 100) _this.userBitrate = bitrate;
-            $log("___ USER BITRATE DETECTED: " + bitrate + " ____");
+         //   $log("___ USER BITRATE DETECTED: " + bitrate + " ____");
         }
         var download = new Image();
         download.onload = function() {
@@ -154,10 +154,10 @@ App.Player.Platforms.Core = {
         this._videoElement = $(element);
     },
     _trackEvents: function() {
-        $log("___ TRACK EVENTS CALLED ___ ");
+        //$log("___ TRACK EVENTS CALLED ___ ");
         if (this.eventsBound) return;
         var player = this;
-        $log(" ___ BINDING EVENTS ___ ");
+        //$log(" ___ BINDING EVENTS ___ ");
         $(this._videoElement).bind(this._eventsToTrack.join(" "), $.proxy(this._eventHandler, this));
         this.eventsBound = true;
     },
@@ -216,10 +216,10 @@ App.Player.Platforms.Core = {
             this._playVideo();
         } else if (this._videoElement) {
             if (!this.plugin.playing) {
-                $log(" Calling Video Element Play")
+               // $log(" Calling Video Element Play")
                 this.resume();
             } else {
-                $log(" Calling Video Element Pause ")
+               // $log(" Calling Video Element Pause ")
                 this.pause();
             }
         }
@@ -273,13 +273,7 @@ App.Player.Platforms.Core = {
                 break;
         }
     },
-    _trackEvents: function() {
-        $log("___ TRACK EVENTS CALLED ___ ");
-        if (this.eventsBound) return;
-        $log(" ___ BINDING EVENTS ___ ");
-        $(this.plugin).bind(this._eventsToTrack.join(" "), $.proxy(this._eventHandler, this));
-        this.eventsBound = true;
-    },
+
     _eventHandler: function(e) {
         if (e.type != 'progress') $log(e.type);
         switch (e.type) {
@@ -378,8 +372,8 @@ App.Player.Playlist = function() {
         var bitrate = App.MediaPlayer.userBitrate || 10000;
         var file = profiles[0];
         _.each(profiles, function(profile) {
-            $log(" TESTING file.bitrate: " + file.bitrate + " file.bitrate: " + file.bitrate + " my bitrate: " + App.Player.MediaPlayer.userBitrate)
-            if (profile.bitrate > file.bitrate && profile.bitrate < App.Player.MediaPlayer.userBitrate) {
+            $log(" TESTING file.bitrate: " + file.bitrate + " file.bitrate: " + file.bitrate + " my bitrate: " + App.MediaPlayer.userBitrate)
+            if (profile.bitrate > file.bitrate && profile.bitrate < App.MediaPlayer.userBitrate) {
                 file = profile;
             }
         });

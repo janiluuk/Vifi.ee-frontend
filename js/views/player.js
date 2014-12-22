@@ -15,6 +15,7 @@ App.Views.PlayerView = Backbone.View.extend({
     resize: function() {
         var nav_height = $('#video-container-heading').outerHeight();
         var footer_height = $('#video-container-footer').outerHeight();
+
         var orientation = App.Platforms.platform.getDeviceOrientation();
         if (orientation == "portrait") { 
             var player_width = this.$el.width();
@@ -22,9 +23,9 @@ App.Views.PlayerView = Backbone.View.extend({
             var player_width = $(window).width();
             this.$el.parent().width(player_width);
         }
-             
+
         var player_height = player_width*this.model.ratio;
-        $log("setting height "+ player_height);
+       // $log("setting height "+ player_height);
         this.$el.height(player_height+footer_height);
         $("#player-container").css({ height: player_height, width: player_width});
     },

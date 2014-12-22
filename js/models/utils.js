@@ -248,13 +248,9 @@ App.Utils.Api = Backbone.Model.extend({
         if (_.isArray(action)) action = action.join("/");
         var sessionParams = app.session.getParams();
         params = _.extend(params, sessionParams.data);
-
         var url = App.Settings.api_url+action+"/?format=json&callback=?&api_key="+App.Settings.api_key+"&";
         $.getJSON(url,params, function(data) {  this.parseResponse(data, callback, silent);  }.bind(this), "jsonp");
-
     }
-
-
 }),
 
 App.Utils.Notification = Backbone.Model.extend({ 

@@ -78,16 +78,19 @@ App.Views.MovieDetailView = Backbone.View.extend({
         return this;
     },
     render: function() {
+    
         this.model.fetchRT();
         this.$el.empty().append(this.template(this.model.toJSON()));
         setTimeout(function() {
             this.startCarousel();
             this.resetComments();
             this.enableRatings();
-            this.enableAddThis();
-        }.bind(this), 100);
-        return this;
+            this.enableAddThis(); 
 
+        }.bind(this), 100);
+    
+        return this;
+    
     },
     playTrailer: function(e) {
 
@@ -132,7 +135,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
         return false;
 
     },
-
     closePlayer: function(e) {
         e.preventDefault();
         this.playerView.close();
@@ -153,6 +155,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
         window.myMovieSwiper = $('#gallery-swiper-container').swiper({
             //Your options here:
             mode: 'horizontal',
+            cssWidthAndHeight: false,
             pagination: '.pagination-1',
             paginationClickable: true,
             createPagination: true,
@@ -173,8 +176,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             mode: 'horizontal',
             loop: false,
             centeredSlides: true,
-            cssWidthAndHeight: true,
-
+            cssWidthAndHeight: false,
             onTouchEnd: function(e) {
                 var idx = e.activeIndex;
                 $("#film-tabbar-swiper-container .swiper-wrapper .swiper-slide:nth-child(" + (idx + 1) + ")").click();
@@ -185,6 +187,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
                 filmnavSwiper.swipeTo(item);
             })
         });
+
     }
 });
 

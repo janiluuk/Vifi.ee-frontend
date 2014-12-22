@@ -52,7 +52,7 @@ App.Views.BaseAppView = Backbone.View.extend({
         
         this.scrollTop = this.$("#content-container").scrollTop();
         $(".main-wrapper:not(#moviepage)").hide();
-        $("#moviepage").css( { width: $("#content-container").width() } ).fadeIn();
+        $("#moviepage").fadeIn();
         this.$("#content-container").scrollTop(0);
 
     },
@@ -62,9 +62,11 @@ App.Views.BaseAppView = Backbone.View.extend({
         $("#homepage").css("visibility", "visible").show();
         app.homepage.browserview.filterview.filterbarview.enableCarosel();
         
-        if (this.scrollTop == 0) { app.homepage.browserview.renderResults(); }
-        else 
-        $("#content-container").scrollTop(this.scrollTop);
+        if (this.scrollTop == 0) { 
+            app.homepage.browserview.renderResults(); 
+        } else { 
+            $("#content-container").scrollTop(this.scrollTop);
+        }
 
         app.homepage.browserview.$isotope.isotope('layout');
 
@@ -99,9 +101,8 @@ App.Views.HomePage = Backbone.View.extend({
 
     },
     render: function() {
-            this.featuredview.render();
-            this.browserview.render();
-
+        this.featuredview.render();
+        this.browserview.render();
         return this;  
     },
 
@@ -128,14 +129,12 @@ App.Views.TopMenu = Backbone.View.extend({
         var search = this.$("#main-search-box").val();
         
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
-        
-            this.$("#main-search-box").val(search);
+        this.$("#main-search-box").val(search);
         if (search != "") {
             $("#clear-search-text-button").show();
         } else {
             $("#clear-search-text-button").hide();
         }
-
         return this;  
     },
     login: function(e) {
@@ -146,12 +145,10 @@ App.Views.TopMenu = Backbone.View.extend({
     logout: function (e) {
         app.router.navigate("/", {trigger:true});
         $(document).trigger('logout');
-
         return false;
     },
     toggleSearchBox: function(e) {
         e.preventDefault();
-
         $('#toolbar-search-group').toggleClass("pullDownRight");
         $('#toolbar-search-group').toggleClass("pullUpRight",!$('#toolbar-search-group').hasClass("pullDownRight") );
         return false;
@@ -171,11 +168,8 @@ App.Views.TopMenu = Backbone.View.extend({
         e.preventDefault();
         app.homepage.browserview.onSearchFieldChange(e);
         app.homepage.browserview.trigger("minimize");
-        
         return false;
     },   
-
-
 });
 
 App.Views.SideMenu = Backbone.View.extend({ 
@@ -183,21 +177,16 @@ App.Views.SideMenu = Backbone.View.extend({
     state: 'closed',
     events: { 
         'click .logout' : 'logout'
-
     },
-
     initialize: function(options) { 
         var options = options || {};
 
         if (options.model) this.model = options.model;
         if (options.session) this.session = options.session;
-
         _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
         this.listenTo(this.session.profile, "user:login", this.render, this);
         this.listenTo(this.session.profile, "user:logout", this.render, this);
-
         this.loginForm = new App.Views.LoginForm({session: this.session});
-
         this.enableSideMenu();
     },
 
@@ -213,7 +202,6 @@ App.Views.SideMenu = Backbone.View.extend({
         e.preventDefault();
         $(document).trigger("logout");
         this.render();
-        
     },
     toggleSideBar: function() {
 
@@ -226,23 +214,18 @@ App.Views.SideMenu = Backbone.View.extend({
                     window.snapper.open('left');
                     this.state = "left";
         }
-
     },
     closeSideBar: function() {
         if (!window.snapper) return false;
         window.snapper.close();
         this.state = "closed";
-
     },
- 
+
     render: function() {
         var activeEl = this.$el.find("a.active:first");
-
         this.$el.html(ich.sidemenuTemplate(this.model.toJSON()));
         var activeId = false;
-
         if (activeEl) var activeId = $(activeEl).attr("id");
-
         $("#side-menu-content-pages li:nth(1)").click(function(e) {  e.preventDefault();app.trigger("notice", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links.");return false;  } );
         $("#side-menu-content-pages li:nth(2)").click(function(e) { e.preventDefault(); app.trigger("success", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links. Remember that the textbox wont get over 3 lines.");return false; } );
         this.assign(this.loginForm, "#login-register-form");
@@ -309,11 +292,9 @@ App.Views.CarouselView = Backbone.View.extend({
     }
 });
 App.Views.DialogView = Backbone.View.extend({ 
-
     initialize: function(options) {
 
     },
-
     onClose: function() {
        $.magnificPopup.close(); 
     },
@@ -342,9 +323,6 @@ App.Views.DialogView = Backbone.View.extend({
     afterOpen: function(e) {},
     beforeOpen: function(e) {},
     afterClose: function(e) {},
-    
-
-    
 });
 App.Views.ContentView = Backbone.View.extend({ 
 
@@ -358,16 +336,12 @@ App.Views.ContentView = Backbone.View.extend({
         this.$el.empty().append(this.template);
         return this;
     }
-
-    
 });
 App.Views.ContactView = App.Views.ContentView.extend({ 
 
     initialize: function(options) {
         this.template = ich.contactPageTemplate();
     },
-
-    
 });
 App.Views.RecoveryView = App.Views.ContentView.extend({ 
     events: {
@@ -396,14 +370,12 @@ App.Views.RecoveryView = App.Views.ContentView.extend({
         if (pass != passverify) {
                 this.onFail({message: "Passwords do not match!"});
         }
-
         if (pass == "" || passverify == "") {  
             this.onFail({message: "Fill all the fields!"});
         } else { 
             app.session.get("profile").recoverPassword(email, key, pass);
         }
         return false;
-
     }
     
 });

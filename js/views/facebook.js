@@ -172,6 +172,4 @@ App.Views.FB.Revoke = Backbone.View.extend({
         return this;
     },
 
-   
-
 });
