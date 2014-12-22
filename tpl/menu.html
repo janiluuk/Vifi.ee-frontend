@@ -1,6 +1,6 @@
 <script type="text/html" id="topmenuTemplate">
 
-     <div id="toolbar-left-group">
+    <div id="toolbar-left-group">
        {{#if profile_picture}} 
         <div id="menu-dragger" class="float_left" style="background-image: url({{profile_picture}}?width=90&height=90); background-size: auto 45px;"></div>
         {{else}}
@@ -11,8 +11,7 @@
         <a href="#">
             <div id="main-vifi-logo" class="float_left"></div>
         </a>
-
-</div>
+    </div>
 
     <div id="toolbar-right-group">
         <div id="search-button" class="search-icon float_left"></div>
@@ -20,8 +19,9 @@
 
     <div id="toolbar-search-group">
     <form id="main-search-form">
-
-        <input type="text" id="main-search-box" class="vifi-text-input" placeholder="Otsi filmi või näitlejat"/></form><button class="search-button btn" id="clear-search-text-button">X</button>
+        <input type="text" id="main-search-box" class="vifi-text-input" placeholder="Otsi filmi või näitlejat"/>
+    </form>
+    <button class="search-button btn" id="clear-search-text-button">X</button>
     </div>
 
 
@@ -33,7 +33,7 @@
                         {{#if name}}                       
                         <h3>{{ name }}</h3>
                         <ul class="side-menu-list">
-                            <a href="#me" id="menu-me"><li> Account </li></a>
+                            <a href="#me" id="menu-me"><li>Account</li></a>
                             <a href="#me/my-films" id="menu-myfilms"><li>My films</li></a>
                             <a href="#me/pair-device" id="menu-pairtv"><li>Pair TV</li></a>
                             <a class="logout" href="#"><li>Logout </li></a>
