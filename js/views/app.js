@@ -226,8 +226,6 @@ App.Views.SideMenu = Backbone.View.extend({
         this.$el.html(ich.sidemenuTemplate(this.model.toJSON()));
         var activeId = false;
         if (activeEl) var activeId = $(activeEl).attr("id");
-        $("#side-menu-content-pages li:nth(1)").click(function(e) {  e.preventDefault();app.trigger("notice", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links.");return false;  } );
-        $("#side-menu-content-pages li:nth(2)").click(function(e) { e.preventDefault(); app.trigger("success", "Use <strong> < strong > tag</strong> to highlight something and <a>a link like this</a> to give links. Remember that the textbox wont get over 3 lines.");return false; } );
         this.assign(this.loginForm, "#login-register-form");
         if (activeId) $("#"+activeId).addClass("active");
         

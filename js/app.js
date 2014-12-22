@@ -47,7 +47,9 @@ App = {
         }
     },
     ContentPages: {
-        'termsandconditions' : 'Kasutustingimused'
+        'termsandconditions' : 'Kasutustingimused',
+        'watchfilmsfromtv' : 'Filmi vaatamine läbi teleri',
+        'faq' : 'Korduma kippuvad küsimused'
 
 
     }
