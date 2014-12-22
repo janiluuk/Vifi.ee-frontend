@@ -1,4 +1,3 @@
-
 App.Utils = { 
 
     translations: {
@@ -41,12 +40,10 @@ App.Utils = {
                 ich.addPartial(id, $(item).html());
                 else
                 ich.addTemplate(id, $(item).html());
-
             });
         }}));
         })
         $.when.apply(window, deferreds).done(callback);
-
     },
   
 
@@ -98,7 +95,6 @@ App.Utils = {
                     numMins = "0" + numMins.toString();
                 }
             }
-
             return {
                 millis: numMs,
                 seconds: numSecs,
@@ -260,7 +256,6 @@ App.Utils.Api = Backbone.Model.extend({
 
 
 }),
-
 
 App.Utils.Notification = Backbone.Model.extend({ 
 

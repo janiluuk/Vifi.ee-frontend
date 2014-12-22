@@ -1,7 +1,6 @@
 App.Views.MovieDetailView = Backbone.View.extend({
     model: App.Models.Film,
-
-    el: $("#moviepage"),
+    el: "#moviepage",
     events: {
         'click a#watchTrailer': 'playTrailer',
         'click a#playMovie': 'playMovie',
@@ -13,9 +12,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
         this.listenTo(this.model, 'change:id', this.render);
         this.listenTo(this.model, 'change:rt_ratings', this.renderRatings);
-
         _.bindAll(this, 'playMovie', 'render');
-
         if (typeof(DISQUS) == "undefined") { 
             this.enableComments();
         }
@@ -42,19 +39,17 @@ App.Views.MovieDetailView = Backbone.View.extend({
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
         this.resetComments();
-
-
     },
     enableAddThis: function() {
-            if (window.addthis) {
-                      window.addthis = null;
-                      window._adr = null;
-                      window._atc = null;
-                      window._atd = null;
-                      window._ate = null;
-                      window._atr = null;
-                      window._atw = null;
-                  }
+        if (window.addthis) {
+              window.addthis = null;
+              window._adr = null;
+              window._atc = null;
+              window._atd = null;
+              window._ate = null;
+              window._atr = null;
+              window._atw = null;
+        }
         (function() {
             var dsq = document.createElement('script');
             dsq.type = 'text/javascript';
@@ -77,35 +72,38 @@ App.Views.MovieDetailView = Backbone.View.extend({
     },
     renderRatings: function() {
         if (undefined != this.model.get("rt_ratings") && this.model.get("rt_ratings") != "") {
-           var link =  this.model.get("rt_links").alternate;
-
-        this.$("#rtratings").html('<a href="'+link+'"><span class="icon rottentomato"></span><span>'+ this.model.get("rt_ratings").critics_score+'%</span></a>');
+            var link = this.model.get("rt_links").alternate;
+            this.$("#rtratings").html('<a href="'+link+'"><span class="icon rottentomato"></span><span>'+ this.model.get("rt_ratings").critics_score+'%</span></a>');
         }
-
+        return this;
     },
     render: function() {
         this.model.fetchRT();
-
         this.$el.empty().append(this.template(this.model.toJSON()));
         setTimeout(function() {
             this.startCarousel();
             this.resetComments();
             this.enableRatings();
             this.enableAddThis();
-
         }.bind(this), 100);
+        return this;
 
     },
     playTrailer: function(e) {
 
         e.preventDefault();
         $("#gallery-swiper-container").fadeOut();
-
         this.trailerView = new App.Views.TrailerView({
             model: this.model
         });
         e.stopPropagation();
 
+    },
+    closeTrailer: function(e) {
+        e.preventDefault();
+        this.trailerView.close();
+        $("#gallery-swiper-container").fadeIn();
+        e.stopPropagation();
     },
 
     playMovie: function(e) {
@@ -134,25 +132,15 @@ App.Views.MovieDetailView = Backbone.View.extend({
         return false;
 
     },
-    closeTrailer: function(e) {
-        e.preventDefault();
-        this.trailerView.close();
-        $("#gallery-swiper-container").fadeIn();
 
-        e.stopPropagation();
-
-    },
     closePlayer: function(e) {
         e.preventDefault();
         this.playerView.close();
         $("#gallery-swiper-container").fadeIn();
-
         e.stopPropagation();
-
     },
     changeTab: function(e) {
         e.preventDefault();
-
         var attr = $(e.currentTarget).attr("data-rel");
         var el = $("#" + attr);
 
@@ -162,7 +150,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
     startCarousel: function() {
 
-
         window.myMovieSwiper = $('#gallery-swiper-container').swiper({
             //Your options here:
             mode: 'horizontal',
@@ -171,6 +158,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             createPagination: true,
             //etc..
         });
+
         $('.arrow-left').on('click', function(e) {
             e.preventDefault()
             myMovieSwiper.swipePrev()
@@ -190,16 +178,13 @@ App.Views.MovieDetailView = Backbone.View.extend({
             onTouchEnd: function(e) {
                 var idx = e.activeIndex;
                 $("#film-tabbar-swiper-container .swiper-wrapper .swiper-slide:nth-child(" + (idx + 1) + ")").click();
-                //Do something when you touch the slide
             }
-            //etc..
         });
         $("#film-tabbar-swiper-container .swiper-slide").each(function(item) {
             $(this).click(function() {
-                filmnavSwiper.swipeTo(item)
+                filmnavSwiper.swipeTo(item);
             })
         });
-
     }
 });
 
@@ -215,24 +200,18 @@ App.Views.TrailerView = Backbone.View.extend({
     equalizeHeight: function() {
         var width = $("#trailer-container-body").parent().width();
         var height = width / 16 * 9;
-
         $("#trailer-container-body iframe").height(height);
     },
-
-
     close: function() {
-        this.$el.fadeOut();
-        this.$el.empty();
-
+        this.$el.fadeOut().empty();
     },
     render: function() {
         this.$el.fadeIn();
         this.height = this.$el.parent().height();
         this.width = this.$el.parent().width();
-        this.$el.empty();
-
-        this.$el.append(ich.trailerTemplate(this.model.toJSON()));
+        this.$el.empty().append(ich.trailerTemplate(this.model.toJSON()));
         this.equalizeHeight();
-    },
+        return this;
+    }
 
 });
