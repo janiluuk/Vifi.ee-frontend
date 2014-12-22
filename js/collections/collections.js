@@ -48,28 +48,25 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
 
         update: function() {
 
-           _.extend(this.queryParams,this.querystate.attributes);
-           
+           _.extend(this.queryParams,this.querystate.attributes);           
             this.fetch({ reset: true, url: this.url, dataType: 'jsonp'});
         },
-
         parse: function(data) {
             return data.results;
-
         },
         featured: function() {
             var items = this.fullCollection.filter(function(data) {
-            return data.get("film").featured == 1
-        });
+                return data.get("film").featured == 1
+            });
 
-        return items;
+            return items;
         },
         purchased: function() {
             var items = this.filter(function(data) {
                 return data.get("ticket");
             });
-            return new App.Films.UserCollection(items);
 
+            return new App.Films.UserCollection(items);
         },
         sortByAttribute: function(attribute, desc) {
 
@@ -79,13 +76,9 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
                 return eval(comparator);
             }
             this.fullCollection.comparator = desc ? this.reverseSortBy(asc_comparator) : asc_comparator;
-
             this.fullCollection.sort();
             return true;
-            
-
         },
-
         reverseSortBy: function(sortByFunction) {
           return function(left, right) {
             var l = sortByFunction(left);
@@ -99,8 +92,6 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         }
          
     });
-
-
 
 App.Films.GenreCollection = Backbone.Collection.extend({
     url: '',
