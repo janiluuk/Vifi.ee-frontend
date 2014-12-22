@@ -15,7 +15,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.collection = options.collection;
         this.collection.options.genres.bind('all', this.setGenreDropDown, this);
         this.collection.bind('sync', this.renderResults, this);
-        
         this.collection.querystate.bind('change', this.onChangeCollectionState, this);
         this.collection.querystate.bind('change:genres', this.onChangeGenre, this);
         this.collection.querystate.bind('change:durations', this.onChangeDuration, this);
@@ -36,13 +35,11 @@ App.Views.BrowserPage = Backbone.View.extend({
             $("#front-page-search-header").css("display", "none").empty();
             $("#front-page-slider").css("display", "block"); 
 
-        } );
-        
+        });
         this.on("minimize", function() {  
             $("#front-page-slider").css("display", "none");
             $("#front-page-search-header").css("display", "block").html("you searched for sum shitz");
-        } );
-
+        });
     },
     render: function() {
         this.$el.html(ich.browserPageTemplate());
@@ -207,9 +204,7 @@ App.Views.BrowserPage = Backbone.View.extend({
                 $("#loadMore").hide();
             }
         }.bind(this),250);
-
         return false;
-        
     },
 
     renderResults: function(el) {
@@ -259,7 +254,6 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
 
     onChangeCollectionState: function(state) {
-
         this.updateUIToState();
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);        
         //Update the url of the browser using the router navigate method
@@ -272,7 +266,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         //loads the records and reloads the table
         this.collection.querystate.setFromHash(searchStateHash);
     },
-
     clearSearch: function() {
         app.collection.querystate.clear({silent:true});
         this.onChangeCollectionState(app.collection.querystate);

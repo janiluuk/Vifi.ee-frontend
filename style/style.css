@@ -130,6 +130,11 @@ h3 {
     left: 20px;
 }
 
+.card-body .row-fluid.high i.icon {
+    top: 43px;
+    left: 23px;
+}
+
 .card-body .row-fluid input {
     height: 33px;
     line-height: 33px;
@@ -724,12 +729,24 @@ button.btn.facebook:before {
     background-position: 0 -26px;
 }
 
+.btn.icon.big.gift:after {
+    background-position: 0 -29px;
+}
+
 .btn.icon.star:after {
     background-position: 0 -70px;
 }
 
+.btn.icon.big.star:after {
+    background-position: 0 -82px;
+}
+
 .btn.icon.trailer:after {
     background-position: 0 -48px;
+}
+
+.btn.icon.big.trailer:after {
+    background-position: 0 -55px;
 }
 
 .btn.big.icon, .btn.big.loading  {
@@ -2296,13 +2313,13 @@ ul#subscription-benefit-list li .icon {
     border-bottom: 1px solid #9F7A9B;
 }
 
-.card-body div#contact_step1 .row-fluid {
+.card-body div#contact_step1 .row-fluid, .card-body .row-fluid.high {
     height: auto;
     line-height: 2;
     margin: 5px 0 10px 0;
 }
 
-.card-body div#contact_step1 .row-fluid span.label {
+.card-body div#contact_step1 .row-fluid span.label, .card-body .row-fluid.high span.label {
     margin-left: 0;
 }
 
@@ -2392,6 +2409,10 @@ ul#subscription-benefit-list li .icon {
 
     #content-container {
         background: url('img/blur_background_1080.jpg') no-repeat center center fixed;
+    }
+
+    .card-heading {
+        font-size: 1.8em;
     }
 }
 
@@ -2890,6 +2911,10 @@ ul#subscription-benefit-list li .icon {
 
     #loginmodal form#user-login, #loginmodal form#user-register {
         padding: 0 0;
+    }
+
+    .card-heading {
+        font-size: 1.5em;
     }
 
 }

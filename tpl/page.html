@@ -108,26 +108,29 @@
 </script>
 <script type="text/template" id="recoveryPageTemplate">
 <div>
-    <div class="card-body">
-    <form id="recovery-form">
-    <input type="hidden" name="recover-email" id="recover-email" value="{{email}}"/>
-    <input type="hidden" name="recover-key" id="recover-key" value="{{key}}"/>
-    <div class="break"></div>
+    <div class="card">
+        <div class="card-body">
+        <form id="recovery-form">
+        <input type="hidden" name="recover-email" id="recover-email" value="{{email}}"/>
+        <input type="hidden" name="recover-key" id="recover-key" value="{{key}}"/>
 
-                <div class="row-fluid">
-                    <i class="icon confirm-password"></i>
-                    <input type="password" id="recover-password" name="newPassword" class="vifi-text-input" placeholder="New password" />
-                </div>
-                <div class="break"></div>
-                <div class="row-fluid">
-                    <i class="icon confirm-password"></i>
-                    <input type="password" id="recover-password-confirm" name="repeatPassword" class="vifi-text-input" placeholder="Confirm new password" />
-                </div>
-                <div class="row-fluid">
-                    <button id="change-password-save-button" class="btn green float_left">Save</button>
-                </div>
-    
-    </form>
+                    <div class="row-fluid high">
+                        <span class="label">New password</span>
+                        <i class="icon password"></i>
+                        <input type="password" id="password" name="newPassword" class="vifi-text-input" placeholder="New password" />
+                    </div>
+                    <div class="break"></div>
+                    <div class="row-fluid high">
+                        <span class="label">Confirm new password</span>
+                        <i class="icon confirm-password"></i>
+                        <input type="password" id="recover-password-confirm" name="repeatPassword" class="vifi-text-input" placeholder="Confirm new password" />
+                    </div>
+                    <div class="row-fluid">
+                        <button id="change-password-save-button" class="btn green float_right">Save</button>
+                    </div>
+        
+        </form>
+        </div>
     </div>
 </div>
 </script>

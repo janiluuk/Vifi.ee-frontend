@@ -145,7 +145,7 @@ App.Utils = {
 
 //A utility model to track state using the hash and also generate a url
 App.Utils.State = Backbone.Model.extend({
-    defaults: { q:""},
+    defaults: { q:"", genres: undefined, periods: undefined, durations: undefined},
 
     getQueryString: function(addParams) {
         var hashables = [];

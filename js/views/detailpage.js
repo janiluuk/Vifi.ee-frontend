@@ -85,7 +85,8 @@ App.Views.MovieDetailView = Backbone.View.extend({
     },
     render: function() {
         this.model.fetchRT();
-        this.$el.html(this.template(this.model.toJSON()));
+
+        this.$el.empty().append(this.template(this.model.toJSON()));
         setTimeout(function() {
             this.startCarousel();
             this.resetComments();
@@ -120,7 +121,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
         $("#gallery-swiper-container").hide();
 
-
         if (!this.playerView) {
             this.playerView = new App.Views.PlayerView({
                 model: app.player
@@ -128,7 +128,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
         } else { 
             this.playerView.initialize();
         }
-
         app.player.load(this.model);
         this.playerView.render();
         if (e) e.stopPropagation();
