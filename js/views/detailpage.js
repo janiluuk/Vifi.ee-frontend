@@ -59,6 +59,17 @@ App.Views.MovieDetailView = Backbone.View.extend({
         })();
         
     },
+    enableYoutubePlayer: function() {
+        if (typeof(YT) != "undefined") return false;
+        $("#youtubeplayer").remove();
+        var tag = document.createElement('script');
+        tag.id = "youtubeplayer";
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        return true;
+
+    },
     resetComments: function() {
 
         window.disqus_identifier = "aaaaa"+this.model.get("seo_friendly_url");
@@ -86,7 +97,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             this.resetComments();
             this.enableRatings();
             this.enableAddThis(); 
-
+            this.enableYoutubePlayer();
         }.bind(this), 100);
     
         return this;
@@ -94,23 +105,33 @@ App.Views.MovieDetailView = Backbone.View.extend({
     },
     playTrailer: function(e) {
 
-        e.preventDefault();
+        if (e) e.preventDefault();
         $("#gallery-swiper-container").fadeOut();
-        this.trailerView = new App.Views.TrailerView({
-            model: this.model
-        });
+        if (!this.trailerView) {         
+            this.trailerView = new App.Views.TrailerView({
+                model: this.model
+            });
+            this.listenTo(this.trailerView, "play:movie", this.playMovie, this);
+            this.listenTo(this.trailerView, "trailer:close", this.closeTrailer, this);
+
+        } else {
+            this.trailerView.model.set(this.model.toJSON());
+        }
+        this.trailerView.playTrailer();
         e.stopPropagation();
 
     },
     closeTrailer: function(e) {
-        e.preventDefault();
-        this.trailerView.close();
+        if (e) e.preventDefault();
         $("#gallery-swiper-container").fadeIn();
-        e.stopPropagation();
+        this.trailerView.close();
+
+        if (e) e.stopPropagation();
     },
 
     playMovie: function(e) {
         if (e) e.preventDefault();
+        $("#gallery-swiper-container").fadeIn();
 
         if (!app.session.get("profile").hasMovie(this.model)) {
             this.purchaseView = new App.Views.PurchaseView({
@@ -119,9 +140,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             })
             return false;
         }
-
         $("#gallery-swiper-container").hide();
-
         if (!this.playerView) {
             this.playerView = new App.Views.PlayerView({
                 model: app.player
@@ -189,32 +208,4 @@ App.Views.MovieDetailView = Backbone.View.extend({
         });
 
     }
-});
-
-App.Views.TrailerView = Backbone.View.extend({
-    el: "#movie-trailer-container",
-    model: App.Models.Film,
-
-    initialize: function() {
-        _.bindAll(this, "render");
-        this.render();
-    },
-
-    equalizeHeight: function() {
-        var width = $("#trailer-container-body").parent().width();
-        var height = width / 16 * 9;
-        $("#trailer-container-body iframe").height(height);
-    },
-    close: function() {
-        this.$el.fadeOut().empty();
-    },
-    render: function() {
-        this.$el.fadeIn();
-        this.height = this.$el.parent().height();
-        this.width = this.$el.parent().width();
-        this.$el.empty().append(ich.trailerTemplate(this.model.toJSON()));
-        this.equalizeHeight();
-        return this;
-    }
-
 });

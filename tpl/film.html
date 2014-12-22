@@ -5,7 +5,9 @@
     <!--Film gallery-->
     <div class="swiper-container" id="gallery-swiper-container" data-snap-ignore="true" >
         <ul id="movie-interactive-button-row">
+            <% if (youtube_id != "") { %>
             <li><a href="#trailer" id="watchTrailer"><button class="btn icon trailer">Treiler</button></a></li>
+            <% } %>
             <li><a href="#player" id="playMovie"><button class="btn big green icon play"><%= playButton %></button></a></li>
             <li><a><button class="btn icon star">Lisa endale</button></a></li>
         </ul>

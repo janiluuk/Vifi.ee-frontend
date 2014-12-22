@@ -11,10 +11,10 @@ App.Views.FilmView = Backbone.View.extend({
         
     }, 
     showMoviePage: function(e) {
-        var url = this.model.get("film").seo_friendly_url;
-
-        app.router.navigate(url, {trigger: true});
         e.preventDefault();
+        var url = this.model.get("film").seo_friendly_url;
+        app.router.navigate(url, {trigger: true});
+        
         return false;
     },
     render: function() {   
