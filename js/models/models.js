@@ -173,6 +173,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
     },
+    
     /*
      * Load defined film content to the player
      */
@@ -200,8 +201,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     refresh: function(fetch) {
         if (this.get("id") > 0) {
             this.path = "content/" + this.get("id");
-       
-        if (fetch) this.fetch();
+            if (fetch) this.fetch();
         }
     }
 });
