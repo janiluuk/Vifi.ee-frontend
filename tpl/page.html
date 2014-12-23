@@ -65,32 +65,31 @@
 <script type="text/html" id="radiolistTemplate">
             <div class="selection-wrapper" data-field="{{group}}" data-type="radio">
                     {{# items}}
-                    <div class="selection {{#default}}toggle-on{{/ default}}" data-val="{{id}}" data-desc="{{desc}}"><span>{{name}}</span></div>
+                    <div class="selection {{#default}}toggle-on{{/ default}}" data-val="{{id}}" data-desc="{{desc}}"><span>{{name}}</span>
+                    </div>
                     {{/ items}}
             </div>
 </script>
 <script type="text/template" id="featuredTemplate">
-
-                            <div class="swiper-container" id="featured-swiper-container" data-snap-ignore="true">
-
-                                <a class="arrow-left" href="#"></a>
-                                <a class="arrow-right" href="#"></a>
-                                <div class="swiper-wrapper" id="featured-slides"></div>
-                                <div class="pagination"></div>
-                            </div>
+            <div class="swiper-container" id="featured-swiper-container" data-snap-ignore="true">
+                <a class="arrow-left" href="#"></a>
+                <a class="arrow-right" href="#"></a>
+                <div class="swiper-wrapper" id="featured-slides"></div>
+                <div class="pagination"></div>
+            </div>
 </script>
 <script type="text/template" id="featuredItemTemplate">
             <div class="swiper-slide">
-                    <div class="featured-item">
-                            <div class="featured-item-info">
-                                    <div class="featured-item-title">{{film.title}}</div>
-                                    <div class="featured-item-description">{{film.shortOverview}}</div>
-                                    <div class="featured-item-button">
-                                            <a href="#{{film.seo_friendly_url}}"><button class="btn green icon play">Vaata</button></a>
-                                    </div>
-                            </div>
-                            <div class="featured-item-background" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src={{ film.backdrop_url }}&w=1280&h=720');"></div>
+                <div class="featured-item">
+                    <div class="featured-item-info">
+                        <div class="featured-item-title">{{film.title}}</div>
+                        <div class="featured-item-description">{{film.shortOverview}}</div>
+                        <div class="featured-item-button">
+                                <a href="#{{film.seo_friendly_url}}"><button class="btn green icon play">Vaata</button></a>
+                        </div>
                     </div>
+                    <div class="featured-item-background" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src={{ film.backdrop_url }}&w=1280&h=720');"></div>
+                </div>
             </div>
 </script>
 
@@ -110,26 +109,25 @@
 <div>
     <div class="card">
         <div class="card-body">
-        <form id="recovery-form">
-        <input type="hidden" name="recover-email" id="recover-email" value="{{email}}"/>
-        <input type="hidden" name="recover-key" id="recover-key" value="{{key}}"/>
-
-                    <div class="row-fluid high">
-                        <span class="label">New password</span>
-                        <i class="icon password"></i>
-                        <input type="password" id="password" name="newPassword" class="vifi-text-input" placeholder="New password" />
-                    </div>
-                    <div class="break"></div>
-                    <div class="row-fluid high">
-                        <span class="label">Confirm new password</span>
-                        <i class="icon confirm-password"></i>
-                        <input type="password" id="recover-password-confirm" name="repeatPassword" class="vifi-text-input" placeholder="Confirm new password" />
-                    </div>
-                    <div class="row-fluid">
-                        <button id="change-password-save-button" class="btn green float_right">Save</button>
-                    </div>
-        
-        </form>
+            <form id="recovery-form">
+            <input type="hidden" name="recover-email" id="recover-email" value="{{email}}"/>
+            <input type="hidden" name="recover-key" id="recover-key" value="{{key}}"/>
+                <div class="row-fluid high">
+                    <span class="label">New password</span>
+                    <i class="icon password"></i>
+                    <input type="password" id="password" name="newPassword" class="vifi-text-input" placeholder="New password" />
+                </div>
+                <div class="break"></div>
+                <div class="row-fluid high">
+                    <span class="label">Confirm new password</span>
+                    <i class="icon confirm-password"></i>
+                    <input type="password" id="recover-password-confirm" name="repeatPassword" class="vifi-text-input" placeholder="Confirm new password" />
+                </div>
+                <div class="row-fluid">
+                    <button id="change-password-save-button" class="btn green float_right">Save</button>
+                </div>
+            
+            </form>
         </div>
     </div>
 </div>
@@ -139,140 +137,138 @@
 <div class="singlepage-container">
     <p style="margin-bottom: 0in; line-height: 100%">
     Kui soovid filmi vaadata näiteks telerist või videoprojektorist, tuleb ühendada arvuti ja teler (või videoprojektor) videokaabliga, millel on kaks otsa, mis vastavalt omavahel sobivad.</p>
-<p style="margin-bottom: 0in; line-height: 100%">
+    <p style="margin-bottom: 0in; line-height: 100%">
     &nbsp;</p>
-<p style="margin-bottom: 0in; line-height: 100%">
+    <p style="margin-bottom: 0in; line-height: 100%">
     Kliki allpool olevat linki, et leida endale sobiv ühenduslahendus:</p>
-<h4>
-    <strong><a href="http://hookpctotv.com" target="_blank">http://hookpctotv.com
-    </a></strong>
-</h4>
-    
+    <h4>
+        <strong><a href="http://hookpctotv.com" target="_blank">http://hookpctotv.com
+        </a></strong>
+    </h4>
+
     
 </div>
 </script>
 <script type="text/template" id="faqTemplate">
 <div class="singlepage-container">
     <h1>Vastused korduma kippuvatele küsimustele  </h1> 
-
-<h5>
-    Ma ei saa uuendada Adobe Flash Playerit uusimale versioonile.&nbsp;</h5>
-<p>
-    Mõnel veebilehitsejal on Adobe Flash Playeri uuendamisega raskusi. Abiks võib olla see, kui paigaldate veebilehitseja, mis teeb seda automaatselt.</p>
-<p>
-    Google Chrome on hea valik ja selle saab alla laadida siit: <font color="#0000ff"><u><a class="western" href="http://www.google.com/chrome/?hl=en">www.google.com/chrome/?hl=en</a></u></font></p>
-<h5>
-    Miks on film hakib/esitus katkendlik?</h5>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    - Kõrge kvaliteediga filmide esitamine mõjub internetiühendusele, veebilehitsejale ja arvutile kurnavalt. Veenduge, et teie internetiühendus oleks piisavalt kiire. Katkendlikkuse ja peatuste vältimiseks peaks teie internetiühenduse kiiruseks olema vähemalt <strong>2&nbsp;Mbps</strong>. Kui soovite kontrollida oma internetiühenduse kiirust, vajutage <a href="http://vifi.ee/est/tugi/testi-tehnilist-valmisolekut">siia</a>.</p>
-<p>
-    - Pidage meeles, et wifi ühenduse puhul ei pruugi ühenduse kiirus stabiilne. Film võib olla katkendlik kui kiirus on alla 2 Mbps või kui esineb väike katkestus internetiühenduses.<br>
-    <br>
-    - Võib-olla ei saa teie arvuti esitamisega hakkama. Proovige, kas aitab, kui muudate pildi kvaliteeti.</p>
-<h5>
-    Kas teie teenust saab ka telefonidele?</h5>
-<p>
-    - Me töötame parajasti erinevatele mobiilidele mõeldud lahenduse kallal. Androidiga saab filme juba vaadata. iPhone-i jaoks oleme loomas spetsiaalset appi.</p>
-<h5>
-    Kas teie tugiteenusega saab ka telefoni teel ühendust?</h5>
-<p>
-    -Töötame sellega, hetkel palume meiega kontakteeruda <a href="http://www.vifi.ee/est/tugi/helpdesk">tagasiside vormi</a>&nbsp;kaudu.</p>
-<h5>
-    Kas teie filme saab alla laadida?</h5>
-<p>
-    - Filmid on saadaval ainult <i>streminguna</i> (voogesitusena).</p>
-<p>
-    See tähendab, et ühtki filmi alla laadida ega salvestada ei saa.</p>
-<h5>
-    Kui pikk on laenutusperiood?</h5>
-<p>
-    - Laenutusperiood on 48 tundi ja algab sellest hetkest, mil te filmi esmakordselt käima panete. Võite filmi laenutusperioodi jooksul vabalt mängima panna ja pausile seada.</p>
-<h5>
-    Laenutasin filmi, aga videopleier jooksis kokku. Laadisin filmi lehekülje uuesti ja tahaksin nüüd filmivaatamisega jätkata. Kas pean tõepoolest filmi uuesti laenutama?</h5>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    - Ei, te ei pea. Niikaua, kuni laenutusperiood (48 tundi) on aktiivne, võite lihtsalt klõpsata filmil PLAY nuppu ja vaatamist jätkata.</p>
-<h5>
-    Kas ma saan vifi.ee’s sisalduvaid filme oma iPadi pealt vaadata?</h5>
-<p>
-    - Mitte veel – hetkel oleme selle funktsionaalsuse katsetamisega lõpusirgel ja see on peagi saadaval.</p>
-<h5>
-    Kust ma võin saada subtiitreid?</h5>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    - Eestikeelsed subtiitrid ilmuvad automaatselt. Kui soovite venekeelseid subtiitreid, palun valige need alajaotusest „subtiitrid“.</p>
-<h5>
-    Millises kvaliteedis videoid streamitakse?</h5>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    - Filmid on hetkel SD-s (standarddefinitsioonis) ja HD (kõrglahutus) resolutsioonis.</p>
-<h5>
-    Kas teie filmidele on saadaval 5.1 heli?</h5>
-<p>
-    -5.1 (<i>surround</i> heli) ei ole Adobe Flash Playeri puhul veel võimalik. Järgmise Adobe Flashplayeri versiooniga tuleb ka 5.1 heli võimalus.</p>
-<h5>
-    Ma kaotasin oma e-kirja koos kinopiletiga, mille tellisin - mis ma pean tegema?</h5>
-<p>
-    - Saatke meile vormi “kasutajatugi” kaudu e-kiri ja me saadame teie pileti uuesti.</p>
-<h5>
-    Kuidas streaming töötab?</h5>
-<p>
-    -Videopleier esitab sisu meie serveritest. See tähendab, et teil pole vaja filmi allalaadimist oodata. Kõik, mis vaja, on piisava kiirusega (2mb) interneti püsiühendus.</p>
-<h5>
-    Meist</h5>
-<p>
-    Vificom OÜ asub Eestis Tallinnas ja on 100% Eesti kapitalil põhinev firma. Meie veebilehe Vifi.ee kaudu osutame vidolaenutuse teenust internetis. Pakume legaalset alternatiivi piraatlusele, teenust on kerge kasutada ja see töötab nii Mac kui PC arvutitel ning on varsti saadaval ka iOS platvormidele.</p>
-<p>
-    Pakume paindlikku teenust – vaadake meie filme ükskõik millal ja kus te seda soovite. Valige laialdase filmivaliku hulgast: meil on kõike alates Hollywoodi toodangust kuni sõltumatute filmideni välja ja seda kõike kõrge kvaliteediga.</p>
-<h4>
-    Vificomi tehnilised nõuded süsteemile</h4>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Kui kasutate vifi.ee’d PC/Mac/Linux arvutil, siis on optimaalseks vaatamiskogemuseks vajalikud järgnevad tehnilised nõuded.<b><br>
-    <br>
-    </b><i>Riistvara<br>
-    ========</i></p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <b>Intel Core Duo</b> 1.8GHz, AMD Athlon™ 64 X2 4200+ protsessor</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    128MB RAM mälu</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    64MB VRAM mälu</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <br>
-    <b>Intel Core Duo</b> 2.66GHz protsessor (või sellega võrdne)</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    512MB RAM mälu</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    128MB VRAM mälu</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    &nbsp;</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Vifi.ee töötab järgmiste veebilehitsejatega:</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <br>
-    <b>Windows:</b></p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Firefox 3.x või uuem</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Chrome 2.0 või uuem</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Internet Explorer 7.0 või uuem</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <b>Mac:</b></p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Firefox 3.x</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Safari 3.x või uuem</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <b>Linux:</b></p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Firefox 3.x või uuem</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    Chrome 2.0 või uuem</p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <i>Ühenduse kiirus</i></p>
-<p class="western" lang="et-EE" style="margin-bottom: 0in">
-    <i>=========================</i><br>
-    Optimaalseimaks vaatamiskogemuseks soovitame püsiühendust 2 Mbit/s. Vificom töötab ka madalama kiirusega ühenduste puhul, kuni need ühendused on stabiilsed ja katkematud. Kontrollige oma internetiühenduse kiirust&nbsp;<a href="http://vifi.ee/est/tugi/testi-tehnilist-valmisolekut">siin</a>.</p>
-    
-    
+        <h5>
+            Ma ei saa uuendada Adobe Flash Playerit uusimale versioonile.&nbsp;</h5>
+        <p>
+            Mõnel veebilehitsejal on Adobe Flash Playeri uuendamisega raskusi. Abiks võib olla see, kui paigaldate veebilehitseja, mis teeb seda automaatselt.</p>
+        <p>
+            Google Chrome on hea valik ja selle saab alla laadida siit: <font color="#0000ff"><u><a class="western" href="http://www.google.com/chrome/?hl=en">www.google.com/chrome/?hl=en</a></u></font></p>
+        <h5>
+            Miks on film hakib/esitus katkendlik?</h5>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            - Kõrge kvaliteediga filmide esitamine mõjub internetiühendusele, veebilehitsejale ja arvutile kurnavalt. Veenduge, et teie internetiühendus oleks piisavalt kiire. Katkendlikkuse ja peatuste vältimiseks peaks teie internetiühenduse kiiruseks olema vähemalt <strong>2&nbsp;Mbps</strong>. Kui soovite kontrollida oma internetiühenduse kiirust, vajutage <a href="http://vifi.ee/est/tugi/testi-tehnilist-valmisolekut">siia</a>.</p>
+        <p>
+            - Pidage meeles, et wifi ühenduse puhul ei pruugi ühenduse kiirus stabiilne. Film võib olla katkendlik kui kiirus on alla 2 Mbps või kui esineb väike katkestus internetiühenduses.<br>
+            <br>
+            - Võib-olla ei saa teie arvuti esitamisega hakkama. Proovige, kas aitab, kui muudate pildi kvaliteeti.</p>
+        <h5>
+            Kas teie teenust saab ka telefonidele?</h5>
+        <p>
+            - Me töötame parajasti erinevatele mobiilidele mõeldud lahenduse kallal. Androidiga saab filme juba vaadata. iPhone-i jaoks oleme loomas spetsiaalset appi.</p>
+        <h5>
+            Kas teie tugiteenusega saab ka telefoni teel ühendust?</h5>
+        <p>
+            -Töötame sellega, hetkel palume meiega kontakteeruda <a href="http://www.vifi.ee/est/tugi/helpdesk">tagasiside vormi</a>&nbsp;kaudu.</p>
+        <h5>
+            Kas teie filme saab alla laadida?</h5>
+        <p>
+            - Filmid on saadaval ainult <i>streminguna</i> (voogesitusena).</p>
+        <p>
+            See tähendab, et ühtki filmi alla laadida ega salvestada ei saa.</p>
+        <h5>
+            Kui pikk on laenutusperiood?</h5>
+        <p>
+            - Laenutusperiood on 48 tundi ja algab sellest hetkest, mil te filmi esmakordselt käima panete. Võite filmi laenutusperioodi jooksul vabalt mängima panna ja pausile seada.</p>
+        <h5>
+            Laenutasin filmi, aga videopleier jooksis kokku. Laadisin filmi lehekülje uuesti ja tahaksin nüüd filmivaatamisega jätkata. Kas pean tõepoolest filmi uuesti laenutama?</h5>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            - Ei, te ei pea. Niikaua, kuni laenutusperiood (48 tundi) on aktiivne, võite lihtsalt klõpsata filmil PLAY nuppu ja vaatamist jätkata.</p>
+        <h5>
+            Kas ma saan vifi.ee’s sisalduvaid filme oma iPadi pealt vaadata?</h5>
+        <p>
+            - Mitte veel – hetkel oleme selle funktsionaalsuse katsetamisega lõpusirgel ja see on peagi saadaval.</p>
+        <h5>
+            Kust ma võin saada subtiitreid?</h5>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            - Eestikeelsed subtiitrid ilmuvad automaatselt. Kui soovite venekeelseid subtiitreid, palun valige need alajaotusest „subtiitrid“.</p>
+        <h5>
+            Millises kvaliteedis videoid streamitakse?</h5>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            - Filmid on hetkel SD-s (standarddefinitsioonis) ja HD (kõrglahutus) resolutsioonis.</p>
+        <h5>
+            Kas teie filmidele on saadaval 5.1 heli?</h5>
+        <p>
+            -5.1 (<i>surround</i> heli) ei ole Adobe Flash Playeri puhul veel võimalik. Järgmise Adobe Flashplayeri versiooniga tuleb ka 5.1 heli võimalus.</p>
+        <h5>
+            Ma kaotasin oma e-kirja koos kinopiletiga, mille tellisin - mis ma pean tegema?</h5>
+        <p>
+            - Saatke meile vormi “kasutajatugi” kaudu e-kiri ja me saadame teie pileti uuesti.</p>
+        <h5>
+            Kuidas streaming töötab?</h5>
+        <p>
+            -Videopleier esitab sisu meie serveritest. See tähendab, et teil pole vaja filmi allalaadimist oodata. Kõik, mis vaja, on piisava kiirusega (2mb) interneti püsiühendus.</p>
+        <h5>
+            Meist</h5>
+        <p>
+            Vificom OÜ asub Eestis Tallinnas ja on 100% Eesti kapitalil põhinev firma. Meie veebilehe Vifi.ee kaudu osutame vidolaenutuse teenust internetis. Pakume legaalset alternatiivi piraatlusele, teenust on kerge kasutada ja see töötab nii Mac kui PC arvutitel ning on varsti saadaval ka iOS platvormidele.</p>
+        <p>
+            Pakume paindlikku teenust – vaadake meie filme ükskõik millal ja kus te seda soovite. Valige laialdase filmivaliku hulgast: meil on kõike alates Hollywoodi toodangust kuni sõltumatute filmideni välja ja seda kõike kõrge kvaliteediga.</p>
+        <h4>
+            Vificomi tehnilised nõuded süsteemile</h4>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Kui kasutate vifi.ee’d PC/Mac/Linux arvutil, siis on optimaalseks vaatamiskogemuseks vajalikud järgnevad tehnilised nõuded.<b><br>
+            <br>
+            </b><i>Riistvara<br>
+            ========</i></p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            <b>Intel Core Duo</b> 1.8GHz, AMD Athlon™ 64 X2 4200+ protsessor</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            128MB RAM mälu</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            64MB VRAM mälu</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            <br>
+            <b>Intel Core Duo</b> 2.66GHz protsessor (või sellega võrdne)</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            512MB RAM mälu</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            128MB VRAM mälu</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            &nbsp;</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Vifi.ee töötab järgmiste veebilehitsejatega:</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            <br>
+            <b>Windows:</b></p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Firefox 3.x või uuem</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Chrome 2.0 või uuem</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Internet Explorer 7.0 või uuem</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            <b>Mac:</b></p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Firefox 3.x</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Safari 3.x või uuem</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            <b>Linux:</b></p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Firefox 3.x või uuem</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            Chrome 2.0 või uuem</p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            <i>Ühenduse kiirus</i></p>
+        <p class="western" lang="et-EE" style="margin-bottom: 0in">
+            <i>=========================</i><br>
+            Optimaalseimaks vaatamiskogemuseks soovitame püsiühendust 2 Mbit/s. Vificom töötab ka madalama kiirusega ühenduste puhul, kuni need ühendused on stabiilsed ja katkematud. Kontrollige oma internetiühenduse kiirust&nbsp;<a href="http://vifi.ee/est/tugi/testi-tehnilist-valmisolekut">siin</a>.</p>
+            
 </div>
 </script>
 <script type="text/template" id="termsandconditionsTemplate">
