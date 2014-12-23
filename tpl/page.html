@@ -5,12 +5,10 @@
             <div id="filter-elements" style="display:none"></div>
         </form>
         <div id="filter-bar" class="sub-tabbar float_left"></div>
-        <div id="filter-list" class="selection-container float_left">
-        </div>
+        <div id="filter-list" class="selection-container float_left"></div>
         <div id="content-body" class="float_left">
-                <ul id="content-body-list" class="film-list">
-                </ul>
-                <button style="display:none" id="loadMore">Lae juurde</button>
+            <ul id="content-body-list" class="film-list"></ul>
+            <button style="display:none" id="loadMore">Lae juurde</button>
         </div>
         <!-- Footer -->
         <div class="page-footer float_left">
@@ -22,18 +20,17 @@
 </script>
 <!-- Empty list item -->
 <script type="text/html" id="emptyListTemplate">
-        <div class="result-message">
-                <span class="">{{ text }}</span>
-        </div>
+    <div class="result-message">
+        <span class="">{{ text }}</span>
+    </div>
 </script>
 
 <script type="text/html" id="errorPageTemplate">
     <div class="span4"><img src="img/oops.jpg"/></div>
     <div class="span8" style="padding-top: 60px;">
-    <h3>An error has occurred.</h3>
-    <p>{{ error_description}}</p>
-
-         <br/>
+        <h3>An error has occurred.</h3>
+        <p>{{ error_description}}</p>
+        <br/>
         <button class="btn retry">Try Again</button>
     </div>
 
@@ -46,8 +43,6 @@
                             <div class="swiper-slide" data-rel="durations-list"><span>Kestvus</span></div>
                             <div class="swiper-slide" data-rel="periods-list"><span>Aasta</span></div>
                             <div class="swiper-slide" data-rel="clear-list"><span>Tühista</span></div>
-
-                
                     </div>
             </div>
 </script>
@@ -64,10 +59,10 @@
 </script>
 <script type="text/html" id="radiolistTemplate">
             <div class="selection-wrapper" data-field="{{group}}" data-type="radio">
-                    {{# items}}
-                    <div class="selection {{#default}}toggle-on{{/ default}}" data-val="{{id}}" data-desc="{{desc}}"><span>{{name}}</span>
-                    </div>
-                    {{/ items}}
+                {{# items}}
+                <div class="selection {{#default}}toggle-on{{/ default}}" data-val="{{id}}" data-desc="{{desc}}">   <span>{{name}}</span>
+                </div>
+                {{/ items}}
             </div>
 </script>
 <script type="text/template" id="featuredTemplate">
