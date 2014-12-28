@@ -2069,6 +2069,10 @@ ul#movie-interactive-button-row li {
     position: relative;
 }
 
+#player-container {
+    float: left;
+}
+
 .flowplayer .fp-progress {
     background-color: #42C515 !important;
 }
@@ -2101,6 +2105,8 @@ ul#movie-interactive-button-row li {
     color: #FFF683;
     text-shadow: 0 0 2px black, 0 0 3px black, 0 0 4px black, 0 2px 2px black;
 }
+
+
 /* SEARCH PAGE */
 
 .search-result-heading {
@@ -2117,6 +2123,7 @@ ul#movie-interactive-button-row li {
     background: url('img/blur_background1.jpg') no-repeat center center fixed;
     background-size: cover;
 }
+
 
 /* USER PROFILE PAGE */
 

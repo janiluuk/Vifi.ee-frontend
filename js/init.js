@@ -127,7 +127,7 @@ function initFB() {
     $(document).on('logout', function () {
         if (FB.getAccessToken() != null) {
             FB.logout();
-            app.fbuser.set(app.fbuser.defaults);
+            app.fbuser.set(app.fbuser.defaults); 
         }
         app.session.logout();
         return false;
@@ -137,15 +137,13 @@ function initFB() {
         app.session.reset();
         app.session.enable();
         FB.login(function(response) {
-
         }, {scope: 'email,publish_actions'});
         return false;
     });
 }
 
 /* * * Disqus Reset Function * * */
-var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
-    
+var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {    
     DISQUS.reset({
         reload: true,
         config: function () {
