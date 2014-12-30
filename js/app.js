@@ -197,7 +197,8 @@ App.Router = Backbone.Router.extend({
             el: "#contentpage"
         });
 
-        $('#contentpage').empty().append(this.views.pairview.render().$el.html());
+        $('#contentpage').empty();
+        this.views.pairview.render();
         this.trigger("change:title", "Pair Device");
 
         app.showContentPage("pairtv");
