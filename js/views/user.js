@@ -65,23 +65,25 @@ App.Views.LoginForm = Backbone.View.extend({
             this.session = options.session;
             this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
             this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
-            this.listenTo(this.session.profile, "user:register:success", function(data) {
-                this.session.trigger("success", "You have registered successfully!");
-                return false;
-            }.bind(this), this);
-            this.listenTo(this.session.profile, "user:login", this.onSuccess, this);
+            this.listenTo(this.session.profile, "user:login", this.onLogin, this);
+            this.listenTo(this.session.profile, "user:register:success", this.onSuccess, this);
         }    
     },
     onSuccess: function(data) {
-        
+        this.session.trigger("success", "You have registered successfully!");
+        this.$("form input").val("");
+        this.$(".register-button").click();
         return false;
-
     },
+    onLogin: function() { 
+        return false;
+    },
+
     onFail: function(data) {
         if (!data) return false;
-        this.$("form .error").remove();
         var div = $("<div>").addClass("row-fluid error").html(data.message);
         this.$("form:visible:first h3").append(div);
+        setTimeout(function() { this.$("form .error").fadeOut() }.bind(this),6000);
         return false;
     },
     logout: function (e) {
@@ -106,6 +108,8 @@ App.Views.LoginForm = Backbone.View.extend({
         $(document).trigger("login");
     },
     resetPassword: function(e) { 
+        var el = $("form#user-forgot-password button");
+
         e.preventDefault();
         var email = this.$("#forgot-password-email").val();
 
@@ -113,8 +117,8 @@ App.Views.LoginForm = Backbone.View.extend({
             this.onFail({message: "E-mail is empty!"});
         } else { 
             this.session.get("profile").resetPassword(email);
+            this.removeOnDone(el);
         }
-
         return false;
 
     },
@@ -125,8 +129,8 @@ App.Views.LoginForm = Backbone.View.extend({
         var passverify = this.$("#register-password-verify").val();
         if (pass != passverify) {
                 this.onFail({message: "Passwords do not match!"});
+                return false;
         }
-
         if (email =="" || pass == "" || passverify == "") {  
             this.onFail({message: "Fill all the fields!"});
         } else { 
@@ -162,7 +166,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.listenTo(this.collection, "add", this.renderCollection, this);
       this.listenTo(this.collection, "reset", this.renderCollection, this);
       this.profileview = new App.Views.UserProfileView({model: this.model});
-      this.resetpasswordview = new App.Views.ResetPasswordView({model: this.model});
+      this.resetpasswordview = new App.Views.ResetPassword({model: this.model});
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
 
       this.render();
@@ -218,7 +222,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.renderCollection();
       setTimeout(function() { 
             this.swiper = this.startCarousel(this.options.swipeTo);
-        }.bind(this),50);
+        }.bind(this),150);
       return this;
     }
 });
@@ -283,11 +287,14 @@ App.Views.UserCollectionView = Backbone.View.extend({
     events: {
         'click .next_page' : 'nextPage',
         'click .previous_page' : 'previousPage'
+
     },
  
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
         this.options = options || {};
+        this.listenTo(this.collection, "add", this.renderFilmViews, this);
+
     },
     render: function() {
 
@@ -295,6 +302,9 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.$el.append('<ul class="user-filmcollection-list"></ul>');
         this.$filmCollectionHolder = this.$('.user-filmcollection-list');
         this.renderFilmViews();
+
+
+
         return this;
     },
 
@@ -305,6 +315,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
         if (this.collection.length > 0 ) { 
             this.collection.each(function(model) {
                 this.addChildView(model);
+
             }.bind(this), this);
 
              this.$filmCollectionHolder.append(this.fragment);
@@ -312,12 +323,14 @@ App.Views.UserCollectionView = Backbone.View.extend({
         } else {
             this.$filmCollectionHolder.append(ich.emptyListTemplate({text: tr("No purchases")}));
         }
+
         return this;
     },
     addChildView: function(model) {
         var filmView = new App.Views.UserFilmView({
             model: model,
         });
+
         $(this.fragment).append(filmView.render().el);
 
     },
@@ -326,16 +339,14 @@ App.Views.UserCollectionView = Backbone.View.extend({
 
 App.Views.RecoveryView = App.Views.ContentView.extend({ 
     events: {
-        'submit #recovery-form':'recover'
+        'submit #recovery-form':'onSubmit'
     },
     initialize: function(options) {
         this.content = ich.recoveryPageTemplate(options).html();
         this.template = ich.contentPageTemplate({content: this.content, title: "Recovery" });
         this.model = app.session.get("profile");
-
         this.listenTo(this.model, "user:recoverpassword:success", this.onSuccess, this);
         this.listenTo(this.model, "user:recoverpassword:fail", this.onFail, this);
-
 
     },
     onFail: function(data) {
@@ -345,7 +356,7 @@ App.Views.RecoveryView = App.Views.ContentView.extend({
         this.$("form:visible:first").prepend(div);
         return false;
     },
-    recover: function(e) {
+    onSubmit: function(e) {
         e.preventDefault();
         var email = this.$("#recover-email").val();
         var key = this.$("#recover-key").val();
@@ -396,7 +407,7 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
         'click #change-password-save-button': 'changePassword'
     },
     initialize: function (options) {
-        if (options && options.profile) this.profile = options.profile;
+        if (options && options.profilef) this.profile = options.profile;
 
         // This hooks up the validation
         Backbone.Validation.bind(this);
@@ -429,16 +440,18 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
         Backbone.Validation.unbind(this);
         return Backbone.View.prototype.remove.apply(this, arguments);
     }
-})
-App.Views.ResetPasswordView = Backbone.View.extend({
+});
+
+App.Views.ResetPassword = Backbone.View.extend({
     el: "#reset-password",
     events: {
         'click #change-password-button, #change-password-cancel-button': 'toggleForm',
     },
     initialize: function() {
-        this.changePasswordForm = new App.Views.ResetPasswordForm({ el: '#password-form', profile: this.model, model: new App.User.ChangePassword()});
+        this.changePasswordForm = new App.Forms.ResetPasswordFormView({ el: '#password-form', profile: this.model, model: new App.Forms.ResetPasswordForm()});
     },
     render: function() {
+
        this.$el.html(ich.resetPasswordTemplate(this.model.toJSON()));
        this.changePasswordForm.setElement("#reset-password").render();
        return this;

@@ -14,6 +14,7 @@ App.MediaPlayer = {
     plugin: false,
     allowFastFoward: true,
     init: function(playlist) {
+        this.speedtest();
 
         if (playlist) {
             this.setPlaylist(playlist);
@@ -27,7 +28,6 @@ App.MediaPlayer = {
         } else {
             //  this._trackEvents();
         }
-        this.speedtest();
 
         return this._createPlayer();
 

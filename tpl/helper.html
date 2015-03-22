@@ -19,10 +19,28 @@
         return "selected";
       }
 </script>
-<script id="ifCond" class="helper" data-args="arg1,arg2,options" type="text/html">
- if(arg1 === arg2) {
-    return options.fn(this);
-  }
+<script id="ifCond" class="helper" data-args="v1,operator,v2,options" type="text/html">
+    switch (operator) {
+        case '==':
+            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+        case '===':
+            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+        case '<':
+            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+        case '<=':
+            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+        case '>':
+            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+        case '>=':
+            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+        case '&&':
+            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+        case '||':
+            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+        default:
+            return options.inverse(this);
+    }
+
   return options.inverse(this);
 </script>
 <script id="trans" class="helper" data-args="arg1,arg2" type="text/html">

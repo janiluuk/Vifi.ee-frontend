@@ -1,3 +1,30 @@
+App.Views.SearchView = Backbone.View.extend({ 
+    el: "#search-text",
+    initialize: function(options) {
+        options = options ||  {};
+        this.model = options.model;
+        this.listenTo(this.model, "change:q", this.setTerm, this);
+        this.setTerm(this.getTerm());
+    },
+    getTerm: function() { 
+        return this.model.get("q");
+    },
+    setTerm: function() { 
+        this.render();
+
+        if (this.getTerm().length > 0) { 
+            this.$el.fadeIn();
+        } else {
+            this.$el.slideUp();
+        }
+    },
+    render: function() {   
+    
+        this.$el.html(ich.searchTextTemplate({
+            'term': this.getTerm()
+        }));
+    }
+});
 App.Views.FilterView = Backbone.View.extend({
     initialize: function(options) {
         this.options = options;
@@ -115,7 +142,8 @@ App.Views.FilterItemView = Backbone.View.extend({
 
         e.stopPropagation();
 
-
+        return false;
+        
 
     },
 

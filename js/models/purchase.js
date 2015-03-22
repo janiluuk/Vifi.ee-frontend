@@ -43,6 +43,7 @@ App.Models.Purchase = Backbone.Model.extend({
         this.set("price", this.model.get("price"));
         _.bindAll(this, 'sendPurchase', 'purchase', 'onCodeAuth', 'sendCodeAuth', 'paymentCallback')
     },
+
     validateMethod: function(value, attr, computedState) {
         if(value === 'code' && this.get("code").length == 0) {
             return 'Code is invalid!';
@@ -60,7 +61,7 @@ App.Models.Purchase = Backbone.Model.extend({
                     this.trigger("purchase:successful"); 
                     $log("Billing process successfully ended");
                 }.bind(this));            
-                profile.purchase(this.model);
+                profile.purchase(app.collection.fullCollection.get(this.model.get("id")));
         } else {
             $log(response);
 
@@ -85,6 +86,9 @@ App.Models.Purchase = Backbone.Model.extend({
         var info = {
             'auth_id': this.session.get("auth_id"),
             'user_id': user_id,
+            'email': this.get("email"),
+            'method_id': this.get("method_id"),
+            'method' : this.get("method"), 
             'film_id': film_id
         }
         this.set("purchaseInfo", info);
@@ -103,7 +107,6 @@ App.Models.Purchase = Backbone.Model.extend({
         return this.session.getToken(email);
 
     },
-
     authorizeCode: function() { 
         var code = this.get("code");
         var film_id = this.model.get("id");
@@ -121,8 +124,9 @@ App.Models.Purchase = Backbone.Model.extend({
 
         if (session_id != "") { 
             this.session.set("session_id", session_id);
-            app.usercollection.add(this.model);
+            var id = this.model.get("id");
 
+            app.usercollection.add(app.collection.originalCollection.get(id));
             this.trigger("purchase:successful"); 
         }
     },
@@ -139,7 +143,12 @@ App.Models.Purchase = Backbone.Model.extend({
             this.sendCodeAuth(this.onCodeAuth, id, code);
             return false;
         }
-   
+        if (this.get("method_id") != "") { 
+            var form = this.getPurchaseForm();
+            document.body.appendChild(form);
+            form.submit();
+            return false;
+        }
         try {
            var info = this.generatePurchaseInfo();
            var price = this.model.get("price");
@@ -157,10 +166,30 @@ App.Models.Purchase = Backbone.Model.extend({
 
     },
 
-    sendCodeAuth: function(callback, film_id,code) {  
-        app.api.call(["authorize_film", film_id, code], {}, callback);
+    getPurchaseForm: function() { 
+        this.generatePurchaseInfo();
+
+        var info = this.get("purchaseInfo");
+        var url = App.Settings.api_url + "payment/payment/" + info.film_id + "?";
+
+        var data = { 
+            'api_key' : App.Settings.api_key,
+            'token' : info.auth_id,
+            'user_id' : info.user_id,
+            'method_id' : info.method_id,
+            'sum' : this.model.get("price"),
+        }
+ 
+        var form =  App.Utils.post(url, data);
+
+        return form;
+
 
     },
+    sendCodeAuth: function(callback, film_id,code) {  
+        app.api.call(["authorize_film", film_id, code], {}, callback);
+    },
+
     remove: function() {
         // Remove the validation binding
         Backbone.Validation.unbind(this);
@@ -219,6 +248,7 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
         var product_id = this.model.get("id");
         var user_id = this.session.get("user_id");
         var method = this.get("method");
+        var method_id = this.get("method_id");
 
         if (!product_id || product_id < 1) {
             throw ("Invalid film given for purchase");
@@ -231,7 +261,7 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
         var info = {
             'auth_id': this.session.get("auth_id"),
             'user_id': user_id,
-            'method_id' : 5,
+            'method_id' : method_id,
             'price' : this.get("price"),
             'product_id': product_id
         }

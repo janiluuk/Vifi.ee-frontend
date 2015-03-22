@@ -1,20 +1,27 @@
 <script type="text/html" id="filmitemTemplate">
 <a href="{{seo_friendly_url }}">
-    <div class="item-image" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=191&h=281');">
+    <div class="item-image b-lazy" data-src="http://gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=191&h=281">
+        {{#ifCond imdbrating '||' rt_audience_rating }}
+
         <div class="item-rating">
                 <table>
                     <tbody>
-                        <tr>
-                            <td id="imdbratings">
+                        <tr>{{#if imdbrating }}
+                        <td id="imdbratings">
                                 <span class="icon imdb"></span> <span>{{imdbrating}}</span>
                             </td>
+                            {{/if}}
+                            {{#if rt_audience_rating }}
                             <td id="rtratings">
-                                <span class="icon rottentomato"></span> <span>{{imdbrating}}</span>
+                                <span class="icon rottentomato"></span> <span>{{rt_audience_rating}}%</span>
                             </td>
-                        </tr>
+                            {{/if}}
+                            </tr>
                     </tbody>
                 </table>
         </div>
+    {{/ifCond}}
+
     </div>
 <div class="item-info">
     <div class="item-info-title"><a>{{title }}</a></div>
@@ -30,7 +37,7 @@
 <script type="text/html" id="userfilmitemTemplate">
 
 <a href="#{{seo_friendly_url }}">
-<div class="item-image" style="background-image: url('http://gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=191&h=281');"></div></a>
+<div class="item-image b-lazy" data-src="http://gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=191&h=281"></div></a>
 <div class="item-info">
     <div class="item-info-title">{{title }}</div>
     <div class="item-info-footer">

@@ -1,5 +1,16 @@
 App.User = {};
 
+App.User.FilmSession = Backbone.Model.extend({ 
+    defaults: {  
+         contentId : 0,
+         sessionId: '',
+         validFrom : '',
+         validTo : '',
+         lastAction : '',
+         timestamp : 0,
+         status : 'invalid'
+    }
+});
 
 App.User.Profile = App.Models.ApiModel.extend({
     path: 'profile',
@@ -32,7 +43,7 @@ App.User.Profile = App.Models.ApiModel.extend({
 
     initialize: function(options) {
 
-        _.bindAll(this, 'connectFB', 'login', 'logout');
+        _.bindAll(this, 'connectFB', 'login', 'logout', 'FBcallback');
         this.session = options.session;
         this.session.on("change:auth_id", this.authorize,this);
         this.on("change:tickets", this.updateUserCollection);
@@ -42,6 +53,8 @@ App.User.Profile = App.Models.ApiModel.extend({
 
     },
 
+
+    
     connectFB: function(data) {
         var id = data.get("id");
 
@@ -52,26 +65,47 @@ App.User.Profile = App.Models.ApiModel.extend({
             this.set("email", data.get("email"));
             this.set("name", data.get("name"));
             this.set("access_token", FB.getAccessToken());
-            this.session.getToken(data.get("email"), this.get("password"));
+            this.session.getToken(data.get("email"), this.get("password"), this.get("access_token"), this.FBcallback);
 
         }
     },
+
+    FBcallback: function(data) {
+
+
+        var authId = this.get("auth_id");
+        var email = this.get("email");
+        var token = FB.getAccessToken();
+
+        if (email == "" || authId == "")  { 
+            $log("missing params, not doing fb callback");
+            return false;
+
+        }
+        app.api.call(["user","connectFB", email], { token: token, authId: authId}, function(data) {
+
+            $log("Authenticating with FBToken");
+            
+
+        });
+    },
+
     login: function(email, password) {
         if (!password || !email) return false;
 
         app.api.call(["user","login", email, password], {}, function(data) {
 
-            if (data.status == 2) {
+            if (data.status == "ok") {
                 this.set("user_id", data.user_id);
-                this.set("session_id", data.cookie);
-                this.set("auth_id", data.activationKey);
-                this.set("activationCode", data.activationCode);
+                this.session.set("session_id", data.cookie);
+                this.session.set("auth_id", data.activationKey);
+                this.session.set("activationCode", data.activationCode);
 
-             //   this.enable();
+              //  this.session.enable();
             } else {
                 this.trigger("user:login:fail", data);
             }
-        });
+        }.bind(this));
 
     },
     logout: function() {
@@ -82,7 +116,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     changePassword: function(oldpass, password) {
         if (!password) return false;
         
-        app.api.call(["user","changepassword", this.get("email")], {password: password, oldpassword: oldpass}, function(data) {
+        app.api.call(["user","changepassword", this.get("email")], { password: password, oldpassword: oldpass}, function(data) {
 
             if (data.status == "ok") {
                 this.trigger("user:changepassword:success", data.message);
@@ -122,9 +156,9 @@ App.User.Profile = App.Models.ApiModel.extend({
         app.api.call(["user", "register", email, password], {}, function(data) {
 
             if (data.status == "ok") {
-                this.set("user_id", data.user_id);
-                this.set("session_id", data.cookie);
-                this.set("auth_id", data.activationKey);
+                this.session.set("user_id", data.user_id);
+                this.session.set("session_id", data.cookie);
+                this.session.set("auth_id", data.activationKey);
                 this.trigger("user:register:success", data);
             } else {
                 this.trigger("user:register:fail", data);
@@ -149,7 +183,6 @@ App.User.Profile = App.Models.ApiModel.extend({
          }.bind(this));
 
     },
-
     unpair: function(id) {
 
         var email = this.get("email");
@@ -158,13 +191,14 @@ App.User.Profile = App.Models.ApiModel.extend({
 
     },
     updateUserCollection: function() {
+
         if (!app || !app.usercollection) return false;
         var tickets = this.get("tickets");
         app.usercollection.reset(tickets);
 
         _.each(app.usercollection.models, function(model) {
             var id = model.get("id");
-            var film = app.collection.get(id);
+            var film = app.collection.originalCollection.get(id);
             var validto = model.get("validto");
 
             if (film && validto) {
@@ -176,7 +210,7 @@ App.User.Profile = App.Models.ApiModel.extend({
                 film.set("ticket", model.toJSON());
             }
         });
-
+        return app.usercollection;
     },
 
     syncData: function() {
@@ -213,6 +247,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
     hasMovie: function(movie) {
         var id = movie.get("id");
+
         var movies = app.usercollection.where({
             id: id
         });
@@ -222,30 +257,22 @@ App.User.Profile = App.Models.ApiModel.extend({
     hasSubscription: function() { 
         return this.get("subscriber") === true ? true : false;
     },
-    isRegisteredUser: function() {
 
-        if (this.get("user_id") != "" && this.get("paired_user") === true && this.get("email") != "anonymous@vifi.ee") {
-            return true;
-        }
-        return false;
-    },
     isAnonymous: function() {
-        if (this.get("role") == "Anonymous customer") return true;
+        if (this.get("role") == "Anonymous customer" || this.get("role") == "" || this.get("role") == "Guest") return true;
 
         return false;
     },
     isRegistered: function() {
         if (this.get("role") == "Registered customer") return true;
-
         return false;
     },
     getRole: function() {
+        return this.get("role");
 
     },
     hasNewsletter: function() {
-
         return this.get("newsletter") == "1";
-
     },
     getLanguage: function() {
         if (this.get("language") == "es") return "Estonian";
@@ -277,8 +304,40 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.fetch().done(function() { 
             return false;
         }.bind(this));
-    }
+    },
 
+    updatePurchases: function(cb) {
+        var deferred = new $.Deferred();
+
+        var profile = app.session.get("profile");
+        profile.fetch().done(function() {
+            if (collection = this.updateUserCollection()) { 
+
+                collection.once("reset", function(collection) { deferred.resolve(collection); });
+                setTimeout(function() { collection.trigger("reset")}.bind(this), 3000);                
+            }
+        }.bind(this));
+
+        return deferred.promise();
+    },
+
+    checkPurchases: function() {
+        var films = App.User.Cookie.getFilms();
+        console.log(films);
+
+        if (typeof(films) == "undefined" || _.isEmpty(films) === true) {
+            return false;
+        }
+        return films;
+    },
+
+    savePurchase: function(purchase) { 
+        console.log(purchase);
+        var filmsession = new App.User.FilmSession(purchase);
+        filmsession.localSave();
+        return filmsession;
+
+    }
 
 });
 
@@ -325,23 +384,28 @@ App.User.Session = Backbone.Model.extend({
 
         if (auth_data = this.cookie.parse()) {
             this.set(auth_data);
+            $log("Setting cookie authentication data");
+            
         }
         _.bindAll(this, 'send', 'fetch', 'logout', 'onUserAuthenticate');
  
     },
  
 
-    getToken: function(email, password) {
+    getToken: function(email, password, access_token, callback) {
         if (!password) password = "";
+        if (access_token && password == "") password = access_token;
+
         if (!this.isLoggedIn()) {
             this.cookie.clear();
 
             app.api.call(["get_token", email, password], {}, function(data) {
 
                 if (data.token) {
-
                     this.set("auth_id", data.token);
+
                     this.trigger("user:token:authenticated", data.token);
+                    if (callback) callback(data);
 
                     if (email == "anonymous@vifi.ee") this.disable();
                 }
@@ -431,6 +495,8 @@ App.User.Session = Backbone.Model.extend({
                 this.disable();
             }
         }.bind(this), "jsonp").error(function(data) {
+
+
             this.reset();
             $log(data);
         }.bind(this));
@@ -463,7 +529,11 @@ App.User.Session = Backbone.Model.extend({
     }
 
 });
+
+
 App.User.Cookie = {
+
+    settings: { path: '/', domain: '.vifi.ee'},
 
     parse: function() {
 
@@ -487,49 +557,55 @@ App.User.Cookie = {
         }
         return false;
     },
+
+    getFilms: function() {
+        var cookie = $.cookie("film");
+
+        if (cookie && cookie.length > 0) {
+            try {  
+
+              var vars = atob(cookie);
+              var film_array = JSON.parse(vars);
+              $log("Found films");
+              $log(film_array);
+              return film_array;
+
+            } catch (exception) {  
+                App.Settings.debug = true;
+                $log("No films");
+                $log(vars);
+                $log(exception);
+                $.cookie("film", "");
+            }
+        } 
+        return {};
+    },
+
     write: function(user_id, auth_id, session_id) {
 
         if (user_id != "" && auth_id != "") {
             this.set(user_id + "|" + auth_id + "|"+ session_id);
             return true;
-
         }
-
         return false;
     },
-    clear: function() {
-
-        this.set("");
+    clear: function(cookie_name) {
+        
+        $.removeCookie(cookie_name, App.User.Cookie.settings);
+        this.set("", cookie_name);
 
     },
-    set: function(cookie) {
-        $.cookie("vifi_session", cookie, {});
+    set: function(cookie, cookie_name) {
+        if (!cookie_name) cookie_name = "vifi_session"; 
+        $.cookie(cookie_name, cookie, App.User.Cookie.settings);
         return this;
     },
 
-    get: function() {
-        var cookie = $.cookie("vifi_session");
+    get: function(cookie_name) {
+        if (!cookie_name) cookie_name = "vifi_session"; 
+        var cookie = $.cookie(cookie_name);
         return cookie;
     },
 
 
 };
-
-App.User.ChangePassword = Backbone.Model.extend({
-
-    defaults: {
-        password: ''
-    },
-    // Define a model with some validation rules
-
-    validation: {
-
-        newPassword: {
-            minLength: 8
-        },
-        repeatPassword: {
-            equalTo: 'newPassword',
-            msg: 'The passwords does not match'
-        }
-    }
-});

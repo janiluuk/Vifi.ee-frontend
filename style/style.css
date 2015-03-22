@@ -489,11 +489,11 @@ li#seb, li#seb .payment-item-image, li#nordea, li#nordea .payment-item-image {
   animation-delay: 0.3s;
 }
 
-li#danske .payment-item-image {
+li#sampo .payment-item-image {
     background-image: url('img/Danske-logo.jpg');
 }
 
-li#creditcard .payment-item-image {
+li#estcard .payment-item-image {
     background-image: url('img/CreditCard-logo.jpg');
 }
 
@@ -520,6 +520,24 @@ input#code {
 
 .payment-method-data {
     margin: 0 0 20px 0;
+}
+
+p.activation-code {
+    margin: 2em 0 0 0;
+}
+
+p.activation-code span{
+    background: #EFCD31;
+    padding: 5px 15px;
+    font-size: 1.3em;
+    font-weight: 700;
+    border: 2px dashed;
+    letter-spacing: 2px;
+}
+
+.vifi-popup .extra-info {
+    font-size: 1em;
+    font-style: italic;
 }
 
 /* BUTTONS AND OTHER INPUT*/
@@ -1118,6 +1136,26 @@ input#main-search-box {
     position: relative;
 }
 
+#content-body.loading:before {
+    content: ' ';
+    width: 50px;
+    height: 50px;
+    display: block;
+    margin: 2em auto;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 100%;
+    border-top: 2px solid rgba(255, 255, 255, 0.7);
+    border-right: 2px solid rgba(255, 255, 255, 0.7);
+    border-bottom: 2px solid #0CA94F;
+    border-left: 2px solid #0CA94F;
+    -webkit-animation: load8 0.7s infinite linear;
+    -moz-animation: load8 0.8s infinite linear;
+    -ms-animation: load8 0.8s infinite linear;
+    -o-animation: load8 0.8s infinite linear;
+    animation: load8 0.8s infinite linear;
+}
+
 #side-menu {
     width: 20em;
     padding: 0 0 5em 0;
@@ -1398,13 +1436,15 @@ a.arrow-right {
 }
 
 .featured-item-info {
+    z-index: 999;
+
     background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.85) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(40%,rgba(0,0,0,0.45)), color-stop(70%,rgba(0,0,0,0.7)), color-stop(100%,rgba(0,0,0,0.85))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* Chrome10+,Safari5.1+ */
     background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* Opera 11.10+ */
     background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* IE10+ */
     background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#d9000000',GradientType=0 ); /* IE6-9 */
+    filter: progid:DXImageTransf    orm.Microsoft.gradient( startColorstr='#00000000', endColorstr='#d9000000',GradientType=0 ); /* IE6-9 */
     position: absolute;
     width: 90%;
     bottom: 0;
@@ -1479,11 +1519,11 @@ a.arrow-right {
 
 .swiper-nav .swiper-wrapper{
     margin: 0 auto;
-    -webkit-animation: slideRightDelay 1.8s ease-in-out; /* Chrome, Safari, Opera */
-    -moz-animation: slideRightDelay 1.8s ease-in-out;
-    -ms-animation: slideRightDelay 1.8s ease-in-out;
-    -o-animation: slideRightDelay 1.8s ease-in-out; 
-    animation: slideRightDelay 1.8s ease-in-out;
+    -webkit-animation: slideRightDelay 1.5s ease-in-out; /* Chrome, Safari, Opera */
+    -moz-animation: slideRightDelay 1.5s ease-in-out;
+    -ms-animation: slideRightDelay 1.5s ease-in-out;
+    -o-animation: slideRightDelay 1.5s ease-in-out; 
+    animation: slideRightDelay 1.5s ease-in-out;
 }
 
 .swiper-nav .swiper-slide {
@@ -1523,11 +1563,11 @@ a.arrow-right {
     position: absolute;
     bottom: 0;
     left: 45%;
-    transition: left 300ms ease-out;
-    -webkit-transition: left 300ms ease-out;
-    -moz-transition: left 300ms ease-out;
-    -o-transition: left 300ms ease-out;
-    -ms-transition: left 300ms ease-out;
+    transition: left 200ms ease-out;
+    -webkit-transition: left 200ms ease-out;
+    -moz-transition: left 200ms ease-out;
+    -o-transition: left 200ms ease-out;
+    -ms-transition: left 200ms ease-out;
 }
 
 #front-tabbar-swiper-container.swiper-nav .swiper-slide-active:after {
@@ -3088,6 +3128,7 @@ ul#subscription-benefit-list li .icon {
     display: block !important;
     transform-origin: 100% 0%;
     opacity: 1;
+    z-index: 1;
     -webkit-transform-origin: 100% 0%;
     -moz-transform-origin: 100% 0%;
     -ms-transform-origin: 100% 0%;
@@ -3130,6 +3171,7 @@ ul#subscription-benefit-list li .icon {
     -o-animation: pullDownRight 0.5s ease-in-out;
     display: block !important;
     opacity: 0;
+    z-index: -2;
     -webkit-transform-origin: 100% 0%;
     -moz-transform-origin: 100% 0%;
     -ms-transform-origin: 100% 0%;

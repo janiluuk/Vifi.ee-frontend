@@ -14,7 +14,8 @@ App.Views.BrowserPage = Backbone.View.extend({
         if (querystring != "") this.collection.update();
         this.collection = options.collection;
         this.collection.options.genres.bind('all', this.setGenreDropDown, this);
-        this.collection.bind('sync', this.renderResults, this);
+        this.collection.fullCollection.bind('reset', this.renderResults, this);
+
         this.collection.querystate.bind('change', this.onChangeCollectionState, this);
         this.collection.querystate.bind('change:genres', this.onChangeGenre, this);
         this.collection.querystate.bind('change:durations', this.onChangeDuration, this);
@@ -24,6 +25,8 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort, state: this.collection.querystate});
         this.filterview.bind('filter-bar:sort', this.onSort, this);
         this.filterview.bind('filter-bar:clear', this.onClear, this);
+        this.searchview = new App.Views.SearchView({model: this.collection.querystate});
+        this.searchview.render();
 
  
       //  this.initEvents();
@@ -46,8 +49,11 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.filterview.render();
         this.applyIsotope();
         this.updateUIToState();
+
         return this;  
     },
+
+
     applyIsotope: function() {
         /* Enable isotope on the results */
 
@@ -55,7 +61,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             layoutMode: 'fitRows',
             resizable: true,
             itemSelector: '.item',
-            transitionDuration: '0.5s',
+            transitionDuration: '0.4s',
             // disable scale transform transition when hiding
             hiddenStyle: {
             opacity: 0,
@@ -71,6 +77,8 @@ App.Views.BrowserPage = Backbone.View.extend({
                 queue: true,
             }
         });
+
+        this.$isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload() }, 120); } );
 
         return true;
     },
@@ -103,13 +111,16 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
     },
     onSort: function(field, desc) {
+
         this.collection.sortByAttribute(field, desc);
-        $("#content-body-list").empty();
-        this.renderResults();
+
         return false;
     },
+    
     onClear: function(e) {
-        this.clearSearch();
+
+        this.collection.querystate.set(this.collection.querystate.defaults);
+        this.onChangeCollectionState(this.collection.querystate,true);
         return false;
     },   
     onChangeGenre: function(model, genre) {
@@ -123,33 +134,23 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
     },
     onChangeText:function(item) {
-        //console.log(item);
+        return false;
     },
     handleSearchFormSubmit: function(event) {
+
         event.preventDefault();
     },
-    loadBrowserImages: function() {
-        $("#content-body-list div.lazy").lazyload({
-            threshold: 4000,
-            effect: 'fadeIn',
-            effectspeed: 900
-        });
-    },
-    // Handle preloading imags on browser
-    onBrowserPaginationEvent: function(e) {
-        var images = $("#content-body-list div.lazy.loading:in-viewport");
-        if (images.length > 0) app.browser.loadBrowserImages();
-    },
+
     onSearchFieldChange: function(event) {
 
         $("#content-body-list").addClass("fadeDownList");
 
         var value = $("#main-search-box").val();
-        var search_array = {
+        var search_array = {            
+            q: value,
             genres: undefined,
-            durations: undefined,
             periods: undefined,
-            q: value
+            durations: undefined
         };
 
         var search_dict = _.extend({}, search_array);
@@ -166,8 +167,15 @@ App.Views.BrowserPage = Backbone.View.extend({
             var val = $(this).val();
             search_dict[fieldname] = search_dict[fieldname] == undefined ? val : search_dict[fieldname] += ";" + val;
         });
+        if (JSON.stringify(search_dict) != JSON.stringify(this.collection.querystate.attributes))
+        {
 
-        this.collection.querystate.set(search_dict);
+            this.collection.querystate.set(search_dict);
+        } else { 
+
+            $("#content-body-list").removeClass("fadeDownList");
+
+        }
 
     },
 
@@ -186,8 +194,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             container.appendChild(el);
         });
 
-        this.$isotope.append(container).isotope('insert', items);
-
+        this.$isotope.append(container).isotope('insert', items);        
         return true;
 
     },
@@ -203,33 +210,43 @@ App.Views.BrowserPage = Backbone.View.extend({
             if (!this.collection.hasNextPage()) {
                 $("#loadMore").hide();
             }
-        }.bind(this),250);
+
+        }.bind(this),200);
+    
         return false;
     },
 
-    renderResults: function(el) {
+    renderResults: function(force) {
+        
+
+        if (typeof(force) == "undefined" && (typeof(this.lastattributes) != "undefined") || this.lastattributes == JSON.stringify(this.collection.querystate.changedAttributes())) {
+            
+            return false;
+        }
 
         if (!this.rendering) {
+
             this.rendering = true;
-            $("#content-body-list").empty();
+            $("#content-body-list").addClass("fadeDownList").empty();
             this.$isotope.isotope("reloadItems");
 
             this.collection.getFirstPage();
-            
+
             /* Empty result set */
             if (this.collection.length == 0) {
 
                 $("#content-body-list").append(ich.emptyListTemplate({text: tr("No results")}));
                 
             }   
-            this.addSet(this.collection);
             
+            this.addSet(this.collection);
+
             if (!this.collection.hasNextPage()) {
                 $("#loadMore").hide();
             } else { 
                 $("#loadMore").show();
             }
-
+            this.lastattributes = JSON.stringify(this.collection.querystate.changedAttributes());
             this.rendering = false;
         }
 
@@ -245,6 +262,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         $('#main-search-box').val(query);
 
         this.filterview.updateUI();
+
         if (query != "") {
             $("#clear-search-text-button").show();
         } else {
@@ -253,11 +271,14 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
     },
 
-    onChangeCollectionState: function(state) {
+    onChangeCollectionState: function(state,silent) {
+
+        var trigger = silent === true ? false : true;
         this.updateUIToState();
+
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);        
         //Update the url of the browser using the router navigate method
-        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {trigger: true});
+        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {trigger: trigger});
     },
 
     //Set the search state from the url
@@ -267,7 +288,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.collection.querystate.setFromHash(searchStateHash);
     },
     clearSearch: function() {
-        app.collection.querystate.clear({silent:true});
+        app.collection.querystate.set("q","");
         this.onChangeCollectionState(app.collection.querystate);
         return false;
     }

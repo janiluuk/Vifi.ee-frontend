@@ -6,8 +6,11 @@ window.$noop = function(input) {
 }
 
 window.$log = function(log) { 
-    if (App.Settings.debug === true)
-    console.log(log); 
+    if (App.Settings.debug === true) { 
+        app.trigger("flash", log, 6000);
+        console.log(log); 
+
+    }
     
 };
 
@@ -163,7 +166,6 @@ App.Platform.prototype.detectPlatform = function() {
 }
 
 App.Platform.prototype.getDeviceOrientation = function() {
-           
     if (window.orientation && Math.abs(window.orientation) === 90) {
         return "landscape";
     } else {
@@ -245,7 +247,7 @@ App.Platform.prototype.proxy = function() {
 
     browser.defaultPlatform = false;
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("flash");
+    browser.setMediaPlayer("html5");
 
 }());
 

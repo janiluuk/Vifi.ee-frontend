@@ -4,7 +4,9 @@ App.Views.PlayerView = Backbone.View.extend({
     
     initialize: function() { 
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
-        this.render().resize();
+        this.setElement("#movie-player-container");
+
+        this.render();
         $(window).resize(this.resize);
         this.listenTo(this.model, "player:ready", this.renderControls);
         this.listenTo(this.model, "change", this.render, this);
@@ -18,20 +20,22 @@ App.Views.PlayerView = Backbone.View.extend({
 
         var orientation = App.Platforms.platform.getDeviceOrientation();
         if (orientation == "portrait") { 
-            var player_width = this.$el.width();
+            var player_width = this.$el.parent().parent().width();
+
         } else { 
+     
             var player_width = $(window).width();
-            this.$el.parent().width(player_width);
+
         }
+        this.$el.width(player_width);
 
         var player_height = player_width*this.model.ratio;
         // $log("setting height "+ player_height);
-        this.$el.height(player_height+footer_height);
+        this.$el.height(player_height);
         $("#player-container").css({ height: player_height, width: player_width});
     },
     close: function() {
         this.$el.empty();
-        this.stopListening();
         this.$el.hide();
         $(window).unbind("resize");
         this.model.trigger("mediaplayer:stop");
@@ -43,7 +47,7 @@ App.Views.PlayerView = Backbone.View.extend({
         return this;
     },
     renderControls: function(content) {
-        $("#video-container-footer").append(ich.playerControlsTemplate(content.toJSON()));
+        $("#video-container-footer").empty().append(ich.playerControlsTemplate(content.toJSON()));
         $('.select-box').fancySelect();
         this.resize();
         return this;

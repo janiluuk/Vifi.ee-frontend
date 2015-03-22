@@ -20,14 +20,16 @@ App = {
     Event: {},   
     Settings: {
         // properties   
-        version: "061014",
+        sitename: "Beta.vifi.ee",
+        version: "010315",
         debug: true,
         language: 'est',
+        featured_slides_limit: 6,
         api_key: '298fh23hhdff11',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         api_url: "http://gonzales.vifi.ee/api/",
-        rtmp_url: "rtmp://media.vifi.ee/tv",
-        hls_url: "http://media.vifi.ee:1935/vod",
+        rtmp_url: "rtmp://media.vifi.ee/vod",
+        hls_url: "http://media.vifi.ee:8081/video",
         subtitles_url: "http://beta.vifi.ee/subs/",
         mp4_url: "http://gonzales.vifi.ee/zsf/",
         speedtest_url: 'http://backend.vifi.ee/files/bwtest.jpg'
@@ -38,12 +40,15 @@ App = {
             'english' : 'Inglise',
             'Clear' : 'Tühista',
             'Change password': 'Vaheta parool',
-            'Create password': 'Loo parool'
+            'Create password': 'Loo parool',
+            'No results' : 'Ei tulemusi'
 
         },
         'en' : { 
             'eesti' : 'Estonian',
-            'english' : 'English'
+            'english' : 'English',
+            'No results' : 'Ei tulemusi'
+
         }
     },
     ContentPages: {
@@ -61,13 +66,16 @@ App.Router = Backbone.Router.extend({
     models: {},
     routes: {
         '': 'homePage',
-        'search': 'search',
+        'search': 'homePage',
         'search/:searchStateHash': 'search',
         'film/:id': 'showFilm',
         'films/:id': 'showFilm',
         'me': 'me',
-        'recovery/:key/:email' : 'showRecoveryPage',
+        'return': 'purchaseReturn',
+        'return/:id': 'purchaseReturn',
 
+        'error/:type' : 'showErrorPage',
+        'recovery/:key/:email' : 'showRecoveryPage',
         'contact' : 'showContactPage',
         'me/my-films': 'filmcollection',
         'me/pair-device': 'pairdevice',
@@ -80,6 +88,7 @@ App.Router = Backbone.Router.extend({
         this.options = options;
         this.on('route', this.onRoute, this);
         this.on('change:title', this.onChangeTitle, this);
+
     },
     onRoute: function(route) {
         this.trigger("page:change", route);
@@ -92,19 +101,38 @@ App.Router = Backbone.Router.extend({
         $(document).attr('title', title + ' - Vifi.ee');
 
     },
+    purchaseReturn: function (id) 
+    {
+
+        var films = app.user.checkPurchases();
+
+        if (films) {
+                
+            app.user.updatePurchases().then(function(collection) { 
+                
+                _.each(films, function(item) { 
+
+                    var id = parseInt(item.vod_id);
+                    var title = app.usercollection.get(id);                                                             
+                    if (title) {
+                        this.dialog = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session}).render();
+                    }
+                });
+            });
+        }
+       return false; 
+    },
     search: function(searchStateHash) {
-        app.homepage.browserview.trigger("minimize");
-        
-        app.homepage.browserview.onSearchFieldChange();
+
+        app.collection.querystate.setFromUrl();
         var currentPage = this.currentPage;
         if (currentPage != "homePage" && currentPage != "search") {
             app.showBrowserPage();
         }
         this.trigger("change:title", "Search results");
-
-
     },
     showFilm: function(id) {
+
         var film = new App.Models.Film({
             id: id
         });
@@ -136,7 +164,7 @@ App.Router = Backbone.Router.extend({
     },
 
     homePage: function() {
-        app.homepage.browserview.trigger("maximize");
+        app.collection.querystate.setFromUrl();
         app.showBrowserPage();
         this.trigger("change:title", "Home");
     },
@@ -205,8 +233,12 @@ App.Router = Backbone.Router.extend({
 
     },
    
-    showErrorPage: function() {
-        $('#contentpage').append(new App.Views.FB.Error().el);
+    showErrorPage: function(type) {
+        this.views.errorview = new App.Views.Error({type: type});
+        this.views.errorview.render();
+        this.trigger("change:title", "Error!");
+        app.showContentPage("error");
+            
     },
     showRecoveryPage: function(key, email) {
             this.views.recoveryview = new App.Views.RecoveryView({key: key, email: email});
@@ -216,21 +248,24 @@ App.Router = Backbone.Router.extend({
             
     },
     showContactPage: function() {
-        if (typeof(google) == "undefined")
-       $("<script />", {
-            src: 'http://maps.google.com/maps/api/js?sensor=false',
-            type: 'text/javascript'
-        }).appendTo("head");
-        if (!this.views.contactview) { 
-            this.views.contactview = new App.Views.ContactView();
-            this.views.contactview.render();
+        this.views.contactview = new App.Views.ContactView();
+        this.views.contactview.render();
+        if (typeof(google) == "undefined") { 
+            $("<script />", {
+                src: 'http://maps.google.com/maps/api/js?sensor=false&callback=gMapsCallback',
+                type: 'text/javascript'
+            }).appendTo("head");
+
+            $(window).bind('gMapsLoaded',app.router.init_map);
+
+        } else { 
             this.init_map();
         }
         this.views.contactview.$el.fadeIn();
         this.trigger("change:title", "Contact Us!");
 
         app.showContentPage("contact");
-
+        
     },
     init_map: function() {
         if (typeof(google) == "undefined") { 
@@ -256,3 +291,6 @@ App.Router = Backbone.Router.extend({
 
     }
 });
+window.gMapsCallback = function(){
+    $(window).trigger('gMapsLoaded');
+}

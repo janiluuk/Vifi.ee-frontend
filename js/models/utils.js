@@ -2,20 +2,48 @@ App.Utils = {
 
     translations: {
         'est' : { 
-            'eesti' : 'Eesti',
-            'english' : 'Inglise'
-
+            'Eesti' : 'Eesti',
+            'English' : 'Inglise',
+            'Clear' : 'Tühista',
+            'Change password': 'Vaheta parool',
+            'Create password': 'Loo parool',
+            'No results' : 'Ei tulemusi',
+            'No purchases' : 'Ei ostusid',
+            'No' : 'Ei',
+            'Yes' : 'Jah'
         },
         'en' : { 
             'eesti' : 'Estonian',
             'english' : 'English'
         }
-
-
     },
-    translate: function(string) {
-        var str =  _.find(App.Utils.translations[App.Settings.language], function(item,key) { if (key == string) return item});        
-        if (undefined != str) return str; 
+
+    post: function(path, params, method) {
+        method = method || "post"; // Set method to post by default if not specified.
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+        form.setAttribute("id", "payment_form");
+
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+             }
+        }
+        return form;
+    },
+
+    translate: function(string) { 
+        var str = _.filter(App.Utils.translations[App.Settings.language],  function(item,key) { if (key == string) return item});        
+        if (!_.isEmpty(str)) return str; 
         return string;
 
     },
@@ -45,7 +73,14 @@ App.Utils = {
         })
         $.when.apply(window, deferreds).done(callback);
     },
-  
+    
+    lazyload: function() { 
+        if (!App.Utils.bLazy) { 
+            App.Utils.bLazy = new Blazy({ container: "#content-container", offset: 250});
+        } else {
+            App.Utils.bLazy.revalidate();
+        }
+    },
 
     // Underscore template loader
 
@@ -142,6 +177,9 @@ App.Utils = {
 //A utility model to track state using the hash and also generate a url
 App.Utils.State = Backbone.Model.extend({
     defaults: { q:"", genres: undefined, periods: undefined, durations: undefined},
+    initialize: function(options) { 
+        _.bindAll(this, 'setFromHash', 'getHash', 'setFromUrl' );
+    },
 
     getQueryString: function(addParams) {
         var hashables = [];
@@ -152,6 +190,7 @@ App.Utils.State = Backbone.Model.extend({
 
             }
         }
+
         if (addParams) {
             for (key in addParams) {
                 hashables.push(key + '=' + addParams[key])
@@ -160,10 +199,16 @@ App.Utils.State = Backbone.Model.extend({
         var params = hashables.join('&');
         return params.length ? '?' + params : "";
     },
+
     isEmpty: function() {
        var len =  _.values(this.attributes).join("").length;
-
        return len > 0 ? false : true;
+
+    },
+
+    setFromUrl: function() { 
+        var hash = window.location.hash.replace('#search', '');
+        this.setFromHash(decodeURIComponent(hash));
 
     },
     //A hash to use in the url to create a bookmark or link
@@ -175,7 +220,12 @@ App.Utils.State = Backbone.Model.extend({
     //Parses from the formate of prop1:value1|prop2:value2
     setFromHash: function(hash) {
         hash = hash.replace("?", "");
-        if (hash.length == 0) return false;
+        if (hash.length == 0)  {  
+
+            var size = _.size(this.changedAttributes());
+            if (size > 0) this.set(this.defaults);
+            return true; 
+        }
         
         var hashables = hash.split('|');
         var dict = _.clone(this.defaults);
@@ -196,9 +246,9 @@ App.Utils.State = Backbone.Model.extend({
         
         this.set(dict);
         return i;
-        
     }
 });
+
 App.Utils.Api = Backbone.Model.extend({  
 
     session: {},
@@ -230,6 +280,7 @@ App.Utils.Api = Backbone.Model.extend({
     },
     parseResponse: function(data, callback, silent) { 
         var msg = data.message || JSON.stringify(data);
+
         if (!silent) { 
             if (data.status == "ok") {
                 this.onSuccess(msg);
@@ -244,6 +295,15 @@ App.Utils.Api = Backbone.Model.extend({
         if (callback) callback(data);
 
     },
+    post: function(action, params, callback, silent) {  
+
+        if (_.isArray(action)) action = action.join("/");
+        var sessionParams = app.session.getParams();
+        params = _.extend(params, sessionParams.data);
+        var url = App.Settings.api_url+action+"/?format=json&api_key="+App.Settings.api_key+"&";
+        $.post(url,params, function(data) { this.parseResponse(data, callback, silent);  }.bind(this));
+
+    },
     call: function(action, params, callback, silent) {  
         if (_.isArray(action)) action = action.join("/");
         var sessionParams = app.session.getParams();
@@ -252,6 +312,7 @@ App.Utils.Api = Backbone.Model.extend({
         $.getJSON(url,params, function(data) {  this.parseResponse(data, callback, silent);  }.bind(this), "jsonp");
     }
 }),
+
 
 App.Utils.Notification = Backbone.Model.extend({ 
 
@@ -264,9 +325,23 @@ App.Utils.Notification = Backbone.Model.extend({
         model.on("error", function(message, callback) { this.notify(message, "error", callback); }, this);
         model.on("notice",function(message, callback) { this.notify(message, "notice", callback); }, this);
         model.on("success", function(message, callback) { this.notify(message, "success", callback); }, this);
+        model.on("flash", function(message, amount) { this.flash(message, amount); }, this);
 
 
     },
+    flash: function(text, amount) {
+            if (!amount) amount = 7500;
+            var actionOutputEl = document.getElementById("flash-output");
+            actionOutputEl.innerHTML = '<span class="flash-inactive">'+new Date().toTimeString().split(" ")[0]+":</span> "+text+"<br/>"+actionOutputEl.innerHTML;
+
+            $("#flash-output").addClass('animation').addClass('highlight');
+            if (this.id) clearTimeout(this.id);
+
+            this.id = setTimeout(function() {
+                $("#flash-output").removeClass('highlight');
+            }.bind(this), amount);
+    },
+
     notify: function(message, type, callback) { 
         message = message || "Empty message";
 
@@ -316,7 +391,19 @@ _.extend(Backbone.Validation.callbacks, {
 Backbone.View.prototype.assign = function(view, selector) {
     view.setElement(this.$(selector)).render();
 }
-   
+
+Backbone.View.prototype.removeOnDone = function(el, cls) { 
+    if (!cls) cls = "loading";
+    
+    el.addClass("loading");
+    el.attr("disabled", "disabled");
+
+    app.once("all", function() { 
+        $(el).attr("disabled", false);
+        $(el).removeClass(cls); 
+    }); 
+};
+
 Backbone.View.prototype.close = function(){
   this.remove();
   this.unbind();
@@ -326,4 +413,6 @@ Backbone.View.prototype.close = function(){
     this.onClose();
   }
 };
+
+
 

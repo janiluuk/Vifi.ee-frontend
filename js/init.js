@@ -7,21 +7,25 @@ window.app = _.extend({}, Backbone.Events);
         if (window.location.hash.indexOf('#search') != -1) {
             // start with empty state because Router will configure it later.
             var state = new App.Utils.State();
-            var hash = window.location.hash.replace('#search', '');
-            state.setFromHash(decodeURIComponent(hash));
-       
+            state.setFromUrl();
+                   
         } else {
             var state = new App.Utils.State(data.search);
         }
 
         app.template = new App.Utils.TemplateLoader();
+        
         var genres = new App.Films.GenreCollection(data.genres);
         var subscriptions = new App.Collections.SubscriptionCollection(data.subscriptions);
-
+        var paymentmethods = new App.Collections.PaymentmethodCollection(data.paymentmethods);
         var usercollection = new App.Collections.UserCollection();
+        var sessioncollection = new App.Collections.FilmSessionCollection();
+
+        var originalCollection = new App.Collections.FilmCollection(data.results);
 
         var collection = new App.Collections.PaginatedCollection(
-            data.results, {
+            originalCollection.models, {
+            collection: originalCollection,
             mode: "client",
             querystate: state,
             genres: genres,
@@ -40,7 +44,7 @@ window.app = _.extend({}, Backbone.Events);
 
         App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() { 
             app.template.load(['film'], function () {
-                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, profile: profile,player: player, subscriptions: subscriptions, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
+                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 window.history = Backbone.history.start();
             }); 
         });
@@ -49,17 +53,19 @@ window.app = _.extend({}, Backbone.Events);
 
 
 $(document).ready(function() {
-    if (App.Settings.debug === false) initCached();
+    if (App.Settings.debug === false) init();
     else
     init();
 
 });
 
 function init() {
-    var url = App.Settings.api_url+"search?&short=1&limit=500&api_key="+App.Settings.api_key+"&jsoncallback=?";
+    var url = App.Settings.api_url+"search?&short=1&limit=600&api_key="+App.Settings.api_key+"&jsoncallback=?";
     $.getJSON(url, initApp, "jsonp");
 
 }
+
+ 
 
 function initCached() {
     var cachedUrl = "http://beta.vifi.ee/init.json";
@@ -127,7 +133,7 @@ function initFB() {
     $(document).on('logout', function () {
         if (FB.getAccessToken() != null) {
             FB.logout();
-            app.fbuser.set(app.fbuser.defaults); 
+            app.fbuser.set(app.fbuser.defaults);
         }
         app.session.logout();
         return false;
@@ -137,13 +143,15 @@ function initFB() {
         app.session.reset();
         app.session.enable();
         FB.login(function(response) {
+
         }, {scope: 'email,publish_actions'});
         return false;
     });
 }
 
 /* * * Disqus Reset Function * * */
-var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {    
+var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
+    
     DISQUS.reset({
         reload: true,
         config: function () {

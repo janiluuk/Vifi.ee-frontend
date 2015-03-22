@@ -1,3 +1,59 @@
+App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
+  model: App.Models.Film,
+  template: '<div id="modalcontent"><div id="post-purchase-modal"/></div>',
+  events: {
+    'click .mfp-close': 'close'
+
+  },
+  initialize: function(options) {
+    _.bindAll(this, 'afterClose', 'render');
+
+    options = options || {};
+    this.session = options.session;
+
+    this.view = new App.Views.PurchaseSuccessDialog({
+      model: options.model,
+      session: options.session,
+      parent: this
+    });
+
+  },
+  render: function() {
+    this.$el.html(this.template).appendTo("body");
+    this.openDialog();
+    this.setElement(".mfp-content");
+    this.assign(this.view, "#post-purchase-modal");
+    return this;
+  },
+  afterClose: function(e) { 
+    this.view.close();
+    return false;
+  }
+});
+
+App.Views.PurchaseSuccessDialog = Backbone.View.extend({
+  model: App.Models.Film,
+
+  events: {
+    'click .mfp-close': 'close',
+  },
+  initialize: function(options) {
+    this.listenTo(this.model, "change", this.render, this)
+    options = options || {};
+    this.parent = options.parent;
+    this.session = options.session;
+    this.model = options.model;
+
+
+  },
+  render: function() {
+    this.$el.html(ich.purchaseSuccessTemplate({ email: this.session.get("profile").get("email"), purchase: this.model.toJSON() }));
+    return this;
+  }
+
+
+});
+
 App.Views.PurchaseView = App.Views.DialogView.extend({
   model: App.Models.Film,
   template: '<div id="modalcontent"><div id="loginmodal"/><div id="purchasemodal"/></div>',
@@ -96,7 +152,6 @@ App.Views.PaymentDialog = Backbone.View.extend({
     this.model = options.model;
     this.payment = options.payment;
 
- 
     this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
 
     Backbone.Validation.configure({
@@ -114,7 +169,15 @@ App.Views.PaymentDialog = Backbone.View.extend({
     var el = $(e.currentTarget);
     el.addClass("selected").siblings().removeClass("selected");
     this.payment.set("method", el.attr("id"));
+
+    var method_id = "";
+    var method = app.paymentmethods.filter(function(item) { return item.get("identifier") == el.attr("id"); });
+
+    if (method[0] && typeof(method[0].get) != "undefined") method_id = method[0].get("id");
+
+    this.payment.set("method_id", method_id);
     this.updateUI();
+    
 
   },
   getSelectedMethod: function() {
@@ -128,7 +191,6 @@ App.Views.PaymentDialog = Backbone.View.extend({
     $.cookie("vifi_payment_method", method);
   },
   getEmail: function() {
-
     var email = this.session.get("profile").get("email");
     if (email != "anonymous@vifi.ee") {
       return email;
@@ -150,6 +212,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
     $("#" + method).addClass("selected");
 
     $("#method").val(method);
+    
     if (method == "code") {
       $("#payment-code").show();
     } else {
@@ -159,16 +222,21 @@ App.Views.PaymentDialog = Backbone.View.extend({
   },
 
   initPayment: function(e) {
+    this.$("#confirm-purchase-button").addClass("loading");
 
     var data = this.$("form").serializeObject();
     this.payment.set(data);
+
     if (this.payment.isValid(true)) { 
       this.payment.purchase(this.model);
     }
+
     return false;
 
   },
   onPaymentSuccess: function() {
+
+    this.$("#confirm-purchase-button").removeClass("loading");
     this.remove();
     app.movieview.playMovie();
 
@@ -182,7 +250,6 @@ App.Views.PaymentDialog = Backbone.View.extend({
   render: function() {
     this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
     this.updateUI();
-
     return this;
   },
 });

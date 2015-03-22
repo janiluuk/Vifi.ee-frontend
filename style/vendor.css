@@ -1,3 +1,58 @@
+#flash-output {
+  color: transparent;
+  font-weight: bold;
+  margin: 10px auto;
+  font-size: 1.0em;
+  padding: 20px;
+  text-align: left;
+  text-shadow: none;
+  width: 90%;
+  -webkit-border-radius: 5px;
+  position: fixed;
+  top: 0px;
+  max-height: 160px;
+  overflow-y: hidden;
+  z-index: -1;
+
+}
+video {
+  z-index: 50000;
+}
+
+span.flash-inactive { 
+  color: transparent;  
+  font-size: 0.5em;
+  font-weight:bold;
+}
+#flash-output.highlight span.flash-inactive {
+  color: #CCC;
+}
+#flash-output.animation, #flash-output.animation span {
+  -webkit-transition: all 1.0s ease;
+}
+
+#flash-output.highlight {
+  z-index: 9999;
+
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+}
+.imdbRatingPlugin{-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;color:#000;display:inline-block;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;margin:5px 0}.imdbRatingPlugin a{text-decoration:none}.imdbRatingPlugin img{border:0;vertical-align:text-bottom}.imdbRatingPlugin span.rating{display:inline-block}.imdbRatingPlugin span.ofTen{color:#666;font-size:9px}.imdbRatingPlugin img.star{margin-left:3px}.imdbRatingPlugin span.votes{padding-left:2px;font-size:13px;color:#666;font-weight:normal;margin-left:3px}.imdbRatingStyle1{background-color:#fff;border:1px solid #666;font-size:18px;padding:2px 2px 1px}.imdbRatingStyle2{background-color:#000;font-size:15px;color:#fff;padding:2px}.imdbRatingStyle2 span.ofTen{color:#ccc}.imdbRatingStyle2 img.star{margin-bottom:1px}.imdbRatingStyle3{font-size:17px}.imdbRatingStyle4{font-size:14px}.imdbRatingStyle5{font-size:13px}.imdbRatingStyle5 span.votes{font-size:11px}
+
+/* Lazy Load XT 1.0.6 | MIT License */
+.lazy-hidden{z-index: 9999; background:url(/style/img/loading.gif) 50% 50% no-repeat #EEE; opacity:0.5;}
+    .b-lazy {
+        -webkit-transition: opacity 250ms ease-in-out;
+           -moz-transition: opacity 250ms ease-in-out;
+             -o-transition: opacity 250ms ease-in-out;
+                transition: opacity 250ms ease-in-out;
+                 max-width: 100%;
+                   opacity: 0;
+    }
+    .b-lazy.b-loaded {
+                   opacity: 1;
+    }
+
 .snap-content {
   position: absolute;
   top: 0;
@@ -1628,4 +1683,46 @@ div.fancy-select ul.options li.hover {
   }
 }
 
+/* STYLING OVERWRITE */
 
+.flowplayer .fp-fullscreen,.flowplayer .fp-embed {
+    background-image:url(img/player.png);
+    background-size: 30px;
+  }
+
+.flowplayer .fp-fullscreen,.flowplayer .fp-embed {
+  position: absolute;
+  top: 5px;
+  display: block;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background-color: rgba( 255, 255, 255, 0.1);
+  transition: background-color 0.2s;
+  -webkit-transition: background-color 0.2s;
+  -moz-transition: background-color 0.2s;
+  -ms-transition: background-color 0.2s;
+  -o-transition: background-color 0.2s;
+}
+
+.flowplayer .fp-fullscreen:hover,.flowplayer .fp-embed:hover {
+  background-color: rgba(89, 200, 29, 0.4);
+}
+
+.flowplayer .fp-fullscreen {
+  right: 5px;
+}
+
+.flowplayer .fp-fullscreen {
+  background-position: 0 -218px;
+}
+
+.flowplayer.is-fullscreen .fp-fullscreen {
+  background-position: 0 -256px;
+  display: block !important;
+}
+
+.flowplayer .fp-embed {
+  left: 5px;
+  background-position: 0 -292px;
+}

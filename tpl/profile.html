@@ -1,98 +1,98 @@
 <script type="text/html" id="profileTabTemplate">
-                    <div class="card-heading">
-                        <div class="card-heading-icon float_left" style="background: url('{{profile_picture}}') center;"></div>
-                        <span>Profile</span>
+    <div class="card-heading">
+        <div class="card-heading-icon float_left" style="background: url('{{profile_picture}}') center;"></div>
+        <span>Profile</span>
+    </div>
+    <div class="card-body">
+        <!--VIEW PROFILE-->
+        <div id="user-profile-view">
+            <div class="row-fluid">
+                <i class="icon user"></i>
+                <span class="label">Eesnimi</span>
+                <span>{{ firstname }}</span>
+            </div>
+            <div class="break"></div>
+            <div class="row-fluid">
+                <i class="icon user"></i>
+                <span class="label">Perekonnanimi</span>
+                <span>{{ lastname }}</span>
+            </div>
+            <div class="break"></div>
+            <div class="row-fluid">
+                <i class="icon email"></i>
+                <span class="label">Email</span>
+                <span>{{ email }}</span>
+            </div>
+            <div class="break"></div>
+            <div class="row-fluid">
+                <i class="icon globe"></i>
+                <span class="label">Keel</span>
+                <span>{{languageFormat language}}</span>
+            </div>
+            <div class="break"></div>
+            <div class="row-fluid">
+                <i class="icon message"></i>
+                <span class="label">Uudiskiri</span>
+                <span>{{ checkboxFormat newsletter}}</span>
+            </div>
+            <div class="row-fluid">
+                <button id="edit-profile-button" class="btn green float_right">Edit</button>
+            </div>
+        </div>
+
+        <!--EDIT PROFILE-->
+        <div id="user-profile-edit">
+            <form id="profile-update-form">
+
+                <div class="row-fluid">
+                    <i class="icon user"></i>
+                    <input type="text" name="firstname" id="profile-firstname" value="{{ firstname }}" class="vifi-text-input" placeholder="Eesnimi" />
+                </div>
+                <div class="break"></div>
+                <div class="row-fluid">
+                    <i class="icon user"></i>
+                    <input type="text" name="lastname" id="profile-lastname" value="{{ lastname }}" class="vifi-text-input" placeholder="Perekonnanimi" />
+                </div>
+                <div class="break"></div>
+                <div class="row-fluid">
+                    <i class="icon email"></i>
+                    <input type="email" name="email" id="profile-email" value="{{ email }}" disabled="disabled" class="vifi-text-input" placeholder="Email" />
+                </div>
+                <div class="break"></div>
+                <div class="row-fluid">
+                    <div class="info-selector">
+                        <select id="profile-language" name="language" class="select-box">
+                            <option value="en" {{selectedHelper language 'en'}}>English</option>
+                            <option value="es" {{selectedHelper language 'es'}}>Estonian</option>
+                        </select>
                     </div>
-                    <div class="card-body">
-                        <!--VIEW PROFILE-->
-                        <div id="user-profile-view">
-                            <div class="row-fluid">
-                                <i class="icon user"></i>
-                                <span class="label">First name</span>
-                                <span>{{ firstname }}</span>
-                            </div>
-                            <div class="break"></div>
-                            <div class="row-fluid">
-                                <i class="icon user"></i>
-                                <span class="label">Last name</span>
-                                <span>{{ lastname }}</span>
-                            </div>
-                            <div class="break"></div>
-                            <div class="row-fluid">
-                                <i class="icon email"></i>
-                                <span class="label">Email</span>
-                                <span>{{ email }}</span>
-                            </div>
-                            <div class="break"></div>
-                            <div class="row-fluid">
-                                <i class="icon globe"></i>
-                                <span class="label">Language</span>
-                                <span>{{languageFormat language}}</span>
-                            </div>
-                            <div class="break"></div>
-                            <div class="row-fluid">
-                                <i class="icon message"></i>
-                                <span class="label">Newsletter</span>
-                                <span>{{ checkboxFormat newsletter}}</span>
-                            </div>
-                            <div class="row-fluid">
-                                <button id="edit-profile-button" class="btn green float_right">Edit</button>
-                            </div>
-                        </div>
-
-                        <!--EDIT PROFILE-->
-                        <div id="user-profile-edit">
-                            <form id="profile-update-form">
-
-                                <div class="row-fluid">
-                                    <i class="icon user"></i>
-                                    <input type="text" name="firstname" id="profile-firstname" value="{{ firstname }}" class="vifi-text-input" placeholder="First name" />
-                                </div>
-                                <div class="break"></div>
-                                <div class="row-fluid">
-                                    <i class="icon user"></i>
-                                    <input type="text" name="lastname" id="profile-lastname" value="{{ lastname }}" class="vifi-text-input" placeholder="Last name" />
-                                </div>
-                                <div class="break"></div>
-                                <div class="row-fluid">
-                                    <i class="icon email"></i>
-                                    <input type="email" name="email" id="profile-email" value="{{ email }}" disabled="disabled" class="vifi-text-input" placeholder="Email" />
-                                </div>
-                                <div class="break"></div>
-                                <div class="row-fluid">
-                                    <div class="info-selector">
-                                        <select id="profile-language" name="language" class="select-box">
-                                            <option value="en" {{selectedHelper language 'en'}}>English</option>
-                                            <option value="es" {{selectedHelper language 'es'}}>Estonian</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="break"></div>
-                                <div class="row-fluid">
-                                    <i class="icon message"></i>
-                                    <span class="label">Newsletter</span>
-                                    <input id="profile-newsletter" name="newsletter" value="1" type="checkbox" {{#ifCond newsletter "1"}}  checked="checked" {{/ifCond}} />
-                                </div>
-                                <div class="row-fluid">
-                                    <button id="edit-profile-confirm-button" class="btn green float_right">Save</button>
-                                    <button id="edit-profile-cancel-button" class="btn float_right">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>    
+                </div>
+                <div class="break"></div>
+                <div class="row-fluid">
+                    <i class="icon message"></i>
+                    <span class="label">Uudiskiri</span>
+                    <input id="profile-newsletter" name="newsletter" value="1" type="checkbox" {{#ifCond newsletter '==' "1"}}  checked="checked" {{/ifCond}} />
+                </div>
+                <div class="row-fluid">
+                    <button id="edit-profile-confirm-button" class="btn green float_right">Salvesta</button>
+                    <button id="edit-profile-cancel-button" class="btn float_right">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>    
 
 </script>
 <script type="text/html" id="resetPasswordTemplate">
     <div class="card-heading">
-        <span>Password</span>
+        <span>Parool</span>
     </div>
     <div class="card-body">
         <!--CHANGE PASSWORD VIEW-->
         <div id="change-password-view">
             <div class="row-fluid">
-                {{#ifCond role 'Anonymous customer'}}
+                {{#ifCond role '==' 'Anonymous customer'}}
                 <button id="change-password-button" class="btn float_right">{{trans "Create password"}}</button>
-                {{/ifCond}} {{#ifCond role 'Registered customer'}}
+                {{/ifCond}} {{#ifCond role '==' 'Registered customer'}}
                 <button id="change-password-button" class="btn float_right">{{ trans "Change password"}}</button>
                 {{/ifCond}}
             </div>
@@ -102,26 +102,26 @@
         <div id="change-password-edit">
             <form method="post" id="password-form">
 
-                {{#ifCond role 'Registered customer'}}
+                {{#ifCond role '==' 'Registered customer'}}
 
                 <div class="row-fluid">
                     <i class="icon password"></i>
-                    <input type="password" name="currentPassword" id="current-password" class="vifi-text-input" placeholder="Current password" />
+                    <input type="password" name="currentPassword" id="current-password" class="vifi-text-input" placeholder="Kehtiv parool" />
                 </div>
                 <div class="break"></div>
                 {{/ifCond}}
 
                 <div class="row-fluid">
                     <i class="icon confirm-password"></i>
-                    <input type="password" id="new-password" name="newPassword" class="vifi-text-input" placeholder="New password" />
+                    <input type="password" id="new-password" name="newPassword" class="vifi-text-input" placeholder="Uus parool" />
                 </div>
                 <div class="break"></div>
                 <div class="row-fluid">
                     <i class="icon confirm-password"></i>
-                    <input type="password" id="new-password-confirm" name="repeatPassword" class="vifi-text-input" placeholder="Confirm new password" />
+                    <input type="password" id="new-password-confirm" name="repeatPassword" class="vifi-text-input" placeholder="Kinnita uus parool" />
                 </div>
                 <div class="row-fluid">
-                    <button id="change-password-save-button" class="btn green float_right">Save</button>
+                    <button id="change-password-save-button" class="btn green float_right">Salvesta</button>
                     <button id="change-password-cancel-button" class="btn float_right">Cancel</button>
                 </div>
             </form>
@@ -140,10 +140,10 @@
         <div class="swiper-nav swiper-container" id="profile-tabbar-swiper-container" data-snap-ignore="true">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" data-rel="profilepage-myprofile-container">
-                    <span>My profile</span>
+                    <span>Minu profiil</span>
                 </div>
                 <div class="swiper-slide" data-rel="profilepage-mymovies-container">
-                    <span>My movies</span>
+                    <span>Minu filmid</span>
                 </div>
             </div>
         </div>
@@ -167,7 +167,7 @@
 
                     <div class="card-body">
                     
-                    {{#ifCond subscriber false }}
+                    {{#ifCond subscriber '==' false }}
                         <!--Subscribe = NO-->
                         <div id="subscribe-negative">
                             <div class="row-fluid">
@@ -180,7 +180,7 @@
                             </div>
                         </div>
                         {{/ifCond}}
-                        {{#ifCond subscriber true}}
+                        {{#ifCond subscriber '==' true}}
                         <!--Subscribe = YES-->
                         <div id="subscribe-positive">
                             <div class="row-fluid">
@@ -361,7 +361,7 @@
                     <a href="#" class="forgot-password-button">Unustasin parooli</a>
                 </div>
                 <div class="row-fluid">
-                    <p id="login-tagline" class="tagline">New to Vifi? <a class="register-button" href="#">Registreeri</a></p>
+                    <p id="login-tagline" class="tagline">Oled uus kasutaja? <a class="register-button" href="#">Registreeri</a></p>
                 </div>
             </form>
             <form id="user-register">
@@ -382,7 +382,7 @@
                     <button class="btn green full" id="register-confirm">Registreeri</button>
                 </div>
                 <div class="row-fluid">
-                    <p id="register-tagline" class="tagline">Already have an account? <a class="register-button" href="#">Logi Sisse</a></p>
+                    <p id="register-tagline" class="tagline">Sul on juba konto olemas? <a class="register-button" href="#">Logi Sisse</a></p>
                 </div>
                 </form>
                 <form id="user-forgot-password">

@@ -9,7 +9,7 @@
                             <div class="payment-item-image"></div>
                             <p>SEB</p>
                         </a></li>
-                        <li id="danske"><a>
+                        <li id="sampo"><a>
                             <div class="payment-item-image"></div>
                             <p>Danske</p>                        
                         </a></li>
@@ -17,7 +17,7 @@
                             <div class="payment-item-image"></div>
                             <p>Nordea</p>                        
                         </a></li>
-                        <li id="creditcard"><a>
+                        <li id="estcard"><a>
                             <div class="payment-item-image"></div>
                             <p>Krediitkaart</p>                        
                         </a></li>
@@ -27,6 +27,28 @@
                         </a></li>
                     </ul>
     </script>
+<script type="text/html" id="purchaseSuccessTemplate">
+        <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
+            <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+            <div class="col-img" style="background-image: url('/style/img/purchase-success-cover.jpg');">
+            </div>
+            <div class="col-content">
+                <div class="popup-section">
+                    <div class="film-title">Thank you!</div>
+       
+                </div>
+ 
+                <div id="payment-section" class="popup-section">
+                        <p>You have successfully purchased <b>"{{ purchase.title }}"</b>. Your activation code is:</p>
+                        <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
+                        <p class="extra-info">Valid til <b>{{purchase.validtotext}}</b> </p>
+                        <p>You can use this code to watch the movie on any devices. A copy of the code has also been sent to your email <b>{{ email }} </b>.</p>                     
+
+                    <button id="confirm-purchase-button" class="btn big green full">Continue to film</button>
+                </div>
+            </div>
+        </div>
+</script>
     <script type="text/html" id="purchaseDialogTemplate">
         <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
             <button title="Close (Esc)" type="button" class="mfp-close">×</button>
@@ -77,21 +99,20 @@
             </div>
 
         </div>
-
-        </script>
+</script>
     <script type="text/html" id="loginDialogTemplate">
 
         <div id="login-popup" class="white-popup vifi-popup multiple-col-popup">
-           <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+           <button title="Sulge (Esc)" type="button" class="mfp-close">×</button>
             <div id="popup-login-register-form" class="col-50">
                     {{>loginformPartial}}
                     {{>fbLoginPartial}}
             </div>
             <div class="col-50">
-                <h3>Continue without an account</h3>
-                <p>You can purchase as a guest. You will just need to indicate the essential details to place your order.</p>
+                <h3>Vaata ilma kontot</h3>
+                <p>Võid vaadata ka ilma kontota. Vaatamiseks on vaja e-mail aadressi kuhu saadame pileti kinnituse.</p>
                 <div class="row-fluid">
-                    <button id="continue-unregistered" class="btn float_right">Continue</button>
+                    <button id="continue-unregistered" class="btn float_right">Edasi</button>
                 </div>
 
             </div>

@@ -114,9 +114,11 @@ App.Models.Film = App.Models.Product.extend({
 
         $.ajax({
             url: url,
+            async: true,
             dataType: "jsonp",
             success: function(res) { 
                 _this.set("rt_links", res.links);
+                if (typeof(res.ratings) != "undefined" && (res.ratings.critics_score > 0 || res.ratings.audience_score > 0) )
                 _this.set("rt_ratings", res.ratings);
 
             }
@@ -183,10 +185,13 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.set("subtitles", false);        
         this.set("id", id);
         this.refresh(true);
+
         return this;    
-        
     },
     onLoadContent: function(event) {
+
+        $log(this.get("videos"));
+        
         if (this.get("videos").length > 0)
             this.trigger("content:ready", this.get("videos"));
 

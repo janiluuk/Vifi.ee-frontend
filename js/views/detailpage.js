@@ -20,11 +20,12 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
     },
     enableRatings: function() {
-
-        $('[id^="imdb-rating-api"]').remove();
-        (function(d,s,id){                                    
-            var js,stags=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return;}js=d.createElement(s);js.id=id;js.src="http://g-ec2.images-amazon.com/images/G/01/imdb/plugins/rating/js/rating.min.js";stags.parentNode.insertBefore(js,stags);
-        })(document,'script','imdb-rating-api');
+        if (this.model.get("imdbrating") == false) { 
+            $('[id^="imdb-rating-api"]').remove();
+            (function(d,s,id){                                    
+                var js,stags=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return;}js=d.createElement(s);js.id=id;js.src="http://g-ec2.images-amazon.com/images/G/01/imdb/plugins/rating/js/rating.min.js";stags.parentNode.insertBefore(js,stags);
+            })(document,'script','imdb-rating-api');
+        }
 
     },
     enableComments: function() {
@@ -59,6 +60,33 @@ App.Views.MovieDetailView = Backbone.View.extend({
         })();
         
     },
+    applyIsotope: function() {
+        if (!this.isotope)
+        this.isotope = $("#film-cast-container ul").isotope({
+            layoutMode: 'fitRows',
+            resizable: true,
+            itemSelector: '.item',
+            transitionDuration: '0.5s',
+            // disable scale transform transition when hiding
+            hiddenStyle: {
+            opacity: 0,
+            'transform': 'translateY(100%)',
+            },
+            visibleStyle: {
+            opacity: 1,
+            'transform': 'translateY(0%)',
+            },
+            animationOptions: {
+                duration: 250,
+                easing: 'linear',
+                queue: true,
+            }
+        });
+        this.isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload() }, 200); } );
+
+
+
+    },
     enableYoutubePlayer: function() {
         if (typeof(YT) != "undefined") return false;
         $("#youtubeplayer").remove();
@@ -72,34 +100,46 @@ App.Views.MovieDetailView = Backbone.View.extend({
     },
     resetComments: function() {
 
-        window.disqus_identifier = "aaaaa"+this.model.get("seo_friendly_url");
+        window.disqus_identifier = this.model.get("seo_friendly_url");
         window.disqus_title = this.model.get("title");
-        window.disqus_url = window.location.href;
+        window.disqus_url = window.location.href.replace("#", "#!");
         if (typeof(DISQUS) != "undefined") { 
 
-            reset("aaaaa"+this.model.get("seo_friendly_url"), window.location.href+'#!', window.location.href+'#!');
+            reset(this.model.get("seo_friendly_url"),  window.disqus_url,  window.disqus_url);
 
         }
     },
     renderRatings: function() {
         if (undefined != this.model.get("rt_ratings") && this.model.get("rt_ratings") != "") {
             var link = this.model.get("rt_links").alternate;
-            this.$("#rtratings").html('<a href="'+link+'"><span class="icon rottentomato"></span><span>'+ this.model.get("rt_ratings").critics_score+'%</span></a>');
+            var rating = this.model.get("rt_ratings").critics_score;
+            if (rating == -1 ) rating = this.model.get("rt_ratings").audience_score;
+
+            this.$("#rtratings").html('<a href="'+link+'"><span class="icon rottentomato"></span><span>'+ rating +'%</span></a>');
         }
         return this;
     },
     render: function() {
     
-        this.model.fetchRT();
         this.$el.empty().append(this.template(this.model.toJSON()));
+
+        this.isotope = false;
+        this.model.fetchRT();
+
         setTimeout(function() {
+            App.Utils.lazyload();
+
             this.startCarousel();
             this.resetComments();
             this.enableRatings();
-            this.enableAddThis(); 
-            this.enableYoutubePlayer();
+
+          //  this.enableAddThis(); 
+
         }.bind(this), 100);
-    
+
+        setTimeout(function() {
+            this.enableYoutubePlayer();
+        }.bind(this),5000);
         return this;
     
     },
@@ -140,6 +180,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             })
             return false;
         }
+
         $("#gallery-swiper-container").hide();
         if (!this.playerView) {
             this.playerView = new App.Views.PlayerView({
@@ -147,9 +188,9 @@ App.Views.MovieDetailView = Backbone.View.extend({
             });
         } else { 
             this.playerView.initialize();
+
         }
         app.player.load(this.model);
-        this.playerView.render();
         if (e) e.stopPropagation();
         return false;
 
@@ -165,8 +206,12 @@ App.Views.MovieDetailView = Backbone.View.extend({
         var attr = $(e.currentTarget).attr("data-rel");
         var el = $("#" + attr);
 
-        $(el).siblings().removeClass("active").fadeOut();
+        $(el).siblings().removeClass("active").hide();
         $(el).fadeIn().addClass("active");
+        App.Utils.lazyload();
+
+        setTimeout(function() { this.applyIsotope(); }.bind(this),2500);
+
     },
 
     startCarousel: function() {
@@ -178,16 +223,21 @@ App.Views.MovieDetailView = Backbone.View.extend({
             pagination: '.pagination-1',
             paginationClickable: true,
             createPagination: true,
+            onSlideChangeStart: function(e) { 
+                App.Utils.lazyload();
+            }
             //etc..
         });
 
-        $('.arrow-left').on('click', function(e) {
+        $('#moviepage .arrow-left').on('click', function(e) {
             e.preventDefault()
-            myMovieSwiper.swipePrev()
+            myMovieSwiper.swipePrev();
+
         });
-        $('.arrow-right').on('click', function(e) {
+        $('#moviepage .arrow-right').on('click', function(e) {
             e.preventDefault()
-            myMovieSwiper.swipeNext()
+            myMovieSwiper.swipeNext();
+            
         });
 
         window.filmnavSwiper = new Swiper('#film-tabbar-swiper-container', {
@@ -199,7 +249,8 @@ App.Views.MovieDetailView = Backbone.View.extend({
             onTouchEnd: function(e) {
                 var idx = e.activeIndex;
                 $("#film-tabbar-swiper-container .swiper-wrapper .swiper-slide:nth-child(" + (idx + 1) + ")").click();
-            }
+            },
+
         });
         $("#film-tabbar-swiper-container .swiper-slide").each(function(item) {
             $(this).click(function() {
