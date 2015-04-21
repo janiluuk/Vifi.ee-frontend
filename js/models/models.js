@@ -19,7 +19,11 @@ App.Models.ApiModel = Backbone.Model.extend({
         'session': false
     },
     path: "",
-    params: false,
+    params: false
+
+});
+
+_.extend(App.Models.ApiModel.prototype, { 
     url: function() {
         return App.Settings.api_url + this.path + '?' + this.params;
     },
@@ -82,7 +86,6 @@ App.Models.ApiModel = Backbone.Model.extend({
 
 });
 
-
 App.Models.Product = App.Models.ApiModel.extend({ 
 
 });
@@ -92,7 +95,9 @@ App.Models.Subscription = App.Models.Product.extend({
 
 App.Models.Film = App.Models.Product.extend({
     type: 'film',
-    path: 'details/',
+    path: 'details/'
+});
+_.extend(App.Models.Film.prototype,  { 
     initialize: function(options) {
         this.refresh();
     },

@@ -190,6 +190,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         app.api.call(["user", email, "unpair", id], {}, function(res) { if (res.status && res.status == "ok") this.trigger("user:unpair:success")}.bind(this));
 
     },
+
     updateUserCollection: function() {
 
         if (!app || !app.usercollection) return false;
@@ -312,7 +313,6 @@ App.User.Profile = App.Models.ApiModel.extend({
         var profile = app.session.get("profile");
         profile.fetch().done(function() {
             if (collection = this.updateUserCollection()) { 
-
                 collection.once("reset", function(collection) { deferred.resolve(collection); });
                 setTimeout(function() { collection.trigger("reset")}.bind(this), 3000);                
             }
@@ -323,12 +323,39 @@ App.User.Profile = App.Models.ApiModel.extend({
 
     checkPurchases: function() {
         var films = App.User.Cookie.getFilms();
-        console.log(films);
 
-        if (typeof(films) == "undefined" || _.isEmpty(films) === true) {
+        if (typeof(films) == "undefined" || _.isEmpty(films)) {
             return false;
         }
+
         return films;
+    },
+    cleanPurchases: function() {
+
+        var films = this.checkPurchases();
+
+        if (typeof(films) == "undefined" || _.isEmpty(films)) {
+                return false;
+        }          
+        var new_list = _.reject(films, function(item) {   
+            
+            if (typeof(item.valid_to) == "undefined") return false;
+            var validTo = item.valid_to;
+
+            if (App.Utils.dateExpired(validTo)) { 
+                return false;
+            }
+            return true;
+        });
+
+        if (!_.isEmpty(new_list)) {   
+            _.each(new_list, function(item) {   
+                App.User.Cookie.removeFilm(item.vod_id);
+
+            });
+
+        }
+        return new_list;
     },
 
     savePurchase: function(purchase) { 
@@ -558,6 +585,29 @@ App.User.Cookie = {
         return false;
     },
 
+    removeFilm: function(id) { 
+        var filmlist = this.getFilms();
+        if (!id || _.isEmpty(filmlist)) return false;
+        
+        var filteredlist = _.reject(filmlist, function(item) { 
+            if (typeof item.vod_id != "undefined") 
+                return item.vod_id == id.toString(); 
+        });
+        this.setFilms(filteredlist);
+
+        return filteredlist;
+    },
+    setFilms: function(films) {
+
+        if (!films || _.isEmpty(films)) {
+            return false;
+        }
+        var encoded = btoa(JSON.stringify(films));
+        this.set(encoded, "film");
+
+        return true;
+    },
+
     getFilms: function() {
         var cookie = $.cookie("film");
 
@@ -566,20 +616,18 @@ App.User.Cookie = {
 
               var vars = atob(cookie);
               var film_array = JSON.parse(vars);
-              $log("Found films");
-              $log(film_array);
               return film_array;
 
             } catch (exception) {  
                 App.Settings.debug = true;
                 $log("No films");
                 $log(vars);
-                $log(exception);
                 $.cookie("film", "");
             }
         } 
         return {};
     },
+
 
     write: function(user_id, auth_id, session_id) {
 

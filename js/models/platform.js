@@ -7,11 +7,25 @@ window.$noop = function(input) {
 
 window.$log = function(log) { 
     if (App.Settings.debug === true) { 
-        app.trigger("flash", log, 6000);
+        if (typeof(log)== "object") { 
+            log = JSON.stringify(log);
+        }
+        app.trigger("flash", log, 4000);
         console.log(log); 
 
     }
     
+};
+
+window.$error = function(log) { 
+    if (App.Settings.debug === true) { 
+        if (typeof(log)== "object") { 
+            log = JSON.stringify(log);
+        }
+        app.trigger("error", log);
+        app.trigger("flash", '<b><span class="error">'+log+'</span></b>', 4000);
+
+    }
 };
 
 App.Platforms = {
@@ -247,7 +261,7 @@ App.Platform.prototype.proxy = function() {
 
     browser.defaultPlatform = false;
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("html5");
+    browser.setMediaPlayer("flash");
 
 }());
 

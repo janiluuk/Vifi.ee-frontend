@@ -108,6 +108,7 @@ App.Utils = {
         };
 
     },
+
     convertMstoHumanReadable: function(ms, leadingZeros) {
             leadingZeros = typeof(leadingZerons) == 'undefined' ? true : !!leadingZeros // Make sure its boolean
 
@@ -169,6 +170,16 @@ App.Utils = {
             endingtimestring += ":";
             endingtimestring += ("0" + endingtime.getMinutes()).slice(-2);
             return endingtimestring;
+        },
+        dateExpired: function(date) { 
+            if (!date) return false;
+
+            var date = Date.parse(date);
+            var now = new Date().getTime();
+
+            if (date < now) return true;
+
+            return false;
         }
 
 };
@@ -259,7 +270,7 @@ App.Utils.Api = Backbone.Model.extend({
         if (options.session) this.session = session;
         
         $.ajaxSetup({
-              'error':function(res,data) { this.trigger("error", data); }.bind(this)
+              'error':function(res,data) { $error(data); }.bind(this)
         });
         this.on("error", this.onError);
         this.on("success", this.onSuccess);

@@ -25,11 +25,12 @@ App = {
         debug: true,
         language: 'est',
         featured_slides_limit: 6,
+        initial_film_amount: 500,
         api_key: '298fh23hhdff11',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         api_url: "http://gonzales.vifi.ee/api/",
         rtmp_url: "rtmp://media.vifi.ee/vod",
-        hls_url: "http://media.vifi.ee:8081/video",
+        hls_url: "http://media.vifi.ee:1935/tv",
         subtitles_url: "http://beta.vifi.ee/subs/",
         mp4_url: "http://gonzales.vifi.ee/zsf/",
         speedtest_url: 'http://backend.vifi.ee/files/bwtest.jpg'
@@ -101,7 +102,7 @@ App.Router = Backbone.Router.extend({
         $(document).attr('title', title + ' - Vifi.ee');
 
     },
-    purchaseReturn: function (id) 
+    purchaseReturn: function (film) 
     {
 
         var films = app.user.checkPurchases();
@@ -113,12 +114,19 @@ App.Router = Backbone.Router.extend({
                 _.each(films, function(item) { 
 
                     var id = parseInt(item.vod_id);
-                    var title = app.usercollection.get(id);                                                             
+                    var title = app.usercollection.get(id);                                                          
+                    
                     if (title) {
-                        this.dialog = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session}).render();
-                    }
-                });
-            });
+                        if (!this.returnview)
+                            this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
+                        else
+                            this.returnview.model.set(title.toJSON());
+                        
+                        this.returnview.render();
+                        return false;
+                    }   
+                }.bind(this));
+            }.bind(this));
         }
        return false; 
     },
@@ -138,6 +146,30 @@ App.Router = Backbone.Router.extend({
         });
         var _this = this;
 
+        var films = app.user.checkPurchases();
+
+        if (films) {
+                
+            app.user.updatePurchases().then(function(collection) { 
+                
+                _.each(films, function(item) { 
+
+                    var id = parseInt(item.vod_id);
+                    var title = app.usercollection.get(id);                                                          
+                    
+                    if (title) {
+                        if (!this.returnview)
+                            this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
+                        else
+                            this.returnview.model.set(title.toJSON());
+                        
+                        this.returnview.render();
+                        return false;
+                    }   
+                }.bind(this));
+            }.bind(this));
+        }
+        
         film.fetch().done(function() {
             var playButtonText = "Vaata filmi (" + film.get("price") + ")";
             if (app.user.hasMovie(film)) {

@@ -1,6 +1,16 @@
 window.app = _.extend({}, Backbone.Events);
 
+    // Initialization event
+    app.on('app:init', function() { 
+        if (App.Settings.debug === true)
+        console.log("Starting at "+new Date().getTime());}
+    );
+
+
     function initApp(data) {
+
+        var deferred = new $.Deferred();
+
         App.Platforms.init();
 
         // check for hash and set state accordingly
@@ -44,30 +54,51 @@ window.app = _.extend({}, Backbone.Events);
 
         App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() { 
             app.template.load(['film'], function () {
-                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
-                window.history = Backbone.history.start();
-            }); 
-        });
 
+                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
+                
+                // Bind ready event when everything has been loaded
+
+                app.on('app:ready', function() { 
+                        app.user.updatePurchases(); 
+                        if (App.Settings.debug === true) { 
+                        console.log("Finished at "+new Date().getTime()); 
+                        $log("App ready!"); 
+                    }
+                }.bind(this));
+                
+                // Bind startup fail event for catching the initialization failures.
+
+                app.on('app:fail', function() { 
+                    $error("Could not startup the application!" ); 
+                }.bind(this));
+
+                window.history = Backbone.history.start();
+                
+                deferred.resolve(app);
+                
+                delete(data);
+
+            }.bind(this)); 
+        });
+        return deferred.promise();
     }
 
 
 $(document).ready(function() {
-    if (App.Settings.debug === false) init();
-    else
+
     init();
 
 });
 
 function init() {
-    var url = App.Settings.api_url+"search?&short=1&limit=600&api_key="+App.Settings.api_key+"&jsoncallback=?";
-    $.getJSON(url, initApp, "jsonp");
+    app.trigger("app:init");
+    var url = App.Settings.api_url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.api_key+"&jsoncallback=?";
+    $.getJSON(url, function(data) { $.when(initApp(data)).then(function() { app.trigger("app:ready"); },function() { app.trigger("app:fail"); } ); }.bind(this), "jsonp");
 
 }
 
- 
-
-function initCached() {
+ function initCached() {
     var cachedUrl = "http://beta.vifi.ee/init.json";
     $.getJSON(cachedUrl, function(data) { var parsed = JSON.parse(data); initApp(parsed)}, "json");
 }

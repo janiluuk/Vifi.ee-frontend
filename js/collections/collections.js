@@ -15,7 +15,11 @@ App.Collections.FilmSessionCollection = Backbone.Collection.extend({
 
 App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         baseUrl: App.Settings.api_url + 'search/',
+        url: App.Settings.api_url + "search?api_key=" +App.Settings.api_key+ "&",
 
+        // Enable infinite paging
+        mode: "infinite",
+        
         // As usual, let's specify the model to be used
         // with this collection
         initialize: function(models, options) {
@@ -33,9 +37,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             }
         },
  
-        url: App.Settings.api_url + "search?api_key=" +App.Settings.api_key+ "&",
-        // Enable infinite paging
-        mode: "infinite",
+
 
         // Initial pagination states
         state: {
@@ -122,7 +124,31 @@ App.Films.GenreCollection = Backbone.Collection.extend({
 });
 App.Collections.SortCollection = Backbone.Collection.extend({});
 App.Collections.FilterCollection = Backbone.Collection.extend({});
-App.Collections.UserCollection = Backbone.Collection.extend({});
+App.Collections.UserCollection = Backbone.Collection.extend({
+   
+    updateUserCollection: function(tickets) {
+
+        if (!tickets) return false;
+        
+        this.reset(tickets);
+
+        _.each(this.models, function(model) {
+
+            var original_film = app.collection.originalCollection.get(model.get("id"));
+            var validto = model.get("validto");
+
+            if (original_film && validto && typeof validto != "undefined") {
+                    var date = App.Utils.stringToDate(validto);
+                    var validtotext = App.Utils.dateToHumanreadable(date);
+                    model.set("validtotext", validtotext);
+                    original_film.set("ticket", model.toJSON());
+            }
+        });
+        return this;
+    }
+
+
+});
 App.Collections.SubscriptionCollection = Backbone.Collection.extend({});
 App.Collections.PaymentmethodCollection = Backbone.Collection.extend({});
 

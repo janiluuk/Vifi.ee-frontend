@@ -162,7 +162,7 @@
             <div class="width-50 float_left">
                 <div id="user-subscription-info" class="card float_left">
                     <div class="card-heading">
-                        <span>My subscription</span>
+                        <span>Minu paketid</span>
                     </div>
 
                     <div class="card-body">
@@ -171,11 +171,11 @@
                         <!--Subscribe = NO-->
                         <div id="subscribe-negative">
                             <div class="row-fluid">
-                                <span>You are not subscribed to any plans yet. Subscribe now to watch movies at lower price.</span>
+                                <span>Sul pole veel paketti tellitud. Liitu kuupõhise teenusega, et vaadata filme soodsamalt.</span>
                             </div>
                             <div class="row-fluid">
                                 <a href="#subscription-plans">
-                                    <button id="subscription-view-plans" class="btn green float_right">View plans</button>
+                                    <button id="subscription-view-plans" class="btn green float_right">Vaata pakette</button>
                                 </a>
                             </div>
                         </div>
@@ -184,12 +184,12 @@
                         <!--Subscribe = YES-->
                         <div id="subscribe-positive">
                             <div class="row-fluid">
-                                <span>Your subscription will expire on <b>{{dateFormat subscriptions.valid_to}}</b>.</span>
+                                <span>Sinu pakett aegub <b>{{dateFormat subscriptions.valid_to}}</b>.</span>
                             </div>
                             <div class="row-fluid">
                                 <a href="#subscription-plans">
 
-                                <button id="subscription-extend" class="btn green float_right">Extend my subscription</button>
+                                <button id="subscription-extend" class="btn green float_right">Pikenda paketti</button>
                                 </a>
                             </div>
                         </div>
@@ -200,7 +200,7 @@
                         {{>pairDevicePartial}}
 
                 </div>
-                <button class="btn facebook revoke float_right"><i class="icon facebook"></i>Revoke Facebook permission</button>
+                <button class="btn facebook revoke float_right"><i class="icon facebook"></i>Eemalda ühendus Facebookiga</button>
             </div>
 
         </div>
@@ -361,7 +361,7 @@
                     <a href="#" class="forgot-password-button">Unustasin parooli</a>
                 </div>
                 <div class="row-fluid">
-                    <p id="login-tagline" class="tagline">Oled uus kasutaja? <a class="register-button" href="#">Registreeri</a></p>
+                    <p id="login-tagline" class="tagline">New to Vifi? <a class="register-button" href="#">Registreeri</a></p>
                 </div>
             </form>
             <form id="user-register">
