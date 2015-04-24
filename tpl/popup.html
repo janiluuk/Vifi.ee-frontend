@@ -1,32 +1,3 @@
-    <script type="text/html" id="paymentsPartial" class="partial">
-        <h3>Vali makseviis</h3>
-                    <ul id="payment-list">
-                        <li id="swedbank"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Swedbank</p>
-                        </a></li>
-                        <li id="seb"><a>
-                            <div class="payment-item-image"></div>
-                            <p>SEB</p>
-                        </a></li>
-                        <li id="sampo"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Danske</p>                        
-                        </a></li>
-                        <li id="nordea"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Nordea</p>                        
-                        </a></li>
-                        <li id="estcard"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Krediitkaart</p>                        
-                        </a></li>
-                        <li id="code"><a>
-                            <div class="payment-item-image"></div>
-                            <p>Kood</p>
-                        </a></li>
-                    </ul>
-    </script>
 <script type="text/html" id="purchaseSuccessTemplate">
         <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
             <button title="Close (Esc)" type="button" class="mfp-close">×</button>
@@ -41,7 +12,7 @@
                 <div id="payment-section" class="popup-section">
                         <p>You have successfully purchased <b>"{{ purchase.title }}"</b>. Your activation code is:</p>
                         <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
-                        <p class="extra-info">Valid til <b>{{purchase.validtotext}}</b> </p>
+                        <p class="extra-info">Valid until <b>{{ purchase.validtotext }}</b> </p>
                         <p>You can use this code to watch the movie on any devices. A copy of the code has also been sent to your email <b>{{ email }} </b>.</p>                     
 
                     <button id="continue-button" class="btn big green continue-button full"> Continue to film</button>
@@ -80,7 +51,16 @@
                 </div>
  
                 <div id="payment-section" class="popup-section">
-                    {{>paymentsPartial}}
+                    <h3>Vali makseviis</h3>
+
+                    <ul id="payment-list">
+                        {{#payments}}
+                        <li id="{{identifier}}"><a>
+                        <div class="payment-item-image"></div>
+                        <p>{{name}}</p>
+                        </a></li>
+                        {{/payments}}
+                    </ul>                    
                     <form id="single-purchase">
                     <input type="hidden" name="method" id="method"/>
                     <div class="payment-method-data" id="payment-email" style="display:none">
@@ -91,6 +71,7 @@
                     </div>
                     <div class="payment-method-data"  id="payment-code" style="display:none">
                         <h3>Sisesta filmi kood</h3>
+                        <input type="password" style="display:none"/>                        
                         <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
                     </div>
                     <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
@@ -130,7 +111,16 @@
                 </div>
  
                 <div id="payment-section" class="popup-section">
-                    {{>paymentsPartial}}
+                    <h3>Vali makseviis</h3>
+
+                    <ul id="payment-list">
+                        {{#payments}}
+                        <li id="{{identifier}}"><a>
+                        <div class="payment-item-image"></div>
+                        <p>{{name}}</p>
+                        </a></li>
+                        {{/payments}}
+                    </ul>
                     <form id="single-purchase">
                     <input type="hidden" name="method" id="method"/>
                     <div class="payment-method-data" id="payment-email" style="display:none">

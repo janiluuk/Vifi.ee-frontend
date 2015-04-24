@@ -22,7 +22,7 @@ App = {
         // properties   
         sitename: "Beta.vifi.ee",
         version: "010315",
-        debug: true,
+        debug: false,
         language: 'est',
         featured_slides_limit: 6,
         initial_film_amount: 500,

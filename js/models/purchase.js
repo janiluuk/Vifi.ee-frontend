@@ -143,12 +143,17 @@ App.Models.Purchase = Backbone.Model.extend({
             this.sendCodeAuth(this.onCodeAuth, id, code);
             return false;
         }
+
         if (this.get("method_id") != "") { 
             var form = this.getPurchaseForm();
             document.body.appendChild(form);
             form.submit();
             return false;
+        } else { 
+            $log("Error while making purchase: invalid method selected");
+            return false;
         }
+        /*
         try {
            var info = this.generatePurchaseInfo();
            var price = this.model.get("price");
@@ -158,6 +163,8 @@ App.Models.Purchase = Backbone.Model.extend({
             $log("Error while making purchase: " + e);
             return false;
         }
+        */
+       
     },
 
     sendPurchase: function(callback, info, price) {

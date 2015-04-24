@@ -166,6 +166,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         var method = app.paymentmethods.filter(function(item) {
             return item.get("identifier") == el.attr("id");
         });
+        
         if (method[0] && typeof(method[0].get) != "undefined") method_id = method[0].get("id");
         this.payment.set("method_id", method_id);
         this.updateUI();
@@ -224,6 +225,8 @@ App.Views.PaymentDialog = Backbone.View.extend({
         return Backbone.View.prototype.remove.apply(this, arguments);
     },
     render: function() {
+        this.model.set('payments', app.paymentmethods.toJSON());
+
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
         this.updateUI();
         return this;
@@ -231,6 +234,8 @@ App.Views.PaymentDialog = Backbone.View.extend({
 });
 App.Views.SubscriptionPaymentDialog = App.Views.PaymentDialog.extend({
     render: function() {
+        this.model.set('payments', app.paymentmethods.toJSON());
+        
         this.$el.html(ich.subscriptionPurchaseDialogTemplate(this.model.toJSON()));
         this.updateUI();
         return this;

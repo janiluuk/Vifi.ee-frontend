@@ -492,7 +492,10 @@ li#seb, li#seb .payment-item-image, li#nordea, li#nordea .payment-item-image {
 li#sampo .payment-item-image {
     background-image: url('img/Danske-logo.jpg');
 }
-
+ul#payment-list li#testing .payment-item-image {
+    background-image: url('img/Testing-logo.jpg');
+    background-size: contain;
+}
 li#estcard .payment-item-image {
     background-image: url('img/CreditCard-logo.jpg');
 }
