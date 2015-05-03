@@ -2,22 +2,28 @@ HOST: http://gonzales.vifi.ee/api
 
 --- Vifi API 1.5 ---
 ---
-Below you will find a current list of the available methods on our movie, tv (television), actor and image API. If you need help or support, please head over to our [talk page](https://www.themoviedb.org/talk/category/5047958519c29526b50017d6). To register for an API key, head into your [account page](https://www.themoviedb.org/account) on TMDb and generate a new key from within the "API" section found in the left hand sidebar.
+Below you will find a current list of the available methods on following functionalities:
+
+- Searching and filtering titles by different scopes
+- Fetching related metadata for the titles. (Images, Actors, Languages, Studios, Available video formats etc)
+- User registration and authentication flow
+- Localisation
+- Content export / import
+- Session pairing with other devices
+- Purchase flow for subscription / single-purchase products
+- Personalisation features for user profiles
+- Messaging
+- Statistics
+- Playhead functionality
 
 
-To be notified about our service status and deprecation notices, please join our Google+ community.
+###New! TV (Oct. 25, 2014)###
+Our TV API has just been released. It's currently out of preview and stable.
 
-###New! TV (Oct. 25, 2013)###
-Our TV API has just been released. It's currently out of preview and stable. If you have any questions or comments about this, stop by the [API support forum](https://www.themoviedb.org/talk/category/5047958519c29526b50017d6) and let us know.
 
-### Terms of Use
-By using our API you are agreeing to our terms of use. You can read it [here](https://www.themoviedb.org/about/api-terms).
-
-### Third Party Libraries
-There are a number of community contributed libraries. You can check them out [here](https://www.themoviedb.org/documentation/api/wrappers-libraries).
-
-### JSON & JSONP Response Format
-Unlike previous versions of the API, v3 only supports a single format, JSON. XML and YAML support are being officially dropped. JSONP is also officially supported, just add a `callback` parameter to your request and the response will be encapsulated in the value you specified.
+### Response Formats
+Response formats available are JSON/JSONP and XML. Default is configured per distributor and it can be changed by giving a "format" parameter on the query string indicating either "json" or "xml".
+JSONP is also officially supported, just add a `callback` parameter to your request and the response will be encapsulated in the value you specified.
 
 ### Request Rate Limiting
 We do enforce a small amount of rate limiting. Please be aware that should you exceed these limits, you will receive a 503 error.
