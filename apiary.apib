@@ -35,42 +35,20 @@ We do enforce a small amount of rate limiting. Please be aware that should you e
 At different times while using our API you might come across an error and/or status code. For a detailed look at what these codes mean, [check out the list](https://www.themoviedb.org/documentation/api/status-codes) on our website.
 
 ### HTTPS / SSL
-v3 now supports SSL. Just make an https:// call instead of http:// and you're all set.
+We now support SSL. Just make an https:// call instead of http:// and you're all set.
 
 ### Required Parameters
 Every request needs a valid API key and you can set this value as an HTTP parameter. A full request example looks like so:
 
-    https://api.themoviedb.org/3/movie/550?api_key=###
+    http://gonzales.vifi.ee/api/search?api_key=###
+
+In case user requests are proxied through content distributors server, "ip_address" parameter is mandatory in the requests. 
+We recommend including "user_agent" and "device_id" parameters as well to enable session pairing / syncing functionalities.
 
 ### Languages
-Our API supports translations just be aware that we no longer fall back to English in the event that a field hasn't been translated. If you make a request for the German translation and the overview hasn’t been translated, the field will be empty. There’s a few reasons for this but the main one is that in an effort to encourage users to add data to TMDb, it’s important for them to see when the data is missing.
+Our API supports translations for content related queries. You can request localised content by adding "language" parameter to the request with the country code. If the content has not been translated, fallback will be english. 
 
-If you want to fall back to English, you can make the separate call yourself and fill in missing data.
-
-### Image Languages
-* `poster_path`: The poster_path will query the `language` you specify first and default back to 'en' if one is not found. In the event that an 'en' poster isn't present, we will simply try to grab the highest rated.
-* `backdrop_path`: Since 99% of backdrops don't contain a language so to speak, we simply query for the highest rated backdrop that belongs to the given entry.
-* `still_path`: Like backdrops, TV episode images don't inherently have languages so to speak. We query for the highest rated. 
-
-In the event you query one of the distinct `/image` methods, there is a new way you can query additional languages for images. Think of this as kind of like a fallback. This is especially useful to grab 2 things. First, finding the backdrops and posters in a users specified language but also to grab all of the images that _haven't_ been tagged yet. Here's an example:
-
-    https://api.themoviedb.org/3/movie/550/images?api_key=###&language=en&include_image_language=en,null
-
-Notice the `include_image_language` parameter. We're looking for all images that match English and those that haven't been set (null).
-
-### Appending Responses
-The [movie](#movies), [tv](#tv) and [person](#person) methods support a new parameter called `append_to_response`. When this parameter is present, the API will make an additional request behind the scenes to fetch the data you're asking for. A simple example would be if you wanted the default movie, release and trailer data. Until now, you would have to issue three separate requests. Now, you can issue one. Here's what that request looks like:
-
-    https://api.themoviedb.org/3/movie/550?api_key=###&append_to_response=releases,trailers
-
-This request is the same as making these 3 separate requests, all we're doing is combining the responses into a single response for you. With this in mind, remember all parameters and responses will be the same as documented. Each appended request will map to an object in the JSON response with the same name.
-
-You can of course pass the new `include_image_language` param to the images too!
-
-    https://api.themoviedb.org/3/movie/550?api_key=###&append_to_response=images&include_image_language=en,null
-
-### Configuration
-In an effort to lower our response sizes and add simplicity to the actual API methods, we are now using a central [configuration](#configuration). The data provided with this method is required for building full image URLs, or getting a list of available image sizes.
+### Proxying requests
 
 ### Apiary Transparent Proxy
 This is an optional service you can use to help troubleshoot requests. You are not required to use it in any capacity. In real world use, we expect you to use our production end point.
