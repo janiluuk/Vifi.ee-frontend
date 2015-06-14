@@ -47,13 +47,18 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
     },
     onContinue: function(e) {
         e.preventDefault();
-	   $.removeCookie('film', { path: '/', domain: '.'+App.Settings.domain });
+        $.removeCookie('film');
+        $.removeCookie('film', {domain: App.Settings.domain, path: '/' });
+       
         var id = this.model.get("id");
         App.User.Cookie.removeFilm(id);
+
         this.close();
         this.parent.close();
 
         app.router.showFilm(id);
+        app.movieview.playMovie();
+
         return false;
     },
     render: function() {
@@ -165,11 +170,12 @@ App.Views.PaymentDialog = Backbone.View.extend({
         var el = $(e.currentTarget);
         el.addClass("selected").siblings().removeClass("selected");
         this.payment.set("method", el.attr("id"));
-        var method_id = "";
         var method = app.paymentmethods.filter(function(item) {
             return item.get("identifier") == el.attr("id");
         });
         
+        var method_id = "";
+
         if (method[0] && typeof(method[0].get) != "undefined") method_id = method[0].get("id");
         this.payment.set("method_id", method_id);
         this.updateUI();
@@ -208,12 +214,14 @@ App.Views.PaymentDialog = Backbone.View.extend({
         }
     },
     initPayment: function(e) {
-        this.$("#confirm-purchase-button").addClass("loading");
         var data = this.$("form").serializeObject();
         this.payment.set(data);
+        
         if (this.payment.isValid(true)) { 
             this.payment.purchase(this.model);
+            this.$("#confirm-purchase-button").addClass("loading");
         }
+
         return false;
     },
     onPaymentSuccess: function() {
@@ -222,12 +230,14 @@ App.Views.PaymentDialog = Backbone.View.extend({
         app.movieview.playMovie();
     },
     onPaymentError: function(message) {
+
+        message = tr(message);
         this.$("#confirm-purchase-button").removeClass("loading");
         Backbone.Validation.callbacks.invalid(this, 'code', message);
-
         app.trigger("error", message);
 
     },
+    
     remove: function() {
         // Remove the validation binding
         Backbone.Validation.unbind(this);
@@ -236,7 +246,6 @@ App.Views.PaymentDialog = Backbone.View.extend({
     },
     render: function() {
         this.model.set('payments', app.paymentmethods.toJSON());
-
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
         this.updateUI();
         return this;

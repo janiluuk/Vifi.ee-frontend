@@ -1501,10 +1501,13 @@ a.arrow-right {
     -o-transition: width 0.2s ease-in-out;
 }
 
+
 .feature-wrapper {
     width: 100%;
+    min-height: 300px;
     background: #ddd;
 }
+
 
 #featured-swiper-container, #gallery-swiper-container {
     height: 455px;
