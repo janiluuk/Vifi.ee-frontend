@@ -203,7 +203,10 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     },
 
     onLoadSubtitles: function(event) {
+
         if (this.get("subtitles") != null && this.get("subtitles").length > 0)
+
+
             this.trigger("subtitles:ready", this.get("subtitles"));
     },
 

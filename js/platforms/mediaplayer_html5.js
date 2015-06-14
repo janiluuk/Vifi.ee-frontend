@@ -20,6 +20,9 @@ App.MediaPlayer = {
         if (this._videoElement.length == 0) {
             this._videoElement = $("<div>").attr("id", this.playerId).appendTo("#movie-player-container");
         }
+        if (!this.subtitles)
+        this.subtitles = new App.Player.Subtitles();
+
         return this._createPlayer();
     },
     getCurrentTime: function() {
@@ -34,15 +37,21 @@ App.MediaPlayer = {
         var player = this._videoElement.flowplayer({
             rtmp: App.Settings.rtmp_url,
             adaptiveRatio: true,
+	        key: App.Settings.flowplayer_html5_key,
             preload: "auto",
             embed: false,
             playlist: [playlistFiles],
         }).one('ready', function(ev, api, video) {
+            var api = flowplayer();
+            var video = api.video;
+            
+            
             _this.plugin = api;
             _this.active();
+            window.api = api;
+
             _this.trigger("mediaplayer:ratio:change", video);
             if (App.Settings.debug === true) _this._trackEvents();
-            $log(api.video.src);
             api.bind("pause", function(e, api) {
                 _this.trigger("mediaplayer:pause");
             });
@@ -70,7 +79,32 @@ App.MediaPlayer = {
         $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
         this.play();
     },
-    loadSubtitles: function() {},
+
+    _initSubtitles: function(content) {  
+        if (!this.subtitles)
+        this.subtitles = new App.Player.Subtitles();
+
+        this.subtitles.load(content);
+
+    },
+    loadSubtitles: function(subtitles) {
+        
+        var code = subtitles.code;
+        this.subtitles.handleSubtitleSelection(code);
+
+    },
+    disableSubtitles: function() { 
+
+        this.subtitles.disable();
+        this.trigger("mediaplayer:subtitles:disabled");
+
+    },
+    enableSubtitles: function() { 
+
+        this.subtitles.enable();
+        this.trigger("mediaplayer:subtitles:enabled");
+    },
+    
     stop: function(forced) {
         if (this.plugin) {
             try {

@@ -46,10 +46,10 @@ App.Models.Purchase = Backbone.Model.extend({
 
     validateMethod: function(value, attr, computedState) {
         if(value === 'code' && this.get("code").length == 0) {
-            return 'Code is invalid!';
+            return 'Vale kood, proovi uuesti!';
         }
         if(value !== 'code' && this.get("email").length == 0) {
-            return 'Email is invalid!';
+            return 'Vale E-mail, proovi uuesti!';
         }
     },
     paymentCallback: function(response) {
@@ -117,6 +117,7 @@ App.Models.Purchase = Backbone.Model.extend({
     onCodeAuth: function(data) { 
         if (data.status !== "ok") {
             var message = data.message;
+            
             this.trigger("purchase:error", message);
             return false;
         }

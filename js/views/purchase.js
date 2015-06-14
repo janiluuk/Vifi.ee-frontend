@@ -47,6 +47,7 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
     },
     onContinue: function(e) {
         e.preventDefault();
+	   $.removeCookie('film', { path: '/', domain: '.'+App.Settings.domain });
         var id = this.model.get("id");
         App.User.Cookie.removeFilm(id);
         this.close();
@@ -102,7 +103,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
         this.setElement(".mfp-content");
         this.assign(this.paymentView, "#purchasemodal");
         this.assign(this.loginView, "#loginmodal");
-        if (this.session.isLoggedIn()) this.showPayment();
+        if (this.session.isLoggedIn() || !App.Settings.loginEnabled) this.showPayment();
         else this.showLogin();
         return this;
     },
@@ -150,6 +151,8 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.model = options.model;
         this.payment = options.payment;
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
+        this.listenTo(this.payment, "purchase:error", this.onPaymentError, this);
+
         Backbone.Validation.configure({
             forceUpdate: true
         });
@@ -217,6 +220,13 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.$("#confirm-purchase-button").removeClass("loading");
         this.remove();
         app.movieview.playMovie();
+    },
+    onPaymentError: function(message) {
+        this.$("#confirm-purchase-button").removeClass("loading");
+        Backbone.Validation.callbacks.invalid(this, 'code', message);
+
+        app.trigger("error", message);
+
     },
     remove: function() {
         // Remove the validation binding

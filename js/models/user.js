@@ -474,6 +474,7 @@ App.User.Session = Backbone.Model.extend({
     disable: function() {
         this.set("enabled", false);
     },
+    
     onUserAuthenticate: function(data) {
         this.set("logged_in", true);
         this.set("user_id", this.profile.get("user_id"));

@@ -51,17 +51,17 @@
                                     if (imdbrating) { 
                                 %>
                                 
-                                <span class=" imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="http://www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1"><img src="http://g-ecx.images-amazon.com/images/G/01/imdb/plugins/rating/images/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
+                                <span class=" imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="http://www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1" target="_blank"><img src="http://g-ecx.images-amazon.com/images/G/01/imdb/plugins/rating/images/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
                                 <% 
                                  } else { %>
-                                <span class="imdbRatingPlugin" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="http://www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1"><img src="http://g-ecx.images-amazon.com/images/G/01/imdb/plugins/rating/images/imdb_46x22.png" /> </a></span>
+                                <span class="imdbRatingPlugin" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a target="_blank" href="http://www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1"><img src="http://g-ecx.images-amazon.com/images/G/01/imdb/plugins/rating/images/imdb_46x22.png" /> </a></span>
                                 <% } 
                             } %>
                             </td>
                             <td id="rtratings"><%
                                 if (typeof(rt_ratings) !== "undefined" && rt_ratings != "" && rt_ratings.critics_score > -1){
                                 %>
-                                    <a href="<%-rt_links.alternate%>"><span class="icon rottentomato"></span>
+                                    <a target="_blank" href="<%-rt_links.alternate%>"><span class="icon rottentomato"></span>
                                     <span>
                                     <%-rt_ratings.critics_score %>%
                                     </span>

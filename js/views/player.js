@@ -1,7 +1,8 @@
 App.Views.PlayerView = Backbone.View.extend({
     el: "#movie-player-container",
     model: App.Player.MediaPlayer,
-    
+    controlBar: false,
+
     initialize: function() { 
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
         this.setElement("#movie-player-container");
@@ -37,6 +38,8 @@ App.Views.PlayerView = Backbone.View.extend({
     close: function() {
         this.$el.empty();
         this.$el.hide();
+        this.controlBar.remove();
+
         $(window).unbind("resize");
         this.model.trigger("mediaplayer:stop");
         this.unbind();
@@ -47,13 +50,56 @@ App.Views.PlayerView = Backbone.View.extend({
         return this;
     },
     renderControls: function(content) {
-        $("#video-container-footer").empty().append(ich.playerControlsTemplate(content.toJSON()));
-        $('.select-box').fancySelect();
+        this.controlBar = new App.Views.PlayerControlbar({model: content});
+        this.controlBar.on('controlbar:change', this.onControlsChange, this);
         this.resize();
         return this;
     },
+
+    onControlsChange: function(category, val) { 
+        var evt = 'controlbar:'+category+':change';                
+        this.model.trigger(evt, val);
+
+    }
 });
+
+App.Views.PlayerControlbar = Backbone.View.extend({ 
+    el: '#video-container-footer',
+    model: App.Models.FilmContent,
+    events: {
+        'controlbar:change': 'onSelection',
+
+    },
+    initialize: function(options) { 
+        this.listenTo(this.model, "change", this.render, this);
+        this.render();
     
+    },
+    onSelection: function(ev) { 
+        var el = $(ev.target);
+
+        var category = el.data('category');
+        var val = el.find("option:selected").val();
+        this.trigger('controlbar:'+category, val);        
+
+    },
+
+    render: function() {
+        var _this = this;
+        this.$el.empty().append(ich.playerControlsTemplate(this.model.toJSON()));
+        $('.select-box').fancySelect().on('change.fs', function(e) {
+            var val = $(this).find("option:selected").val();
+            var category = $(this).data('category');
+            
+           _this.trigger('controlbar:change', category, val);
+
+
+        }); 
+
+        return this;
+    },
+
+})
 App.Views.TrailerView = Backbone.View.extend({
     model: App.Models.Film,
     hideVideoNavigationTimeout: false,

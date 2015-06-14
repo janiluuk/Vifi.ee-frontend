@@ -29,9 +29,12 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
     },
     enableComments: function() {
+
+        if (!App.Settings.commentsEnabled) return false;
+
         window.disqus_title = this.model.get("title");
-        window.disqus_shortname = 'vifi'; // Required - Replace example with your forum shortname
-        /* * * DON'T EDIT BELOW THIS LINE * * */
+        window.disqus_shortname = App.Settings.disqus_shortname; // Required - Replace example with your forum shortname
+
         (function() {
             var dsq = document.createElement('script');
             dsq.type = 'text/javascript';
@@ -84,8 +87,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
         });
         this.isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload() }, 200); } );
 
-
-
     },
     enableYoutubePlayer: function() {
         if (typeof(YT) != "undefined") return false;
@@ -100,6 +101,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
     },
     resetComments: function() {
 
+        if (!App.Settings.commentsEnabled) return false;
         window.disqus_identifier = this.model.get("seo_friendly_url");
         window.disqus_title = this.model.get("title");
         window.disqus_url = window.location.href.replace("#", "#!");
@@ -115,7 +117,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             var rating = this.model.get("rt_ratings").critics_score;
             if (rating == -1 ) rating = this.model.get("rt_ratings").audience_score;
 
-            this.$("#rtratings").html('<a href="'+link+'"><span class="icon rottentomato"></span><span>'+ rating +'%</span></a>');
+            this.$("#rtratings").html('<a target="_blank" href="'+link+'"><span class="icon rottentomato"></span><span>'+ rating +'%</span></a>');
         }
         return this;
     },

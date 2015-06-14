@@ -59,7 +59,7 @@ App.MediaPlayer = {
             src: 'http://beta.vifi.ee/swf/flowplayer.commercial-3.2.15.swf',
             wmode: 'opaque'
         }, {
-            key: '#$05466e2f492e2ca07a3',
+            key: App.Settings.flowplayer_flash_key,
             log: {
                 level: 'none'
             },
@@ -183,25 +183,46 @@ App.MediaPlayer = {
         this.plugin.play();
         this.wasMuted = $f().getStatus().muted;
     },
+    _initSubtitles: function(content) {  
 
-    loadSubtitles: function(file) {
+    },
+    loadSubtitles: function(subtitles) {
+
+        var file = App.Settings.subtitles_url + subtitles.file;
 
         if (typeof($f) == "undefined") return false;
+
         setTimeout(function() { 
             if (typeof(this.plugin) == "undefined" || typeof(this.plugin.getPlugin("captions")) == "undefined") {
                 $log("PLUGIN NOT FOUND");
                 setTimeout(function() { 
+
                     this.loadSubtitles(file);
 
                 }.bind(this),2000);
 
                 return false;
             } else { 
+                this.plugin.getPlugin('content').show();
+                $f().getPlugin('content').css("opacity",1)
                 $log("Enabling subtitles...");
                 this.plugin.getPlugin("captions").loadCaptions(0,file);
             }
         }.bind(this),2500);
     },
+
+    disableSubtitles: function() { 
+        if (typeof($f) == "undefined") return false;
+        this.plugin.getPlugin('content').hide();
+
+    },
+    enableSubtitles: function() { 
+
+        if (typeof($f) == "undefined") return false;
+        this.plugin.getPlugin('content').show();
+
+    },
+
     stop: function(forced) {
         if (this.plugin) {
             try {
@@ -247,7 +268,8 @@ App.MediaPlayer = {
         this.trigger("mediaplayer:onrewind", 1);
     },
     getCurrentTime: function() {
-        if (typeof($f) == "undefined") return 0;
+        if (typeof($f()) == "undefined") return 0;
+	else
         return $f().getTime() * 1000;
     },
     mute: function(muted) {

@@ -10,15 +10,18 @@
 
 <script type="text/html" id="playerControlsTemplate">
         <div class="video-selector">
-            <select id="video-sub" data-value="none" data-category="player-subtitles" class="select-box">
+            <select id="video-sub" data-value="none" data-category="subtitles" class="select-box">
                 <option value="reset">Subtiitrid (auto)</option>
                 {{#subtitles}}
                 <option value="{{code}}">{{ language }}</option>
                 {{/subtitles}}
+                <option value="none">Väljas</option>
+
             </select>
+
         </div>
         <div class="video-selector">
-            <select id="video-lang" data-value="none" data-category="player-audio" class="select-box">
+            <select id="video-lang" data-value="none" data-category="audio" class="select-box">
                 <option value="reset">Audio (auto)  </option>
                 {{#subtitles}}
                 <option value="{{code}}">{{ language }}</option>
@@ -26,7 +29,7 @@
             </select>                
         </div>
         <div class="video-selector">
-            <select id="video-quality" data-category="player-quality" class="select-box">
+            <select id="video-quality" data-category="quality" class="select-box">
                 <option value="reset">Quality (Auto)</option>
                 {{#videos }}
                 <option value="{{code}}">{{profile}}</option>
