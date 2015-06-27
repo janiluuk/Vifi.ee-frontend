@@ -58,7 +58,7 @@ App.Views.FilterView = Backbone.View.extend({
                 $(this).attr("selected", !sel ? "selected" : false);
             }
         });
-
+        
         $("#id_" + field).trigger("change");
 
 

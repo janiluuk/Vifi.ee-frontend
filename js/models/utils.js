@@ -252,7 +252,6 @@ App.Utils.State = Backbone.Model.extend({
             if (dict[prop] == undefined && !i) {
                 i = true;
             } 
-
         });
         
         this.set(dict);

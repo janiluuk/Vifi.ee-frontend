@@ -100,6 +100,7 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     onChangeDuration: function(model, duration) {
         //This is a state change event, not a dom event
+        
         if (this.options.redirect_on_duration_change && duration != this.collection.initial_search.duration) {
             this.redirectToBaseURL();
         }
@@ -161,7 +162,8 @@ App.Views.BrowserPage = Backbone.View.extend({
             $("#clear-search-text-button").hide();
         }
 
-        $("#search-form select :selected").each(function() {
+        $("#search-form select option[selected=selected]").each(function() {
+
             var fieldid = $(this).parent().attr("id");
             var fieldname = fieldid.replace("id_", "");
             var val = $(this).val();
