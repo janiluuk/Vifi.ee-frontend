@@ -112,12 +112,25 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
     },
     onSort: function(field, desc) {
+        this.onLoadingStart();
+
 
         this.collection.sortByAttribute(field, desc);
 
         return false;
     },
     
+    onLoadingStart: function() { 
+
+        $("#content-body-list").addClass("fadeDownList");
+        setTimeout(function() { $("#content-body-list").parent().addClass("loading"); });
+        return false;
+
+    },
+    onLoadingEnd: function() { 
+
+
+    },
     onClear: function(e) {
 
         this.collection.querystate.set(this.collection.querystate.defaults);
@@ -144,8 +157,7 @@ App.Views.BrowserPage = Backbone.View.extend({
 
     onSearchFieldChange: function(event) {
 
-        $("#content-body-list").addClass("fadeDownList");
-
+        this.onLoadingStart();
         var value = $("#main-search-box").val();
         var search_array = {            
             q: value,
@@ -175,7 +187,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             this.collection.querystate.set(search_dict);
         } else { 
 
-            $("#content-body-list").removeClass("fadeDownList");
+            $("#content-body-list").removeClass("fadeDownList").parent().removeClass("loading");
 
         }
 
@@ -229,7 +241,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         if (!this.rendering) {
 
             this.rendering = true;
-            $("#content-body-list").addClass("fadeDownList").empty();
+            $("#content-body-list").addClass("fadeDownList").empty().parent().addClass("loading");
             this.$isotope.isotope("reloadItems");
 
             this.collection.getFirstPage();
@@ -237,7 +249,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             /* Empty result set */
             if (this.collection.length == 0) {
 
-                $("#content-body-list").append(ich.emptyListTemplate({text: tr("No results")}));
+                $("#content-body-list").append(ich.emptyListTemplate({text: tr("No results")})).parent().removeClass("loading");
                 
             }   
             
@@ -252,7 +264,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             this.rendering = false;
         }
 
-        $("#content-body-list").removeClass("fadeDownList");
+        $("#content-body-list").removeClass("fadeDownList").parent().removeClass("loading");
 
         return false;        
     },
@@ -288,6 +300,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         //setFromHash will trigger a change event, which then
         //loads the records and reloads the table
         this.collection.querystate.setFromHash(searchStateHash);
+
     },
     clearSearch: function() {
         app.collection.querystate.set("q","");
