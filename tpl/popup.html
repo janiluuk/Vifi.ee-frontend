@@ -69,6 +69,12 @@
                         <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
                         <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
                     </div>
+                    <div class="payment-method-data" id="payment-mobile" style="display:none">
+                        <h3>Mobiil</h3>
+                        <p>Siia juhendid</p>
+                        <input type="text" name="email" id="payment-method-number" class="vifi-text-input" value="{{email}}" placeholder="Sinu number"></input>
+                        <p class="warning">Blaablaa</p>
+                    </div>                    
                     <div class="payment-method-data"  id="payment-code" style="display:none">
                         <h3>Sisesta filmi kood</h3>
                         <input type="password" style="display:none"/>                        
@@ -81,6 +87,17 @@
 
         </div>
 </script>
+<script type="text/html" id="mobilePaymentTemplate">
+            <div class="col-50">
+                <h3>header</h3>
+                <p>Kirjeldus.</p>
+                <div class="row-fluid">
+                    <button id="continue-unregistered" class="btn float_right">Edasi</button>
+                </div>
+
+            </div>
+    </script>
+
     <script type="text/html" id="loginDialogTemplate">
 
         <div id="login-popup" class="white-popup vifi-popup multiple-col-popup">

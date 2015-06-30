@@ -41,6 +41,7 @@ h3 {
     font-size: 1.4em;
     margin: 0.5em 0;
     color: #2EA849;
+    text-shadow: #CCC 0.5px 0.3px;
     border-bottom: 1px dotted #999;
     padding: 0 0 0.4em 0;
 }
@@ -472,9 +473,22 @@ ul#payment-list p {
 li#swedbank .payment-item-image {
     background-image: url('img/Swedbank-logo.jpg');
 }
+li#mobile .payment-item-image {
+    background-image: url('img/mobile-payment.png');
 
+}
+ul#payment-list li#mobile .payment-item-image,
+ul#payment-list li#sampo .payment-item-image {
+
+    background-size: contain;
+
+}
+ul#payment-list li#nordea .payment-item-image {
+    background-size: cover;
+
+}
 li#nordea .payment-item-image {
-    background-image: url('img/Nordea-logo.jpg');
+    background-image: url('img/nordea.png');
 }
 
 li#seb .payment-item-image {

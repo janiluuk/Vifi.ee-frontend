@@ -207,8 +207,11 @@ App.Views.PaymentDialog = Backbone.View.extend({
         $(".payment-method-data").hide();
         $("#" + method).addClass("selected");
         $("#method").val(method);
+
         if (method == "code") {
             $("#payment-code").show();
+        } else if (method == "mobile") { 
+            $("#payment-mobile").show();
         } else {
             $("#payment-email").show();
         }
