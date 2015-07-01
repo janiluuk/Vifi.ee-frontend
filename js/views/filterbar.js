@@ -13,16 +13,23 @@ App.Views.SearchView = Backbone.View.extend({
         this.render();
 
         if (this.getTerm().length > 0) { 
-            this.$el.fadeIn();
+
+            this.$el.animate({"height": "100px"},250);
+            this.$el.fadeIn(100);
+
         } else {
-            this.$el.slideUp();
+            var height = $("#front-page-slider").height();
+            this.$el.animate({"height": height},300);
+            this.$el.fadeOut("fast");
         }
+
     },
     render: function() {   
     
         this.$el.html(ich.searchTextTemplate({
             'term': this.getTerm()
         }));
+        return this;
     }
 });
 App.Views.FilterView = Backbone.View.extend({
@@ -135,7 +142,7 @@ App.Views.FilterItemView = Backbone.View.extend({
         }
 
         if ($(el).parent().find(".toggle-on").length == 0) {
-            $(el).parent().find('.reset').addClass("toggle-on")
+            $(el).parent().find('.reset').addClass("toggle-on");
         }
 
         this.trigger("filter-bar:toggle", val, field);
@@ -240,6 +247,8 @@ App.Views.FilterlistView = Backbone.View.extend({
         this.setElement($("#filter-list"));
         var _this = this;
 
+        /** Add sortbar */
+
         $("<div>").attr("id", "sort-list").appendTo(this.$el);
         var view = new App.Views.SortItemView({
             filters: this.sort,
@@ -251,6 +260,8 @@ App.Views.FilterlistView = Backbone.View.extend({
 
         this.$el.append(view.render().$el);
         this.views.push(view);
+
+        /** Add filters */
 
         _.each(this.filters, function(items, id) {
             var name = id + "-list"
@@ -279,10 +290,13 @@ App.Views.FilterlistView = Backbone.View.extend({
 });
 
 App.Views.FilterbarView = Backbone.View.extend({
+    activeClass: 'active swiper-slide-active',
+    swipeContainerId : '#front-tabbar-swiper-container',
     events: {
         'click .swiper-slide': 'toggleFilter'
     },
     state: true,
+
     initialize: function(options) {
         _.bindAll(this, "render");
         this.options = options || {};
@@ -292,43 +306,44 @@ App.Views.FilterbarView = Backbone.View.extend({
         this.setElement($("#filter-bar"));
 
         this.$el.html(ich.filterBarTemplate());
-        this.$(".swiper-slide:first").addClass("active swiper-slide-active");
+        this.$(".swiper-slide:first").addClass(this.activeClass);
         var _this = this;
 
         setTimeout(function() { 
             _this.enableCarosel();
-        }, 500);
+        }, 400);
 
         return this;
     },
     toggleFilter: function(e) {
 
         e.preventDefault();
+
         var el = e.currentTarget;
         var attr = $(el).attr("data-rel");
         var filterEl = $("#" + attr);
-
 
         $(filterEl).siblings().hide();
 
         if ($(el).hasClass("active")) {
             this.closeFilterBar();
-            $(el).removeClass("active swiper-slide-active");
+            $(el).removeClass(this.activeClass);
         } else {
             $(filterEl).show();
-            $(el).addClass("active swiper-slide-active");
+            $(el).addClass(this.activeClass);
             this.openFilterBar();
         }
 
-        $(el).siblings().removeClass("swiper-slide-active active");
+        $(el).siblings().removeClass(this.activeClass);
         e.stopPropagation();
         return false;
 
     },
-    enableCarosel: function() {
 
-        /* Categories / Filters */
-        window.frontnavSwiper = new Swiper('#front-tabbar-swiper-container', {
+    /* Initialize carousel */
+
+    enableCarosel: function() {
+        window.frontnavSwiper = new Swiper(this.swipeContainerId, {
             slidesPerView: 'auto',
             mode: 'horizontal',
             loop: false,
@@ -339,7 +354,7 @@ App.Views.FilterbarView = Backbone.View.extend({
 
         });
 
-        $("#front-tabbar-swiper-container .swiper-slide").each(function(item) {
+        $(this.swipeContainerId +" .swiper-slide").each(function(item) {
             $(this).click(function() {
                 frontnavSwiper.swipeTo(item)
             })
@@ -354,7 +369,7 @@ App.Views.FilterbarView = Backbone.View.extend({
     closeFilterBar: function() {
         if (!this.state) return;
         this.state = false;
-        $("#front-tabbar-swiper-container .swiper-slide-active").removeClass("swiper-slide-active");
+        $(this.swiperContainerId + " .swiper-slide-active").removeClass("swiper-slide-active");
         $("#filter-list").slideUp();
     },
 

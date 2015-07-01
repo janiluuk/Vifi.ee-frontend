@@ -116,6 +116,7 @@ App.Views.HomePage = Backbone.View.extend({
 App.Views.TopMenu = Backbone.View.extend({
     events: {
         'submit form#main-search-form': 'onSearchSubmit',
+        'keyup #main-search-box' : 'onSearchChange',
         'click #search-button': 'toggleSearchBox',
         'click #menu-dragger': 'toggleSideBar',
         'click .login': 'login',
@@ -124,19 +125,29 @@ App.Views.TopMenu = Backbone.View.extend({
     },
     model: App.User.FBPerson,
     el: $("#top-main-toolbar"),
+
     initialize: function(options) {
         if (options.model) this.model = options.model;
         this.model.on('change', this.render, this);
     },
+
+    onSearchChange: function() { 
+
+        var query = $('#main-search-box').val();
+        if (query != "") {
+            $("#clear-search-text-button").fadeIn("fast");
+        } else {
+            $("#clear-search-text-button").fadeOut("fast");
+        }
+        return false;
+
+    },
+
     render: function() {
         var search = this.$("#main-search-box").val();
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
-        this.$("#main-search-box").val(search);
-        if (search != "") {
-            $("#clear-search-text-button").show();
-        } else {
-            $("#clear-search-text-button").hide();
-        }
+        this.$("#main-search-box").val(search).trigger("keyup");
+
         return this;
     },
     login: function(e) {
@@ -152,8 +163,19 @@ App.Views.TopMenu = Backbone.View.extend({
     },
     toggleSearchBox: function(e) {
         e.preventDefault();
-        $('#toolbar-search-group').toggleClass("pullDownRight");
-        $('#toolbar-search-group').toggleClass("pullUpRight", !$('#toolbar-search-group').hasClass("pullDownRight"));
+
+        var el = this.$("#toolbar-search-group");
+        var box = this.$("#toolbar-search-group input");
+        
+        var visible = el.hasClass("pullDownRight");
+        
+        if (!visible) box.show();
+
+        el.toggleClass("pullDownRight");
+        el.toggleClass("pullUpRight", !visible);
+
+        if (visible) box.fadeOut();
+
         return false;
     },
     toggleSideBar: function(e) {

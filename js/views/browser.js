@@ -2,7 +2,6 @@ App.Views.BrowserPage = Backbone.View.extend({
     model: App.Models.Film,
     el: '#browser-content',
     events: {
-        'submit #search-form': 'handleSearchFormSubmit',
         'change #search-form select': 'onSearchFieldChange',
         'change #search-form input[type="text"]': 'onSearchFieldChange',
         'change #search-form input[type="hidden"]': 'onSearchFieldChange',
@@ -20,13 +19,13 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.collection.querystate.bind('change:genres', this.onChangeGenre, this);
         this.collection.querystate.bind('change:durations', this.onChangeDuration, this);
         this.collection.querystate.bind('change:years', this.onChangeYear, this);
-        this.collection.querystate.bind('change:q', this.onChangeText, this);
-        _.bindAll(this,'render', 'renderResults', 'applyIsotope');
         this.filterview = new App.Views.FilterView({filters: this.options.filters, sort: this.options.sort, state: this.collection.querystate});
         this.filterview.bind('filter-bar:sort', this.onSort, this);
         this.filterview.bind('filter-bar:clear', this.onClear, this);
         this.searchview = new App.Views.SearchView({model: this.collection.querystate});
+        
         this.searchview.render();
+        _.bindAll(this,'render', 'renderResults', 'applyIsotope');
 
  
       //  this.initEvents();
@@ -113,8 +112,6 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     onSort: function(field, desc) {
         this.onLoadingStart();
-
-
         this.collection.sortByAttribute(field, desc);
 
         return false;
@@ -123,12 +120,15 @@ App.Views.BrowserPage = Backbone.View.extend({
     onLoadingStart: function() { 
 
         $("#content-body-list").addClass("fadeDownList");
-        setTimeout(function() { $("#content-body-list").parent().addClass("loading"); });
+        setTimeout(function() { $("#content-body-list").parent().addClass("loading"); },300);
         return false;
 
     },
     onLoadingEnd: function() { 
-
+        
+        $("#content-body-list").removeClass("fadeDownList");
+        setTimeout(function() { $("#content-body-list").parent().removeClass("loading"); },200);
+        return false;
 
     },
     onClear: function(e) {
@@ -147,13 +147,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             this.redirectToBaseURL();
         }
     },
-    onChangeText:function(item) {
-        return false;
-    },
-    handleSearchFormSubmit: function(event) {
 
-        event.preventDefault();
-    },
 
     onSearchFieldChange: function(event) {
 
@@ -168,12 +162,6 @@ App.Views.BrowserPage = Backbone.View.extend({
 
         var search_dict = _.extend({}, search_array);
 
-        if (value != "") {
-            $("#clear-search-text-button").show();
-        } else {
-            $("#clear-search-text-button").hide();
-        }
-
         $("#search-form select option[selected=selected]").each(function() {
 
             var fieldid = $(this).parent().attr("id");
@@ -183,14 +171,13 @@ App.Views.BrowserPage = Backbone.View.extend({
         });
         if (JSON.stringify(search_dict) != JSON.stringify(this.collection.querystate.attributes))
         {
-
             this.collection.querystate.set(search_dict);
+
         } else { 
 
-            $("#content-body-list").removeClass("fadeDownList").parent().removeClass("loading");
+            this.onLoadingEnd();
 
         }
-
     },
 
     addOne : function ( item ) {
@@ -264,7 +251,8 @@ App.Views.BrowserPage = Backbone.View.extend({
             this.rendering = false;
         }
 
-        $("#content-body-list").removeClass("fadeDownList").parent().removeClass("loading");
+        this.onLoadingEnd();
+
 
         return false;        
     },
@@ -273,16 +261,10 @@ App.Views.BrowserPage = Backbone.View.extend({
         // main search text box
         var query = state.get('q');
 
-        $('#main-search-box').val(query);
+        $('#main-search-box').val(query).trigger("keyup");
 
         this.filterview.updateUI();
 
-        if (query != "") {
-            $("#clear-search-text-button").show();
-        } else {
-
-            $("#clear-search-text-button").hide();
-        }
     },
 
     onChangeCollectionState: function(state,silent) {
