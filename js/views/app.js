@@ -6,10 +6,8 @@ App.Views.BaseAppView = Backbone.View.extend({
     events: {
         'change #search-form select': 'onSearchFieldChange',
         'change #search-form input[type="text"]': 'onSearchFieldChange',
-        'change #main-search-box input[type="text"]': 'onSearchFieldChange',
         'change #search-form input[type="hidden"]': 'onSearchFieldChange',
         'click .goTop': 'scrollToTop',
-        'submit form#main-search-form': 'onSearchSubmit'
     },
     scrollTop: 0,
     state: false,
@@ -116,13 +114,16 @@ App.Views.HomePage = Backbone.View.extend({
 App.Views.TopMenu = Backbone.View.extend({
     events: {
         'submit form#main-search-form': 'onSearchSubmit',
-        'keyup #main-search-box' : 'onSearchChange',
+        'keypress #main-search-box' : 'onSearchChange',
+        'blur #main-search-box' : 'onSearchChange',
+        'change #main-search-box input[type="text"]': 'onSearchChange',             
         'click #search-button': 'toggleSearchBox',
         'click #menu-dragger': 'toggleSideBar',
         'click .login': 'login',
         'click .logout': 'logout',
         'click #clear-search-text-button': 'clearSearch'
     },
+
     model: App.User.FBPerson,
     el: $("#top-main-toolbar"),
 
@@ -131,7 +132,7 @@ App.Views.TopMenu = Backbone.View.extend({
         this.model.on('change', this.render, this);
     },
 
-    onSearchChange: function() { 
+    onSearchChange: function(e) { 
 
         var query = $('#main-search-box').val();
         if (query != "") {
@@ -139,14 +140,14 @@ App.Views.TopMenu = Backbone.View.extend({
         } else {
             $("#clear-search-text-button").fadeOut("fast");
         }
-        return false;
+        return true;
 
     },
 
     render: function() {
         var search = this.$("#main-search-box").val();
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
-        this.$("#main-search-box").val(search).trigger("keyup");
+        this.$("#main-search-box").val(search).trigger("keypress");
 
         return this;
     },
@@ -162,22 +163,20 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
     },
     toggleSearchBox: function(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
 
         var el = this.$("#toolbar-search-group");
         var box = this.$("#toolbar-search-group input");
         
         var visible = el.hasClass("pullDownRight");
-        
-        if (!visible) box.show();
+
 
         el.toggleClass("pullDownRight");
-        el.toggleClass("pullUpRight", !visible);
+        el.toggleClass("pullUpRight", visible);
 
-        if (visible) box.fadeOut();
 
-        return false;
     },
+
     toggleSideBar: function(e) {
         app.sidemenu.toggleSideBar();
         return false;
@@ -187,6 +186,7 @@ App.Views.TopMenu = Backbone.View.extend({
         e.preventDefault();
         this.$("#main-search-box").val("");
         app.homepage.browserview.onSearchFieldChange(e);
+        
         return false;
     },
     onSearchSubmit: function(e) {

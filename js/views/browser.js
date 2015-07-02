@@ -120,14 +120,14 @@ App.Views.BrowserPage = Backbone.View.extend({
     onLoadingStart: function() { 
 
         $("#content-body-list").addClass("fadeDownList");
-        setTimeout(function() { $("#content-body-list").parent().addClass("loading"); },300);
+        setTimeout(function() { $("#content-body-list").parent().addClass("loading"); },200);
         return false;
 
     },
     onLoadingEnd: function() { 
         
         $("#content-body-list").removeClass("fadeDownList");
-        setTimeout(function() { $("#content-body-list").parent().removeClass("loading"); },200);
+        setTimeout(function() { $("#content-body-list").parent().removeClass("loading"); },350);
         return false;
 
     },
@@ -176,7 +176,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         } else { 
 
             this.onLoadingEnd();
-
         }
     },
 

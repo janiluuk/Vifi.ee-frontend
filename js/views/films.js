@@ -73,9 +73,9 @@ App.Views.FeaturedView = Backbone.View.extend({
     },
     onQueryChange: function() {
 
-        if (this.querystate.get("q").length > 0) { this.$el.hide(); }
+        if (this.querystate.get("q").length > 0) { this.$el.fadeOut(); }
         else { 
-           setTimeout(function() { this.$el.slideDown(); }.bind(this),200);
+           setTimeout(function() { this.$el.fadeIn(); }.bind(this));
         }
     },
     render: function() {

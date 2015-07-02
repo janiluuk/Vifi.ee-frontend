@@ -1131,6 +1131,15 @@ input#main-search-box {
     background-position: center right 0.5em;
 }
 
+.pullUpRight input#main-search-box {
+    transition: width 0.7s ease-in-out;
+    -moz-transition: width 0.7s ease-in-out;
+    -o-transition: width 0.7s ease-in-out;
+    -ms-transition: width 0.7s ease-in-out;
+    -webkit-transition: width 0.7s ease-in-out;        
+    width: 1%;
+}
+
 /* SIDE MENU */
 
 .content-body, #main-content {
@@ -2386,12 +2395,23 @@ ul#subscription-benefit-list li .icon {
     margin: 0 0 1em 0;
 }
 
+.pullUpRight input#main-search-box {
+        transition: width 0.4s ease-in-out;
+        -moz-transition: width 0.4s ease-in-out;
+        -o-transition: width 0.4s ease-in-out;
+        -ms-transition: width 0.4s ease-in-out;
+        -webkit-transition: width 0.4s ease-in-out;        
+        width: 100%;
+}
 /* RESPONSIVE CSS */
 
 @media (max-width: 3840px) {
     html {
         font-size: 13px;
     }
+    #toolbar-search-group.pullUpRight { 
+        opacity: 1.0;
+    }    
 }
 
 @media only screen and (max-width: 1600px) {
@@ -2601,6 +2621,9 @@ ul#subscription-benefit-list li .icon {
         height: 390px ;
     }
 
+    #toolbar-search-group.pullUpRight { 
+        opacity: 0;
+    }
     .subscription-duration {
         padding: 1em 0 ;
     }
@@ -2683,6 +2706,14 @@ ul#subscription-benefit-list li .icon {
         left: 0;
         right: 0;
         width: 90%;
+    }
+    .pullUpRight input#main-search-box {
+        transition: width 0.7s ease-in-out;
+        -moz-transition: width 0.7s ease-in-out;
+        -o-transition: width 0.7s ease-in-out;
+        -ms-transition: width 0.7s ease-in-out;
+        -webkit-transition: width 0.7s ease-in-out;        
+        width: 1%;
     }
 
     #content-body {

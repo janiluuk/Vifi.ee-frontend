@@ -10,7 +10,6 @@ App.Views.SearchView = Backbone.View.extend({
         return this.model.get("q");
     },
     setTerm: function() { 
-        this.render();
 
         if (this.getTerm().length > 0) { 
 
@@ -19,9 +18,11 @@ App.Views.SearchView = Backbone.View.extend({
 
         } else {
             var height = $("#front-page-slider").height();
-            this.$el.animate({"height": height},300);
             this.$el.fadeOut("fast");
+
+            this.$el.animate({"height": height},300);
         }
+        this.render();
 
     },
     render: function() {   
