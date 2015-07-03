@@ -23,26 +23,48 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.filterview.bind('filter-bar:sort', this.onSort, this);
         this.filterview.bind('filter-bar:clear', this.onClear, this);
         this.searchview = new App.Views.SearchView({model: this.collection.querystate});
-        
+
         this.searchview.render();
-        _.bindAll(this,'render', 'renderResults', 'applyIsotope');
+        _.bindAll(this,'render', 'renderResults','initEvents', 'applyIsotope');
 
  
-      //  this.initEvents();
+        this.initEvents();
 
     },
-     initEvents: function() { 
 
-        this.on("maximize", function() {  
-            $("#front-page-search-header").css("display", "none").empty();
-            $("#front-page-slider").css("display", "block"); 
+    initEvents: function() { 
+        
+    this.on("maximize", function() {  
+            
+            var height = this.originalHeight;
 
+            $("#search").animate({ "opacity": 0, "height": height, "min-height": height},100,false, function() { 
+
+                $("#front-page-slider").css({"min-height": height, "height":height}).show().animate({ "opacity": 1},300, "swing", function() { 
+                $(this).hide(); 
+                }.bind(this));
+                window.mySwiper.resizeFix();   
+             
+            });
+       
         });
-        this.on("minimize", function() {  
-            $("#front-page-slider").css("display", "none");
-            $("#front-page-search-header").css("display", "block").html("you searched for sum shitz");
-        });
+
+
+        this.on("minimize", function() { 
+            this.originalHeight = $("#front-page-slider").height();
+
+            var height =  $(".feature-wrapper#search").css("min-height");
+
+            $("#front-page-slider").animate({"min-height":  height, "height": height, "opacity": 0},300, false,function() {  
+                      $("#search").css({"height" :  height, "min-height":  height});
+                      $(this).hide();
+                $("#search, #search-text").show().animate({ "opacity": 1},200);
+            });
+
+        }); 
     },
+
+
     render: function() {
         this.$el.html(ich.browserPageTemplate());
         this.filterview.render();
@@ -77,7 +99,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             }
         });
 
-        this.$isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload() }, 120); } );
+        this.$isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload(); }, 120); } );
 
         return true;
     },

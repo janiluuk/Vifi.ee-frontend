@@ -1520,6 +1520,9 @@ a.arrow-right {
     min-height: 90px;
 }
 
+#search-text {
+    display:none;
+}
 #featured-swiper-container, #gallery-swiper-container {
     height: 455px;
 }
