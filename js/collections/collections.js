@@ -5,6 +5,9 @@ App.Collections.FilmCollection = Backbone.Collection.extend({
     model: App.Models.Film
 });
 
+App.Collections.BannerCollection = Backbone.Collection.extend({
+    model: App.Models.Banner
+});
 /* User collection for playlist items */
 
 App.Collections.FilmSessionCollection = Backbone.Collection.extend({
@@ -37,8 +40,6 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             }
         },
  
-
-
         // Initial pagination states
         state: {
           pageSize: 15,

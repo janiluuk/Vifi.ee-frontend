@@ -3,7 +3,7 @@ window.app = _.extend({}, Backbone.Events);
     // Initialization event
     app.on('app:init', function() { 
         if (App.Settings.debug === true)
-        console.log("Starting at "+new Date().getTime());}
+        $log("Starting at "+new Date().getTime());}
     );
 
 
@@ -26,6 +26,7 @@ window.app = _.extend({}, Backbone.Events);
         app.template = new App.Utils.TemplateLoader();
         
         var genres = new App.Films.GenreCollection(data.genres);
+        var banners = new App.Collections.BannerCollection(data.banners);
         var subscriptions = new App.Collections.SubscriptionCollection(data.subscriptions);
         var paymentmethods = new App.Collections.PaymentmethodCollection(data.paymentmethods);
         var usercollection = new App.Collections.UserCollection();
@@ -55,16 +56,15 @@ window.app = _.extend({}, Backbone.Events);
         App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() { 
             app.template.load(['film'], function () {
 
-                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
+                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, banners: banners, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
                 
                 // Bind ready event when everything has been loaded
 
                 app.on('app:ready', function() { 
                         app.user.updatePurchases(); 
                         if (App.Settings.debug === true) { 
-                        console.log("Finished at "+new Date().getTime()); 
-                        $log("App ready!"); 
-                    }
+                            $log("App ready at Finished at "+new Date().getTime()); 
+                        }
                 }.bind(this));
                 
                 // Bind startup fail event for catching the initialization failures.

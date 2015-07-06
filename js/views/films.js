@@ -67,6 +67,7 @@ App.Views.FeaturedView = Backbone.View.extend({
     initialize: function(options) {
         this.querystate = options.querystate;
         this.fragment = document.createDocumentFragment();            
+        this.banners = options.banners;
 
         this.listenTo(this.querystate, "change:q", this.onQueryChange, this);
         if (this.querystate.get("q").length > 0) {
@@ -92,6 +93,13 @@ App.Views.FeaturedView = Backbone.View.extend({
         this.$el.empty().append(ich.featuredTemplate());
         var counter = 0;
 
+            this.banners.forEach(function(item) {
+               
+                $(this.fragment).append(ich.bannerItemTemplate(item.toJSON()));
+               // console.log(item.toJSON());
+
+            }.bind(this));
+
             _.each(this.collection, function(item) {
                 if (counter < App.Settings.featured_slides_limit) {
                     counter++;
@@ -106,11 +114,10 @@ App.Views.FeaturedView = Backbone.View.extend({
         setTimeout(function() {
            App.Utils.lazyload();
 
-        }.bind(this), 250);
-
+        },250);
         setTimeout(function() {
             this.startCarousel();
-        }.bind(this), 2100);
+        }.bind(this), 2000);
 
         return this;
     },

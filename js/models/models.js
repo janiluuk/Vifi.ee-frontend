@@ -93,6 +93,10 @@ App.Models.Subscription = App.Models.Product.extend({
     type: 'subscription'
 });
 
+App.Models.Banner = Backbone.Model.extend({
+
+});
+
 App.Models.Film = App.Models.Product.extend({
     type: 'film',
     path: 'details/'

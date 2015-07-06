@@ -59,7 +59,6 @@ App.Views.BaseAppView = Backbone.View.extend({
     showMoviePage: function() {
         this.scrollTop = this.$("#content-container").scrollTop();
         $(".main-wrapper:not(#moviepage)").hide();
-
         $("#moviepage").fadeIn("fast");
 
         this.$("#content-container").scrollTop(0);
@@ -97,6 +96,7 @@ App.Views.HomePage = Backbone.View.extend({
             sort: options.sort
         });
         this.featuredview = new App.Views.FeaturedView({
+            banners: options.banners,
             collection: options.collection.featured(),
             querystate: options.collection.querystate
         });
@@ -592,8 +592,10 @@ App.Views.HomePage = Backbone.View.extend({
             filters: options.filters,
             sort: options.sort
         });
+        
         this.featuredview = new App.Views.FeaturedView({
             collection: options.collection.featured(),
+            banners: options.banners,
             querystate: options.collection.querystate
         });
         this.featuredview.on("search:open", this.onSearchOpen,this);

@@ -86,28 +86,29 @@
 </script>
 <script type="text/template" id="bannerItemTemplate">
         <div class="swiper-slide">
+          
             <div class="featured-item" class="{{css_class}}" style="{{style}}">
-                {{if url}}
+                      {{#if url}}
                 <a href="{{url}}">
                 {{/if}}
                 <div class="featured-item-info">
-                    <div class="featured-item-title">{{title}}</div>
+                    <div class="featured-item-title">{{header}}</div>
                     <div class="featured-item-description">{{text}}</div>
-                    {{if url}}
+                    {{#if url}}
                     <div class="featured-item-button">
 
-                            <a href="#{{url}}"><button class="btn green icon play">Lisainfot</button></a>
+                            <button class="btn green icon play">Lisainfot</button>
                     </div>
                     {{/if}}
                 </div>
                {{#if background_image}} 
                 <div class="featured-item-background b-lazy" data-src="{{background_image}}"></div>
                 {{/if}}                
-            {{if url}}
+            {{#if url}}
                 </a>
-            {{/if}}
-
+            {{/if}}                 
             </div>
+                   
         </div>
 </script>
 <script type="text/template" id="featuredItemTemplate">
