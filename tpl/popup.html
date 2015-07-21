@@ -71,10 +71,24 @@
                     </div>
                     <div class="payment-method-data" id="payment-mobile" style="display:none">
                         <h3>Mobiil</h3>
-                        <p>Siia juhendid</p>
-                        <input type="text" name="email" id="payment-method-number" class="vifi-text-input" value="{{email}}" placeholder="Sinu number"></input>
-                        <p class="warning">Blaablaa</p>
-                    </div>                    
+                        <p>Tellimiseks helista:</p>
+                        <p class="phone-number"><strong>82 82 8856</strong></p>
+                        <p class="sec-counter">Helistamiseks on aega <span> 60 sekundit </span></p>
+
+                        <p class="info">Hinnale lisandub m-makse teenustasu summas 0.32 €. Maksumus lisatakse telefoniarvele või arvestatakse maha kõnekaardi ettemaksu jäägist.
+Teenus on kasutatav Eestis EMT, Elisa ja Tele2 klientidele.</p>
+                        
+                        <div id="mobile-payment-timeout" class="timed-out-message" style="display:none">
+                            <p class="error-message">
+                                Makse ebaõnnestus
+                            </p>
+                            <p class="info">
+                                Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu. 
+                            </p>
+                            <button id="" class="btn big green full">Proovi uuesti</button>
+                        </div>
+                    </div>
+
                     <div class="payment-method-data"  id="payment-code" style="display:none">
                         <h3>Sisesta filmi kood</h3>
                         <input type="password" style="display:none"/>                        

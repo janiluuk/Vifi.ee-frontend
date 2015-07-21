@@ -35,40 +35,47 @@ App.Views.BrowserPage = Backbone.View.extend({
     initEvents: function() {
         this.on("maximize", function() {
             var height = this.originalHeight;
+            $("#front-page-slider").css({
+                    "min-height": height,
+                    "height": height,
+                    "opacity": 0
+                });            
             $("#search").animate({
                 "opacity": 0,
                 "height": height,
                 "min-height": height
-            }, 200, false, function() {
-                $("#front-page-slider").css({
-                    "min-height": height,
-                    "height": height
-                }).animate({
+            }, 100, false, function() {
+                $(this).hide();
+
+                $("#front-page-slider").show().animate({
                     "opacity": 1
-                }, 300, "swing", function() {
-                    $("#front-page-slider").show();
-                    $(this).hide();
+                }, 400,false, function() {  
                     window.mySwiper.resizeFix();
                 }.bind(this));
-                window.mySwiper.resizeFix();
             });
         });
         this.on("minimize", function() {
+
             this.originalHeight = $("#front-page-slider").height();
             var height = $(".feature-wrapper#search").css("min-height");
+
+            $("#search").css({
+                    "height": height,
+                    "min-height": height,
+                    "opacity" : 0
+            });
             $("#front-page-slider").animate({
                 "min-height": height,
                 "height": height,
                 "opacity": 0
-            }, 300, false, function() {
-                $("#search").css({
-                    "height": height,
-                    "min-height": height
-                });
-                $(this).hide();
-                $("#search, #search-text").show().animate({
+            }, 225, false, function() {
+
+                $("#search").show().animate({
                     "opacity": 1
-                }, 200);
+                }, 100);
+                $(this).hide();
+
+
             });
         });
     },
@@ -84,8 +91,8 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.$isotope = $("#content-body-list").isotope({
             layoutMode: 'fitRows',
             resizable: true,
-            itemSelector: '.item',
-            transitionDuration: '0.4s',
+            itemSelector: '#content-body-list .item',
+            transitionDuration: '0.6s',
             // disable scale transform transition when hiding
             hiddenStyle: {
                 opacity: 0,
@@ -96,7 +103,7 @@ App.Views.BrowserPage = Backbone.View.extend({
                 'transform': 'translateY(0%)',
             },
             animationOptions: {
-                duration: 250,
+                duration: 500,
                 easing: 'linear',
                 queue: true,
             }
@@ -104,7 +111,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.$isotope.isotope('on', 'layoutComplete', function() { 
             setTimeout(function() {
                 App.Utils.lazyload();
-            }, 120);
+            }, 250);
         });
         return true;
     },
@@ -197,8 +204,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         var view = new App.Views.FilmView({
             model: item
         });
-        var el = view.render().el;
-        return el;
+        return view.render().el;
     },
     addSet: function(collection) {
         var container = document.createDocumentFragment();
@@ -210,6 +216,9 @@ App.Views.BrowserPage = Backbone.View.extend({
             container.appendChild(el);
         });
         this.$isotope.append(container).isotope('insert', items);
+        delete(items);
+        delete(container);
+
         return true;
     },
     onLoadMore: function(e) {
@@ -222,7 +231,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             if (!this.collection.hasNextPage()) {
                 $("#loadMore").hide();
             }
-        }.bind(this), 200);
+        }.bind(this), 300);
         return false;
     },
     renderResults: function(force) {

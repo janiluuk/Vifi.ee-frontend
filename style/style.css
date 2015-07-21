@@ -13,10 +13,10 @@ html, body {
 body {
     font-family: 'Open Sans', Helvetica, Arial;
     background: url('img/blur_background_dark_50.jpg') no-repeat center center fixed;
+    background-size: cover;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
-    background-size: cover;
 }
 #vifi-page-container {
     position: relative;
@@ -455,10 +455,11 @@ ul#payment-list li.selected {
     background-color: #42BE6A;
 }
 
+
 ul#payment-list li .payment-item-image {
     width: 100%;
     height: 40px;
-    background-size: 50%;
+    background-size: 75%;
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -469,16 +470,32 @@ ul#payment-list p {
     margin: 0;
 }
 
+li#mobile .payment-item-image {
+    background-image: url('img/mobile-payment.png');
+
+}
+
 li#swedbank .payment-item-image {
-    background-image: url('img/Swedbank-logo.jpg');
+    background-image: url('img/Swedbank-logo.png');
 }
 
 li#nordea .payment-item-image {
-    background-image: url('img/Nordea-logo.jpg');
+    background-image: url('img/nordea.png');
 }
 
 li#seb .payment-item-image {
-    background-image: url('img/SEB-logo.jpg');
+    background-image: url('img/SEB-logo.png');
+}
+
+ul#payment-list li#mobile .payment-item-image,
+ul#payment-list li#sampo .payment-item-image {
+
+    background-size: contain;
+
+}
+
+ul#payment-list li#seb .payment-item-image {
+    background-size: 40%;
 }
 
 li#seb, li#seb .payment-item-image, li#nordea, li#nordea .payment-item-image {
@@ -500,9 +517,14 @@ li#estcard .payment-item-image {
     background-image: url('img/CreditCard-logo.jpg');
 }
 
+li#creditcard .payment-item-image {
+    background-image: url('img/CreditCard-logo.jpg');
+}
+
 li#code .payment-item-image {
     background-image: url('img/code-logo.jpg');
 }
+
 
 input#email, input#code, #side-menu input, .vifi-popup input.vifi-text-input {
     line-height: 33px;
@@ -1793,16 +1815,16 @@ ul#content-body-list li, ul#cast-content-body-list li {
     box-sizing: border-box;
     box-shadow: 0 2px 2px #ACA0A0;
     background: white;
-    transition: background 0.2s ease-in-out;
-    -webkit-transition: background  0.2s ease-in-out;
-    -moz-transition: background  0.2s ease-in-out;
+    transition: background 0.3s ease-in-out;
+    -webkit-transition: background  0.3s ease-in-out;
+    -moz-transition: background  0.3s ease-in-out;
     -o-transition: background  0.2s ease-in-out;
     -ms-transition: background  0.2s ease-in-out;
     float:left;
     cursor: pointer;
 }
 
-.item:hover {
+.item:hover .item-info {
     background: #ddd;
 }
 
