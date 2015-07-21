@@ -14,7 +14,6 @@ App.MediaPlayer = {
     plugin: false,
     allowFastFoward: true,
     init: function(playlist) {
-        this.speedtest();
 
         if (playlist) {
             this.setPlaylist(playlist);
