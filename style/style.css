@@ -1827,6 +1827,9 @@ ul#content-body-list li, ul#cast-content-body-list li {
 .item:hover .item-info {
     background: #ddd;
 }
+.item-info-description {
+  color: #888;
+}
 
 .item-image {
     width: 100%;
@@ -1917,7 +1920,7 @@ ul#cast-content-body-list li .item-image {
     padding: 0.5em;
 }
 
-.item-info-title a {
+.item-info-title {
     font-size: 1.2em;
     letter-spacing: -0.2px;
     line-height: 1;
@@ -1925,17 +1928,17 @@ ul#cast-content-body-list li .item-image {
     font-weight: 700;
     color: #333;
     transition: color 0.1s ease-in-out;
-    -webkit-transition: color 0.2s ease-in-out;
-    -moz-transition: color 0.2s ease-in-out;
-    -o-transition: color 0.2s ease-in-out;
+    -webkit-transition: color 0.1s ease-in-out;
+    -moz-transition: color 0.1s ease-in-out;
+    -o-transition: color 0.1s ease-in-out;
     -ms-transition: color 0.2s ease-in-out;
 }
 
-.item:hover .item-info-title a {
+.item:hover .item-info-title {
     color: #00983B;
 }
 
-.item-info-title a:hover {
+.item-info-title:hover {
     text-decoration: underline;
 }
 
@@ -2866,7 +2869,7 @@ ul#subscription-benefit-list li .icon {
         border-bottom-color: rgba(55, 35, 60, 0.65);
     }
 
-    .item-info-title a {
+    .item-info-title {
         font-size: 1.4em ;
     }
 

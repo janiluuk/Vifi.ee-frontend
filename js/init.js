@@ -18,8 +18,9 @@ window.app = _.extend({}, Backbone.Events);
             // start with empty state because Router will configure it later.
             var state = new App.Utils.State();
             state.setFromUrl();
-                   
+            
         } else {
+
             var state = new App.Utils.State(data.search);
         }
 

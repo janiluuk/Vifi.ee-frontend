@@ -162,6 +162,8 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
     },
     onClear: function(e) {
+        $log(search_dict);
+
         this.collection.querystate.set(this.collection.querystate.defaults);
         this.onChangeCollectionState(this.collection.querystate, true);
         return false;
@@ -174,6 +176,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         _.each(parts.split(";"), function(i) {
             $(".selection-wrapper [data-val=" + i + "]")
         });
+
         if (this.options.redirect_on_genre_change && genre != this.collection.initial_search.genre) {
             this.redirectToBaseURL();
         }
@@ -187,6 +190,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             periods: undefined,
             durations: undefined
         };
+
         var search_dict = _.extend({}, search_array);
         $("#search-form select option[selected=selected]").each(function() {
             var fieldid = $(this).parent().attr("id");
@@ -194,8 +198,10 @@ App.Views.BrowserPage = Backbone.View.extend({
             var val = $(this).val();
             search_dict[fieldname] = search_dict[fieldname] == undefined ? val : search_dict[fieldname] += ";" + val;
         });
+
         if (JSON.stringify(search_dict) != JSON.stringify(this.collection.querystate.attributes)) {
             this.collection.querystate.set(search_dict);
+
         } else {
             this.onLoadingEnd();
         }
@@ -235,7 +241,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
     },
     renderResults: function(force) {
-        if (typeof(force) == "undefined" && (typeof(this.lastattributes) != "undefined") || this.lastattributes == JSON.stringify(this.collection.querystate.changedAttributes())) {
+        if (typeof(force) == "undefined" && ((typeof(this.lastattributes) != "undefined") || this.lastattributes == JSON.stringify(this.collection.querystate.changedAttributes()))) {
             return false;
         }
         if (!this.rendering) {
@@ -265,12 +271,14 @@ App.Views.BrowserPage = Backbone.View.extend({
         var state = this.collection.querystate;
         // main search text box
         var query = state.get('q');
+
         $('#main-search-box').val(query).trigger("keyup");
         this.filterview.updateUI();
     },
     onChangeCollectionState: function(state, silent) {
         var trigger = silent === true ? false : true;
         this.updateUIToState();
+
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);
         //Update the url of the browser using the router navigate method
         app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {
@@ -284,6 +292,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.collection.querystate.setFromHash(searchStateHash);
     },
     clearSearch: function() {
+
         app.collection.querystate.set("q", "");
         this.onChangeCollectionState(app.collection.querystate);
         return false;
