@@ -1919,8 +1919,7 @@ ul#cast-content-body-list li .item-image {
     border-top: 1px solid #D6C5C5;
     padding: 0.5em;
 }
-
-.item-info-title {
+.item-info-title a, .item-info-title {
     font-size: 1.2em;
     letter-spacing: -0.2px;
     line-height: 1;

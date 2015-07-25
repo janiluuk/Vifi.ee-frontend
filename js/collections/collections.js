@@ -85,7 +85,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             return new App.Films.UserCollection(items);
         },
         sortByAttribute: function(attribute, desc) {
-
+            
             var comparator = 'model.get("film").'+attribute;
             var asc_comparator = function (model) { 
 

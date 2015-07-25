@@ -25,6 +25,7 @@ App = {
         version: '010315',
         debug: false,
         commentsEnabled: true,
+        sortingEnabled: true,
         loginEnabled: true,
         language: 'est',
         featured_slides_limit: 6,
@@ -42,18 +43,45 @@ App = {
         hls_url: "http://media.vifi.ee:1935/tv",
         subtitles_url: "http://beta.vifi.ee/subs/",
         mp4_url: "http://gonzales.vifi.ee/zsf/",
-        speedtest_url: 'http://backend.vifi.ee/files/bwtest.jpg'
+        speedtest_url: 'http://backend.vifi.ee/files/bwtest.jpg',   
+        
+        /** Search Settings **/
 
+        Search: {
+
+            default_query_params: { 
+                  totalPages: null,
+                  totalRecords: null,
+                  sortKey: "sort",
+                  limit: 400
+            },
+            default_search_state: { 
+                q:"", 
+                genres: undefined, 
+                periods: undefined, 
+                durations: undefined
+            },
+            default_pagination_state: { 
+                pageSize: 15,
+                sortKey: "",
+                order: 1,
+                limit: 400
+            }
+        }
     },
     Translations: {
         'est' : { 
-            'eesti' : 'Eesti',
-            'english' : 'Inglise',
-            'Clear' : 'Tühista',
+            'Eesti' : 'Eesti',
+            'English' : 'Inglise',
+            'Clear' : 'Puhasta',
             'Change password': 'Vaheta parool',
             'Create password': 'Loo parool',
-            'No results' : 'Ei tulemusi'
-
+            'No results' : 'Antud otsinguga tulemusi ei leitud. Täpsustage palun otsingut ja kontrollige üle ka teised filtrid (kategooria, kestvus, aasta)',
+            'No purchases' : 'Ei ostusid',
+            'No' : 'Ei',
+            'Yes' : 'Jah',
+            'Invalid code' : 'Vale kood',
+            'All Genres' : 'Kõik genred'
         },
         'en' : { 
             'eesti' : 'Estonian',

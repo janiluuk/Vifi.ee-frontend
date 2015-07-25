@@ -49,7 +49,10 @@
 <script type="text/html" id="filterBarTemplate">
        <div class="swiper-nav swiper-container" id="front-tabbar-swiper-container" data-snap-ignore="true">
                 <div class="swiper-wrapper">
+                     
+                        {{#if sortbar }}                        
                         <div class="swiper-slide" data-rel="sort-list"><span>Sorteeri</span></div>
+                        {{/if}}
                         <div class="swiper-slide" data-rel="genres-list"><span>Kategooriad</span></div>
                         <div class="swiper-slide" data-rel="durations-list"><span>Kestvus</span></div>
                         <div class="swiper-slide" data-rel="periods-list"><span>Aasta</span></div>

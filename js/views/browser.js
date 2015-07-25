@@ -9,8 +9,7 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     initialize: function(options) {
         this.options = options;
-        var querystring = this.collection.querystate.getQueryString();
-        if (querystring != "") this.collection.update();
+
         this.collection = options.collection;
         this.collection.options.genres.bind('all', this.setGenreDropDown, this);
         this.collection.fullCollection.bind('reset', this.renderResults, this);
@@ -49,8 +48,10 @@ App.Views.BrowserPage = Backbone.View.extend({
 
                 $("#front-page-slider").show().animate({
                     "opacity": 1
-                }, 400,false, function() {  
-                    window.mySwiper.resizeFix();
+                }, 400,false, function() {
+                    setTimeout(function() {   
+                        window.mySwiper.resizeFix();
+                    },200);
                 }.bind(this));
             });
         });
@@ -74,8 +75,6 @@ App.Views.BrowserPage = Backbone.View.extend({
                     "opacity": 1
                 }, 100);
                 $(this).hide();
-
-
             });
         });
     },
@@ -162,10 +161,9 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
     },
     onClear: function(e) {
-        $log(search_dict);
-
         this.collection.querystate.set(this.collection.querystate.defaults);
         this.onChangeCollectionState(this.collection.querystate, true);
+
         return false;
     },
     onChangeGenre: function(model, genre) {
@@ -176,7 +174,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         _.each(parts.split(";"), function(i) {
             $(".selection-wrapper [data-val=" + i + "]")
         });
-
         if (this.options.redirect_on_genre_change && genre != this.collection.initial_search.genre) {
             this.redirectToBaseURL();
         }
@@ -190,12 +187,13 @@ App.Views.BrowserPage = Backbone.View.extend({
             periods: undefined,
             durations: undefined
         };
-
         var search_dict = _.extend({}, search_array);
+
         $("#search-form select option[selected=selected]").each(function() {
             var fieldid = $(this).parent().attr("id");
             var fieldname = fieldid.replace("id_", "");
             var val = $(this).val();
+
             search_dict[fieldname] = search_dict[fieldname] == undefined ? val : search_dict[fieldname] += ";" + val;
         });
 
@@ -241,6 +239,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
     },
     renderResults: function(force) {
+
         if (typeof(force) == "undefined" && ((typeof(this.lastattributes) != "undefined") || this.lastattributes == JSON.stringify(this.collection.querystate.changedAttributes()))) {
             return false;
         }
@@ -261,6 +260,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             } else {
                 $("#loadMore").show();
             }
+
             this.lastattributes = JSON.stringify(this.collection.querystate.changedAttributes());
             this.rendering = false;
         }
@@ -268,27 +268,26 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
     },
     updateUIToState: function() {
-        var state = this.collection.querystate;
-        // main search text box
-        var query = state.get('q');
-
+    
+        var query = this.collection.querystate.get('q');
         $('#main-search-box').val(query).trigger("keyup");
         this.filterview.updateUI();
     },
     onChangeCollectionState: function(state, silent) {
-        var trigger = silent === true ? false : true;
-        this.updateUIToState();
 
+        var trigger = silent === true ? false : true;
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);
+
         //Update the url of the browser using the router navigate method
-        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {
-            trigger: trigger
-        });
+            app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {
+                trigger: trigger
+            });
     },
     //Set the search state from the url
     setSearchStateFromHash: function(searchStateHash) {
         //setFromHash will trigger a change event, which then
         //loads the records and reloads the table
+
         this.collection.querystate.setFromHash(searchStateHash);
     },
     clearSearch: function() {
