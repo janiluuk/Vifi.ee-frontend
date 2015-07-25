@@ -76,7 +76,6 @@ App.Views.FeaturedView = Backbone.View.extend({
 
     },
     onQueryChange: function() {
-
         if (this.querystate.get("q").length > 0) { 
             this.trigger("search:open");
         } else { 
@@ -93,13 +92,10 @@ App.Views.FeaturedView = Backbone.View.extend({
         this.$el.empty().append(ich.featuredTemplate());
         var counter = 0;
 
-            this.banners.forEach(function(item) {
-               
+            this.banners.forEach(function(item) {               
                 $(this.fragment).append(ich.bannerItemTemplate(item.toJSON()));
-               // console.log(item.toJSON());
-
+                counter++;
             }.bind(this));
-
             _.each(this.collection, function(item) {
                 if (counter < App.Settings.featured_slides_limit) {
                     counter++;
@@ -111,14 +107,18 @@ App.Views.FeaturedView = Backbone.View.extend({
      
         $(this.swiperel).empty().append(this.fragment);
        
+        if (counter < 2) { 
+            this.$(".arrow-left, .arrow-right").hide();
+
+        } else {
+            setTimeout(function() {
+                    this.startCarousel();
+            }.bind(this), 1600);
+        }
+
         setTimeout(function() {
            App.Utils.lazyload();
-
         },250);
-        setTimeout(function() {
-            this.startCarousel();
-        }.bind(this), 2000);
-
         return this;
     },
     startCarousel: function() {
@@ -142,14 +142,5 @@ App.Views.FeaturedView = Backbone.View.extend({
             e.preventDefault();
             mySwiper.swipeNext();
         });
-        /**
-        window.searchnavSwiper = new Swiper('#search-tabbar-swiper-container', {
-            slidesPerView: 'auto',
-            mode: 'horizontal',
-            loop: false,
-            centeredSlides: true,
-            cssWidthAndHeight: true,
-        });
-**/
     }
 });

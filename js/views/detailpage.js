@@ -6,6 +6,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
         'click a#playMovie': 'playMovie',
         'click #close-player': 'closePlayer',
         'click #close-trailer': 'closeTrailer',
+        'click button.play': 'playMovie',        
         'click #film-tabbar-swiper-container .swiper-slide': 'changeTab'
     },
     initialize: function(options) {
