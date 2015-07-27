@@ -7,15 +7,15 @@ App.Views.BaseAppView = Backbone.View.extend({
         'click .goTop': 'scrollToTop',
     },
     scrollTop: 0,
-    state: false,
     initialize: function(options) {
+
+
         this.options = options || {};
         this.session = options.session;
         this.user = options.session.get("profile");
         this.collection = options.collection;
         this.usercollection = options.usercollection;
         this.sessioncollection = options.sessioncollection;
-        
         this.subscriptions = options.subscriptions;
         this.paymentmethods = options.paymentmethods;
         this.evt = options.eventhandler;
@@ -38,6 +38,14 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.topmenu = new App.Views.TopMenu({
             model: this.user
         });
+        
+        /* If mobile and default view, minimize filterbar */
+        var platform = App.Platforms.platform.name;
+        options.initialFilterState = true;        
+        if (platform == "mobile" && this.collection.querystate.isDefault()) {
+            options.initialFilterState = false;
+        }
+
         this.homepage = new App.Views.HomePage(options);
         this.render();
         this.router = new App.Router();
@@ -104,7 +112,8 @@ App.Views.HomePage = Backbone.View.extend({
         this.browserview = new App.Views.BrowserPage({
             collection: options.collection,
             filters: options.filters,
-            sort: options.sort
+            sort: options.sort,
+            initialState: options.initialFilterState
         });
         
         this.featuredview = new App.Views.FeaturedView({
@@ -112,6 +121,7 @@ App.Views.HomePage = Backbone.View.extend({
             banners: options.banners,
             querystate: options.collection.querystate
         });
+
         this.featuredview.on("search:open", this.onSearchOpen,this);
         this.featuredview.on("search:close", this.onSearchClose,this);        
     },
@@ -183,7 +193,6 @@ App.Views.TopMenu = Backbone.View.extend({
     toggleSearchBox: function(e) {
 
         var el = this.$("#toolbar-search-group");
-        
         var visible = el.hasClass("pullDownRight");
         el.toggleClass("pullDownRight");
         el.toggleClass("pullUpRight", visible);
@@ -198,7 +207,8 @@ App.Views.TopMenu = Backbone.View.extend({
     clearSearch: function(e) {
         e.preventDefault();
         $("#clear-search-text-button").fadeOut("fast");
-
+        this.toggleSearchBox();
+        
         this.$("#main-search-box").val("");
         app.homepage.browserview.onSearchFieldChange(e);
         app.scrollToTop();

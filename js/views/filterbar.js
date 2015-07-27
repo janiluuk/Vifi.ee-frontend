@@ -13,14 +13,11 @@ App.Views.SearchView = Backbone.View.extend({
     setTerm: function(term) { 
 
         if (this.getTerm().length > 0) { 
-            this.$el.animate({"height": "100px"},250);
-            this.$el.fadeIn(100);
-
+            this.$el.show();
 
         } else {
             var height = $("#front-page-slider").height();
-            this.$el.fadeOut("fast");
-            this.$el.animate({"height": height},300);
+            this.$el.css({"height": height});
         }
         this.render();
 
@@ -33,15 +30,20 @@ App.Views.SearchView = Backbone.View.extend({
     }
 });
 App.Views.FilterView = Backbone.View.extend({
+
+    initialState: false,
     initialize: function(options) {
         this.options = options;
+        this.initialState = options.initialState;
         this.filterlistview = new App.Views.FilterlistView({
             filters: this.options.filters,
-            sort: this.options.sort
+            sort: this.options.sort,
+            initialState: this.initialState,
         });
         this.filterbarview = new App.Views.FilterbarView({
             filters: this.options.filters,
-            sort: this.options.sort
+            sort: this.options.sort,
+            initialState: this.initialState
         });
         this.listenTo(this.options.state, 'change', this.updateUI, this);
         this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this);
@@ -67,7 +69,6 @@ App.Views.FilterView = Backbone.View.extend({
                 $(this).attr("selected", !sel ? "selected" : false);
             }
         });
-        
         $("#id_" + field).trigger("change");
     },
     updateUI: function() {
@@ -77,6 +78,7 @@ App.Views.FilterView = Backbone.View.extend({
         } else {
             $("button.clear").removeClass("disabled");
         }
+
         $.each(this.options.filters, function(option, idx) {
 
             var val = decodeURIComponent(_this.options.state.get(option));
@@ -102,14 +104,13 @@ App.Views.FilterView = Backbone.View.extend({
             }
         });
         var query = this.options.state.get('q');
-        $('#main-search-box').val(query).trigger("keyup"); 
+        $('#main-search-box').val(query).trigger("keypress"); 
 
     },
     render: function() {
         this.filterbarview.render();
         this.filterlistview.render();
         this.updateUI();
-
         return this;
     }
 
@@ -127,6 +128,7 @@ App.Views.FilterItemView = Backbone.View.extend({
         this.options = options || {};
         this.selectEl = options.selectEl;
         this.el = options.el;
+
         this.filters = options.filters;
         this.initDropDown();
     },
@@ -227,12 +229,13 @@ App.Views.ClearFiltersView = Backbone.View.extend({
 });
 
 App.Views.FilterlistView = Backbone.View.extend({
-
     views: [],
+    initialState: true,
     initialize: function(options) {
         _.bindAll(this, "render");
         this.options = options || {};
         this.filters = options.filters;
+        this.initialState = options.initialState;
         this.sort = options.sort;
     },
     onFilterBarButton: function(val, field) {
@@ -254,12 +257,12 @@ App.Views.FilterlistView = Backbone.View.extend({
         var _this = this;
 
         var i = 0;
-        var disp = "block";
+        var disp = this.initialState ? "block" : "none";
 
         if (App.Settings.sortingEnabled) {  
             /** Add sortbar */
 
-            $("<div>").attr("id", "sort-list").appendTo(this.$el);
+            $("<div>").attr("id", "sort-list").css("display", disp).appendTo(this.$el);
             var view = new App.Views.SortItemView({
                 filters: this.sort,
                 selectEl: "sort",
@@ -313,13 +316,21 @@ App.Views.FilterbarView = Backbone.View.extend({
     initialize: function(options) {
         _.bindAll(this, "render");
         this.options = options || {};
+        this.initialState = this.state = options.initialState;
 
     },
     render: function() {
         this.setElement($("#filter-bar"));
 
         this.$el.html(ich.filterBarTemplate({sortbar: App.Settings.sortingEnabled}));
-        this.$(".swiper-slide:first").addClass(this.activeClass);
+        
+        /* Show or hide the initial tab */
+        if (this.initialState) { 
+            this.$(".swiper-slide:first").addClass(this.activeClass);
+        } else {             
+           $("#filter-list").slideUp();
+        }
+
         var _this = this;
 
         setTimeout(function() { 

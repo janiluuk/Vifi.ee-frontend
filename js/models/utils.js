@@ -58,7 +58,7 @@ App.Utils = {
     
     lazyload: function() { 
         if (!App.Utils.bLazy) { 
-            App.Utils.bLazy = new Blazy({ container: "#content-container", offset: 450});
+            App.Utils.bLazy = new Blazy({ container: "#content-container", offset: 350});
         } else {
             App.Utils.bLazy.revalidate();
         }

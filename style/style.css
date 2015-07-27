@@ -1153,14 +1153,7 @@ input#main-search-box {
     background-position: center right 0.5em;
 }
 
-.pullUpRight input#main-search-box {
-    transition: width 0.7s ease-in-out;
-    -moz-transition: width 0.7s ease-in-out;
-    -o-transition: width 0.7s ease-in-out;
-    -ms-transition: width 0.7s ease-in-out;
-    -webkit-transition: width 0.7s ease-in-out;        
-    width: 1%;
-}
+
 
 /* SIDE MENU */
 
@@ -1510,7 +1503,7 @@ a.arrow-right {
 /* CONTENT CONTAINER */
 
 #content-container {
-    background: url('img/blur_background1.jpg') no-repeat center center fixed;
+    background: url('img/blur_background1.jpg') no-repeat center center;
     background-size: cover;
     backface-visibility:hidden;
     -webkit-backface-visibility:hidden; /* Chrome and Safari */
@@ -1535,11 +1528,11 @@ a.arrow-right {
 
 .feature-wrapper {
     width: 100%;
-    min-height: 300px;
+    min-height: 320px;
     background: #ddd;
 }
 .feature-wrapper#search {
-    min-height: 90px;
+    min-height: 100px;
 }
 
 #search-text {
@@ -1965,6 +1958,7 @@ ul#cast-content-body-list li .item-image {
     margin: 1em auto;
 }
 
+
 .singlepage-body.main-singlepage {
     font-size: 14px;
     line-height: 1.5;
@@ -2191,7 +2185,7 @@ ul#movie-interactive-button-row li {
 }
 
 #search-result-header {
-    background: url('img/blur_background1.jpg') no-repeat center center fixed;
+    background: url('img/blur_background1.jpg') no-repeat center center;
     background-size: cover;
 }
 
@@ -2431,7 +2425,7 @@ ul#subscription-benefit-list li .icon {
 @media only screen and (max-width: 1600px) {
 
     #content-container {
-        background: url('img/blur_background_1600.jpg') no-repeat center center fixed;
+        background: url('img/blur_background_1600.jpg') no-repeat center center;
     }
 
 }
@@ -2439,7 +2433,7 @@ ul#subscription-benefit-list li .icon {
 @media only screen and (max-width: 1280px) {
 
     #content-container {
-        background: url('img/blur_background_1280.jpg') no-repeat center center fixed;
+        background: url('img/blur_background_1280.jpg') no-repeat center center;
     }
 
     .main-wrapper {
@@ -2707,6 +2701,12 @@ ul#subscription-benefit-list li .icon {
         top: 45px;
         background-color: rgba(50, 46, 84, 0.95);
     }
+    #search .singlepage-title {
+        margin: 2em auto;
+    }
+    .feature-wrapper#search {
+        min-height: 125px;
+    }
 
     #toolbar-search-group:after {
         visibility: hidden ;
@@ -2728,6 +2728,24 @@ ul#subscription-benefit-list li .icon {
         -ms-transition: width 0.7s ease-in-out;
         -webkit-transition: width 0.7s ease-in-out;        
         width: 1%;
+    }
+
+    /* pullDownRight */
+
+    .pullDownRight {
+        animation: pullDownRight 0.5s ease-in-out;
+        -webkit-animation: pullDownRight 0.5s ease-in-out;
+        -moz-animation: pullDownRight 0.5s ease-in-out;
+        -ms-animation: pullDownRight 0.5s ease-in-out;
+        -o-animation: pullDownRight 0.5s ease-in-out;
+        display: block !important;
+        transform-origin: 100% 0%;
+        opacity: 1;
+        z-index: 1;
+        -webkit-transform-origin: 100% 0%;
+        -moz-transform-origin: 100% 0%;
+        -ms-transform-origin: 100% 0%;
+        -o-transform-origin: 100% 0%;
     }
 
     #content-body {
@@ -3169,24 +3187,6 @@ ul#subscription-benefit-list li .icon {
     0% {opacity: 1; -o-transform: translateY(0%);}
     100% {opacity: 0; -o-transform: translateY(50%);}
 } 
-
-/* pullDownRight */
-
-.pullDownRight {
-    animation: pullDownRight 0.5s ease-in-out;
-    -webkit-animation: pullDownRight 0.5s ease-in-out;
-    -moz-animation: pullDownRight 0.5s ease-in-out;
-    -ms-animation: pullDownRight 0.5s ease-in-out;
-    -o-animation: pullDownRight 0.5s ease-in-out;
-    display: block !important;
-    transform-origin: 100% 0%;
-    opacity: 1;
-    z-index: 1;
-    -webkit-transform-origin: 100% 0%;
-    -moz-transform-origin: 100% 0%;
-    -ms-transform-origin: 100% 0%;
-    -o-transform-origin: 100% 0%;
-}
 
 @keyframes pullDownRight {
     0% {opacity: 0; transform: scale(0.1,0.1);}

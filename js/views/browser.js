@@ -20,7 +20,8 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.filterview = new App.Views.FilterView({
             filters: this.options.filters,
             sort: this.options.sort,
-            state: this.collection.querystate
+            state: this.collection.querystate,
+            initialState: options.initialState
         });
         this.filterview.bind('filter-bar:sort', this.onSort, this);
         this.filterview.bind('filter-bar:clear', this.onClear, this);
