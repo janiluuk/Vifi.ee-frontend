@@ -5,6 +5,8 @@ App.Views.SearchView = Backbone.View.extend({
         this.model = options.model;
         this.listenTo(this.model, "change:q", this.setTerm, this);
         this.setTerm(this.getTerm());
+        var query = this.model.get('q');
+        $('#main-search-box').val(query).trigger("keyup");        
     },
     getTerm: function() { 
         return this.model.get("q");
@@ -41,6 +43,7 @@ App.Views.FilterView = Backbone.View.extend({
             filters: this.options.filters,
             sort: this.options.sort
         });
+        this.listenTo(this.options.state, 'change', this.updateUI, this);
         this.filterlistview.bind('filter-bar:toggle', this.onChangeFilter, this);
         this.filterlistview.bind('filter-bar:clear', this.onClearFilter, this);
         this.filterlistview.bind('filter-bar:sort', this.onChangeSort, this);
@@ -51,6 +54,7 @@ App.Views.FilterView = Backbone.View.extend({
     },
     onClearFilter: function() {
         this.trigger("filter-bar:clear");
+
     },
     onChangeFilter: function(field, val) {
 
@@ -102,7 +106,7 @@ App.Views.FilterView = Backbone.View.extend({
         this.filterbarview.render();
         this.filterlistview.render();
         this.updateUI();
-        
+
         return this;
     }
 
@@ -120,7 +124,6 @@ App.Views.FilterItemView = Backbone.View.extend({
         this.options = options || {};
         this.selectEl = options.selectEl;
         this.el = options.el;
-
         this.filters = options.filters;
         this.initDropDown();
     },
@@ -132,7 +135,6 @@ App.Views.FilterItemView = Backbone.View.extend({
         var type = el.attr("data-type");
         var category = el.attr("data-category");
         var radio = $(el).hasClass("radio");
-
 
         if (val == "reset") {
             $(el).addClass("toggle-on").siblings().removeClass("toggle-on");  

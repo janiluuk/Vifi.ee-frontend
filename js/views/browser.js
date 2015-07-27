@@ -267,10 +267,8 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
     },
     onChangeCollectionState: function(state, silent) {
-
         var trigger = silent === true ? false : true;
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);
-
         //Update the url of the browser using the router navigate method
             app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {
                 trigger: trigger
