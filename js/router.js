@@ -22,8 +22,6 @@ App = {
         'termsandconditions' : 'Kasutustingimused',
         'watchfilmsfromtv' : 'Filmi vaatamine läbi teleri',
         'faq' : 'Korduma kippuvad küsimused'
-
-
     }
 }
 App.Router = Backbone.Router.extend({
@@ -67,9 +65,7 @@ App.Router = Backbone.Router.extend({
     },
     purchaseReturn: function (film) 
     {
-
         var films = app.user.checkPurchases();
-
         if (films) {
                 
             app.user.updatePurchases().then(function(collection) { 
@@ -96,7 +92,7 @@ App.Router = Backbone.Router.extend({
     },
     search: function(searchStateHash) {
 
-        app.collection.querystate.setFromUrl();
+        app.collection.querystate.setQueryString();
         var currentPage = this.currentPage;
         if (currentPage != "homePage" && currentPage != "search") {
             app.showBrowserPage();
@@ -160,12 +156,15 @@ App.Router = Backbone.Router.extend({
     },
 
     homePage: function() {
-        app.collection.querystate.setFromUrl();
         var currentPage = this.currentPage;
+
         if (currentPage != "homePage" && currentPage != "search") {
-            app.showBrowserPage();
+            app.showBrowserPage();  
         }
-                
+        if (currentPage == "showFilm") {
+            app.collection.querystate.setQueryString();
+        }
+
         this.trigger("change:title", "Home");
     },
   

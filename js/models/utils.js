@@ -1,6 +1,5 @@
 App.Utils = { 
 
-
     post: function(path, params, method) {
         method = method || "post"; // Set method to post by default if not specified.
 
@@ -172,7 +171,13 @@ App.Utils.State = Backbone.Model.extend({
     initialize: function(options) { 
         _.bindAll(this, 'setFromHash', 'getHash', 'setFromUrl' );
     },
+    setQueryString: function(trigger) { 
 
+        var string = this.getQueryString();
+        app.router.navigate('search' + string, {
+                trigger: trigger
+        });
+    },
     getQueryString: function(addParams) {
         var hashables = [];
         var dict = this.toJSON();
@@ -194,8 +199,11 @@ App.Utils.State = Backbone.Model.extend({
 
     isEmpty: function() {
        var len =  _.values(this.attributes).join("").length;
-       return len > 0 ? false : true;
+       return len == 0 ? true : false;
+    },
 
+    isDefault: function() {
+       return _.values(this.defaults).join("") == _.values(this.attributes).join("");
     },
 
     setFromUrl: function() { 
@@ -204,9 +212,7 @@ App.Utils.State = Backbone.Model.extend({
         var hash = hash.replace('#', '');
         hash = hash.split("=").join(":");
 
-
-        this.setFromHash(decodeURIComponent(hash));
-
+        return this.setFromHash(decodeURIComponent(hash));
     },
 
     //A hash to use in the url to create a bookmark or link
@@ -218,12 +224,13 @@ App.Utils.State = Backbone.Model.extend({
     //Parses from the formate of prop1:value1|prop2:value2
     setFromHash: function(hash) {
         hash = hash.replace("?", "");
+
         if (hash.length == 0)  {  
             var size = _.size(this.changedAttributes());
             if (size > 0) this.set(this.defaults);
             return true; 
         }
-        
+
         var hashables = hash.split('|');
         var dict = _.clone(this.defaults);
         var i = false;
@@ -239,7 +246,6 @@ App.Utils.State = Backbone.Model.extend({
                 i = true;
             } 
         });
-
         this.set(dict);
         return i;
     }
@@ -313,7 +319,6 @@ App.Utils.Api = Backbone.Model.extend({
 App.Utils.Notification = Backbone.Model.extend({ 
 
     initialize: function(options) {
-
         if (options && options.model) this.attach(options.model);
     },
     attach: function(model) {
@@ -322,21 +327,23 @@ App.Utils.Notification = Backbone.Model.extend({
         model.on("notice",function(message, callback) { this.notify(message, "notice", callback); }, this);
         model.on("success", function(message, callback) { this.notify(message, "success", callback); }, this);
         model.on("flash", function(message, amount) { this.flash(message, amount); }, this);
-
-
     },
     flash: function(text, amount) {
-            if (!amount) amount = 7500;
-            var actionOutputEl = document.getElementById("flash-output");
-        if (actionOutputEl != null)
-            actionOutputEl.innerHTML = '<span class="flash-inactive">'+new Date().toTimeString().split(" ")[0]+":</span> "+text+"<br/>"+actionOutputEl.innerHTML;
 
-            $("#flash-output").addClass('animation').addClass('highlight');
-            if (this.id) clearTimeout(this.id);
+        var msg = '<span class="flash-inactive">'+new Date().toTimeString().split(" ")[0]+":</span> "+text+"<br/>";
+        if (!amount) amount = 7500;
+        var actionOutputEl = document.getElementById("flash-output");
+        if (actionOutputEl == null)
+            actionOutputEl = $("<div>").attr("id", "flash-output").html(msg).appendTo("body");        
+        else
+            actionOutputEl.innerHTML += msg;
 
-            this.id = setTimeout(function() {
-                $("#flash-output").removeClass('highlight');
-            }.bind(this), amount);
+        $("#flash-output").addClass('animation').addClass('highlight');
+        if (this.id) clearTimeout(this.id);
+
+        this.id = setTimeout(function() {
+            $("#flash-output").removeClass('highlight');
+        }.bind(this), amount);
     },
 
     notify: function(message, type, callback) { 
@@ -344,27 +351,26 @@ App.Utils.Notification = Backbone.Model.extend({
 
         type = type || "notice";
 
-                // create the notification
-                        var notification = new NotificationFx({
+            // create the notification
+            var notification = new NotificationFx({
 
-                            message : '<div class="ns-thumb"><img width=64 height=64 src="/style/img/notify_'+type+'.jpg"/></div><div class="ns-content"><div class="ns-message"><div class="ns-message-container">'+message+'</div></div></div>',
-                            layout : 'other',
-                            ttl : 6000,
-                            effect : 'thumbslider',
-                            type : type, // notice, warning, error or success
-                            onClose : function() {
-                                if (callback) callback();
-                            }
-                        });
+                message : '<div class="ns-thumb"><img width=64 height=64 src="/style/img/notify_'+type+'.jpg"/></div><div class="ns-content"><div class="ns-message"><div class="ns-message-container">'+message+'</div></div></div>',
+                layout : 'other',
+                ttl : 6000,
+                effect : 'thumbslider',
+                type : type, // notice, warning, error or success
+                onClose : function() {
+                    if (callback) callback();
+                }
+            });
 
-                        // show the notification
-                        notification.show();
+            // show the notification
+            notification.show();
     }
 }, Backbone.Events);
 
 window.tr = App.Utils.translate;
 
- 
 _.extend(Backbone.Validation.callbacks, {
     valid: function (view, attr, selector) {
         var $el = view.$('[name=' + attr + ']'), 

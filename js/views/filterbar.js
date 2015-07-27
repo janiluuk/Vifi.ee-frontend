@@ -5,17 +5,17 @@ App.Views.SearchView = Backbone.View.extend({
         this.model = options.model;
         this.listenTo(this.model, "change:q", this.setTerm, this);
         this.setTerm(this.getTerm());
-        var query = this.model.get('q');
-        $('#main-search-box').val(query).trigger("keyup");        
+        
     },
     getTerm: function() { 
         return this.model.get("q");
     },
-    setTerm: function() { 
+    setTerm: function(term) { 
 
         if (this.getTerm().length > 0) { 
             this.$el.animate({"height": "100px"},250);
             this.$el.fadeIn(100);
+
 
         } else {
             var height = $("#front-page-slider").height();
@@ -72,7 +72,7 @@ App.Views.FilterView = Backbone.View.extend({
     },
     updateUI: function() {
         var _this = this;
-        if (this.options.state.isEmpty() === true) { 
+        if (this.options.state.isDefault() === true) { 
             $("button.clear").addClass("disabled");
         } else {
             $("button.clear").removeClass("disabled");
@@ -101,6 +101,9 @@ App.Views.FilterView = Backbone.View.extend({
 
             }
         });
+        var query = this.options.state.get('q');
+        $('#main-search-box').val(query).trigger("keyup"); 
+
     },
     render: function() {
         this.filterbarview.render();

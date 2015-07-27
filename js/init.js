@@ -17,11 +17,11 @@ window.app = _.extend({}, Backbone.Events);
         if (window.location.hash.indexOf('#search') != -1) {
             // start with empty state because Router will configure it later.
             var state = new App.Utils.State();
-            state.setFromUrl();
-            
+
         } else {
 
             var state = new App.Utils.State(data.search);
+
         }
 
         app.template = new App.Utils.TemplateLoader();
@@ -61,7 +61,8 @@ window.app = _.extend({}, Backbone.Events);
                 
                 // Bind ready event when everything has been loaded
 
-                app.on('app:ready', function() { 
+                app.on('app:ready', function() {
+                        app.collection.querystate.setFromUrl(); 
                         app.user.updatePurchases(); 
                         if (App.Settings.debug === true) { 
                             $log("App ready at Finished at "+new Date().getTime()); 
@@ -95,7 +96,7 @@ $(document).ready(function() {
 function init() {
     app.trigger("app:init");
     var url = App.Settings.api_url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.api_key+"&jsoncallback=?";
-    $.getJSON(url, function(data) { $.when(initApp(data)).then(function() { app.trigger("app:ready"); },function() { app.trigger("app:fail"); } ); }.bind(this), "jsonp");
+    $.getJSON(url, function(data) { $.when(initApp(data)).then(function() { app.trigger("app:ready");  },function() { app.trigger("app:fail"); } ); }.bind(this), "jsonp");
 
 }
 

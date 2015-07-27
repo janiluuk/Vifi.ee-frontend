@@ -34,6 +34,8 @@ App.Views.BrowserPage = Backbone.View.extend({
     initEvents: function() {
         this.on("maximize", function() {
             var height = this.originalHeight;
+            var altHeight = $("#featured-swiper-container").height();
+            height = Math.max(height, altHeight);            
             $("#front-page-slider").css({
                     "min-height": height,
                     "height": height,
@@ -43,7 +45,7 @@ App.Views.BrowserPage = Backbone.View.extend({
                 "opacity": 0,
                 "height": height,
                 "min-height": height
-            }, 100, false, function() {
+            }, 200, false, function() {
                 $(this).hide();
 
                 $("#front-page-slider").show().animate({
@@ -69,11 +71,11 @@ App.Views.BrowserPage = Backbone.View.extend({
                 "min-height": height,
                 "height": height,
                 "opacity": 0
-            }, 225, false, function() {
+            }, 325, false, function() {
 
                 $("#search").show().animate({
                     "opacity": 1
-                }, 100);
+                }, 200);
                 $(this).hide();
             });
         });
@@ -82,6 +84,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.$el.html(ich.browserPageTemplate());
         this.filterview.render();
         this.applyIsotope();
+        
         return this;
     },
     applyIsotope: function() {
@@ -90,7 +93,7 @@ App.Views.BrowserPage = Backbone.View.extend({
             layoutMode: 'fitRows',
             resizable: true,
             itemSelector: '#content-body-list .item',
-            transitionDuration: '0.6s',
+            transitionDuration: '0.7s',
             // disable scale transform transition when hiding
             hiddenStyle: {
                 opacity: 0,
@@ -101,15 +104,14 @@ App.Views.BrowserPage = Backbone.View.extend({
                 'transform': 'translateY(0%)',
             },
             animationOptions: {
-                duration: 500,
-                easing: 'linear',
-                queue: true,
+                duration: 600,
+                queue: false,
             }
         });
         this.$isotope.isotope('on', 'layoutComplete', function() { 
             setTimeout(function() {
                 App.Utils.lazyload();
-            }, 250);
+            }, 500);
         });
         return true;
     },

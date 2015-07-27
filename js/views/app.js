@@ -4,7 +4,6 @@ App.Views.BaseAppView = Backbone.View.extend({
     el: $("#vifi-page-container"),
 
     events: {
-   
         'click .goTop': 'scrollToTop',
     },
     scrollTop: 0,
@@ -54,25 +53,37 @@ App.Views.BaseAppView = Backbone.View.extend({
     scrollToTop: function() {
         this.$("#content-container").stop().animate({
             scrollTop: 0
-        }, 800);
+        }, 600);
     },
     showMoviePage: function() {
         this.scrollTop = this.$("#content-container").scrollTop();
         $(".main-wrapper:not(#moviepage)").hide();
         $("#moviepage").fadeIn("fast");
-
         this.$("#content-container").scrollTop(0);
     },
+
     showBrowserPage: function() {
+
         $(".main-wrapper:not(#homepage)").hide();
+
         $("#homepage").css("visibility", "visible").show();
-        if (this.scrollTop == 0) {
+        
+
+        if (!this.browserInitialized) { 
+
             app.homepage.browserview.filterview.filterbarview.enableCarosel();
+
+        }            
             app.homepage.browserview.renderResults();
+            app.homepage.browserview.$isotope.isotope('layout');
+            App.Utils.lazyload();
+
+        this.browserInitialized = true;
+        
+        if (this.scrollTop == 0) {
         } else {
             $("#content-container").scrollTop(this.scrollTop);
         }
-        app.homepage.browserview.$isotope.isotope('layout');
     },
     showSearchPage: function() {
         app.homepage.browserview.collection.onSearchFieldChange();
@@ -95,17 +106,27 @@ App.Views.HomePage = Backbone.View.extend({
             filters: options.filters,
             sort: options.sort
         });
+        
         this.featuredview = new App.Views.FeaturedView({
-            banners: options.banners,
             collection: options.collection.featured(),
+            banners: options.banners,
             querystate: options.collection.querystate
         });
+        this.featuredview.on("search:open", this.onSearchOpen,this);
+        this.featuredview.on("search:close", this.onSearchClose,this);        
     },
     render: function() {
         this.featuredview.render();
         this.browserview.render();
         return this;
     },
+
+    onSearchOpen: function() {        
+        this.browserview.trigger("minimize");
+    },
+    onSearchClose: function() {
+        this.browserview.trigger("maximize");
+    },    
 });
 
 
@@ -146,7 +167,6 @@ App.Views.TopMenu = Backbone.View.extend({
         var search = this.$("#main-search-box").val();
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
         this.$("#main-search-box").val(search).trigger("keypress");
-
         return this;
     },
     login: function(e) {
@@ -161,13 +181,13 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
     },
     toggleSearchBox: function(e) {
-        if (e) e.preventDefault();
 
         var el = this.$("#toolbar-search-group");
-    
+        
         var visible = el.hasClass("pullDownRight");
         el.toggleClass("pullDownRight");
         el.toggleClass("pullUpRight", visible);
+        return true;
 
     },
 
@@ -176,16 +196,24 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
     },
     clearSearch: function(e) {
-        e.stopPropagation();
         e.preventDefault();
+        $("#clear-search-text-button").fadeOut("fast");
+
         this.$("#main-search-box").val("");
         app.homepage.browserview.onSearchFieldChange(e);
+        app.scrollToTop();
+       
         
         return false;
     },
     onSearchSubmit: function(e) {
         e.preventDefault();
+        var query = $('#main-search-box').val();
+        if (query == '') return this.clearSearch(e);
         app.homepage.browserview.onSearchFieldChange(e);
+        $("#main-search-box").blur();
+
+        app.scrollToTop();
         return false;
     },
 });

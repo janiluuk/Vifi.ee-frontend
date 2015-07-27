@@ -15,7 +15,6 @@ App.Collections.FilmSessionCollection = Backbone.Collection.extend({
         model: App.User.FilmSession
 });
 
-
 App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         baseUrl: App.Settings.api_url + 'search/',
         url: App.Settings.api_url + "search?api_key=" +App.Settings.api_key+ "&",
@@ -46,8 +45,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
 
            _.extend(this.queryParams,this.querystate.attributes);   
             if (this.querystate.isEmpty() && this.originalCollection) { 
-                this.fullCollection.reset(this.originalCollection.toJSON());
-                            
+                this.fullCollection.reset(this.originalCollection.toJSON()); 
             } else   
             this.fetch({ reset: true, url: this.url, dataType: 'jsonp'});
         },
@@ -65,7 +63,6 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             var items = this.filter(function(data) {
                 return data.get("ticket");
             });
-
             return new App.Films.UserCollection(items);
         },
         sortByAttribute: function(attribute, desc) {
@@ -101,7 +98,6 @@ App.Films.GenreCollection = Backbone.Collection.extend({
     initialize: function(models, options) {},
     update: function() {
         this.url = this.baseUrl + '&api_key=' + App.Settings.api_key + '&jsoncallback=?';
-      
     },
     parse: function(response) {
         return response.objects;
@@ -131,8 +127,6 @@ App.Collections.UserCollection = Backbone.Collection.extend({
         });
         return this;
     }
-
-
 });
 App.Collections.SubscriptionCollection = Backbone.Collection.extend({});
 App.Collections.PaymentmethodCollection = Backbone.Collection.extend({});
