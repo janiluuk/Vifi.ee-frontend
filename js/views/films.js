@@ -10,6 +10,14 @@ App.Views.FilmView = Backbone.View.extend({
         this.listenTo(this.model, 'remove', this.remove, this);
         this.listenTo(this.model, 'destroy', this.remove, this);
     },
+
+    render: function() {
+        this.$el.html(ich.filmitemTemplate(this.model.get("film")));
+        return this;
+    }
+});
+_.extend(App.Views.FilmView.prototype, {
+
     showMoviePage: function(e) {
         e.preventDefault();
         var url = this.model.get("film").seo_friendly_url;
@@ -17,11 +25,8 @@ App.Views.FilmView = Backbone.View.extend({
             trigger: true
         });
         return false;
-    },
-    render: function() {
-        this.$el.html(ich.filmitemTemplate(this.model.get("film")));
-        return this;
     }
+
 });
 App.Views.UserFilmView = Backbone.View.extend({
     model: App.Models.Film,
@@ -68,7 +73,6 @@ App.Views.FeaturedView = Backbone.View.extend({
         this.querystate = options.querystate;
         this.fragment = document.createDocumentFragment();            
         this.banners = options.banners;
-
         this.listenTo(this.querystate, "change:q", this.onQueryChange, this);
         if (this.querystate.get("q").length > 0) {
             this.$el.hide();
@@ -113,7 +117,7 @@ App.Views.FeaturedView = Backbone.View.extend({
         } else {
             setTimeout(function() {
                     this.startCarousel();
-            }.bind(this), 1600);
+            }.bind(this), 2000);
         }
 
         setTimeout(function() {

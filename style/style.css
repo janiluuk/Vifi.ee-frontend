@@ -1812,19 +1812,15 @@ ul#content-body-list li, ul#cast-content-body-list li {
 .item {
     width: 14.66%;
     margin: 1%;
-    box-sizing: border-box;
+   /* box-sizing: border-box; */
     box-shadow: 0 2px 2px #ACA0A0;
     background: white;
-    transition: background 0.3s ease-in-out;
-    -webkit-transition: background  0.3s ease-in-out;
-    -moz-transition: background  0.3s ease-in-out;
-    -o-transition: background  0.2s ease-in-out;
-    -ms-transition: background  0.2s ease-in-out;
+
     float:left;
     cursor: pointer;
 }
 
-.item:hover .item-info {
+.item:hover{
     background: #ddd;
 }
 .item-info-description {
@@ -1926,19 +1922,10 @@ ul#cast-content-body-list li .item-image {
     text-decoration: none;
     font-weight: 700;
     color: #333;
-    transition: color 0.1s ease-in-out;
-    -webkit-transition: color 0.1s ease-in-out;
-    -moz-transition: color 0.1s ease-in-out;
-    -o-transition: color 0.1s ease-in-out;
-    -ms-transition: color 0.2s ease-in-out;
 }
 
 .item:hover .item-info-title {
     color: #00983B;
-}
-
-.item-info-title:hover {
-    text-decoration: underline;
 }
 
 .item-info-description {

@@ -39,24 +39,8 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
                 this.pagination = options.pagination;
             }
         },
- 
-        // Initial pagination states
-        state: {
-          pageSize: 15,
-          sortKey: "id",
-          order: 1,
-          limit: 550
-        },
-
-        // You can remap the query parameters from `state` keys from
-        // the default to those your server supports
-        queryParams: {
-          totalPages: null,
-          totalRecords: null,
-          sortKey: "sort",
-          limit: 550
-
-        },
+        state: App.Settings.Search.state,
+        queryParams: App.Settings.Search.default_query_params,
 
         update: function() {
 

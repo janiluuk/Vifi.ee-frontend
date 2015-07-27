@@ -101,6 +101,8 @@ App.Views.FilterView = Backbone.View.extend({
     render: function() {
         this.filterbarview.render();
         this.filterlistview.render();
+        this.updateUI();
+        
         return this;
     }
 

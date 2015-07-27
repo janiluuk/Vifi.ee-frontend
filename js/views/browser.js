@@ -50,8 +50,8 @@ App.Views.BrowserPage = Backbone.View.extend({
                     "opacity": 1
                 }, 400,false, function() {
                     setTimeout(function() {   
-                        window.mySwiper.resizeFix();
-                    },200);
+                        if (window.mySwiper) window.mySwiper.resizeFix();
+                    },250);
                 }.bind(this));
             });
         });
@@ -82,7 +82,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.$el.html(ich.browserPageTemplate());
         this.filterview.render();
         this.applyIsotope();
-        this.updateUIToState();
         return this;
     },
     applyIsotope: function() {
@@ -267,12 +266,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.onLoadingEnd();
         return false;
     },
-    updateUIToState: function() {
-    
-        var query = this.collection.querystate.get('q');
-        $('#main-search-box').val(query).trigger("keyup");
-        this.filterview.updateUI();
-    },
     onChangeCollectionState: function(state, silent) {
 
         var trigger = silent === true ? false : true;
@@ -282,18 +275,5 @@ App.Views.BrowserPage = Backbone.View.extend({
             app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {
                 trigger: trigger
             });
-    },
-    //Set the search state from the url
-    setSearchStateFromHash: function(searchStateHash) {
-        //setFromHash will trigger a change event, which then
-        //loads the records and reloads the table
-
-        this.collection.querystate.setFromHash(searchStateHash);
-    },
-    clearSearch: function() {
-
-        app.collection.querystate.set("q", "");
-        this.onChangeCollectionState(app.collection.querystate);
-        return false;
     }
 });

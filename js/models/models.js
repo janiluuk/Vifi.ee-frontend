@@ -15,7 +15,7 @@ App.Models = {};
 
 App.Models.ApiModel = Backbone.Model.extend({
     defaults: {
-        "id": '',
+        'id': '',
         'session': false
     },
     path: "",
@@ -163,7 +163,6 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
                 'profile': '',
                 'code': ''
             }
-
         ],
         'images': {
             'thumb': '',
@@ -213,7 +212,6 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
 
             this.trigger("subtitles:ready", this.get("subtitles"));
     },
-
 
     refresh: function(fetch) {
         if (this.get("id") > 0) {
