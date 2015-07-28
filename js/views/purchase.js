@@ -148,6 +148,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         'click .mfp-close': 'close',
         'click button#confirm-purchase-button': 'initPayment',
         'click #payment-list li': 'selectMethod',
+        'submit #single-purchase': 'initPayment'        
     },
     initialize: function(options) {
         options = options || {};
@@ -170,15 +171,16 @@ App.Views.PaymentDialog = Backbone.View.extend({
         var el = $(e.currentTarget);
         el.addClass("selected").siblings().removeClass("selected");
         this.payment.set("method", el.attr("id"));
-        var method = app.paymentmethods.filter(function(item) {
+        var method = _.first(app.paymentmethods.filter(function(item) {
             return item.get("identifier") == el.attr("id");
-        });
-        
-        var method_id = "";
-
-        if (method[0] && typeof(method[0].get) != "undefined") method_id = method[0].get("id");
-        this.payment.set("method_id", method_id);
-        this.updateUI();
+        }));
+ 
+        if (method && typeof(method.get) != "undefined") { 
+            this.setSelectedMethod(method.get("identifier"));
+            method_id = method.get("id");
+            this.payment.set("method_id", method_id);
+            this.updateUI();
+        }
     },
     getSelectedMethod: function() {
         var paymentMethod = this.payment.get("method");
@@ -198,16 +200,16 @@ App.Views.PaymentDialog = Backbone.View.extend({
         return false;
     },
     updateUI: function() {
+
         var email = this.getEmail();
         if (email) {
             $("#payment-method-email").val(email);
         }
         // Payment method
-        var method = this.getSelectedMethod();
+        var method = this.payment.get("method");
         $(".payment-method-data").hide();
         $("#" + method).addClass("selected");
         $("#method").val(method);
-
         if (method == "code") {
             $("#payment-code").show();
         } else if (method == "mobile") { 
@@ -217,6 +219,8 @@ App.Views.PaymentDialog = Backbone.View.extend({
         }
     },
     initPayment: function(e) {
+        if (e) e.preventDefault();
+
         var data = this.$("form").serializeObject();
         this.payment.set(data);
         
@@ -250,6 +254,8 @@ App.Views.PaymentDialog = Backbone.View.extend({
     render: function() {
         this.model.set('payments', app.paymentmethods.toJSON());
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
+        var method = this.getSelectedMethod();
+        $("#"+method).click();
         this.updateUI();
         return this;
     },

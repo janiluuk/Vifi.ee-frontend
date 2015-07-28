@@ -60,7 +60,7 @@ App.Router = Backbone.Router.extend({
     },
     onChangeTitle: function (title) 
     {
-        $(document).attr('title', title + ' - Vifi.ee');
+        $(document).attr('title', title + ' - ' + App.Settings.sitename);
 
     },
     purchaseReturn: function (film) 

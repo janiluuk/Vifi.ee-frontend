@@ -9,15 +9,18 @@ App.Models.Purchase = Backbone.Model.extend({
         email: {
           required:false,
           pattern: 'email',
-          msg: 'Please enter a valid email'
+          msg: 'Please enter a valid email!'
         },
         method: { 
             required:true,
             fn: 'validateMethod'
         },
+        method_id: { 
+            required:true,
+        },        
         price: {
           required: true,
-          min: 1,
+          min: 0.01,
           msg: 'Invalid price for the product'
         },
         code: {
@@ -45,6 +48,7 @@ App.Models.Purchase = Backbone.Model.extend({
     },
 
     validateMethod: function(value, attr, computedState) {
+
         if(value === 'code' && this.get("code").length == 0) {
             return 'Vale kood, proovi uuesti!';
         }
@@ -73,11 +77,12 @@ App.Models.Purchase = Backbone.Model.extend({
 
     generatePurchaseInfo: function() {
         var film_id = this.model.get("id");
-        var user_id = this.session.get("user_id");
 
+        var user_id = this.session.profile.get("id");
         if (!film_id || film_id < 1) {
             throw ("Invalid film given for purchase");
         }
+        
         if (!user_id || user_id < 1) {
             throw ("Invalid or missing user for purchase");
             return false;
@@ -102,8 +107,8 @@ App.Models.Purchase = Backbone.Model.extend({
         if (!email || email == "") 
             email = this.session.get("profile").get("email");
         
-        
-        this.session.once("user:token:authenticated", callback, this);
+        this.session.once("user:login", callback, this);
+
         return this.session.getToken(email);
 
     },
@@ -115,12 +120,13 @@ App.Models.Purchase = Backbone.Model.extend({
         }
     },
     onCodeAuth: function(data) { 
+        
         if (data.status !== "ok") {
             var message = data.message;
-            
             this.trigger("purchase:error", message);
             return false;
         }
+
         var session_id = data.session_id;
 
         if (session_id != "") { 
@@ -134,10 +140,13 @@ App.Models.Purchase = Backbone.Model.extend({
     purchase: function() {
 
         var method = this.get("method");
+
         if (!this.session.get("auth_id") || this.session.get("auth_id").length ==0) { 
+            
             this.getAnonymousToken(this.purchase);
             return false;
-        }
+        } 
+
         if (method == "code") { 
             var id = this.model.get("id");
             var code = this.get("code");
@@ -154,17 +163,7 @@ App.Models.Purchase = Backbone.Model.extend({
             $log("Error while making purchase: invalid method selected");
             return false;
         }
-        /*
-        try {
-           var info = this.generatePurchaseInfo();
-           var price = this.model.get("price");
-           this.sendPurchase(this.paymentCallback, info, price);
 
-        } catch (e) {
-            $log("Error while making purchase: " + e);
-            return false;
-        }
-        */
        
     },
 
@@ -175,6 +174,7 @@ App.Models.Purchase = Backbone.Model.extend({
     },
 
     getPurchaseForm: function() { 
+
         this.generatePurchaseInfo();
 
         var info = this.get("purchaseInfo");
@@ -223,6 +223,7 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
         }
    
         try {
+
            var info = this.generatePurchaseInfo();
            var price = this.model.get("price");
            this.sendPurchase(this.paymentCallback, info);
@@ -273,6 +274,7 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
             'price' : this.get("price"),
             'product_id': product_id
         }
+
         this.set("purchaseInfo", info);
 
         return info;
