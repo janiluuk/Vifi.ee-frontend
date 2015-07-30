@@ -4,9 +4,9 @@ App.Views.MovieDetailView = Backbone.View.extend({
     events: {
         'click a#watchTrailer': 'playTrailer',
         'click a#playMovie': 'playMovie',
+        'click button.play': 'playMovie',
         'click #close-player': 'closePlayer',
         'click #close-trailer': 'closeTrailer',
-        'click button.play': 'playMovie',        
         'click #film-tabbar-swiper-container .swiper-slide': 'changeTab'
     },
     initialize: function(options) {
@@ -35,7 +35,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
         window.disqus_title = this.model.get("title");
         window.disqus_shortname = App.Settings.disqus_shortname; // Required - Replace example with your forum shortname
-
+        /* * * DON'T EDIT BELOW THIS LINE * * */
         (function() {
             var dsq = document.createElement('script');
             dsq.type = 'text/javascript';
@@ -69,7 +69,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
         this.isotope = $("#film-cast-container ul").isotope({
             layoutMode: 'fitRows',
             resizable: true,
-            itemSelector: '.item',
+            itemSelector: '#film-cast-container .item',
             transitionDuration: '0.5s',
             // disable scale transform transition when hiding
             hiddenStyle: {
@@ -107,9 +107,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
         window.disqus_title = this.model.get("title");
         window.disqus_url = window.location.href.replace("#", "#!");
         if (typeof(DISQUS) != "undefined") { 
-
             reset(this.model.get("seo_friendly_url"),  window.disqus_url,  window.disqus_url);
-
         }
     },
     renderRatings: function() {
@@ -125,10 +123,8 @@ App.Views.MovieDetailView = Backbone.View.extend({
     render: function() {
     
         this.$el.empty().append(this.template(this.model.toJSON()));
-
         this.isotope = false;
         this.model.fetchRT();
-
         setTimeout(function() {
             App.Utils.lazyload();
 
@@ -138,7 +134,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
           //  this.enableAddThis(); 
 
-        }.bind(this), 100);
+        }.bind(this), 150);
 
         setTimeout(function() {
             this.enableYoutubePlayer();
@@ -219,29 +215,33 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
     startCarousel: function() {
 
-        window.myMovieSwiper = $('#gallery-swiper-container').swiper({
-            //Your options here:
-            mode: 'horizontal',
-            cssWidthAndHeight: false,
-            pagination: '.pagination-1',
-            paginationClickable: true,
-            createPagination: true,
-            onSlideChangeStart: function(e) { 
-                App.Utils.lazyload();
-            }
-            //etc..
-        });
+        if (_.size(this.model.get("images").backdrops) < 2) {
+            $("#moviepage .arrow-left, #moviepage .arrow-right").css("visibility", "hidden");
+        } else { 
 
-        $('#moviepage .arrow-left').on('click', function(e) {
-            e.preventDefault()
-            myMovieSwiper.swipePrev();
+            window.myMovieSwiper = $('#gallery-swiper-container').swiper({
+                //Your options here:
+                mode: 'horizontal',
+                cssWidthAndHeight: false,
+                pagination: '.pagination-1',
+                paginationClickable: true,
+                createPagination: true,
+                onSlideChangeStart: function(e) { 
+                    App.Utils.lazyload();
+                }
+            });
 
-        });
-        $('#moviepage .arrow-right').on('click', function(e) {
-            e.preventDefault()
-            myMovieSwiper.swipeNext();
-            
-        });
+            $('#moviepage .arrow-left').show().on('click', function(e) {
+                e.preventDefault()
+                myMovieSwiper.swipePrev();
+
+            });
+            $('#moviepage .arrow-right').show().on('click', function(e) {
+                e.preventDefault()
+                myMovieSwiper.swipeNext();
+                
+            });
+        }
 
         window.filmnavSwiper = new Swiper('#film-tabbar-swiper-container', {
             slidesPerView: 'auto',

@@ -2624,6 +2624,9 @@ ul#subscription-benefit-list li .icon {
     #player-container.flowplayer, .video-container-body iframe {
         height: auto ;
     }
+    .video-selector#player-options-audio {
+        display:none;
+    }
 
     #featured-swiper-container, #gallery-swiper-container {
         height: 390px ;
@@ -2933,6 +2936,9 @@ ul#subscription-benefit-list li .icon {
     .selection-container {
         padding: 1% 1% 3% 1% ;
     }
+    .video-selector#player-options-audio {
+        display:none;
+    }
 
     #video-container-footer ul {
         padding: 1em 1em 0 1em ;
@@ -2941,7 +2947,6 @@ ul#subscription-benefit-list li .icon {
     #video-container-footer ul.options {
         margin: 0 ;
     }
-
     #video-container-footer ul li {
         margin-bottom: 1em;
     }

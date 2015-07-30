@@ -1183,6 +1183,19 @@ Pagination Styles
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+ 
+/* hide standard time tool tip */
+.flowplayer .fp-tooltip {
+  display: none !important;
+}
+ 
+/* the preview canvas */
+.flowplayer canvas {
+  outline: 1px solid #333;
+  position: absolute;
+  z-index: 9999;
+  display: none;
+}
 
 div.fancy-select {
   position: relative;

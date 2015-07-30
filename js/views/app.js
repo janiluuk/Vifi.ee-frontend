@@ -78,15 +78,15 @@ App.Views.BaseAppView = Backbone.View.extend({
         
 
         if (!this.browserInitialized) { 
-
             app.homepage.browserview.filterview.filterbarview.enableCarosel();
+            app.homepage.browserview.$isotope.isotope('layout');
+            if (window.mySwiper) mySwiper.resizeFix();
+            this.browserInitialized = true;
 
         }            
-            app.homepage.browserview.renderResults();
-            app.homepage.browserview.$isotope.isotope('layout');
-            App.Utils.lazyload();
-
-        this.browserInitialized = true;
+        app.homepage.browserview.renderResults();
+        App.Utils.lazyload();
+        
         
         if (this.scrollTop == 0) {
         } else {

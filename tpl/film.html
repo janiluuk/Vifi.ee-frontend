@@ -104,23 +104,20 @@
     <div id="film-cast-container" class="float_left" style="display:none;">
         <ul id="cast-content-body-list">
             <% _.each(actors, function(actor) {
+
             if (typeof(actor.character) =="object") {
-            var characters = _.map(actor.character, 
-                function(char) { 
-                    return char 
-                });
-            
-                actor.character = characters.join(", ");
+            var characters = _.map(actor.character, function(char) { return char });
+                actor.character = "'"+characters.join(", ")+"'";
             }
             if (actor.image_url == null) actor.image_url = '/style/img/anonymous_avatar.jpg';
             %>
             <li class="item">
-                <div class="item-image b-lazy" data-src="<%=actor.image_url.replace("/original/", "/w300/")%>"></div>
-                <div class="item-info">
+ <div class="item-image b-lazy" data-src="<%=actor.image_url.replace("/original/", "/w300/")%>"></div>
+                 <div class="item-info">
                     <div class="item-info-title">
-                        <a href="#"><%= actor.name %></a>
+                        <span><%= actor.name %></span>
                     </div>
-                    <div class="item-info-description">'<%=actor.character %>'
+                    <div class="item-info-description"><%=actor.character %>
                     </div>
                 </div>
             </li>
