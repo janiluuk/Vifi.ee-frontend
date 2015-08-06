@@ -3,6 +3,7 @@ App.Models.Purchase = Backbone.Model.extend({
     model: App.Models.Product,
     film: false,
     session: false,
+
     defaults: { method: 'code',  price: "", code: '', email: '', purchaseInfo: {}},
     productKey: '52e802db-553c-4ed2-95bc-44c10a38c199',
     validation: {
@@ -44,7 +45,7 @@ App.Models.Purchase = Backbone.Model.extend({
 
         }, this);
         this.set("price", this.model.get("price"));
-        _.bindAll(this, 'sendPurchase', 'purchase', 'onCodeAuth', 'sendCodeAuth', 'paymentCallback')
+        _.bindAll(this, 'sendPurchase', 'onMobileAuth','onMobileStatusReceive', 'initMobilePayment', 'purchase', 'onCodeAuth', 'sendCodeAuth', 'paymentCallback')
     },
 
     validateMethod: function(value, attr, computedState) {
@@ -154,6 +155,11 @@ App.Models.Purchase = Backbone.Model.extend({
             return false;
         }
 
+        if (method == "mobile") { 
+            this.initMobilePayment(this.onMobileAuth);
+            return false;
+        }        
+
         if (this.get("method_id") != "") { 
             var form = this.getPurchaseForm();
             document.body.appendChild(form);
@@ -166,12 +172,39 @@ App.Models.Purchase = Backbone.Model.extend({
 
        
     },
+    onMobileAuth: function(res) {
+
+        if (res.status == "PENDING") { 
+            this.set("authToken", res.authToken);
+            this.set("phoneNumber", res.phoneNumber);
+            this.trigger("payment:mobile:start",res);
+            this.getMobilePaymentStatus(this.onMobileStatusReceive);
+        }
+
+    },
+    onMobileStatusReceive: function(res) { 
+        this.trigger("payment:mobile:stop");
+        console.log(res);
+
+    },
+
+    initMobilePayment: function(callback) { 
+        app.api.call(["payment/emtpayment", this.model.get("id")], {}, callback);
+    },
+
+    getMobilePaymentStatus: function(callback) { 
+        var authToken = this.get("authToken");
+        if (!authToken || authToken == "") {
+            throw ("No auth token available to use for status check");
+        }        
+        app.api.call(["payment/emtpayment", this.model.get("id")], {authToken: authToken}, callback);
+    },
 
     sendPurchase: function(callback, info, price) {
         var url = App.Settings.api_url +"smartpay/?format=json&api_key="+App.Settings.api_key+"&";
         $.get(url, { price: price, transactionId: 001, customVar: info }, callback, "jsonp");
 
-    },
+    },  
 
     getPurchaseForm: function() { 
 
