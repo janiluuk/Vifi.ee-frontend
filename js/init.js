@@ -53,6 +53,7 @@ window.app = _.extend({}, Backbone.Events);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Viimati lisatud', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Vaadatuimad'}]);
         var eventhandler = _.extend({}, Backbone.Events);
         initFB();
+        initGA();
 
         App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() { 
             app.template.load(['film'], function () {
@@ -87,11 +88,6 @@ window.app = _.extend({}, Backbone.Events);
     }
 
 
-$(document).ready(function() {
-
-    init();
-
-});
 
 function init() {
     app.trigger("app:init");
@@ -118,6 +114,29 @@ function handleSessionResponse(response) {
     //the JS method will log the user out of Facebook and remove any authorization cookies
     FB.logout(response.authResponse);
 };
+
+/** Init google analytics */
+function initGA() {
+    if (App.Settings.google_analytics_code != "") {
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', App.Settings.google_analytics_code, 'auto');
+        ga('send', 'pageview');
+    }
+}
+
+/** Init Facebook events */
+
 function initFB() { 
 
     window.fbAsyncInit = function () {
@@ -195,3 +214,8 @@ var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
         }
     });
 };
+
+
+$(document).ready(function() {
+    init();
+});

@@ -86,6 +86,10 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
                 model: options.model,
                 session: options.session
             }),
+            mobilePayment: new App.Models.MobilePurchase({
+                model: options.model,
+                session: options.session
+            }),
             parent: this
         });
         this.loginView = new App.Views.LoginDialog({
@@ -156,15 +160,18 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.session = options.session;
         this.model = options.model;
         this.payment = options.payment;
+        this.mobilePayment = options.mobilePayment;
+
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
         this.listenTo(this.payment, "purchase:error", this.onPaymentError, this);
-
         Backbone.Validation.configure({
             forceUpdate: true
         });
         Backbone.Validation.bind(this, {
             model: this.payment
         });
+        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.mobilePayment});
+
     },
     selectMethod: function(e) {
         e.preventDefault();
@@ -212,10 +219,14 @@ App.Views.PaymentDialog = Backbone.View.extend({
         $("#method").val(method);
         if (method == "code") {
             $("#payment-code").show();
-        } else if (method == "mobile") { 
+        } else if (method == "mobile") {
+            $("#payment-email").show();         
             $("#payment-mobile").show();
+            $("#confirm-purchase-button").hide();
         } else {
             $("#payment-email").show();
+            $("#confirm-purchase-button").show();
+
         }
     },
     initPayment: function(e) {
@@ -254,9 +265,13 @@ App.Views.PaymentDialog = Backbone.View.extend({
     render: function() {
         this.model.set('payments', app.paymentmethods.toJSON());
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
+        this.mobilePaymentView.setElement("#payment-mobile");
+        this.mobilePaymentView.render();
+
         var method = this.getSelectedMethod();
         $("#"+method).click();
         this.updateUI();
+
         return this;
     },
 });
@@ -297,6 +312,75 @@ App.Views.ActivateSubscription = App.Views.DialogView.extend({
     render: function() {
         this.$el.html(ich.subscriptionActivateDialogTemplate());
         this.openDialog(false, ich.subscriptionPurchaseDialogTemplate());
+        return this;
+    }
+});
+App.Views.MobilePurchase =  Backbone.View.extend({
+    model: App.Models.MobilePurchase,
+    events: {
+        'click #mobile-payment-start-btn' : 'initPayment',
+        'click #mobile-payment-try-again' : 'initPayment'
+    },
+    
+    initialize: function(options) {
+
+        this.model = options.model;
+        this.listenTo(this.model, "payment:mobile:resolved", this.onPaymentSuccess, this);
+        this.listenTo(this.model, "payment:mobile:error", this.onPaymentError, this);
+        this.listenTo(this.model, "payment:mobile:start", this.onPaymentStart, this);
+        this.listenTo(this.model, 'change:timeout', this.renderTimeout, this);
+        this.listenTo(this.model, 'change:phoneNumber', this.renderPhoneNumber, this);
+        _.bindAll(this, 'renderPendingView', 'initPayment', 'renderTimeout', 'render', 'onPaymentFailure', 'onPaymentSuccess');
+
+    },
+
+    initPayment: function(e) {
+        console.log(this.model);
+        e.preventDefault();
+        this.model.initPayment(this.renderPendingView(this.model));
+        return false;        
+    },
+
+    renderPendingView: function(model) {
+
+        if (!model) model = this.model;
+        this.$el.empty().html(ich.mobilePaymentPendingTemplate(model.toJSON()));
+        return this;
+    },
+
+    renderPhoneNumber: function() {
+        var phonenumber = this.model.get("phoneNumber");
+        $("#mobilePhoneNumber").html("<strong>"+phonenumber+"</strong>");
+        return this;
+    },
+    
+    renderTimeout: function() {
+        $("#mobileTimeout").html(this.model.get("timeout"));
+        return this;
+    },
+
+    renderFailure: function() {
+        this.$el.html(ich.mobilePaymentFailureTemplate(this.model.toJSON()));        
+        return this;        
+    },
+
+    onPaymentStart: function() {
+
+    },
+
+    onPaymentError:function() {
+
+        this.renderFailure();
+
+    },
+
+    onPaymentSuccess: function() {
+
+        alert("success");
+    },
+
+    render: function() {
+        this.$el.html(ich.mobilePaymentTemplate(this.model.toJSON()));
         return this;
     }
 });
