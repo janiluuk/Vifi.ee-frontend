@@ -1,172 +1,174 @@
 <script type="text/html" id="purchaseSuccessTemplate">
-        <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
-            <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-            <div class="col-img" style="background-image: url('/style/img/purchase-success-cover.jpg');">
+    <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
+        <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+        <div class="col-img" style="background-image: url('/style/img/purchase-success-cover.jpg');">
+        </div>
+        <div class="col-content">
+            <div class="popup-section">
+                <div class="film-title">{{trans "Thank you"}}!</div>
+   
             </div>
-            <div class="col-content">
-                <div class="popup-section">
-                    <div class="film-title">{{trans "Thank you"}}!</div>
-       
-                </div>
- 
-                <div id="payment-section" class="popup-section">
-                        <p>You have successfully purchased <b>"{{ purchase.title }}"</b>. Your activation code is:</p>
-                        <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
-                        <p class="extra-info">Valid until <b>{{ purchase.validtotext }}</b> </p>
-                        <p>You can use this code to watch the movie on any devices. A copy of the code has also been sent to your email <b>{{ email }} </b>.</p>                     
 
-                    <button id="continue-button" class="btn big green continue-button full"> Continue to film</button>
-                </div>
+            <div id="payment-section" class="popup-section">
+                    <p>You have successfully purchased <b>"{{ purchase.title }}"</b>. Your activation code is:</p>
+                    <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
+                    <p class="extra-info">Valid until <b>{{ purchase.validtotext }}</b> </p>
+                    <p>You can use this code to watch the movie on any devices. A copy of the code has also been sent to your email <b>{{ email }} </b>.</p>                     
+
+                <button id="continue-button" class="btn big green continue-button full"> Continue to film</button>
             </div>
         </div>
+    </div>
 </script>
-    <script type="text/html" id="purchaseDialogTemplate">
-        <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
-            <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-            <div class="col-img" style="background-image: url('{{ poster_url }}');">
-            </div>
-            <div class="col-content">
-                <div class="popup-section">
-                    <div class="film-title">{{ title }}</div>
-                    <div class="film-description price">{{ price }} EUR</div>
-                    <div class="film-language">
-                        <table>
-                            <tbody>
-                                 <tr>
-                                    <td><h3>Keeled</h3></td>
-                                    <td><h3>Subtiitrid</h3></td>
-                                </tr>
-                                <tr>
-                                    <td>{{ language }}</td>
-                                    <td>{{#if subtitles }}
-                                    {{#subtitles}}{{this}} {{/subtitles}}
-                                    {{else}}
-                                    No subtitles
-                                    {{/if}}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
- 
-                <div id="payment-section" class="popup-section">
-                    <h3>Vali makseviis</h3>
-
-                    <ul id="payment-list">
-                        {{#payments}}
-                        <li id="{{identifier}}"><a>
-                        <div class="payment-item-image"></div>
-                        <p>{{name}}</p>
-                        </a></li>
-                        {{/payments}}
-                    </ul>                    
-                    <form id="single-purchase">
-                    <input type="hidden" name="method" id="method"/>
-                    <div class="payment-method-data" id="payment-email" style="display:none">
-                        <h3>Email</h3>
-                        <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
-                        <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
-                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
-                    </div>
-                    <div class="payment-method-data" id="payment-mobile" style="display:none">
-                        <h3>Mobiil</h3>
-                        <p>Tellimiseks helista:</p>
-                        <p class="activation-code"><span><strong>82 82 8856</strong></span></p>
-                        <p class="sec-counter">Helistamiseks on aega <span><strong> 60 sekundit</strong> </span></p>
-
-                        <p class="info">Hinnale lisandub m-makse teenustasu summas 0.32 €. Maksumus lisatakse telefoniarvele või arvestatakse maha kõnekaardi ettemaksu jäägist.
-Teenus on kasutatav Eestis EMT, Elisa ja Tele2 klientidele.</p>
-                        
-                        <div id="mobile-payment-timeout" class="timed-out-message" style="display:none">
-                            <p class="error-message">
-                                Makse ebaõnnestus
-                            </p>
-                            <p class="info">
-                                Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu. 
-                            </p>
-                            <button id="" class="btn big green full">Proovi uuesti</button>
-                        </div>
-                    </div>
-
-                    <div class="payment-method-data"  id="payment-code" style="display:none">
-                        <h3>Sisesta filmi kood</h3>
-                        <input type="password" style="display:none"/>                        
-                        <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
-                    </div>
-                    <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
-                    </form>
-                </div>
-            </div>
-
+<script type="text/html" id="purchaseDialogTemplate">
+    <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
+        <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+        <div class="col-img" style="background-image: url('{{ poster_url }}');">
         </div>
+        <div class="col-content">
+            <div class="popup-section">
+                <div class="film-title">{{ title }}</div>
+                <div class="film-description price">{{ price }} EUR</div>
+                <div class="film-language">
+                    <table>
+                        <tbody>
+                             <tr>
+                                <td><h3>Keeled</h3></td>
+                                <td><h3>Subtiitrid</h3></td>
+                            </tr>
+                            <tr>
+                                <td>{{ language }}</td>
+                                <td>{{#if subtitles }}
+                                {{#subtitles}}{{this}} {{/subtitles}}
+                                {{else}}
+                                No subtitles
+                                {{/if}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="payment-section" class="popup-section">
+                <h3>Vali makseviis</h3>
+
+                <ul id="payment-list">
+                    {{#payments}}
+                    <li id="{{identifier}}"><a>
+                    <div class="payment-item-image"></div>
+                    <p>{{name}}</p>
+                    </a></li>
+                    {{/payments}}
+                </ul>                    
+                <form id="single-purchase">
+                <input type="hidden" name="method" id="method"/>
+                <div class="payment-method-data" id="payment-email" style="display:none">
+                    <h3>Email</h3>
+                    <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
+                    <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
+                    <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
+                </div>
+                <div class="payment-method-data" id="payment-mobile" style="display:none">
+                  
+                </div>
+
+                <div class="payment-method-data"  id="payment-code" style="display:none">
+                    <h3>Sisesta filmi kood</h3>
+                    <input type="password" style="display:none"/>                        
+                    <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
+                </div>
+                <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
 </script>
+
 <script type="text/html" id="mobilePaymentTemplate">
-            <div class="col-50">
-                <h3>header</h3>
-                <p>Kirjeldus.</p>
-                <div class="row-fluid">
-                    <button id="continue-unregistered" class="btn float_right">Edasi</button>
-                </div>
+    <h3>Mobiil</h3>
 
+    <p class="info">Hinnale lisandub m-makse teenustasu summas <strong>0.32 €</strong>. Maksumus lisatakse telefoniarvele või arvestatakse maha kõnekaardi ettemaksu jäägist.
+    Teenus on kasutatav Eestis <strong>EMT, Elisa ja Tele2 </strong>klientidele.</p>
+    <button id="mobile-payment-start-btn" class="btn big green full">Alusta</button>
+
+</script>
+
+<script type="text/html" id="mobilePaymentPendingTemplate">
+    <p>Tellimiseks helista:</p>
+    <p class="activation-code"><span id="mobilePhoneNumber"><strong>{{mobilePhoneNumber}}</strong></span></p>
+    <p class="sec-counter">Helistamiseks on aega <span><strong> <span id="mobileTimeout">60</span>&nbsp; sekundit</strong> </span></p>
+</script>
+
+<script type="text/html" id="mobilePaymentFailureTemplate">
+    <div id="mobile-payment-timeout" class="timed-out-message">
+        <p class="error-message">
+            Makse ebaõnnestus
+        </p>
+        <p class="info">
+            Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu. 
+        </p>
+        <button id="mobile-payment-try-again" class="btn big green full">Proovi uuesti</button>
+    </div>
+
+</script>
+
+<script type="text/html" id="loginDialogTemplate">
+
+    <div id="login-popup" class="white-popup vifi-popup multiple-col-popup">
+       <button title="Sulge (Esc)" type="button" class="mfp-close">×</button>
+        <div id="popup-login-register-form" class="col-50">
+                {{>loginformPartial}}
+                {{>fbLoginPartial}}
+        </div>
+        <div class="col-50">
+            <h3>Vaata ilma kontot</h3>
+            <p>Võid vaadata ka ilma kontota. Vaatamiseks on vaja e-mail aadressi kuhu saadame pileti kinnituse.</p>
+            <div class="row-fluid">
+                <button id="continue-unregistered" class="btn float_right">Edasi</button>
             </div>
-    </script>
 
-    <script type="text/html" id="loginDialogTemplate">
-
-        <div id="login-popup" class="white-popup vifi-popup multiple-col-popup">
-           <button title="Sulge (Esc)" type="button" class="mfp-close">×</button>
-            <div id="popup-login-register-form" class="col-50">
-                    {{>loginformPartial}}
-                    {{>fbLoginPartial}}
+        </div>
+    </div>
+</script>
+<script type="text/html" id="subscriptionPurchaseDialogTemplate">
+   <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
+ <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+        <div class="col-img" style="background-image: url('/style/img/{{duration}}-{{units}}-cover.jpg');">
+        </div>
+        <div class="col-content">
+            <div class="popup-section">
+                <div class="film-title">{{ description }}</div>
+                <div class="film-description price">{{ price }} EUR / {{ duration }} {{ units }} </div>
             </div>
-            <div class="col-50">
-                <h3>Vaata ilma kontot</h3>
-                <p>Võid vaadata ka ilma kontota. Vaatamiseks on vaja e-mail aadressi kuhu saadame pileti kinnituse.</p>
-                <div class="row-fluid">
-                    <button id="continue-unregistered" class="btn float_right">Edasi</button>
-                </div>
 
+            <div id="payment-section" class="popup-section">
+                <h3>Vali makseviis</h3>
+
+                <ul id="payment-list">
+                    {{#payments}}
+                    <li id="{{identifier}}"><a>
+                    <div class="payment-item-image"></div>
+                    <p>{{name}}</p>
+                    </a></li>
+                    {{/payments}}
+                </ul>
+                <form id="single-purchase">
+                <input type="hidden" name="method" id="method"/>
+                <div class="payment-method-data" id="payment-email" style="display:none">
+                    <h3>Email</h3>
+                    <p>Emailile saadetakse tellimuse kinnitus.</p>
+                    <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
+                    <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
+                </div>
+                <div class="payment-method-data"  id="payment-code" style="display:none">
+                    <h3>Sisesta promo kood</h3>
+                    <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
+                </div>
+                 <button id="confirm-purchase-button" class="btn big green full">Kinnita tellimus</button>
+                </form> 
             </div>
         </div>
-    </script>
-    <script type="text/html" id="subscriptionPurchaseDialogTemplate">
-       <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
-     <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-            <div class="col-img" style="background-image: url('/style/img/{{duration}}-{{units}}-cover.jpg');">
-            </div>
-            <div class="col-content">
-                <div class="popup-section">
-                    <div class="film-title">{{ description }}</div>
-                    <div class="film-description price">{{ price }} EUR / {{ duration }} {{ units }} </div>
-                </div>
- 
-                <div id="payment-section" class="popup-section">
-                    <h3>Vali makseviis</h3>
-
-                    <ul id="payment-list">
-                        {{#payments}}
-                        <li id="{{identifier}}"><a>
-                        <div class="payment-item-image"></div>
-                        <p>{{name}}</p>
-                        </a></li>
-                        {{/payments}}
-                    </ul>
-                    <form id="single-purchase">
-                    <input type="hidden" name="method" id="method"/>
-                    <div class="payment-method-data" id="payment-email" style="display:none">
-                        <h3>Email</h3>
-                        <p>Emailile saadetakse tellimuse kinnitus.</p>
-                        <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
-                        <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
-                    </div>
-                    <div class="payment-method-data"  id="payment-code" style="display:none">
-                        <h3>Sisesta promo kood</h3>
-                        <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
-                    </div>
-                     <button id="confirm-purchase-button" class="btn big green full">Kinnita tellimus</button>
-                    </form> 
-                </div>
-            </div>
-        </div>
-    </script>
+    </div>
+</script>
