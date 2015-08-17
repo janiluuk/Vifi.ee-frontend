@@ -330,14 +330,13 @@ App.Views.MobilePurchase =  Backbone.View.extend({
         this.listenTo(this.model, "payment:mobile:start", this.onPaymentStart, this);
         this.listenTo(this.model, 'change:timeout', this.renderTimeout, this);
         this.listenTo(this.model, 'change:phoneNumber', this.renderPhoneNumber, this);
-        _.bindAll(this, 'renderPendingView', 'initPayment', 'renderTimeout', 'render', 'onPaymentFailure', 'onPaymentSuccess');
-
+        _.bindAll(this, 'renderPendingView', 'initPayment', 'renderTimeout', 'render', 'onPaymentError', 'onPaymentSuccess');
+        
     },
 
     initPayment: function(e) {
-        console.log(this.model);
         e.preventDefault();
-        this.model.initPayment(this.renderPendingView(this.model));
+        this.model.initPayment(function() { this.renderPendingView(this.model)}.bind(this));
         return false;        
     },
 
@@ -365,17 +364,17 @@ App.Views.MobilePurchase =  Backbone.View.extend({
     },
 
     onPaymentStart: function() {
-
+        this.renderPendingView();
+        return false;
     },
 
     onPaymentError:function() {
-
         this.renderFailure();
-
+        return false;
     },
 
     onPaymentSuccess: function() {
-
+        
         alert("success");
     },
 

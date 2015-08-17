@@ -1,6 +1,6 @@
-App.Models.MobilePurchase = Backbone.Model.extend({
+App.Models.MobilePurchase = App.Models.ApiModel.extend({
     defaults: { pending: false, authToken: false, phoneNumber : false, timeout: 60, status: false},
-    url: "payment/emtpayment",
+    url: function() { return App.Settings.api_url+"payment/emtpayment/"+this.model.get("id")     },
     interval: false,
     model: App.Models.Film,
 
@@ -10,22 +10,25 @@ App.Models.MobilePurchase = Backbone.Model.extend({
         if (options && undefined != options.model) {
             this.model = options.model;
         }
-        _.bindAll(this, 'initPayment', 'onAuth','startTimer', 'stopTimer', 'checkStatus', 'onStatusReceive', 'resetPayment');
+        _.bindAll(this, 'initPayment', 'onAuth','startTimer', 'stopTimer', 'onStatusReceive', 'resetPayment');
+        this.on("change:status", this.handleStatus, this);
     },
 
-    initPayment: function(callback) { 
-        app.api.call([this.url, this.model.get("id")], {}, callback);
+    initPayment: function() {
+        if (this.get("pending") == true) throw ("Payment already ongoing!");
+        this.sync("update").done(function(res) { this.onAuth(res)}.bind(this));
     },
 
     onAuth: function(res) {
 
         if (res.status == "PENDING") {
-            this.startTimer();
+            this.trigger("payment:mobile:start",res);
+            this.startTimer();            
             this.set("authToken", res.authToken);
             this.set("phoneNumber", res.phoneNumber);
             this.set("status", res.status);
-            this.trigger("payment:mobile:start",res);
             this.requestPaymentStatus(this.onStatusReceive);
+
         }
     },
 
@@ -34,7 +37,8 @@ App.Models.MobilePurchase = Backbone.Model.extend({
     },
 
     startTimer: function() {
-        
+        this.resetPayment();
+
         if (this.interval) {
             clearInterval(this.ival);
         }
@@ -42,45 +46,43 @@ App.Models.MobilePurchase = Backbone.Model.extend({
         this.set("pending",true);
 
         this.interval = setInterval(function() {
+            this.handleStatus();
             var timeout = this.get("timeout");
-            if (this.checkStatus() === true) {
-                this.stopTimer();
-                this.handleStatus();
 
-            } else {         
-                if (timeout > 0) {
-                    timeout = timeout-1;
-                    this.set("timeout",timeout);
-
-                } else {
-                    this.stopTimer();
-                } 
-            }
+            if (timeout > 0) {
+                    this.set("timeout",--timeout);
+            } else {
+                    this.trigger("payment:mobile:error");
+            } 
         }.bind(this),1000);
-
     },
 
     stopTimer: function() {
-
         this.set("pending",false);
         if (this.interval) {
             clearInterval(this.ival);
         }
-        this.resetPayment();
     },
-
-    checkStatus: function() {
-
-        if (this.get("status") == "PAYMENT" || this.get("status") == "DONE" || this.get("status") == "FAILED") {
-            return true;
+    handleStatus: function() { 
+        var status = this.get("status");
+        if (status == "FAILED") {
+            this.trigger("payment:mobile:error");
         }
-        return false;
+        if (status == "DONE") {
+            this.trigger("payment:mobile:done");
+        }
+        if (status == "PAYMENT") {
+            this.trigger("payment:mobile:success");
+        }
+        if (status == "PENDING") { 
+            this.trigger("payment:mobile:pending");
+            return false;
+        }
+        this.stopTimer();       
+        return true;
     },
-
-    onStatusReceive: function(res) { 
-        this.trigger("payment:mobile:resolved");
-        console.log(res);
-
+    onStatusReceive: function(res) {
+        this.set(res);
     },
 
     requestPaymentStatus: function(callback) { 
@@ -139,7 +141,7 @@ App.Models.Purchase = Backbone.Model.extend({
 
         }, this);
         this.set("price", this.model.get("price"));
-        _.bindAll(this, 'sendPurchase', 'onMobileAuth','onMobileStatusReceive', 'initMobilePayment', 'purchase', 'onCodeAuth', 'sendCodeAuth', 'paymentCallback')
+        _.bindAll(this, 'sendPurchase', 'purchase', 'onCodeAuth', 'sendCodeAuth', 'paymentCallback')
     },
 
     validateMethod: function(value, attr, computedState) {
@@ -253,12 +255,7 @@ App.Models.Purchase = Backbone.Model.extend({
             this.sendCodeAuth(this.onCodeAuth, id, code);
             return false;
         }
-
-        if (method == "mobile") { 
-            this.initMobilePayment(this.onMobileAuth);
-            return false;
-        }        
-
+      
         if (this.get("method_id") != "") { 
             var form = this.getPurchaseForm();
             document.body.appendChild(form);
@@ -270,35 +267,6 @@ App.Models.Purchase = Backbone.Model.extend({
         }
 
        
-    },
-
-    onMobileAuth: function(res) {
-
-        if (res.status == "PENDING") { 
-            this.set("authToken", res.authToken);
-            this.set("phoneNumber", res.phoneNumber);
-            this.trigger("payment:mobile:start",res);
-            this.getMobilePaymentStatus(this.onMobileStatusReceive);
-        }
-
-    },
-
-    onMobileStatusReceive: function(res) { 
-        this.trigger("payment:mobile:stop");
-        console.log(res);
-
-    },
-
-    initMobilePayment: function(callback) { 
-        app.api.call(["payment/emtpayment", this.model.get("id")], {}, callback);
-    },
-
-    getMobilePaymentStatus: function(callback) { 
-        var authToken = this.get("authToken");
-        if (!authToken || authToken == "") {
-            throw ("No auth token available to use for status check");
-        }        
-        app.api.call(["payment/emtpayment", this.model.get("id")], {authToken: authToken}, callback);
     },
 
     sendPurchase: function(callback, info, price) {
@@ -385,7 +353,7 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
         app.api.call(["authorize_subscription_code", product_id, code], {}, callback);
 
     },
-    
+        
     sendPurchase: function(callback, info) {
         var id = this.model.get("id");
         app.api.call(["purchaseSubscription", id, info.auth_id], info, callback);
