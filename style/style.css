@@ -2130,7 +2130,7 @@ ul#movie-interactive-button-row li {
 /* VIDEO PLAYER */
 
 #movie-player-container {
-    background: #1b1b1b;
+    background: #000000;
     position: relative;
 }
 
@@ -2154,7 +2154,7 @@ ul#movie-interactive-button-row li {
 }
 
 #movie-player-container #video-container-footer, #movie-player-container #player-container {
-    background-color: #1b1b1b !important;
+    background-color: #000000 !important;
 }
 
 #subtitles {
