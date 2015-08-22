@@ -65,14 +65,11 @@
                 <input type="hidden" name="method" id="method"/>
                 <div class="payment-method-data" id="payment-email" style="display:none">
                     <h3>Email</h3>
-                    <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata.</p>
+                    <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata. Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".
+</p>
                     <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
-                    <p class="warning">Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".</p>
                 </div>
-                <div class="payment-method-data" id="payment-mobile" style="display:none">
-                  
-                </div>
-
+                <div class="payment-method-data" id="payment-mobile" style="display:none"></div>
                 <div class="payment-method-data"  id="payment-code" style="display:none">
                     <h3>Sisesta filmi kood</h3>
                     <input type="password" style="display:none"/>                        
@@ -104,12 +101,25 @@
 <script type="text/html" id="mobilePaymentFailureTemplate">
     <div id="mobile-payment-timeout" class="timed-out-message">
         <p class="error-message">
-            Makse ebaõnnestus
+            <b>Makse ebaõnnestus</b>
         </p>
         <p class="info">
             Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu. 
         </p>
         <button id="mobile-payment-try-again" class="btn big green full">Proovi uuesti</button>
+    </div>
+
+</script>
+
+<script type="text/html" id="mobilePaymentSuccessTemplate">
+    <div id="mobile-payment-timeout" class="timed-out-message">
+        <p class="error-message">
+            Makse õnnestus!
+        </p>
+        <p class="info">
+            Makse õnnestus ja pilet saadetakse antud e-maili peale.
+        </p>
+        <button id="mobile-payment-continue" class="btn big green full">Proovi uuesti</button>
     </div>
 
 </script>

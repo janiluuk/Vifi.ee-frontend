@@ -84,7 +84,8 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
             session: options.session,
             payment: new App.Models.Purchase({
                 model: options.model,
-                session: options.session
+                session: options.session,
+
             }),
             mobilePayment: new App.Models.MobilePurchase({
                 model: options.model,
@@ -161,16 +162,22 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.model = options.model;
         this.payment = options.payment;
         this.mobilePayment = options.mobilePayment;
+        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.mobilePayment});
 
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
         this.listenTo(this.payment, "purchase:error", this.onPaymentError, this);
+        this.listenTo(this.payment, "purchase:verify:error", this.onPaymentError, this);
+        this.listenTo(this.payment, "purchase:verify:successful", this.onVerifySuccess, this);
+        
+        this.listenTo(this.mobilePayment, "purchase:successful", this.onPaymentSuccess, this);
+        this.listenTo(this.mobilePayment, "purchase:error", this.onPaymentError, this);
+
         Backbone.Validation.configure({
             forceUpdate: true
         });
         Backbone.Validation.bind(this, {
             model: this.payment
         });
-        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.mobilePayment});
 
     },
     selectMethod: function(e) {
@@ -184,7 +191,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
  
         if (method && typeof(method.get) != "undefined") { 
             this.setSelectedMethod(method.get("identifier"));
-            method_id = method.get("id");
+            var method_id = method.get("id");
             this.payment.set("method_id", method_id);
             this.updateUI();
         }
@@ -220,7 +227,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         if (method == "code") {
             $("#payment-code").show();
         } else if (method == "mobile") {
-            $("#payment-email").show();         
+            $("#payment-email").hide();         
             $("#payment-mobile").show();
             $("#confirm-purchase-button").hide();
         } else {
@@ -242,6 +249,10 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
         return false;
     },
+    onVerifySuccess: function() {
+        this.$("#confirm-purchase-button").removeClass("loading");
+        app.movieview.playMovie();
+    },    
     onPaymentSuccess: function() {
         this.$("#confirm-purchase-button").removeClass("loading");
         this.remove();
@@ -267,7 +278,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
         this.mobilePaymentView.setElement("#payment-mobile");
         this.mobilePaymentView.render();
-
+        
         var method = this.getSelectedMethod();
         $("#"+method).click();
         this.updateUI();
@@ -315,7 +326,7 @@ App.Views.ActivateSubscription = App.Views.DialogView.extend({
         return this;
     }
 });
-App.Views.MobilePurchase =  Backbone.View.extend({
+App.Views.MobilePurchase = Backbone.View.extend({
     model: App.Models.MobilePurchase,
     events: {
         'click #mobile-payment-start-btn' : 'initPayment',
@@ -325,17 +336,20 @@ App.Views.MobilePurchase =  Backbone.View.extend({
     initialize: function(options) {
 
         this.model = options.model;
-        this.listenTo(this.model, "payment:mobile:resolved", this.onPaymentSuccess, this);
+        this.listenTo(this.model, "payment:mobile:success", this.onPaymentSuccess, this);
         this.listenTo(this.model, "payment:mobile:error", this.onPaymentError, this);
+        this.listenTo(this.model, "payment:mobile:done", this.onPaymentDone, this);
         this.listenTo(this.model, "payment:mobile:start", this.onPaymentStart, this);
         this.listenTo(this.model, 'change:timeout', this.renderTimeout, this);
         this.listenTo(this.model, 'change:phoneNumber', this.renderPhoneNumber, this);
+        
         _.bindAll(this, 'renderPendingView', 'initPayment', 'renderTimeout', 'render', 'onPaymentError', 'onPaymentSuccess');
         
     },
 
     initPayment: function(e) {
         e.preventDefault();
+        this.$("button").addClass("loading");
         this.model.initPayment(function() { this.renderPendingView(this.model)}.bind(this));
         return false;        
     },
@@ -362,22 +376,29 @@ App.Views.MobilePurchase =  Backbone.View.extend({
         this.$el.html(ich.mobilePaymentFailureTemplate(this.model.toJSON()));        
         return this;        
     },
+    renderSuccess: function() {
+        this.$el.html(ich.mobilePaymentSuccessTemplate(this.model.toJSON()));        
+        return this;        
+    },
 
     onPaymentStart: function() {
-
+        this.renderPendingView(this.model);
+        return false;
     },
 
     onPaymentError:function() {
-
         this.renderFailure();
-
+        return false;
     },
 
     onPaymentSuccess: function() {
-
-        alert("success");
+        this.renderSuccess();
+        return false;
     },
-
+    onPaymentDone: function() {
+        
+        alert("done");
+    },
     render: function() {
         this.$el.html(ich.mobilePaymentTemplate(this.model.toJSON()));
         return this;

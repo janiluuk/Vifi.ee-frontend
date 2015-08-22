@@ -60,11 +60,12 @@ _.extend(App.Models.ApiModel.prototype, {
             case "update":
             type="POST";
             jsonp = false;
-            dataType=false;
+            options=this.getParams();
+            options.dataType=false;
             break;
         }
 
-        if (undefined == model) model = this;
+        if (undefined == model || model == false) model = this;
 
         this.params = "api_key=" + App.Settings.api_key;
         var session = this.get("session");

@@ -92,7 +92,16 @@ window.app = _.extend({}, Backbone.Events);
 function init() {
     app.trigger("app:init");
     var url = App.Settings.api_url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.api_key+"&jsoncallback=?";
-    $.getJSON(url, function(data) { $.when(initApp(data)).then(function() { app.trigger("app:ready");  },function() { app.trigger("app:fail"); } ); }.bind(this), "jsonp");
+    $.getJSON(url, function(data) { 
+        $.when(initApp(data)).then(function() { 
+            app.trigger("app:ready");  
+            setTimeout(function() { 
+                window.scrollTo(0,1);  
+            },2000);
+            
+        },function() { 
+            app.trigger("app:fail"); } ); 
+    }.bind(this), "jsonp");
 
 }
 
@@ -218,4 +227,6 @@ var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
 
 $(document).ready(function() {
     init();
+
 });
+

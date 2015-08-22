@@ -56,12 +56,18 @@ App.Router = Backbone.Router.extend({
         this.trigger("page:change", route);
         app.sidemenu.closeSideBar();
         this.currentPage = route;
+        
 
     },
     onChangeTitle: function (title) 
     {
         $(document).attr('title', title + ' - ' + App.Settings.sitename);
-
+        if (App.Settings.google_analytics_enabled) { 
+            ga('send', 'pageview', {
+              'page': this.currentPage,
+              'title': title, 
+            });        
+        }
     },
     purchaseReturn: function (film) 
     {

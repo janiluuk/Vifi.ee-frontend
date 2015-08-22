@@ -1,6 +1,6 @@
-App.Models.MobilePurchase = Backbone.Model.extend({
+App.Models.MobilePurchase = App.Models.ApiModel.extend({
     defaults: { pending: false, authToken: false, phoneNumber : false, timeout: 60, status: false},
-    url: "payment/emtpayment",
+    url: function() { return App.Settings.api_url+"payment/emtpayment/"+this.model.get("id")     },
     interval: false,
     model: App.Models.Film,
 
@@ -10,25 +10,41 @@ App.Models.MobilePurchase = Backbone.Model.extend({
         if (options && undefined != options.model) {
             this.model = options.model;
         }
-        _.bindAll(this, 'initPayment', 'onAuth','startTimer', 'stopTimer', 'checkStatus', 'onStatusReceive', 'resetPayment');
+        _.bindAll(this, 'initPayment', 'startTimer', 'stopTimer', 'onStatusReceive', 'resetPayment');
+        this.on("change:status", this.handleStatus, this);
     },
 
-    initPayment: function(callback) {
-        this.once("payment:mobile:start", callback);
-        app.api.call([this.url, this.model.get("id")], {}, this.onAuth);
+    initPayment: function() {
+        if (this.get("pending") == true) throw ("Payment already ongoing!");
+        this.sync("update").done(function(res) { this.onStatusReceive(res)}.bind(this));
     },
-
-    onAuth: function(res) {
+    
+    onStatusReceive: function(res) {
 
         if (res.status == "PENDING") {
-            this.trigger("payment:mobile:start",res);            
-            this.startTimer();
+            this.trigger("payment:mobile:start",res);
+            this.startTimer();            
             this.set("authToken", res.authToken);
             this.set("phoneNumber", res.phoneNumber);
             this.set("status", res.status);
             this.requestPaymentStatus(this.onStatusReceive);
-
         }
+
+        if (res.status == "PAYMENT") {
+            this.set("status", res.status);
+            
+            setTimeout(function() { 
+                this.handleStatus();
+            }.bind(this),1000);
+        }
+        
+        if (res.status == "DONE") {
+            
+            alert("Payment complete!");
+        }
+        
+        this.set(res);
+
     },
 
     resetPayment: function() {
@@ -36,7 +52,8 @@ App.Models.MobilePurchase = Backbone.Model.extend({
     },
 
     startTimer: function() {
-        
+        this.resetPayment();
+
         if (this.interval) {
             clearInterval(this.ival);
         }
@@ -44,48 +61,45 @@ App.Models.MobilePurchase = Backbone.Model.extend({
         this.set("pending",true);
 
         this.interval = setInterval(function() {
+            this.handleStatus();
             var timeout = this.get("timeout");
-            if (this.checkStatus() === true) {
-                this.stopTimer();
-                this.handleStatus();
 
-            } else {         
-                if (timeout > 0) {
-                    timeout = timeout-1;
-                    this.set("timeout",timeout);
-
-                } else {
-                    this.stopTimer();
-                } 
-            }
-       
-
+            if (timeout > 0) {
+                this.set("timeout",--timeout);
+            } else {
+                this.trigger("payment:mobile:error");
+            } 
         }.bind(this),1000);
-
     },
 
     stopTimer: function() {
-
         this.set("pending",false);
         if (this.interval) {
             clearInterval(this.ival);
         }
-        this.resetPayment();
     },
-
-    checkStatus: function() {
-
-        if (this.get("status") == "PAYMENT" || this.get("status") == "DONE" || this.get("status") == "FAILED") {
-            return true;
+    handleStatus: function() { 
+        var status = this.get("status");
+        if (status == "PAYMENT") {
+            this.trigger("payment:mobile:success");
+            this.requestPaymentStatus(this.onStatusReceive());
+            return false;
         }
-        return false;
+        if (status == "PENDING") { 
+            this.trigger("payment:mobile:pending");
+            return false;
+        }
+        if (status == "FAILED") {
+            this.trigger("payment:mobile:error");
+        }
+        if (status == "DONE") {
+            this.trigger("payment:mobile:done");
+        }
+
+        this.stopTimer();       
+        return true;
     },
 
-    onStatusReceive: function(res) { 
-        this.trigger("payment:mobile:resolved");
-        console.log(res);
-
-    },
 
     requestPaymentStatus: function(callback) { 
         var authToken = this.get("authToken");
@@ -102,7 +116,7 @@ App.Models.Purchase = Backbone.Model.extend({
     film: false,
     session: false,
 
-    defaults: { method: 'code',  price: "", code: '', email: '', purchaseInfo: {}},
+    defaults: { method: 'code',  price: "", code: '', email: '', purchaseInfo: {}, verified: false},
     productKey: '52e802db-553c-4ed2-95bc-44c10a38c199',
     validation: {
         email: {
@@ -143,9 +157,9 @@ App.Models.Purchase = Backbone.Model.extend({
 
         }, this);
         this.set("price", this.model.get("price"));
-        _.bindAll(this, 'sendPurchase', 'onMobileAuth','onMobileStatusReceive', 'initMobilePayment', 'purchase', 'onCodeAuth', 'sendCodeAuth', 'paymentCallback')
+        _.bindAll(this, 'purchase', 'onCodeAuth', 'verify', 'onVerifyResponse', 'sendCodeAuth', 'paymentCallback')
     },
-
+    
     validateMethod: function(value, attr, computedState) {
 
         if(value === 'code' && this.get("code").length == 0) {
@@ -173,34 +187,6 @@ App.Models.Purchase = Backbone.Model.extend({
         return false;
     },
 
-    // Purchase info for backend
-
-    generatePurchaseInfo: function() {
-        var film_id = this.model.get("id");
-
-        var user_id = this.session.profile.get("id");
-        if (!film_id || film_id < 1) {
-            throw ("Invalid film given for purchase");
-        }
-        
-        if (!user_id || user_id < 1) {
-            throw ("Invalid or missing user for purchase");
-            return false;
-        }
-
-        var info = {
-            'auth_id': this.session.get("auth_id"),
-            'user_id': user_id,
-            'email': this.get("email"),
-            'method_id': this.get("method_id"),
-            'method' : this.get("method"), 
-            'film_id': film_id
-        }
-        this.set("purchaseInfo", info);
-
-        return JSON.stringify(info);
-
-    },
 
     getAnonymousToken: function(callback) { 
 
@@ -221,7 +207,9 @@ App.Models.Purchase = Backbone.Model.extend({
             this.sendCodeAuth(film_id, code, this.onCodeAuth);
         }
     },
-
+    sendCodeAuth: function(callback, film_id,code) {  
+        app.api.call(["authorize_film", film_id, code], {}, callback);
+    },
     onCodeAuth: function(data) { 
         
         if (data.status !== "ok") {
@@ -240,16 +228,44 @@ App.Models.Purchase = Backbone.Model.extend({
             this.trigger("purchase:successful"); 
         }
     },
+    
+    verify: function(callback) {
+        var info = this.generatePurchaseInfo();
+        app.api.call(["payment", "verify", info.film_id], info, callback);
 
+    },
+    
+    onVerifyResponse: function(data) {
+        
+        if (data.status !== "ok") {
+            var message = data.message;
+            this.trigger("purchase:verify:error", message);
+            this.set("verified",false);
+            return false;
+        } else {
+            this.set("verified",true);
+            this.trigger("purchase:verify:successful"); 
+            return true;
+        }
+    },
+    
     purchase: function() {
-
-        var method = this.get("method");
-
+        
         if (!this.session.get("auth_id") || this.session.get("auth_id").length ==0) { 
-            
             this.getAnonymousToken(this.purchase);
             return false;
         } 
+        
+        var verified = this.get("verified");
+        
+        if (verified === false) {
+            this.once("purchase:verify:successful", this.purchase, this);
+            this.verify(this.onVerifyResponse);
+            return false;
+            
+        }
+        
+        var method = this.get("method");
 
         if (method == "code") { 
             var id = this.model.get("id");
@@ -257,14 +273,9 @@ App.Models.Purchase = Backbone.Model.extend({
             this.sendCodeAuth(this.onCodeAuth, id, code);
             return false;
         }
-
-        if (method == "mobile") { 
-            this.initMobilePayment(this.onMobileAuth);
-            return false;
-        }        
-
+      
         if (this.get("method_id") != "") { 
-            var form = this.getPurchaseForm();
+            var form = this.generatePurchaseForm();
             document.body.appendChild(form);
             form.submit();
             return false;
@@ -276,46 +287,9 @@ App.Models.Purchase = Backbone.Model.extend({
        
     },
 
-    onMobileAuth: function(res) {
+    generatePurchaseForm: function() { 
 
-        if (res.status == "PENDING") { 
-            this.set("authToken", res.authToken);
-            this.set("phoneNumber", res.phoneNumber);
-            this.trigger("payment:mobile:start",res);
-            this.getMobilePaymentStatus(this.onMobileStatusReceive);
-        }
-
-    },
-
-    onMobileStatusReceive: function(res) { 
-        this.trigger("payment:mobile:stop");
-        console.log(res);
-
-    },
-
-    initMobilePayment: function(callback) { 
-        app.api.call(["payment/emtpayment", this.model.get("id")], {}, callback);
-    },
-
-    getMobilePaymentStatus: function(callback) { 
-        var authToken = this.get("authToken");
-        if (!authToken || authToken == "") {
-            throw ("No auth token available to use for status check");
-        }        
-        app.api.call(["payment/emtpayment", this.model.get("id")], {authToken: authToken}, callback);
-    },
-
-    sendPurchase: function(callback, info, price) {
-        var url = App.Settings.api_url +"smartpay/?format=json&api_key="+App.Settings.api_key+"&";
-        $.get(url, { price: price, transactionId: 001, customVar: info }, callback, "jsonp");
-
-    },  
-
-    getPurchaseForm: function() { 
-
-        this.generatePurchaseInfo();
-
-        var info = this.get("purchaseInfo");
+        var info =  this.generatePurchaseInfo();
         var url = App.Settings.api_url + "payment/payment/" + info.film_id + "?";
 
         var data = { 
@@ -332,10 +306,34 @@ App.Models.Purchase = Backbone.Model.extend({
 
 
     },
+    // Purchase info for backend
 
-    sendCodeAuth: function(callback, film_id,code) {  
-        app.api.call(["authorize_film", film_id, code], {}, callback);
+    generatePurchaseInfo: function() {
+        var film_id = this.model.get("id");
+        var user_id = this.session.profile.get("id");
+        if (!film_id || film_id < 1) {
+            throw ("Invalid film given for purchase");
+        }
+        
+        if (!user_id || user_id < 1) {
+            throw ("Invalid or missing user for purchase");
+            return false;
+        }
+
+        var info = {
+            'auth_id': this.session.get("auth_id"),
+            'user_id': user_id,
+            'email': this.get("email"),
+            'method_id': this.get("method_id"),
+            'method' : this.get("method"), 
+            'film_id': film_id
+        }
+        this.set("purchaseInfo", info);
+
+        return info;
+
     },
+
 
     remove: function() {
         // Remove the validation binding

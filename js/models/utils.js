@@ -282,7 +282,8 @@ App.Utils.Api = Backbone.Model.extend({
     },
     parseResponse: function(data, callback, silent) { 
         var msg = data.message || JSON.stringify(data);
-
+        console.log(data);
+        
         if (!silent) { 
             if (data.status == "ok") {
                 this.onSuccess(msg);

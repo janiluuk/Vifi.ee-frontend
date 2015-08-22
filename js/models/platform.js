@@ -11,8 +11,6 @@ window.$log = function(log) { 
             log = JSON.stringify(log);
         }
         app.trigger("flash", log, 4000);
-        console.log(log); 
-
     }
     
 };
@@ -230,6 +228,7 @@ App.Platform.prototype.proxy = function() {
     browser.defaultPlatform = false;
     App.Platforms.addSupportedPlatform(browser);
     browser.setMediaPlayer("html5");
+    
     
 }());
 

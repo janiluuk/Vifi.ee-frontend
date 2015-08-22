@@ -9,7 +9,7 @@
 </script>
 
 <script type="text/html" id="playerControlsTemplate">
-        <div class="video-selector">
+        <div class="video-selector" id="player-subtitle-selector">
             <select id="video-sub" data-value="none" data-category="subtitles" class="select-box">
                 <option value="reset">Subtiitrid (auto)</option>
                 {{#subtitles}}
@@ -20,7 +20,7 @@
             </select>
 
         </div>
-        <div class="video-selector">
+        <div class="video-selector" id="player-audio-selector">
             <select id="video-lang" data-value="none" data-category="audio" class="select-box">
                 <option value="reset">Audio (auto)  </option>
                 {{#subtitles}}
@@ -28,7 +28,7 @@
                 {{/subtitles}}
             </select>                
         </div>
-        <div class="video-selector">
+        <div class="video-selector" id="player-quality-selector">
             <select id="video-quality" data-category="quality" class="select-box">
                 <option value="reset">Quality (Auto)</option>
                 {{#videos }}

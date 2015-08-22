@@ -438,9 +438,10 @@ App.Views.ContactView = App.Views.ContentView.extend({
         var res = this.model.validate();
 
         if (res == undefined) { 
+            var button = this.$("#contact-form button");
             this.removeOnDone($("#submit_contact_form"));
-            app.api.post(["user", "sendfeedback"], {message: msg, email: message.email, subject: subject});
-            this.$("#contact-form button").attr("disabled", "disabled").css("opacity", "0.5");
+            app.api.post(["user", "sendfeedback"], {message: msg, email: message.email, subject: subject}, function() { $("#submit_contact_form").removeClass("loading"); });
+            button.attr("disabled", "disabled").css("opacity", "0.5");
         }
     
         e.stopPropagation();
