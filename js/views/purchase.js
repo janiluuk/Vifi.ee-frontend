@@ -91,6 +91,10 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
                 model: options.model,
                 session: options.session
             }),
+            mobilePayment: new App.Models.MobilePurchase({
+                model: options.model,
+                session: options.session
+            }),
             parent: this
         });
         this.loginView = new App.Views.LoginDialog({
@@ -179,6 +183,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
             model: this.payment
         });
 
+
     },
     selectMethod: function(e) {
         e.preventDefault();
@@ -228,6 +233,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
             $("#payment-code").show();
         } else if (method == "mobile") {
             $("#payment-email").hide();         
+
             $("#payment-mobile").show();
             $("#confirm-purchase-button").hide();
         } else {
@@ -277,8 +283,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.model.set('payments', app.paymentmethods.toJSON());
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
         this.mobilePaymentView.setElement("#payment-mobile");
-        this.mobilePaymentView.render();
-        
+        this.mobilePaymentView.render();        
         var method = this.getSelectedMethod();
         $("#"+method).click();
         this.updateUI();
@@ -327,6 +332,7 @@ App.Views.ActivateSubscription = App.Views.DialogView.extend({
     }
 });
 App.Views.MobilePurchase = Backbone.View.extend({
+
     model: App.Models.MobilePurchase,
     events: {
         'click #mobile-payment-start-btn' : 'initPayment',
