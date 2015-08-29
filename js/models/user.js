@@ -324,7 +324,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     checkPurchases: function() {
         var films = App.User.Cookie.getFilms();
 
-        if (typeof(films) == "undefined" || _.isEmpty(films)) {
+        if (typeof(films)=="undefined"||_.isEmpty(films)){
             return false;
         }
 
@@ -561,7 +561,7 @@ App.User.Session = Backbone.Model.extend({
 
 App.User.Cookie = {
 
-    settings: { path: '/', domain: '.vifi.ee'},
+    settings: { path: '/', domain: '.'+App.Settings.domain},
 
     parse: function() {
 
