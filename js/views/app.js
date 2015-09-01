@@ -228,7 +228,7 @@ App.Views.TopMenu = Backbone.View.extend({
         var visible = el.hasClass("pullDownRight");
         el.toggleClass("pullDownRight");
         el.toggleClass("pullUpRight", visible);
-        $(e.currentTarget).toggleClass("active",!visible);
+        if (e) $(e.currentTarget).toggleClass("active",!visible);
 
         if (!visible) $("#main-search-box").focus();
         else $("#main-search-box").blur();

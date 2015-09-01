@@ -257,7 +257,6 @@ App.Utils.State = Backbone.Model.extend({
         if (dict.q != '')
         dict = _.extend(this.emptyDefaults, {q: dict.q});
         this.set(dict);
-        console.log(dict);
         return i;
     }
 });
