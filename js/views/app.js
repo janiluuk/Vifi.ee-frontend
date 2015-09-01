@@ -48,7 +48,7 @@ App.Views.BaseAppView = Backbone.View.extend({
 
         if (this.platform.name == "mobile") {
             options.initialFilterState = this.collection.querystate.isDefault() ? false : true;
-            this.platform.on("screen:resized", this.onResizeScreen);
+            this.platform.on("screen:orientation:change", this.onResizeScreen);
             this.initMobile();
         }
 
@@ -64,20 +64,22 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.homepage.render();
         return this;
     },
-    scrollToTop: function() {
-        this.$("#content-container").stop().animate({
-            scrollTop: 0
-        }, 600);
-        $("body").scrollTop(0);        
+    scrollToTop: function(instant, callback) {
 
+        if (instant) { 
+            $("body, #content-container").scrollTop(0);
+        } else { 
+            $("body, #content-container").stop().animate({
+                scrollTop: 0
+            }, 600,callback);
+        }
 
     },
     showMoviePage: function() {
         this.scrollTop = this.$("#content-container").scrollTop() + $("body").scrollTop();
         $(".main-wrapper:not(#moviepage)").hide();
         $("#moviepage").fadeIn("fast");
-        $("body").scrollTop(0);        
-        this.$("#content-container").scrollTop(0);
+        this.scrollToTop(true);
         App.Utils.lazyload();        
     },
 
@@ -108,10 +110,11 @@ App.Views.BaseAppView = Backbone.View.extend({
 
     /* Pure evil addressbar hiding on resizing the screen */
 
-    onResizeScreen: function() { 
-        var height = this.platform.resolution.height+25;
-        $("#vifi-page-container").css("height",height);
-        $("body,html").height($(window).height()+5);
+    onResizeScreen: function() {
+        $("body").height($(window).height()-5);
+        var height = this.platform.resolution.height+35;
+        this.$el.css("height",height);
+   
         this.browserInitialized = false;
     },
     
@@ -225,30 +228,30 @@ App.Views.TopMenu = Backbone.View.extend({
         var visible = el.hasClass("pullDownRight");
         el.toggleClass("pullDownRight");
         el.toggleClass("pullUpRight", visible);
+        $(e.currentTarget).toggleClass("active",!visible);
+
         if (!visible) $("#main-search-box").focus();
         else $("#main-search-box").blur();
 
-        return true;
+        return false;
 
     },
 
     toggleSideBar: function(e) {
-        app.sidemenu.toggleSideBar();
+        app.sidemenu.toggleSideBar(e);
         return false;
     },
     clearSearch: function(e) {
         e.preventDefault();
-        $("#clear-search-text-button").fadeOut("fast");
-        this.toggleSearchBox();
-        this.$("#main-search-box").val("");
 
         if (app.collection.querystate.isDefault() === false) { 
             app.collection.querystate.setDefault();
         }
 
         app.homepage.browserview.onSearchFieldChange(e);
+        this.toggleSearchBox();
         app.scrollToTop();
-
+        
         return false;
     },
     onSearchSubmit: function(e) {
@@ -296,17 +299,19 @@ App.Views.SideMenu = Backbone.View.extend({
         $(document).trigger("logout");
         this.render();
     },
-    toggleSideBar: function() {
+    toggleSideBar: function(e) {
+
         if (!window.snapper) return false;
         if ($("body").hasClass("snapjs-left")) this.state = "left";
         else this.state = "closed";
         if (this.state == "left") {
-            window.snapper.close();
-            this.state = "closed";
+            this.closeSideBar();
         } else {
             window.snapper.open('left');
             this.state = "left";
         }
+        if (e) $(e.currentTarget).toggleClass("active", this.state != "closed");
+
     },
     closeSideBar: function() {
         if (!window.snapper) return false;
@@ -314,12 +319,8 @@ App.Views.SideMenu = Backbone.View.extend({
         this.state = "closed";
     },
     render: function() {
-        var activeEl = this.$el.find("a.active:first");
         this.$el.html(ich.sidemenuTemplate(this.model.toJSON()));
-        var activeId = false;
-        if (activeEl) var activeId = $(activeEl).attr("id");
         this.assign(this.loginForm, "#login-register-form");
-        if (activeId) $("#" + activeId).addClass("active");
         return this;
     }
 });
@@ -368,7 +369,6 @@ App.Views.CarouselView = Backbone.View.extend({
                 _this.options.swipeTo = item;
                 e.preventDefault();
                 _this.swiper.swipeTo(item);
-                App.Utils.lazyload();
 
             })
         });

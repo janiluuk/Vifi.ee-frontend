@@ -180,7 +180,8 @@ App.Platform.prototype.detectPlatform = function() {
 }
 
 App.Platform.prototype.getDeviceOrientation = function() {
-    if (window.orientation && Math.abs(window.orientation) === 90) {
+
+    if ((window.orientation && Math.abs(window.orientation) === 90) || ("undefined" == typeof(window.orientation) && window.screen.width > window.screen.height)) {
         return "landscape";
     } else {
         return "portrait";
@@ -212,20 +213,29 @@ _.extend(App.Platform.prototype, Backbone.Events);
         return jQuery.browser.mobile;
 
     };
-    browser.updateScreen = function() {
-            this.orientation = this.getDeviceOrientation();
-            this.setResolution($(window).outerWidth(), $(window).outerHeight());
-            this.trigger("screen:resized", $(window).outerWidth(), $(window).outerHeight(), this.orientation);
+    browser.updateScreen = function(silent) {
+        var orientation = this.getDeviceOrientation();
+        this.setResolution($(window).outerWidth(), $(window).outerHeight());
+        if (!silent) this.trigger("screen:resize", $(window).outerWidth(), $(window).outerHeight());
+        
+        if (orientation != this.orientation) {
+                this.orientation = orientation;                
+                if (!silent) this.trigger("screen:orientation:change", this.orientation);
+
+        }
+
+        
     };
     browser.init = function() {
         $(window).on('resize', function(e) { 
             this.updateScreen();
            // alert("screen changed to "+this.matrix()+" "+this.orientation);
         }.bind(browser));
-        this.orientation = this.getDeviceOrientation();
-        this.updateScreen();
+        this.updateScreen(true);
 
     };  
+    window.addEventListener("orientationchange", this.updateScreen);
+
     browser.setResolution($(window).outerWidth(), $(window).outerHeight());
 
     browser.defaultPlatform = false;
