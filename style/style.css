@@ -2631,6 +2631,40 @@ ul#subscription-benefit-list li .icon {
         height: auto;
     }
 
+    /* pullUpRight */
+
+    .pullUpRight
+     {
+        animation: pullDownRight 0.5s ease-in-out;
+        -webkit-animation: pullUpRight 0.5s ease-in-out;
+        -moz-animation: pullDownRight 0.5s ease-in-out;
+        -ms-animation: pullDownRight 0.5s ease-in-out;
+        -o-animation: pullDownRight 0.5s ease-in-out;
+        display: block !important;
+        opacity: 0;
+        z-index: -2;
+        -webkit-transform-origin: 100% 0%;
+        -moz-transform-origin: 100% 0%;
+        -ms-transform-origin: 100% 0%;
+        -o-transform-origin: 100% 0%;
+    }
+    /* pullDownRight */
+
+    .pullDownRight {
+        animation: pullDownRight 0.5s ease-in-out;
+        -webkit-animation: pullDownRight 0.5s ease-in-out;
+        -moz-animation: pullDownRight 0.5s ease-in-out;
+        -ms-animation: pullDownRight 0.5s ease-in-out;
+        -o-animation: pullDownRight 0.5s ease-in-out;
+        display: block !important;
+        transform-origin: 100% 0%;
+        opacity: 1;
+        z-index: 1;
+        -webkit-transform-origin: 100% 0%;
+        -moz-transform-origin: 100% 0%;
+        -ms-transform-origin: 100% 0%;
+        -o-transform-origin: 100% 0%;
+    }
     .video-selector#player-options-audio {
         display:none;
     }
@@ -2740,23 +2774,7 @@ ul#subscription-benefit-list li .icon {
         width: 1%;
     }
 
-    /* pullDownRight */
 
-    .pullDownRight {
-        animation: pullDownRight 0.5s ease-in-out;
-        -webkit-animation: pullDownRight 0.5s ease-in-out;
-        -moz-animation: pullDownRight 0.5s ease-in-out;
-        -ms-animation: pullDownRight 0.5s ease-in-out;
-        -o-animation: pullDownRight 0.5s ease-in-out;
-        display: block !important;
-        transform-origin: 100% 0%;
-        opacity: 1;
-        z-index: 1;
-        -webkit-transform-origin: 100% 0%;
-        -moz-transform-origin: 100% 0%;
-        -ms-transform-origin: 100% 0%;
-        -o-transform-origin: 100% 0%;
-    }
 
     #content-body {
         padding: 1% 1% 5em 1% ;
@@ -3227,24 +3245,6 @@ ul#subscription-benefit-list li .icon {
     0% {opacity: 0; -o-transform: scale(0.1,0.1);}
     100% {opacity: 1; -o-transform: scale(1,1);}
 } 
-
-/* pullUpRight */
-
-.pullUpRight
- {
-    animation: pullDownRight 0.5s ease-in-out;
-    -webkit-animation: pullUpRight 0.5s ease-in-out;
-    -moz-animation: pullDownRight 0.5s ease-in-out;
-    -ms-animation: pullDownRight 0.5s ease-in-out;
-    -o-animation: pullDownRight 0.5s ease-in-out;
-    display: block !important;
-    opacity: 0;
-    z-index: -2;
-    -webkit-transform-origin: 100% 0%;
-    -moz-transform-origin: 100% 0%;
-    -ms-transform-origin: 100% 0%;
-    -o-transform-origin: 100% 0%;
-}
 
 @keyframes pullUpRight {
     0% {opacity: 1; transform: scale(1,1);}

@@ -58,7 +58,7 @@ App.Utils = {
     
     lazyload: function() { 
         if (!App.Utils.bLazy) { 
-            App.Utils.bLazy = new Blazy({ container: "#content-container", offset: 350});
+            App.Utils.bLazy = new Blazy({ container: "#content-container", offset: 450});
         } else {
             App.Utils.bLazy.revalidate();
         }
@@ -166,7 +166,12 @@ App.Utils = {
 };
 //A utility model to track state using the hash and also generate a url
 App.Utils.State = Backbone.Model.extend({
-
+    emptyDefaults: {
+            q: '',
+            genres: undefined,
+            periods: undefined,
+            durations: undefined
+    },
     defaults: App.Settings.Search.default_search_state,
     initialize: function(options) { 
         _.bindAll(this, 'setFromHash', 'getHash', 'setFromUrl' );
@@ -194,6 +199,7 @@ App.Utils.State = Backbone.Model.extend({
             }
         }
         var params = hashables.join('&');
+
         return params.length ? '?' + params : "";
     },
 
@@ -201,7 +207,10 @@ App.Utils.State = Backbone.Model.extend({
        var len =  _.values(this.attributes).join("").length;
        return len == 0 ? true : false;
     },
+    setDefault: function() { 
+        this.set(this.defaults);
 
+    },
     isDefault: function() {
        return _.values(this.defaults).join("") == _.values(this.attributes).join("");
     },
@@ -211,7 +220,6 @@ App.Utils.State = Backbone.Model.extend({
         var hash = window.location.hash.replace('#search', '');
         var hash = hash.replace('#', '');
         hash = hash.split("=").join(":");
-
         return this.setFromHash(decodeURIComponent(hash));
     },
 
@@ -246,7 +254,10 @@ App.Utils.State = Backbone.Model.extend({
                 i = true;
             } 
         });
+        if (dict.q != '')
+        dict = _.extend(this.emptyDefaults, {q: dict.q});
         this.set(dict);
+        console.log(dict);
         return i;
     }
 });
@@ -282,8 +293,7 @@ App.Utils.Api = Backbone.Model.extend({
     },
     parseResponse: function(data, callback, silent) { 
         var msg = data.message || JSON.stringify(data);
-        console.log(data);
-        
+
         if (!silent) { 
             if (data.status == "ok") {
                 this.onSuccess(msg);

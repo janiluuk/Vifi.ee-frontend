@@ -23,7 +23,7 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.player = options.player;
         this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
         options.model = this.user;
-        _.bindAll(this, 'render', 'showBrowserPage');
+        _.bindAll(this, 'render', 'showBrowserPage', 'onResizeScreen');
         this.api = new App.Utils.Api({
             model: this.session
         });
@@ -39,17 +39,23 @@ App.Views.BaseAppView = Backbone.View.extend({
             model: this.user
         });
         
-        /* If mobile and default view, minimize filterbar */
-        var platform = App.Platforms.platform.name;
+        this.platform = App.Platforms.platform;
+
+        /* Filterbar open by default */
         options.initialFilterState = true;        
-        if (platform == "mobile" && this.collection.querystate.isDefault()) {
-            options.initialFilterState = false;
+
+        /* If mobile and default view, minimize filterbar. React on screen changes. */
+
+        if (this.platform.name == "mobile") {
+            options.initialFilterState = this.collection.querystate.isDefault() ? false : true;
+            this.platform.on("screen:resized", this.onResizeScreen);
+            this.initMobile();
         }
 
         this.homepage = new App.Views.HomePage(options);
         this.render();
         this.router = new App.Router();
-        this.trigger("app:ready");
+
 
     },
     render: function() {
@@ -62,37 +68,60 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.$("#content-container").stop().animate({
             scrollTop: 0
         }, 600);
+        $("body").scrollTop(0);        
+
+
     },
     showMoviePage: function() {
-        this.scrollTop = this.$("#content-container").scrollTop();
+        this.scrollTop = this.$("#content-container").scrollTop() + $("body").scrollTop();
         $(".main-wrapper:not(#moviepage)").hide();
         $("#moviepage").fadeIn("fast");
+        $("body").scrollTop(0);        
         this.$("#content-container").scrollTop(0);
+        App.Utils.lazyload();        
     },
 
     showBrowserPage: function() {
 
         $(".main-wrapper:not(#homepage)").hide();
-
-        $("#homepage").css("visibility", "visible").show();
+        $("#homepage").css("visibility", "visible");
+        $("#homepage").show();
         
 
         if (!this.browserInitialized) { 
-            app.homepage.browserview.filterview.filterbarview.enableCarosel();
-            app.homepage.browserview.$isotope.isotope('layout');
             if (window.mySwiper) mySwiper.resizeFix();
+
+            app.homepage.browserview.filterview.filterbarview.enableCarosel();
             this.browserInitialized = true;
 
         }            
+        app.homepage.browserview.$isotope.isotope('layout');
         app.homepage.browserview.renderResults();
         App.Utils.lazyload();
-        
+
         
         if (this.scrollTop == 0) {
         } else {
             $("#content-container").scrollTop(this.scrollTop);
         }
     },
+
+    /* Pure evil addressbar hiding on resizing the screen */
+
+    onResizeScreen: function() { 
+        var height = this.platform.resolution.height+25;
+        $("#vifi-page-container").css("height",height);
+        $("body,html").height($(window).height()+5);
+        this.browserInitialized = false;
+    },
+    
+    /* Pure evil addressbar hiding */
+
+    initMobile: function() { 
+        this.onResizeScreen();
+        $("body,html").css("overflow", "visible");
+    },
+
     showSearchPage: function() {
         app.homepage.browserview.collection.onSearchFieldChange();
     },
@@ -196,6 +225,9 @@ App.Views.TopMenu = Backbone.View.extend({
         var visible = el.hasClass("pullDownRight");
         el.toggleClass("pullDownRight");
         el.toggleClass("pullUpRight", visible);
+        if (!visible) $("#main-search-box").focus();
+        else $("#main-search-box").blur();
+
         return true;
 
     },
@@ -208,21 +240,28 @@ App.Views.TopMenu = Backbone.View.extend({
         e.preventDefault();
         $("#clear-search-text-button").fadeOut("fast");
         this.toggleSearchBox();
-        
         this.$("#main-search-box").val("");
+
+        if (app.collection.querystate.isDefault() === false) { 
+            app.collection.querystate.setDefault();
+        }
+
         app.homepage.browserview.onSearchFieldChange(e);
         app.scrollToTop();
-       
-        
+
         return false;
     },
     onSearchSubmit: function(e) {
         e.preventDefault();
         var query = $('#main-search-box').val();
         if (query == '') return this.clearSearch(e);
+        
+        if (app.collection.querystate.isDefault() === true) { 
+            $("[data-val=reset]").click();
+        }
+        
         app.homepage.browserview.onSearchFieldChange(e);
-        $("#main-search-box").blur();
-
+        this.toggleSearchBox();
         app.scrollToTop();
         return false;
     },
@@ -438,10 +477,9 @@ App.Views.ContactView = App.Views.ContentView.extend({
         var res = this.model.validate();
 
         if (res == undefined) { 
-            var button = this.$("#contact-form button");
             this.removeOnDone($("#submit_contact_form"));
-            app.api.post(["user", "sendfeedback"], {message: msg, email: message.email, subject: subject}, function() { $("#submit_contact_form").removeClass("loading"); });
-            button.attr("disabled", "disabled").css("opacity", "0.5");
+            app.api.post(["user", "sendfeedback"], {message: msg, email: message.email, subject: subject});
+            this.$("#contact-form button").attr("disabled", "disabled").css("opacity", "0.5");
         }
     
         e.stopPropagation();

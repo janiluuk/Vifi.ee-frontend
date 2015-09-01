@@ -11,6 +11,8 @@ window.$log = function(log) { 
             log = JSON.stringify(log);
         }
         app.trigger("flash", log, 4000);
+        console.log(log); 
+
     }
     
 };
@@ -188,6 +190,7 @@ App.Platform.prototype.proxy = function() {
     return this.needsProxy ? "proxy.php" : "";
 }
 
+_.extend(App.Platform.prototype, Backbone.Events);
 
 
 (function() {
@@ -212,7 +215,7 @@ App.Platform.prototype.proxy = function() {
     browser.updateScreen = function() {
             this.orientation = this.getDeviceOrientation();
             this.setResolution($(window).outerWidth(), $(window).outerHeight());
-
+            this.trigger("screen:resized", $(window).outerWidth(), $(window).outerHeight(), this.orientation);
     };
     browser.init = function() {
         $(window).on('resize', function(e) { 
@@ -228,8 +231,7 @@ App.Platform.prototype.proxy = function() {
     browser.defaultPlatform = false;
     App.Platforms.addSupportedPlatform(browser);
     browser.setMediaPlayer("html5");
-    
-    
+   
 }());
 
 /* The second default platform "flash" */
@@ -263,4 +265,3 @@ App.Platform.prototype.proxy = function() {
     browser.setMediaPlayer("flash");
 
 }());
-

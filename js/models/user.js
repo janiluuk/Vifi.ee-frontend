@@ -478,7 +478,7 @@ App.User.Session = Backbone.Model.extend({
     onUserAuthenticate: function(data) {
         this.set("logged_in", true);
         this.set("user_id", this.profile.get("user_id"));
-        
+        this.trigger("user:login", this.profile.get("user_id"));        
         this.cookie.write(this.get("user_id"),this.get("auth_id"), this.get("session_id") );
         this.disable();
     },
@@ -523,8 +523,6 @@ App.User.Session = Backbone.Model.extend({
                 this.disable();
             }
         }.bind(this), "jsonp").error(function(data) {
-
-
             this.reset();
             $log(data);
         }.bind(this));

@@ -183,14 +183,14 @@ App.Views.BrowserPage = Backbone.View.extend({
     onSearchFieldChange: function(event) {
         this.onLoadingStart();
         var value = $("#main-search-box").val();
-        var search_array = {
+
+        var search_dict = {
             q: value,
             genres: undefined,
             periods: undefined,
             durations: undefined
         };
-        var search_dict = _.extend({}, search_array);
-
+     
         $("#search-form select option[selected=selected]").each(function() {
             var fieldid = $(this).parent().attr("id");
             var fieldname = fieldid.replace("id_", "");
