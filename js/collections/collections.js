@@ -5,6 +5,7 @@ App.Collections.FilmCollection = Backbone.Collection.extend({
     model: App.Models.Film
 });
 
+
 App.Collections.BannerCollection = Backbone.Collection.extend({
     model: App.Models.Banner
 });
@@ -13,6 +14,13 @@ App.Collections.BannerCollection = Backbone.Collection.extend({
 App.Collections.FilmSessionCollection = Backbone.Collection.extend({
         localStorage: new Backbone.LocalStorage("FilmSession"),
         model: App.User.FilmSession
+});
+
+/* User collection for playlist items */
+
+App.Collections.TicketCollection = Backbone.Collection.extend({
+        localStorage: new Backbone.LocalStorage("Ticket"),
+        model: App.User.Ticket
 });
 
 App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
@@ -107,11 +115,14 @@ App.Collections.SortCollection = Backbone.Collection.extend({});
 App.Collections.FilterCollection = Backbone.Collection.extend({});
 App.Collections.UserCollection = Backbone.Collection.extend({
    
-    updateUserCollection: function(tickets) {
+    initialize: function(options) { 
+        _.bindAll(this, 'updateUserCollection');
+        this.on("reset", this.updateUserCollection);
+    },
 
-        if (!tickets) return false;
-        
-        this.reset(tickets);
+    updateUserCollection: function() {
+
+        if (this.models.length == 0) return false;
 
         _.each(this.models, function(model) {
 

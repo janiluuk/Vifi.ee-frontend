@@ -47,17 +47,15 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
     },
     onContinue: function(e) {
         e.preventDefault();
-        $.removeCookie('film');
-        $.removeCookie('film', {domain: App.Settings.domain, path: '/' });
+
        
         var id = this.model.get("id");
-        App.User.Cookie.removeFilm(id);
+        app.user.purchases.removeFilm(id);
 
         this.close();
         this.parent.close();
 
-        app.router.showFilm(id);
-        app.movieview.playMovie();
+        app.router.showFilm(id,true);
 
         return false;
     },

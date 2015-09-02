@@ -175,7 +175,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
     updateProfile: function(e) {
         e.preventDefault();
         var formData = _.extend({newsletter: "0"}, $("#profile-update-form").serializeObject());
-
+        
         this.model.set(formData);
         this.model.save(null, {
             type: 'POST',

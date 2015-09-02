@@ -29,7 +29,8 @@ _.extend(App.Models.ApiModel.prototype, {
     },
     getParams: function(data) {
         var session = this.get("session");
-        var options = {}
+        var options = {};
+        
         var params = {
             dataType: 'jsonp',
             data: {
@@ -41,7 +42,6 @@ _.extend(App.Models.ApiModel.prototype, {
         };
 
         if (data) params.data = _.extend(params.data, data);
-        
         options.data = JSON.parse(JSON.stringify(params.data));
         options.dataType = params.dataType;
         return options;
@@ -60,13 +60,13 @@ _.extend(App.Models.ApiModel.prototype, {
             case "update":
             type="POST";
             jsonp = false;
-            options=this.getParams();
+            options=this.getParams(options.data);
             options.dataType=false;
             break;
         }
 
         if (undefined == model || model == false) model = this;
-
+    
         this.params = "api_key=" + App.Settings.api_key;
         var session = this.get("session");
         if (session) {
@@ -80,7 +80,7 @@ _.extend(App.Models.ApiModel.prototype, {
             jsonp: jsonp, // the api requires the jsonp callback name to be this exact name
             processData: true
         }, options);
-
+        
         // Make the request.
         return $.ajax(params);
     },

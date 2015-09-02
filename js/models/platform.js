@@ -181,7 +181,7 @@ App.Platform.prototype.detectPlatform = function() {
 
 App.Platform.prototype.getDeviceOrientation = function() {
 
-    if ((window.orientation && Math.abs(window.orientation) === 90) || ("undefined" == typeof(window.orientation) && window.screen.width > window.screen.height)) {
+    if (window.orientation && Math.abs(window.orientation) === 90) {
         return "landscape";
     } else {
         return "portrait";
@@ -198,7 +198,7 @@ _.extend(App.Platform.prototype, Backbone.Events);
     var browser = new App.Platform('browser');
     // browser.needsProxy = true;
     // We want this to fail, and get added as default
-
+    
     browser.setResolution(window.screen.width, window.screen.height);
     browser.defaultPlatform = true;
     App.Platforms.addSupportedPlatform(browser);

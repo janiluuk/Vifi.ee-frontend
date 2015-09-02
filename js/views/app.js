@@ -92,27 +92,25 @@ App.Views.BaseAppView = Backbone.View.extend({
 
         if (!this.browserInitialized) { 
             if (window.mySwiper) mySwiper.resizeFix();
-
             app.homepage.browserview.filterview.filterbarview.enableCarosel();
             this.browserInitialized = true;
-
         }            
         app.homepage.browserview.$isotope.isotope('layout');
         app.homepage.browserview.renderResults();
         App.Utils.lazyload();
 
-        
         if (this.scrollTop == 0) {
         } else {
             $("#content-container").scrollTop(this.scrollTop);
         }
     },
 
+
     /* Pure evil addressbar hiding on resizing the screen */
 
     onResizeScreen: function() {
         $("body").height($(window).height()-5);
-        var height = this.platform.resolution.height+35;
+        var height = this.platform.resolution.height+30;
         this.$el.css("height",height);
    
         this.browserInitialized = false;

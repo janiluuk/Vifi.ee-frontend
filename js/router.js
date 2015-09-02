@@ -36,6 +36,7 @@ App.Router = Backbone.Router.extend({
         'me': 'me',
         'return': 'purchaseReturn',
         'return/:id': 'purchaseReturn',
+        'purchaseSuccess/:id' : 'purchaseSuccess',
         'error/:type' : 'showErrorPage',
         'recovery/:key/:email' : 'showRecoveryPage',
         'contact' : 'showContactPage',
@@ -105,7 +106,7 @@ App.Router = Backbone.Router.extend({
         }
         this.trigger("change:title", "Search results");
     },
-    showFilm: function(id) {
+    showFilm: function(id, autoplay) {
 
         var film = new App.Models.Film({
             id: id
@@ -113,7 +114,7 @@ App.Router = Backbone.Router.extend({
         var _this = this;
 
         var films = app.user.checkPurchases();
-
+        
         if (films) {
                 
             app.user.updatePurchases().then(function(collection) { 
@@ -155,12 +156,25 @@ App.Router = Backbone.Router.extend({
                 }
             }
             app.showMoviePage();
+            if (autoplay === true) app.movieview.playMovie();
             _this.trigger("change:title", film.get("title"));
 
         });
 
     },
+    purchaseSuccess: function(id) {
+        var title = app.usercollection.get(id);                                                          
+                
+        if (!title) return false;
+        
+        if (!this.returnview)
+                this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
+        else
+        this.returnview.model.set(title.toJSON());
+        this.returnview.render();
+        return false;
 
+    },
     homePage: function() {
         var currentPage = this.currentPage;
 
