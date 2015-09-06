@@ -33,7 +33,7 @@ window.app = _.extend({}, Backbone.Events);
         var usercollection = new App.Collections.UserCollection();
         var sessioncollection = new App.Collections.FilmSessionCollection();
 
-        var originalCollection = new App.Collections.FilmCollection(data.results);
+        var originalCollection = new App.Collections.FilmCollection(data.results, {parse:true});
 
         var collection = new App.Collections.PaginatedCollection(
             originalCollection.models, {
@@ -66,7 +66,7 @@ window.app = _.extend({}, Backbone.Events);
                         app.collection.querystate.setFromUrl(); 
                         app.user.updatePurchases(); 
                         if (App.Settings.debug === true) { 
-                            $log("App ready at Finished at "+new Date().getTime()); 
+                            $log("App ready, finished at "+new Date().getTime()); 
                         }
                 }.bind(this));
                 

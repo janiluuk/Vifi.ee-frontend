@@ -17,9 +17,4 @@ App.Views.SearchView = Backbone.View.extend({
       return this;
       
     },
-
-
-
-
-
 })

@@ -1,3 +1,143 @@
+App.Settings.debug = true;
+
+App.Views.MobilePurchase = Backbone.View.extend({
+
+    model: App.Models.MobilePurchase,
+    events: {
+        'click #mobile-payment-start-btn' : 'initPayment',
+        'click #mobile-payment-try-again' : 'initPayment'
+    },
+    
+    initialize: function(options) {
+
+        this.model = options.model;
+        this.listenTo(this.model, "purchase:mobile:success", this.onPaymentSuccess, this);
+        this.listenTo(this.model, "purchase:mobile:error", this.onPaymentError, this);
+        this.listenTo(this.model, "purchase:mobile:done", this.onPaymentDone, this);
+        this.listenTo(this.model, "purchase:mobile:start", this.onPaymentStart, this);
+        this.listenTo(this.model, 'change:timeout', this.renderTimeout, this);
+        this.listenTo(this.model, 'change:phoneNumber', this.renderPhoneNumber, this);
+        
+        _.bindAll(this, 'renderPendingView', 'initPayment', 'renderTimeout', 'render', 'onPaymentDone', 'onPaymentError', 'onPaymentSuccess');
+        
+    },
+
+    initPayment: function(e) {
+        e.preventDefault();
+        this.$("button").addClass("loading");   
+        this.model.initPayment();
+        return false;        
+    },
+
+    renderPendingView: function(model) {
+
+        if (!model) model = this.model;
+        
+        this.$el.empty().html(ich.mobilePaymentPendingTemplate(model.toJSON()));
+        return this;
+    },
+
+    renderPhoneNumber: function() {
+        var phonenumber = this.model.get("phoneNumber");
+        $("#mobilePhoneNumber").html("<strong>"+phonenumber+"</strong>");
+        return this;
+    },
+    
+    renderTimeout: function() {
+        $("#mobileTimeout").html(this.model.get("timeout"));
+        return this;
+    },
+
+    renderFailure: function() {
+        this.$el.html(ich.mobilePaymentFailureTemplate(this.model.toJSON()));        
+        return this;        
+    },
+    renderSuccess: function() {
+        this.$el.html(ich.mobilePaymentSuccessTemplate(this.model.toJSON()));        
+        return this;        
+    },
+
+    onPaymentStart: function() {
+        this.renderPendingView(this.model);
+        return false;
+    },
+
+    onPaymentError:function() {
+        this.renderFailure();
+        return false;
+    },
+
+    onPaymentSuccess: function() {
+        this.renderSuccess();
+        return false;
+    },
+    onPaymentDone: function() {
+        this.renderSuccess();
+        return false;
+    },
+    render: function() {
+        this.$el.html(ich.mobilePaymentTemplate(this.model.toJSON()));
+        return this;
+    }
+});
+
+App.Views.PurchaseView = App.Views.DialogView.extend({
+    model: App.Models.Film,
+    template: '<div id="modalcontent"><div id="loginmodal"/><div id="purchasemodal"/></div>',
+    events: {
+        'click .mfp-close': 'close'
+    },
+    initialize: function(options) {
+        _.bindAll(this, 'afterClose', 'render');
+        options = options || {};
+        this.model = options.model;
+        this.session = options.session;
+            
+        if (!this.paymentView) {
+            this.paymentView = new App.Views.PaymentDialog({
+                model: options.model,
+                session: options.session,
+                payment: new App.Models.Purchase({model:options.model, session:options.session}),
+                mobilePayment: new App.Models.MobilePurchase({model:options.model, session:options.session}),
+                parent: this
+            });
+        } else {
+            this.paymentView.set({model: options.model, session:options.session});
+        }
+        this.loginView = new App.Views.LoginDialog({
+            session: this.session,
+            parent: this
+        });
+        this.listenTo(this.paymentView.mobilePayment, "purchase:ticket:received", function(ticket) { this.session.trigger("ticket:received",ticket); }, this);
+        this.listenTo(this.paymentView.payment, "purchase:ticket:received", function() { this.session.trigger("ticket:received",ticket);   }, this);
+        this.render();
+    },
+    showLogin: function() {
+        $(".vifi-popup").hide();
+        $("#login-popup").show();
+    },
+    showPayment: function() {
+        $(".vifi-popup").hide();
+        $("#film-popup").show();
+    },
+    render: function() {
+        this.$el.html(this.template).appendTo("body");
+        this.openDialog();
+        this.setElement(".mfp-content");
+        this.assign(this.paymentView, "#purchasemodal");
+        this.assign(this.loginView, "#loginmodal");
+        if (this.session.isLoggedIn() || !App.Settings.loginEnabled) this.showPayment();
+        else this.showLogin();
+        return this;
+    },
+    afterClose: function(e) {
+        this.loginView.close();
+        this.paymentView.close();
+        return false;
+    }
+});
+
+
 App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
     model: App.Models.Film,
     template: '<div id="modalcontent"><div id="post-purchase-modal"/></div>',
@@ -47,14 +187,11 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
     },
     onContinue: function(e) {
         e.preventDefault();
-
-       
         var id = this.model.get("id");
         app.user.purchases.removeFilm(id);
 
         this.close();
         this.parent.close();
-
         app.router.showFilm(id,true);
 
         return false;
@@ -67,89 +204,7 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
         return this;
     }
 });
-App.Views.PurchaseView = App.Views.DialogView.extend({
-    model: App.Models.Film,
-    template: '<div id="modalcontent"><div id="loginmodal"/><div id="purchasemodal"/></div>',
-    events: {
-        'click .mfp-close': 'close'
-    },
-    initialize: function(options) {
-        _.bindAll(this, 'afterClose', 'render');
-        options = options || {};
-        this.session = options.session;
-        this.paymentView = new App.Views.PaymentDialog({
-            model: options.model,
-            session: options.session,
-            payment: new App.Models.Purchase({
-                model: options.model,
-                session: options.session,
 
-            }),
-            mobilePayment: new App.Models.MobilePurchase({
-                model: options.model,
-                session: options.session
-            }),
-            mobilePayment: new App.Models.MobilePurchase({
-                model: options.model,
-                session: options.session
-            }),
-            parent: this
-        });
-        this.loginView = new App.Views.LoginDialog({
-            session: options.session,
-            parent: this
-        });
-        this.render();
-    },
-    showLogin: function() {
-        $(".vifi-popup").hide();
-        $("#login-popup").show();
-    },
-    showPayment: function() {
-        $(".vifi-popup").hide();
-        $("#film-popup").show();
-    },
-    render: function() {
-        this.$el.html(this.template).appendTo("body");
-        this.openDialog();
-        this.setElement(".mfp-content");
-        this.assign(this.paymentView, "#purchasemodal");
-        this.assign(this.loginView, "#loginmodal");
-        if (this.session.isLoggedIn() || !App.Settings.loginEnabled) this.showPayment();
-        else this.showLogin();
-        return this;
-    },
-    afterClose: function(e) {
-        this.loginView.close();
-        this.paymentView.close();
-        return false;
-    }
-});
-App.Views.LoginDialog = Backbone.View.extend({
-    model: App.Models.Film,
-    events: {
-        'click .mfp-close': 'close',
-        'click button#continue-unregistered': 'showPayment'
-    },
-    initialize: function(options) {
-        options = options || {};
-        this.parent = options.parent;
-        this.session = options.session;
-        this.loginForm = new App.Views.LoginForm({
-            session: options.session
-        });
-        this.listenTo(this.session.profile, "user:login", this.showPayment, this);
-    },
-    showPayment: function() {
-        this.parent.showPayment();
-    },
-    close: function() {},
-    render: function() {
-        this.$el.html(ich.loginDialogTemplate(this.session.toJSON()));
-        this.assign(this.loginForm, "#popup-login-register-form");
-        return this;
-    }
-});
 App.Views.PaymentDialog = Backbone.View.extend({
     events: {
         'click .mfp-close': 'close',
@@ -163,14 +218,21 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.session = options.session;
         this.model = options.model;
         this.payment = options.payment;
+        this.payment.set({model: options.model, session:options.session});        
         this.mobilePayment = options.mobilePayment;
-        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.mobilePayment});
+        this.mobilePayment.set({model: options.model, session:options.session});
+        this.model.set('payments', app.paymentmethods.toJSON());
 
+        if (!this.mobilePaymentView)
+        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.mobilePayment});
+        else
+        this.mobilePaymentView.set({model: this.mobilePayment});
+        
+        this.listenTo(this.model, "change", this.onModelChange, this);
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
         this.listenTo(this.payment, "purchase:error", this.onPaymentError, this);
         this.listenTo(this.payment, "purchase:verify:error", this.onPaymentError, this);
         this.listenTo(this.payment, "purchase:verify:successful", this.onVerifySuccess, this);
-        
         this.listenTo(this.mobilePayment, "purchase:successful", this.onPaymentSuccess, this);
         this.listenTo(this.mobilePayment, "purchase:error", this.onPaymentError, this);
 
@@ -183,6 +245,12 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
 
     },
+    onModelChange: function() { 
+        
+        this.payment.set({model: this.model, session:this.session});
+        this.mobilePayment.set({model: this.model, session:this.session});  
+        
+    },
     selectMethod: function(e) {
         e.preventDefault();
         var el = $(e.currentTarget);
@@ -194,8 +262,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
  
         if (method && typeof(method.get) != "undefined") { 
             this.setSelectedMethod(method.get("identifier"));
-            var method_id = method.get("id");
-            this.payment.set("method_id", method_id);
+            this.payment.set("method_id", method.get("id"));
             this.updateUI();
         }
     },
@@ -245,17 +312,14 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
         var data = this.$("form").serializeObject();
         this.payment.set(data);
-        
-        if (this.payment.isValid(true)) { 
+        if (this.payment.isValid(true)) {
             this.payment.purchase(this.model);
             this.$("#confirm-purchase-button").addClass("loading");
         }
-
         return false;
     },
     onVerifySuccess: function() {
         this.$("#confirm-purchase-button").removeClass("loading");
-        app.movieview.playMovie();
     },    
     onPaymentSuccess: function() {
         this.$("#confirm-purchase-button").removeClass("loading");
@@ -278,21 +342,17 @@ App.Views.PaymentDialog = Backbone.View.extend({
         return Backbone.View.prototype.remove.apply(this, arguments);
     },
     render: function() {
-        this.model.set('payments', app.paymentmethods.toJSON());
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
         this.mobilePaymentView.setElement("#payment-mobile");
         this.mobilePaymentView.render();        
         var method = this.getSelectedMethod();
         $("#"+method).click();
-        this.updateUI();
-
         return this;
     },
 });
 App.Views.SubscriptionPaymentDialog = App.Views.PaymentDialog.extend({
     render: function() {
         this.model.set('payments', app.paymentmethods.toJSON());
-        
         this.$el.html(ich.subscriptionPurchaseDialogTemplate(this.model.toJSON()));
         this.updateUI();
         return this;
@@ -326,85 +386,6 @@ App.Views.ActivateSubscription = App.Views.DialogView.extend({
     render: function() {
         this.$el.html(ich.subscriptionActivateDialogTemplate());
         this.openDialog(false, ich.subscriptionPurchaseDialogTemplate());
-        return this;
-    }
-});
-App.Views.MobilePurchase = Backbone.View.extend({
-
-    model: App.Models.MobilePurchase,
-    events: {
-        'click #mobile-payment-start-btn' : 'initPayment',
-        'click #mobile-payment-try-again' : 'initPayment'
-    },
-    
-    initialize: function(options) {
-
-        this.model = options.model;
-        this.listenTo(this.model, "payment:mobile:success", this.onPaymentSuccess, this);
-        this.listenTo(this.model, "payment:mobile:error", this.onPaymentError, this);
-        this.listenTo(this.model, "payment:mobile:done", this.onPaymentDone, this);
-        this.listenTo(this.model, "payment:mobile:start", this.onPaymentStart, this);
-        this.listenTo(this.model, 'change:timeout', this.renderTimeout, this);
-        this.listenTo(this.model, 'change:phoneNumber', this.renderPhoneNumber, this);
-        
-        _.bindAll(this, 'renderPendingView', 'initPayment', 'renderTimeout', 'render', 'onPaymentError', 'onPaymentSuccess');
-        
-    },
-
-    initPayment: function(e) {
-        e.preventDefault();
-        this.$("button").addClass("loading");
-        this.model.initPayment(function() { this.renderPendingView(this.model)}.bind(this));
-        return false;        
-    },
-
-    renderPendingView: function(model) {
-
-        if (!model) model = this.model;
-        this.$el.empty().html(ich.mobilePaymentPendingTemplate(model.toJSON()));
-        return this;
-    },
-
-    renderPhoneNumber: function() {
-        var phonenumber = this.model.get("phoneNumber");
-        $("#mobilePhoneNumber").html("<strong>"+phonenumber+"</strong>");
-        return this;
-    },
-    
-    renderTimeout: function() {
-        $("#mobileTimeout").html(this.model.get("timeout"));
-        return this;
-    },
-
-    renderFailure: function() {
-        this.$el.html(ich.mobilePaymentFailureTemplate(this.model.toJSON()));        
-        return this;        
-    },
-    renderSuccess: function() {
-        this.$el.html(ich.mobilePaymentSuccessTemplate(this.model.toJSON()));        
-        return this;        
-    },
-
-    onPaymentStart: function() {
-        this.renderPendingView(this.model);
-        return false;
-    },
-
-    onPaymentError:function() {
-        this.renderFailure();
-        return false;
-    },
-
-    onPaymentSuccess: function() {
-        this.renderSuccess();
-        return false;
-    },
-    onPaymentDone: function() {
-        
-        alert("done");
-    },
-    render: function() {
-        this.$el.html(ich.mobilePaymentTemplate(this.model.toJSON()));
         return this;
     }
 });

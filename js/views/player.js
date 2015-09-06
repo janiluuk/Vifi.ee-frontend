@@ -7,12 +7,12 @@ App.Views.PlayerView = Backbone.View.extend({
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
         this.setElement("#movie-player-container");
 
-        this.render();
-        $(window).resize(this.resize);
+        app.platform.on("screen:orientation:change", this.resize, this);
         this.listenTo(this.model, "player:ready", this.renderControls);
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "player:resize", this.resize, this);
         this.listenTo(app.router, "page:change", this.close, this);
+        this.render();
 
     },
     resize: function() {
@@ -22,11 +22,8 @@ App.Views.PlayerView = Backbone.View.extend({
         var orientation = App.Platforms.platform.getDeviceOrientation();
         if (orientation == "portrait") { 
             var player_width = this.$el.parent().parent().width();
-
         } else { 
-     
             var player_width = $(window).width();
-
         }
         this.$el.width(player_width);
 
@@ -36,13 +33,11 @@ App.Views.PlayerView = Backbone.View.extend({
         $("#player-container").css({ height: player_height, width: player_width});
     },
     close: function() {
-        this.$el.empty();
-        this.$el.hide();
+        this.$el.empty().hide();
         this.controlBar.remove();
-
-        $(window).unbind("resize");
         this.model.trigger("mediaplayer:stop");
         this.unbind();
+        this.remove();
     },
     render: function() {
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
@@ -59,7 +54,6 @@ App.Views.PlayerView = Backbone.View.extend({
     onControlsChange: function(category, val) { 
         var evt = 'controlbar:'+category+':change';                
         this.model.trigger(evt, val);
-
     }
 });
 
@@ -77,7 +71,6 @@ App.Views.PlayerControlbar = Backbone.View.extend({
     },
     onSelection: function(ev) { 
         var el = $(ev.target);
-
         var category = el.data('category');
         var val = el.find("option:selected").val();
         this.trigger('controlbar:'+category, val);        
@@ -90,10 +83,7 @@ App.Views.PlayerControlbar = Backbone.View.extend({
         $('.select-box').fancySelect().on('change.fs', function(e) {
             var val = $(this).find("option:selected").val();
             var category = $(this).data('category');
-            
            _this.trigger('controlbar:change', category, val);
-
-
         }); 
 
         return this;

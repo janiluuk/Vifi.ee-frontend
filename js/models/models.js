@@ -27,8 +27,13 @@ _.extend(App.Models.ApiModel.prototype, {
     url: function() {
         return App.Settings.api_url + this.path + '?' + this.params;
     },
+    urlParams: function() {
+        return false;
+    },
     getParams: function(data) {
         var session = this.get("session");
+        if (!session) session = app.session;
+        
         var options = {};
         
         var params = {
@@ -43,7 +48,9 @@ _.extend(App.Models.ApiModel.prototype, {
 
         if (data) params.data = _.extend(params.data, data);
         options.data = JSON.parse(JSON.stringify(params.data));
+        
         options.dataType = params.dataType;
+        console.log(options);
         return options;
     },
     // override backbone synch to force a jsonp call
@@ -55,12 +62,12 @@ _.extend(App.Models.ApiModel.prototype, {
         var type="GET";
         var dataType = "jsonp";
         var jsonp = "jsoncallback";
-
+        var data = ("undefined" == typeof(options)) ? {} : options.data;
         switch (method) {
             case "update":
             type="POST";
             jsonp = false;
-            options=this.getParams(options.data);
+            options=this.getParams(data);
             options.dataType=false;
             break;
         }
@@ -69,9 +76,16 @@ _.extend(App.Models.ApiModel.prototype, {
     
         this.params = "api_key=" + App.Settings.api_key;
         var session = this.get("session");
-        if (session) {
-            this.params += "&sessionId=" + session.get("session_id");
-            if (session.get("auth_id") != null && session.get("auth_id") != "") this.params += "&authId=" + session.get("auth_id");
+
+        if (_.isEmpty(session)) {
+            session = app.session;
+        }
+        this.params += "&sessionId=" + session.get("session_id");
+        
+        if (session.get("auth_id") != null && session.get("auth_id") != "") this.params += "&authId=" + session.get("auth_id");
+        
+        if (this.urlParams()) {
+            this.params += "&"+jQuery.param(this.urlParams());
         }
         var params = _.extend({
             type: type,
@@ -99,8 +113,10 @@ App.Models.Banner = Backbone.Model.extend({
 });
 
 App.Models.Film = App.Models.Product.extend({
+
     type: 'film',
-    path: 'details/'
+    path: 'details/',
+
 });
 _.extend(App.Models.Film.prototype,  { 
     initialize: function(options) {
@@ -109,6 +125,11 @@ _.extend(App.Models.Film.prototype,  {
     refresh: function() {
             this.path = "details/" + this.get("id");
     },
+    /**
+     *  Retrieve Rotten tomatoe review's for the mobie
+     *  @param int id 
+     *  
+     */
     fetchRT: function(id) {
 
         if (id) imdb_id = id; 
@@ -174,9 +195,11 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
             'code': '',
             'language': ''
         }],
-        session: { },
+        session: {  },
     },
-
+    urlParams: function() {
+        return {};
+    },
     initialize: function(options) {
         if (options && undefined !== options.session) {
             this.set("session", options.session);
@@ -193,6 +216,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.set("videos", false);
         this.set("subtitles", false);        
         this.set("id", id);
+        
         this.refresh(true);
 
         return this;    

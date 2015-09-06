@@ -465,3 +465,28 @@ App.Views.ResetPassword = Backbone.View.extend({
     },
 
 });
+App.Views.LoginDialog = Backbone.View.extend({
+    model: App.Models.Film,
+    events: {
+        'click .mfp-close': 'close',
+        'click button#continue-unregistered': 'showPayment'
+    },
+    initialize: function(options) {
+        options = options || {};
+        this.parent = options.parent;
+        this.session = options.session;
+        this.loginForm = new App.Views.LoginForm({
+            session: options.session
+        });
+        this.listenTo(this.session.profile, "user:login", this.showPayment, this);
+    },
+    showPayment: function() {
+        this.parent.showPayment();
+    },
+    close: function() {},
+    render: function() {
+        this.$el.html(ich.loginDialogTemplate(this.session.toJSON()));
+        this.assign(this.loginForm, "#popup-login-register-form");
+        return this;
+    }
+});

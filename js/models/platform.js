@@ -215,13 +215,17 @@ _.extend(App.Platform.prototype, Backbone.Events);
     };
     browser.updateScreen = function(silent) {
         var orientation = this.getDeviceOrientation();
-        this.setResolution($(window).outerWidth(), $(window).outerHeight());
-        if (!silent) this.trigger("screen:resize", $(window).outerWidth(), $(window).outerHeight());
+        if (typeof(screen) != "undefined") { 
+            window.screen.availWidth = $(window).width();
+            window.screen.availHeight = $(window).height();
+        }
+
+        this.setResolution(screen.availWidth, screen.availHeight);
+        if (!silent) this.trigger("screen:resize", screen.availWidth, screen.availHeight);
         
         if (orientation != this.orientation) {
                 this.orientation = orientation;                
                 if (!silent) this.trigger("screen:orientation:change", this.orientation);
-
         }
 
         

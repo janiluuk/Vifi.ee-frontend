@@ -12,7 +12,7 @@ App.Views.FilmView = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.html(ich.filmitemTemplate(this.model.get("film")));
+        this.$el.html(ich.filmitemTemplate(this.model.toJSON()));
         return this;
     }
 });
@@ -20,7 +20,7 @@ _.extend(App.Views.FilmView.prototype, {
 
     showMoviePage: function(e) {
         e.preventDefault();
-        var url = this.model.get("film").seo_friendly_url;
+        var url = this.model.get("seo_friendly_url");
         app.router.navigate(url, {
             trigger: true
         });
@@ -42,7 +42,7 @@ App.Views.UserFilmView = Backbone.View.extend({
     showMoviePage: function(e) {
         var film = app.collection.originalCollection.get(this.model.get("id"));
         if (typeof(film) == "undefined") return false;
-        var url = film.get("film").seo_friendly_url;
+        var url = film.get("seo_friendly_url");
         app.router.navigate(url, {
             trigger: true
         });
@@ -52,9 +52,6 @@ App.Views.UserFilmView = Backbone.View.extend({
     render: function() {
         var filmitem = app.collection.originalCollection.get(this.model.get("id"));
         if (typeof(filmitem) == "undefined") return false;
-        var film = filmitem.get("film")
-        this.model.set("seo_friendly_url", film.seo_friendly_url);
-        this.model.set("poster_url", film.poster_url);
         if (this.model.get("validto")) var date = App.Utils.stringToDate(this.model.get("validto"));
         if (date) {
             var validtotext = App.Utils.dateToHumanreadable(date);
@@ -103,8 +100,8 @@ App.Views.FeaturedView = Backbone.View.extend({
             _.each(this.collection, function(item) {
                 if (counter < App.Settings.featured_slides_limit) {
                     counter++;
-                    var shortOverview = item.get('film').overview.substr(0, 210) + "...";
-                    item.get('film').shortOverview = shortOverview;
+                    var shortOverview = item.get('overview').substr(0, 210) + "...";
+                    item.set("shortOverview",shortOverview);
                     $(this.fragment).append(ich.featuredItemTemplate(item.toJSON()));
                 }
             }.bind(this));
@@ -117,7 +114,7 @@ App.Views.FeaturedView = Backbone.View.extend({
         } else {
             setTimeout(function() {
                     this.startCarousel();
-            }.bind(this), 2000);
+            }.bind(this), 1800);
         }
 
         setTimeout(function() {

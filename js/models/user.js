@@ -1,26 +1,54 @@
 App.User = {};
 App.User.Ticket = Backbone.Model.extend({
-    initialize: function(options) {
-        if (options && undefined !== options.session) {
-            this.set("session_", options.session_id);
-        }
-    },
+    filmsession: false,
+    content: false,
     defaults: {
-        id: 0,
-        session_id: '',
+        vod_id: '',
         validto: '',
         validfrom: '',
-        validtotext: '',
+        validtotext: '' ,
         title: '',
-        session: {
-            session_id: '',
-            timestamp: 0
-        },
         type: '',
         auth_code: '',
-        user_id: '',
         status: 'invalid',
+    },    
+
+    /**
+     * Do initial processing of the ticket
+     * @return boolean
+     */
+    
+    parse: function(data) {         
+
+         var data = _.pick(data, _.keys(this.defaults));
+
+         if (data.vod_id) { 
+            this.set("id", data.vod_id);
+         } else {
+            data.vod_id = data.id;
+         }
+         
+         this.set("content", new App.Player.FilmContent({id: this.get("id"), ticket: this}));
+         if (this.get("session")) { 
+            this.set("filmsession", new App.User.FilmSession(this.get("session")));
+         }
+ 
+         var date = App.Utils.stringToDate(data.validto);
+         this.set("validtotext",App.Utils.dateToHumanreadable(date));
+ 
+         return data;
     },
+
+
+    /**
+     * Check if ticket is valid
+     * @return boolean
+     *
+     */
+    isValid: function() {
+        return true;
+    },
+    
     /**
      * Check if ticket has expired
      * @return boolean
@@ -34,20 +62,23 @@ App.User.Ticket = Backbone.Model.extend({
         return true;
     }
 });
-
-App.Player.FilmSession = App.Models.ApiModel.extend({
+App.User.FilmSession = App.Models.ApiModel.extend({ 
     path: 'filmsession',
-    defaults: {
-        'session_id': '',
-        'timestamp': 0,
+    defaults: {  
+        'session_id' : '',
+        'timestamp' : '',
+        'watched' : false,
     },
+
     initialize: function(options) {
         if (options && undefined !== options.session) {
             this.set("session", options.session);
         }
+        this.set("session_id", options.session_id);
+        this.set("timestamp", options.timestamp);        
     }
-});
 
+});
 App.User.Profile = App.Models.ApiModel.extend({
     path: 'profile',
     params: "",
@@ -60,9 +91,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             "firstname": '',
             "notificationText": '',
             "email": 'anonymous@vifi.ee',
-            "city": '',
             'newsletter': '0',
-            "balance": "",
             "language": "Estonian",
             "tickets": [],
             "paired_user": false,
@@ -120,6 +149,8 @@ App.User.Profile = App.Models.ApiModel.extend({
                 this.session.set("session_id", data.cookie);
                 this.session.set("auth_id", data.activationKey);
                 this.session.set("activationCode", data.activationCode);
+                this.trigger("user:login:success", data.message);
+                
                 //  this.session.enable();
             } else {
                 this.trigger("user:login:fail", data);
@@ -224,9 +255,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             if (this.hasMovie(movie)) this.trigger("purchase:successful", movie);
         }.bind(this));
     },
-    addFilmSession: function(data) {
-        var filmsession = new App.Models;
-    },
+
     hasMovie: function(movie) {
         var id = movie.get("id");
         var movies = app.usercollection.where({
@@ -239,8 +268,9 @@ App.User.Profile = App.Models.ApiModel.extend({
         return this.get("subscriber") === true ? true : false;
     },
     isAnonymous: function() {
+        if (this.get("email") == "anonymous@vifi.ee") return true;
         if (this.get("role") == "Anonymous customer" || this.get("role") == "" || this.get("role") == "Guest") return true;
-        return true;
+        return false;
     },
     isRegistered: function() {
         if (this.get("role") == "Registered customer") return true;
@@ -284,7 +314,10 @@ App.User.Profile = App.Models.ApiModel.extend({
     updateUserCollection: function() {
         if (!app || !app.usercollection) return false;
         var tickets = this.get("tickets");
-        app.usercollection.reset(tickets);
+        _.each(tickets, function(item) {  
+            var ticket = new App.User.Ticket(item);
+            app.usercollection.add(ticket);
+        });
         return app.usercollection;
     },
     updatePurchases: function(cb) {
@@ -300,20 +333,16 @@ App.User.Profile = App.Models.ApiModel.extend({
             }
         }.bind(this));
         return deferred.promise();
-    },
-    
-    savePurchase: function(purchase) {
-        console.log(purchase);
-        var filmsession = new App.User.FilmSession(purchase);
-        filmsession.localSave();
-        return filmsession;
     }
+
 });
 
-
+/**
+ * Purchases stored on the cookies 
+ */
+ 
 App.User.Purchases = Backbone.Model.extend({ 
-
-
+    
     initialize: function(options) {
         _.bindAll(this, 'getPurchases', 'setPurchases', 'removeFilm', 'cleanPurchases');
         this.session = options.session;
@@ -430,16 +459,17 @@ App.User.Session = Backbone.Model.extend({
     },
     initialize: function() {
         this.cookie = App.User.Cookie;
-        var purchases = new App.User.Purchases({session: this});
-        
+        this.purchases = new App.User.Purchases({session: this});
         this.profile = new App.User.Profile({
             session: this,
-            purchases: purchases
+            purchases: this.purchases,
         });
         this.set("profile", this.profile);
         this.on('poll:enable', this.enable, this);
         this.on('poll:disable', this.disable, this);
         this.profile.on('user:login', this.onUserAuthenticate, this);
+        this.on('ticket:received', this.onTicketReceived, this);
+        
         if (auth_data = this.cookie.parse()) {
             this.set(auth_data);
             $log("Setting cookie authentication data");
@@ -458,9 +488,10 @@ App.User.Session = Backbone.Model.extend({
         if (!password) password = "";
         if (access_token && password == "") password = access_token;
         if (!this.isLoggedIn()) {
-            this.cookie.clear();
+            this.reset();
+
             app.api.call(["get_token", email, password], {}, function(data) {
-                if (data.status == "ok") { 
+                if (data.status == "ok") {
                     if (data.token) {
                         this.set("auth_id", data.token);
                         this.trigger("user:token:authenticated", data.token);
@@ -476,6 +507,12 @@ App.User.Session = Backbone.Model.extend({
     },
     url: function() {
         return App.Settings.api_url + 'session/' + '?jsoncallback=?';
+    },
+    onTicketReceived: function(ticket) { 
+        if (ticket) {
+            app.usercollection.add(ticket);    
+        }
+        return false;
     },
     getParams: function() {
         var options = {}
@@ -504,10 +541,12 @@ App.User.Session = Backbone.Model.extend({
         this.set("enabled", false);
     },
     onUserAuthenticate: function(data) {
-        this.set("logged_in", true);
+        if (this.profile.isAnonymous() !== true) {
+            this.set("logged_in", true);
+            this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));       
+        }
         this.set("user_id", this.profile.get("user_id"));
         this.trigger("user:login", this.profile.get("user_id"));
-        this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));
         this.disable();
     },
     logout: function() {

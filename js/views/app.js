@@ -48,8 +48,8 @@ App.Views.BaseAppView = Backbone.View.extend({
 
         if (this.platform.name == "mobile") {
             options.initialFilterState = this.collection.querystate.isDefault() ? false : true;
-            this.platform.on("screen:orientation:change", this.onResizeScreen);
-            this.initMobile();
+            //this.platform.on("screen:orientation:change", this.onResizeScreen);
+            //this.initMobile();
         }
 
         this.homepage = new App.Views.HomePage(options);
@@ -109,11 +109,10 @@ App.Views.BaseAppView = Backbone.View.extend({
     /* Pure evil addressbar hiding on resizing the screen */
 
     onResizeScreen: function() {
-        $("body").height($(window).height()-5);
-        var height = this.platform.resolution.height+30;
-        this.$el.css("height",height);
-   
-        this.browserInitialized = false;
+            $("body").height(this.platform.resolution.height-5); 
+            var height = this.platform.resolution.height;
+            this.$el.css("height",height);
+            this.browserInitialized = false;
     },
     
     /* Pure evil addressbar hiding */

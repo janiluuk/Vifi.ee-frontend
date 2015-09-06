@@ -2,7 +2,13 @@ App.Collections = {};
     // Create a new collection using one of Backbone.Paginator's
     // pagers. We're going to begin using the requestPager first.
 App.Collections.FilmCollection = Backbone.Collection.extend({
-    model: App.Models.Film
+    model: App.Models.Film,
+parse: function (resp, options) {
+    var self = this;
+    return _.map(resp, function (obj) {
+        return new self.model(obj.film, options);
+    });
+    }
 });
 
 
@@ -17,11 +23,6 @@ App.Collections.FilmSessionCollection = Backbone.Collection.extend({
 });
 
 /* User collection for playlist items */
-
-App.Collections.TicketCollection = Backbone.Collection.extend({
-        localStorage: new Backbone.LocalStorage("Ticket"),
-        model: App.User.Ticket
-});
 
 App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         baseUrl: App.Settings.api_url + 'search/',
@@ -62,7 +63,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         },
         featured: function() {
             var items = this.fullCollection.filter(function(data) {
-                return data.get("film").featured == 1
+                return data.get("featured") == 1
             });
 
             return items;
@@ -75,10 +76,9 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
         },
         sortByAttribute: function(attribute, desc) {
             
-            var comparator = 'model.get("film").'+attribute;
             var asc_comparator = function (model) { 
 
-                return eval(comparator);
+                model.get(attribute);
             }
             this.querystate.set("sort", attribute);
             
@@ -114,28 +114,42 @@ App.Films.GenreCollection = Backbone.Collection.extend({
 App.Collections.SortCollection = Backbone.Collection.extend({});
 App.Collections.FilterCollection = Backbone.Collection.extend({});
 App.Collections.UserCollection = Backbone.Collection.extend({
-   
+    localStorage: new Backbone.LocalStorage("Ticket"),
+    model: App.User.Ticket,
     initialize: function(options) { 
-        _.bindAll(this, 'updateUserCollection');
+        
+        _.bindAll(this, 'updateUserCollection', 'parseModel');
         this.on("reset", this.updateUserCollection);
+        this.on("add", this.updateUserCollection);
+        
     },
+    hasTicket: function(id) {
+        return _.find(this.models,function(item){ return item.get("id") == id });
+    },
+    parseModel: function(model) {
+        if (!model.isValid()) {
+                $log("Invalid model, deleting "+model.get("id"));
+                model.destroy();
+                return false;
+        }
 
+        var original_film = app.collection.originalCollection.get(model.get("id"));
+        if (original_film) {    
+                original_film.set("ticket", model.toJSON());
+        }
+        model.save();
+        return true;    
+    },
+  
     updateUserCollection: function() {
 
-        if (this.models.length == 0) return false;
-
+        if (this.models.length == 0) {
+            return false;
+        }
         _.each(this.models, function(model) {
-
-            var original_film = app.collection.originalCollection.get(model.get("id"));
-            var validto = model.get("validto");
-
-            if (original_film && validto && typeof validto != "undefined") {
-                    var date = App.Utils.stringToDate(validto);
-                    var validtotext = App.Utils.dateToHumanreadable(date);
-                    model.set("validtotext", validtotext);
-                    original_film.set("ticket", model.toJSON());
-            }
-        });
+            this.parseModel(model);
+        }.bind(this));
+        
         return this;
     }
 });
