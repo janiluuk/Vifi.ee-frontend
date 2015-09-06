@@ -52,12 +52,8 @@ App.Views.UserFilmView = Backbone.View.extend({
     render: function() {
         var filmitem = app.collection.originalCollection.get(this.model.get("id"));
         if (typeof(filmitem) == "undefined") return false;
-        if (this.model.get("validto")) var date = App.Utils.stringToDate(this.model.get("validto"));
-        if (date) {
-            var validtotext = App.Utils.dateToHumanreadable(date);
-            this.model.set("validtotext", validtotext);
-        }
-        this.$el.html(ich.userfilmitemTemplate(this.model.toJSON()));
+        filmitem.set("validtotext", this.model.getValidityText());
+        this.$el.html(ich.userfilmitemTemplate(filmitem.toJSON()));
         return this;
     }
 });

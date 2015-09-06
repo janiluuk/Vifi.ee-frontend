@@ -22,11 +22,11 @@ App.User.Ticket = Backbone.Model.extend({
     parse: function(data) {         
 
          var data = _.pick(data, _.keys(this.defaults));
-         if (data.id) data.id = parseInt(data.id);
+         
          if (data.vod_id) {
-            data.vod_id = parseInt(data.vod_id);
+            data.id = data.vod_id
          } else {
-            data.vod_id = parseInt(data.id);
+            data.vod_id = data.id;
          }
          
          this.set("content", new App.Player.FilmContent({id: this.get("id"), ticket: this}));
@@ -34,14 +34,17 @@ App.User.Ticket = Backbone.Model.extend({
             this.set("filmsession", new App.User.FilmSession(this.get("session")));
          }
  
-         var date = App.Utils.stringToDate(data.validto);
-         this.set("validtotext",App.Utils.dateToHumanreadable(date));
+
          if (!this.isExpired(data.validto)) this.set("status", "active");
-         
+        // this.set("validtotext", this.getValidityText(data.validto));
          return data;
     },
 
-
+    getValidityText: function(date) {
+        if (!date) date = App.Utils.stringToDate(this.get("validto"));
+         return App.Utils.dateToHumanreadable(date);
+         
+    },
     /**
      * Check if ticket is valid
      * @return boolean
@@ -108,7 +111,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         };
     },
     initialize: function(options) {
-        _.bindAll(this, 'connectFB', 'login', 'logout', 'FBcallback');
+        _.bindAll(this, 'connectFB', 'logout', 'FBcallback');
         this.session = options.session;
         this.purchases = options.purchases;        
         this.session.on("change:auth_id", this.authorize, this);
@@ -144,22 +147,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             $log("Authenticating with FBToken");
         });
     },
-    login: function(email, password) {
-        if (!password || !email) return false;
-        app.api.call(["user", "login", email, password], {}, function(data) {
-            if (data.status == "ok") {
-                this.set("user_id", data.user_id);
-                this.session.set("session_id", data.cookie);
-                this.session.set("auth_id", data.activationKey);
-                this.session.set("activationCode", data.activationCode);
-                this.trigger("user:login:success", data.message);
-                
-                //  this.session.enable();
-            } else {
-                this.trigger("user:login:fail", data);
-            }
-        }.bind(this));
-    },
+
     logout: function() {
         this.trigger("user:logout");
         this.set(this.defaults());
@@ -203,19 +191,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             }
         }.bind(this));
     },
-    register: function(email, password) {
-        if (!password || !email) return false;
-        app.api.call(["user", "register", email, password], {}, function(data) {
-            if (data.status == "ok") {
-                this.session.set("user_id", data.user_id);
-                this.session.set("session_id", data.cookie);
-                this.session.set("auth_id", data.activationKey);
-                this.trigger("user:register:success", data);
-            } else {
-                this.trigger("user:register:fail", data);
-            }
-        }.bind(this));
-    },
+
     pair: function(code) {
         var email = this.get("email");
         if (email == "" || code == "") return false;
@@ -262,7 +238,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     hasMovie: function(movie) {
         var id = movie.get("id");
         var movies = app.usercollection.where({
-            id: parseInt(id)
+            id: id
         });
         if (movies.length > 0) return true;
         return false;
@@ -293,7 +269,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.fetch({
             success: function(data) {
                 if (this.get("user_id") != "") {
-                    this.trigger("user:login", this);
+                    this.trigger("user:profile:login", this);
                     if (app.fbuser) this.trigger("user:facebook-connect", app.fbuser);
                     $log("Logging in with user " + this.get("email"));
                     return true;
@@ -450,6 +426,9 @@ App.User.Purchases = Backbone.Model.extend({
 App.User.Session = Backbone.Model.extend({
     path: 'session',
     counter: 0,
+    
+    // Initialize with negative/empty defaults
+    // These will be overriden after the initial checkAuth    
     defaults: function() {
         return {
             logged_in: false,
@@ -470,7 +449,7 @@ App.User.Session = Backbone.Model.extend({
         this.set("profile", this.profile);
         this.on('poll:enable', this.enable, this);
         this.on('poll:disable', this.disable, this);
-        this.profile.on('user:login', this.onUserAuthenticate, this);
+        this.profile.on('user:profile:login', this.onUserAuthenticate, this);
         this.on('ticket:received', this.onTicketReceived, this);
         
         if (auth_data = this.cookie.parse()) {
@@ -478,7 +457,7 @@ App.User.Session = Backbone.Model.extend({
             $log("Setting cookie authentication data");
         }
 
-        _.bindAll(this, 'send', 'fetch', 'logout', 'onUserAuthenticate');
+        _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'onUserAuthenticate');
     },
     /*
      * Get a token for user.
@@ -543,15 +522,33 @@ App.User.Session = Backbone.Model.extend({
     disable: function() {
         this.set("enabled", false);
     },
-    onUserAuthenticate: function(data) {
+    onUserAuthenticate: function() {
+        
         if (this.profile.isAnonymous() !== true) {
             this.set("logged_in", true);
             this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));       
         }
-        this.set("user_id", this.profile.get("user_id"));
-        this.trigger("user:login", this.profile.get("user_id"));
+        this.profile.set("user_id", this.get("user_id"));
+        this.trigger("user:login:success", this.get("user_id"));
         this.disable();
     },
+    login: function(email, password) {
+        alert("jee");
+        if (!password || !email) return false;
+        app.api.call(["user", "login", email, password], {}, function(data) {
+            if (data.status == "ok") {
+                this.set("user_id", data.user_id);
+                this.set("session_id", data.cookie);
+                this.set("auth_id", data.activationKey);
+                this.set("activationCode", data.activationCode);
+                this.trigger("user:login", data.message);
+                
+                //  this.session.enable();
+            } else {
+                this.trigger("user:login:fail", data);
+            }
+        }.bind(this));
+    },    
     logout: function() {
         this.get("profile").logout();
         this.reset();
@@ -560,6 +557,19 @@ App.User.Session = Backbone.Model.extend({
         });
         return false;
     },
+    register: function(email, password) {
+        if (!password || !email) return false;
+        app.api.call(["user", "register", email, password], {}, function(data) {
+            if (data.status == "ok") {
+                this.set("user_id", data.user_id);
+                this.set("session_id", data.cookie);
+                this.set("auth_id", data.activationKey);
+                this.trigger("user:register:success", data);
+            } else {
+                this.trigger("user:register:fail", data);
+            }
+        }.bind(this));
+    },    
     reset: function() {
         this.set(this.defaults());
         this.cookie.clear();
@@ -590,6 +600,9 @@ App.User.Session = Backbone.Model.extend({
             $log(data);
         }.bind(this));
     },
+    
+    /* Start polling for a session */
+    
     send: function() {
         if (!this.isLoggedIn() && this.isEnabled()) {
             if (this.counter > 10) {

@@ -63,10 +63,10 @@ App.Views.LoginForm = Backbone.View.extend({
         
         if (options.session) {
             this.session = options.session;
-            this.listenTo(this.session.profile, "user:register:fail", this.onFail, this);
-            this.listenTo(this.session.profile, "user:login:fail", this.onFail, this);
-            this.listenTo(this.session.profile, "user:login", this.onLogin, this);
-            this.listenTo(this.session.profile, "user:register:success", this.onSuccess, this);
+            this.listenTo(this.session, "user:register:fail", this.onFail, this);
+            this.listenTo(this.session, "user:login:fail", this.onFail, this);
+            this.listenTo(this.session, "user:login", this.onLogin, this);
+            this.listenTo(this.session, "user:register:success", this.onSuccess, this);
         }    
     },
     onSuccess: function(data) {
@@ -96,7 +96,7 @@ App.Views.LoginForm = Backbone.View.extend({
         e.preventDefault();
         var email = this.$("#login-email").val();
         var pass = this.$("#login-password").val();
-        this.session.get("profile").login(email, pass);
+        this.session.login(email, pass);
         return false;
     },
     logout: function(e) { 
@@ -161,13 +161,14 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       this.options = options;
       this.collection = app.usercollection;
       _.bindAll(this, 'render', 'renderCollection');
-
-      this.listenTo(this.model, "change:id", this.render, this);
-      this.listenTo(this.collection, "add", this.renderCollection, this);
-      this.listenTo(this.collection, "reset", this.renderCollection, this);
       this.profileview = new App.Views.UserProfileView({model: this.model});
-      this.resetpasswordview = new App.Views.ResetPassword({model: this.model});
+
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
+      this.listenTo(this.model, "change:id", this.render, this);
+      this.listenTo(this.collection, "add", this.collectionview.addChildView, this);
+      this.listenTo(this.collection, "reset", this.renderCollection, this);
+      
+      this.resetpasswordview = new App.Views.ResetPassword({model: this.model});
 
       this.render();
 
@@ -201,8 +202,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
         });
         return false;
     },
-    renderCollection: function() { 
-
+    renderCollection: function(item) {
       this.collectionview.setElement("#profilepage-mymovies-container");
       this.collectionview.render();
       return this;
@@ -215,7 +215,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
       return this;
     },
 
-    render: function() { 
+    render: function() {
       this.$el.html(ich.profileTemplate(this.model.toJSON()));
       this.resetpasswordview.setElement("#reset-password").render();
       this.renderProfile();
@@ -268,14 +268,15 @@ App.Views.UserPairView = Backbone.View.extend({
 });
 App.Views.UserProfileView =  Backbone.View.extend({
     el: '#user-profile',
-
+    
     initialize: function(options) {
         this.options = options || {};
         this.model = options.model;
-
+        this.listenTo(this.model, "change", this.render, this);
+        
     },
     render: function() {
-        this.$el.empty();       
+        this.$el.empty(); 
         this.$el.html(ich.profileTabTemplate(this.model.toJSON()));
         return this;
     },
@@ -293,7 +294,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
         this.options = options || {};
-        this.listenTo(this.collection, "add", this.renderFilmViews, this);
+        this.listenTo(this.collection, "add", this.addChieldView, this);
 
     },
     render: function() {
@@ -302,8 +303,6 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.$el.append('<ul class="user-filmcollection-list"></ul>');
         this.$filmCollectionHolder = this.$('.user-filmcollection-list');
         this.renderFilmViews();
-
-
 
         return this;
     },
@@ -323,6 +322,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
         } else {
             this.$filmCollectionHolder.append(ich.emptyListTemplate({text: tr("No purchases")}));
         }
+        App.Utils.lazyload();
 
         return this;
     },

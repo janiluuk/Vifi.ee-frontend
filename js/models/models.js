@@ -50,7 +50,6 @@ _.extend(App.Models.ApiModel.prototype, {
         options.data = JSON.parse(JSON.stringify(params.data));
         
         options.dataType = params.dataType;
-        console.log(options);
         return options;
     },
     // override backbone synch to force a jsonp call

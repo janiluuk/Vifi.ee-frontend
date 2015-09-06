@@ -107,10 +107,13 @@ App.Router = Backbone.Router.extend({
         this.trigger("change:title", "Search results");
     },
     showFilm: function(id, autoplay) {
-
-        var film = new App.Models.Film({
-            id: id
-        });
+        var film = app.collection.fullCollection.get(id);
+            if (!film) {
+                film = new App.Models.Film({
+                id: id
+            });
+        }
+        
         var _this = this;
 
         var films = app.user.checkPurchases();
@@ -135,7 +138,9 @@ App.Router = Backbone.Router.extend({
                     }   
                 }.bind(this));
             }.bind(this));
-        }
+        }        
+        
+
         
         film.fetch().done(function() {
             var playButtonText = "Vaata filmi (" + film.get("price") + ")";
@@ -155,6 +160,10 @@ App.Router = Backbone.Router.extend({
                     app.movieview.model.set(film.toJSON());
                 }
             }
+            var url = film.get("seo_friendly_url");
+            _this.navigate(url, {
+                trigger: false
+            });            
             app.showMoviePage();
             if (autoplay === true) app.movieview.playMovie();
             _this.trigger("change:title", film.get("title"));

@@ -1,5 +1,3 @@
-App.Settings.debug = true;
-
 App.Views.MobilePurchase = Backbone.View.extend({
 
     model: App.Models.MobilePurchase,

@@ -277,8 +277,8 @@ App.Views.SideMenu = Backbone.View.extend({
         if (options.model) this.model = options.model;
         if (options.session) this.session = options.session;
         _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
-        this.listenTo(this.session.profile, "user:login", this.render, this);
-        this.listenTo(this.session.profile, "user:logout", this.render, this);
+        this.listenTo(this.session, "user:login:success", this.render, this);
+        this.listenTo(this.session, "user:logout", this.render, this);
         this.loginForm = new App.Views.LoginForm({
             session: this.session
         });
@@ -366,6 +366,7 @@ App.Views.CarouselView = Backbone.View.extend({
                 _this.options.swipeTo = item;
                 e.preventDefault();
                 _this.swiper.swipeTo(item);
+                App.Utils.lazyload();
 
             })
         });
