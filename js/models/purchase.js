@@ -10,6 +10,10 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         if (options && undefined != options.model) {
             this.model = options.model;
         }
+        if (options && undefined != options.parent) {
+            this.parent = options.parent;
+        }
+        
         _.bindAll(this, 'initPayment','onStatusReceive','handleStatus','startTimer', 'stopTimer', 'initPayment');
         
         this.on("change:status", this.handleStatus, this);
@@ -172,6 +176,10 @@ App.Models.Purchase = Backbone.Model.extend({
         if (options && undefined != options.model) {
             this.model = options.model;
         }
+        if (options && undefined != options.mobilepayment) {
+            this.mobilepayment = options.mobilepayment;
+        }
+        
         this.listenTo(this.model, "change", function() {  
             this.set("price", this.model.get("price"));
         }, this);
@@ -234,7 +242,6 @@ App.Models.Purchase = Backbone.Model.extend({
             this.trigger("purchase:error", message);
             return false;
         }
-
         var session_id = data.session_id;
 
         if (session_id != "") { 
@@ -281,7 +288,6 @@ App.Models.Purchase = Backbone.Model.extend({
             
         }
 
-                
         var method = this.get("method");
 
         if (method == "code") { 

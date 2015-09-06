@@ -10,7 +10,7 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
                 'code': ''
             }
         ],
-        'ticket' : { },
+        'ticket' : false,
         'images': {
             'thumb': '',
             'poster': ''
@@ -20,11 +20,30 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
             'code': '',
             'language': ''
         }],
+        'filmsession' : false,
         'session': { },
         }
     },
-
+    
+    /**
+     *  Parameters:
+     *  film - Instance of a film.
+     *  filmsession - active film session 
+     *  ticket - ticket for watching the content
+     *  session - User session
+     * 
+     */
     initialize: function(options) {
+
+        if (options && undefined !== options.film) {
+            this.set("film", options.film);
+            this.set("id", options.film.get("id"));
+            if (options.film.get("ticket")) {
+              this.set("ticket", options.film.get("ticket"));
+              this.set("filmsession", options.film.get("ticket").get("filmsession"));
+            }
+        }
+        
         if (options && undefined !== options.session) {
             this.set("filmsession", options.session);
         }
@@ -39,8 +58,8 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
 
     fetchContent: function() {
       var ticket = this.get("ticket");
-      var session_id = ticket.get("filmsession").get("session_id");
-      var auth_code = ticket.get("auth_code");
+      var auth_code = ticket ? ticket.get("auth_code") : "";
+      var session_id = this.get("filmsession").get("session_id");
 
       this.sync("GET",this,this.getParams({session_id: session_id, auth_code: auth_code})).done(
         function(data) {
@@ -51,18 +70,20 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
        }.bind(this));
 
     },
-    onContentLoaded: function() { 
-
-
+    onContentLoaded: function(data) { 
+        this.parse(data);
+        alert("content loaded");
+      
     },
     parse: function(results) { 
+      
         this.addSession(results.sessiondata);
         this.addVideos(results.videos);
         this.addSubtitles(results.subtitles);
-        return true;
+        return results;
     }, 
     addSession: function(session) {
-        var sess = new App.Player.FilmSession(session);
+        var sess = new App.User.FilmSession(session);
         this.set("filmsession", sess);
         this.trigger("content:session:loaded", this.get("session"));
 

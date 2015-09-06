@@ -135,7 +135,7 @@ App.Collections.UserCollection = Backbone.Collection.extend({
 
         var original_film = app.collection.originalCollection.get(model.get("id"));
         if (original_film) {    
-                original_film.set("ticket", model.toJSON());
+                original_film.set("ticket", model);
         }
         model.save();
         return true;    

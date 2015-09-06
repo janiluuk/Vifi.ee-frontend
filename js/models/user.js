@@ -3,7 +3,8 @@ App.User.Ticket = Backbone.Model.extend({
     filmsession: false,
     content: false,
     defaults: {
-        vod_id: '',
+        id: false,
+        vod_id: false,
         validto: '',
         validfrom: '',
         validtotext: '' ,
@@ -21,11 +22,11 @@ App.User.Ticket = Backbone.Model.extend({
     parse: function(data) {         
 
          var data = _.pick(data, _.keys(this.defaults));
-
-         if (data.vod_id) { 
-            this.set("id", data.vod_id);
+         if (data.id) data.id = parseInt(data.id);
+         if (data.vod_id) {
+            data.vod_id = parseInt(data.vod_id);
          } else {
-            data.vod_id = data.id;
+            data.vod_id = parseInt(data.id);
          }
          
          this.set("content", new App.Player.FilmContent({id: this.get("id"), ticket: this}));
@@ -35,7 +36,8 @@ App.User.Ticket = Backbone.Model.extend({
  
          var date = App.Utils.stringToDate(data.validto);
          this.set("validtotext",App.Utils.dateToHumanreadable(date));
- 
+         if (!this.isExpired(data.validto)) this.set("status", "active");
+         
          return data;
     },
 
@@ -54,9 +56,10 @@ App.User.Ticket = Backbone.Model.extend({
      * @return boolean
      *
      */
-    isExpired: function() {
-        var valid_to = this.get("validto");
-        if (!App.Utils.dateExpired(valid_to)) {
+    isExpired: function(validto) {
+        if (!validto) valid_to = this.get("validto");
+        
+        if (!App.Utils.dateExpired(validto)) {
             return false;
         }
         return true;
@@ -259,7 +262,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     hasMovie: function(movie) {
         var id = movie.get("id");
         var movies = app.usercollection.where({
-            id: id
+            id: parseInt(id)
         });
         if (movies.length > 0) return true;
         return false;
