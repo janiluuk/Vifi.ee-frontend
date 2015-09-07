@@ -95,8 +95,6 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
             this.paymentView = new App.Views.PaymentDialog({
                 model: options.model,
                 session: options.session,
-                payment: new App.Models.Purchase({model:options.model, session:options.session}),
-                mobilePayment: new App.Models.MobilePurchase({model:options.model, session:options.session}),
                 parent: this
             });
         } else {
@@ -106,8 +104,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
             session: this.session,
             parent: this
         });
-        this.listenTo(this.paymentView.mobilePayment, "purchase:ticket:received", function(ticket) { this.session.trigger("ticket:received",ticket); }, this);
-        this.listenTo(this.paymentView.payment, "purchase:ticket:received", function() { this.session.trigger("ticket:received",ticket);   }, this);
+        this.listenTo(this.paymentView.payment, "purchase:ticket:received", function(ticket) { this.session.trigger("ticket:received",ticket);   }, this);
         this.render();
     },
     showLogin: function() {
@@ -135,74 +132,6 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
     }
 });
 
-
-App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
-    model: App.Models.Film,
-    template: '<div id="modalcontent"><div id="post-purchase-modal"/></div>',
-    events: {
-        'click .mfp-close': 'close',
-    },
-    initialize: function(options) {
-        _.bindAll(this, 'afterClose', 'render');
-        options = options || {};
-        this.session = options.session;
-        this.model = options.model;
-        this.listenTo(this.model, 'change', this.render, this);
-        var id = options.model.get("id");
-        if (this.view) this.view.remove();
-        this.view = new App.Views.PurchaseSuccessDialog({
-            model: this.model,
-            session: this.session,
-            parent: this
-        });
-    },
-
-    render: function() {
-        this.$el.empty().html(this.template).appendTo("body");
-        this.openDialog();
-        this.setElement(".mfp-content");
-        this.assign(this.view, "#post-purchase-modal");
-        return this;
-    },
-    afterClose: function(e) {
-        this.view.close();
-        return false;
-    }
-    
-});
-App.Views.PurchaseSuccessDialog = Backbone.View.extend({
-    model: App.Models.Film,
-    events: {
-        'click .mfp-close': 'close',
-        'click .continue-button': 'onContinue'
-    },
-    initialize: function(options) {
-        this.listenTo(this.model, "change", this.render, this);
-        options = options || {};
-        this.parent = options.parent;
-        this.session = options.session;
-        this.model = options.model;
-    },
-    onContinue: function(e) {
-        e.preventDefault();
-        var id = this.model.get("id");
-        app.user.purchases.removeFilm(id);
-
-        this.close();
-        this.parent.close();
-        app.router.showFilm(id,true);
-
-        return false;
-    },
-    render: function() {
-        this.$el.html(ich.purchaseSuccessTemplate({
-            email: this.session.get("profile").get("email"),
-            purchase: this.model.toJSON()
-        }));
-        return this;
-    }
-});
-
 App.Views.PaymentDialog = Backbone.View.extend({
     events: {
         'click .mfp-close': 'close',
@@ -215,24 +144,26 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.parent = options.parent;
         this.session = options.session;
         this.model = options.model;
-        this.payment = options.payment;
-        this.payment.set({model: options.model, session:options.session});        
-        this.mobilePayment = options.mobilePayment;
-        this.mobilePayment.set({model: options.model, session:options.session});
         this.model.set('payments', app.paymentmethods.toJSON());
 
-        if (!this.mobilePaymentView)
-        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.mobilePayment});
+        if (!this.payment)
+        this.payment = new App.Models.Purchase({model:options.model, session:options.session});
         else
-        this.mobilePaymentView.set({model: this.mobilePayment});
+        this.payment.set({model:options.model, session:options.session});
+        
+        
+        if (!this.mobilePaymentView)
+        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.payment.mobilepayment});
+        else
+        this.mobilePaymentView.set({model: this.payment.mobilepayment});
+        
         
         this.listenTo(this.model, "change", this.onModelChange, this);
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
         this.listenTo(this.payment, "purchase:error", this.onPaymentError, this);
         this.listenTo(this.payment, "purchase:verify:error", this.onPaymentError, this);
         this.listenTo(this.payment, "purchase:verify:successful", this.onVerifySuccess, this);
-        this.listenTo(this.mobilePayment, "purchase:successful", this.onPaymentSuccess, this);
-        this.listenTo(this.mobilePayment, "purchase:error", this.onPaymentError, this);
+
 
         Backbone.Validation.configure({
             forceUpdate: true
@@ -240,13 +171,9 @@ App.Views.PaymentDialog = Backbone.View.extend({
         Backbone.Validation.bind(this, {
             model: this.payment
         });
-
-
     },
-    onModelChange: function() { 
-        
-        this.payment.set({model: this.model, session:this.session});
-        this.mobilePayment.set({model: this.model, session:this.session});  
+    onModelChange: function() {
+        this.payment.set({model: this.model, session: this.session});
         
     },
     selectMethod: function(e) {
@@ -342,12 +269,84 @@ App.Views.PaymentDialog = Backbone.View.extend({
     render: function() {
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
         this.mobilePaymentView.setElement("#payment-mobile");
-        this.mobilePaymentView.render();        
+        
+        this.mobilePaymentView.render();
         var method = this.getSelectedMethod();
         $("#"+method).click();
         return this;
     },
 });
+
+
+
+
+
+App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
+    model: App.Models.Film,
+    template: '<div id="modalcontent"><div id="post-purchase-modal"/></div>',
+    events: {
+        'click .mfp-close': 'close',
+    },
+    initialize: function(options) {
+        _.bindAll(this, 'afterClose', 'render');
+        options = options || {};
+        this.session = options.session;
+        this.model = options.model;
+        this.listenTo(this.model, 'change', this.render, this);
+        if (this.view) this.view.remove();
+        this.view = new App.Views.PurchaseSuccessDialog({
+            model: this.model,
+            session: this.session,
+            parent: this
+        });
+    },
+
+    render: function() {
+        this.$el.empty().html(this.template).appendTo("body");
+        this.openDialog();
+        this.setElement(".mfp-content");
+        this.assign(this.view, "#post-purchase-modal");
+        return this;
+    },
+    afterClose: function(e) {
+        this.view.close();
+        return false;
+    }
+    
+});
+App.Views.PurchaseSuccessDialog = Backbone.View.extend({
+    model: App.Models.Film,
+    events: {
+        'click .mfp-close': 'close',
+        'click .continue-button': 'onContinue'
+    },
+    initialize: function(options) {
+        this.listenTo(this.model, "change", this.render, this);
+        options = options || {};
+        this.parent = options.parent;
+        this.session = options.session;
+        this.model = options.model;
+    },
+    onContinue: function(e) {
+        e.preventDefault();
+        var id = this.model.get("id");
+        app.user.purchases.removeFilm(id);
+
+        this.close();
+        this.parent.close();
+        app.router.showFilm(id,true);
+
+        return false;
+    },
+    render: function() {
+        this.$el.html(ich.purchaseSuccessTemplate({
+            email: this.session.get("profile").get("email"),
+            purchase: this.model.toJSON()
+        }));
+        return this;
+    }
+});
+
 App.Views.SubscriptionPaymentDialog = App.Views.PaymentDialog.extend({
     render: function() {
         this.model.set('payments', app.paymentmethods.toJSON());

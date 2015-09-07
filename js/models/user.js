@@ -87,7 +87,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
 });
 App.User.Profile = App.Models.ApiModel.extend({
     path: 'profile',
-    params: "",
+    params: {},
     defaults: function() {
         return {
             "id": '',
@@ -115,7 +115,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.session = options.session;
         this.purchases = options.purchases;        
         this.session.on("change:auth_id", this.authorize, this);
-        this.on("change:tickets", this.updateUserCollection);
+        this.on("change:tickets", this.updatePurchases,this);
         this.on("user:facebook-connect", this.connectFB, this);
         this.on("user:pair", this.pair, this);
         this.on("user:unpair", this.unpair, this);
@@ -133,7 +133,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         }
     },
     FBcallback: function(data) {
-        var authId = this.get("auth_id");
+        var authId = this.session.get("auth_id");
         var email = this.get("email");
         var token = FB.getAccessToken();
         if (email == "" || authId == "") {
@@ -149,7 +149,6 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
 
     logout: function() {
-        this.trigger("user:logout");
         this.set(this.defaults());
     },
     changePassword: function(oldpass, password) {
@@ -211,26 +210,34 @@ App.User.Profile = App.Models.ApiModel.extend({
             if (res.status && res.status == "ok") this.trigger("user:unpair:success")
         }.bind(this));
     },
-    syncData: function() {
-        var url = App.Settings.api_url + 'user/sync/?callback=?';
-        var options = this.getParams();
-        var profileData = this.getSyncParams();
-        options.data.profileData = JSON.stringify(profileData);
-        $.getJSON(url, options.data, "jsonp").done(function(data) {
-            this.trigger("user:profile_updated", data);
-        }.bind(this), "jsonp");
+    authorize: function() {
+        if (this.session.get("auth_id") == "") {
+            return false;
+        }
+
+        this.fetch({
+            success: function(data) {
+                if (this.get("user_id") != "") {
+                    this.session.set("user_id", this.get("user_id"));
+                    this.trigger("user:profile:login", this);
+                    if (app.fbuser) this.trigger("user:facebook-connect", app.fbuser);
+                    $log("Logging in with user " + this.get("email"));
+                    return true;
+                }
+            }.bind(this)
+        });
+        return false;
     },
-    getSyncParams: function() {
-        var params = {};
-        var values = ["name", "lastname", "firstname", "newsletter", "city", "profile_picture"]
-        _.each(values, function(item) {
-            var val = this.get(item);
-            eval("params." + item + " = val");
-        }.bind(this));
-        return params;
-    },
-    purchase: function(movie) {
+    deauthorize: function() {
+        this.reset();
         this.fetch().done(function() {
+            return false;
+        }.bind(this));
+    },
+
+
+    purchase: function(movie) {
+        this.updatePurchases().done(function() {
             if (this.hasMovie(movie)) this.trigger("purchase:successful", movie);
         }.bind(this));
     },
@@ -243,12 +250,43 @@ App.User.Profile = App.Models.ApiModel.extend({
         if (movies.length > 0) return true;
         return false;
     },
+
+    /**
+     * If user has a movie in the purchased collection, return the session for it.
+     * 
+     * @param id int - ID of the movie
+     * @return mixed, string or false
+     */
+     
+    getMovieSession: function(id) {
+        var movie =  app.usercollection.findWhere({id:id});
+        if (movie) {
+            var session = movie.get("filmsession").get("session_id");
+            return session;
+        }
+        return false;
+    },
+    /**
+     * If user has a movie in the purchased collection, return authorization code for it.
+     * 
+     * @param id int - ID of the movie
+     * @return mixed, string or false
+     */
+     
+    getMovieAuthCode: function(id) {
+        var movie =  app.usercollection.findWhere({id:id});
+        if (movie) {
+            var session = movie.get("auth_code");
+            return session;
+        }
+        return false;
+    },
     hasSubscription: function() { 
         return this.get("subscriber") === true ? true : false;
     },
     isAnonymous: function() {
         if (this.get("email") == "anonymous@vifi.ee") return true;
-        if (this.get("role") == "Anonymous customer" || this.get("role") == "" || this.get("role") == "Guest") return true;
+        if (this.get("role") == "" || this.get("role") == "Guest") return true;
         return false;
     },
     isRegistered: function() {
@@ -265,25 +303,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         if (this.get("language") == "es") return "Estonian";
         else return "English";
     },
-    authorize: function() {
-        this.fetch({
-            success: function(data) {
-                if (this.get("user_id") != "") {
-                    this.trigger("user:profile:login", this);
-                    if (app.fbuser) this.trigger("user:facebook-connect", app.fbuser);
-                    $log("Logging in with user " + this.get("email"));
-                    return true;
-                }
-            }.bind(this)
-        });
-        return false;
-    },
-    deauthorize: function() {
-        this.reset();
-        this.fetch().done(function() {
-            return false;
-        }.bind(this));
-    },
+     
     checkPurchases: function() {
         var films = this.purchases.getPurchases();
         if (_.isEmpty(films)) return false;
@@ -302,14 +322,12 @@ App.User.Profile = App.Models.ApiModel.extend({
     updatePurchases: function(cb) {
         var deferred = new $.Deferred();
         this.fetch().done(function() {
-            if (collection = this.updateUserCollection()) {
-                collection.once("reset", function(collection) {
-                    deferred.resolve(collection);
-                });
-                setTimeout(function() {
-                    collection.trigger("reset")
-                }.bind(this), 3000);
-            }
+            var tickets = this.get("tickets");
+            _.each(tickets, function(item) {  
+                var ticket = new App.User.Ticket(item);
+                app.usercollection.add(ticket);
+            });
+            deferred.resolve(tickets);
         }.bind(this));
         return deferred.promise();
     }
@@ -459,6 +477,7 @@ App.User.Session = Backbone.Model.extend({
 
         _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'onUserAuthenticate');
     },
+    
     /*
      * Get a token for user.
      * For unregistered users, email is sufficient
@@ -482,7 +501,7 @@ App.User.Session = Backbone.Model.extend({
                     }
                 } else {
                     this.trigger("user:token:error", data.message);
-                    if (errcb) errcb(data);
+                    if (callback) callback(data);
                 }
             }.bind(this), true);
         }
@@ -523,17 +542,16 @@ App.User.Session = Backbone.Model.extend({
         this.set("enabled", false);
     },
     onUserAuthenticate: function() {
-        
+    
         if (this.profile.isAnonymous() !== true) {
             this.set("logged_in", true);
             this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));       
         }
-        this.profile.set("user_id", this.get("user_id"));
+
         this.trigger("user:login:success", this.get("user_id"));
         this.disable();
     },
     login: function(email, password) {
-        alert("jee");
         if (!password || !email) return false;
         app.api.call(["user", "login", email, password], {}, function(data) {
             if (data.status == "ok") {
@@ -550,11 +568,15 @@ App.User.Session = Backbone.Model.extend({
         }.bind(this));
     },    
     logout: function() {
-        this.get("profile").logout();
         this.reset();
+        this.profile.logout();
+
+        this.trigger("user:logout");
+
         app.router.navigate("/", {
             trigger: true
         });
+        
         return false;
     },
     register: function(email, password) {
@@ -652,7 +674,9 @@ App.User.Cookie = {
     },
 
     write: function(user_id, auth_id, session_id) {
+        
         if (user_id != "" && auth_id != "") {
+                
             this.set(user_id + "|" + auth_id + "|" + session_id);
             return true;
         }

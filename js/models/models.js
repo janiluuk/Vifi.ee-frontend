@@ -19,17 +19,15 @@ App.Models.ApiModel = Backbone.Model.extend({
         'session': false
     },
     path: "",
-    params: false
+    params: {}
 
 });
 
 _.extend(App.Models.ApiModel.prototype, { 
     url: function() {
-        return App.Settings.api_url + this.path + '?' + this.params;
+        return App.Settings.api_url + this.path + '?' + $.param(this.params);
     },
-    urlParams: function() {
-        return false;
-    },
+
     getParams: function(data) {
         var session = this.get("session");
         if (!session) session = app.session;
@@ -72,20 +70,11 @@ _.extend(App.Models.ApiModel.prototype, {
         }
 
         if (undefined == model || model == false) model = this;
-    
-        this.params = "api_key=" + App.Settings.api_key;
-        var session = this.get("session");
 
-        if (_.isEmpty(session)) {
-            session = app.session;
-        }
-        this.params += "&sessionId=" + session.get("session_id");
+        var defaultParams = this.getParams();
         
-        if (session.get("auth_id") != null && session.get("auth_id") != "") this.params += "&authId=" + session.get("auth_id");
+        _.extend(this.params, defaultParams.data);
         
-        if (this.urlParams()) {
-            this.params += "&"+jQuery.param(this.urlParams());
-        }
         var params = _.extend({
             type: type,
             dataType: dataType,
@@ -176,8 +165,12 @@ App.Models.FilmSession = App.Models.ApiModel.extend({
 });
 
 App.Models.FilmContent = App.Models.ApiModel.extend({
-    'path': 'content',
-    defaults: {
+    url: function() {
+        return App.Settings.api_url + "content/" + this.get("id") + '?' + this.params;
+    },
+    params: '',
+    
+    defaults: function() { return {
         'id': false,
         'videos': [{
                 'mp4': '',
@@ -194,15 +187,14 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
             'code': '',
             'language': ''
         }],
-        session: {  },
+        session: {  } }
     },
-    urlParams: function() {
-        return {};
-    },
+
     initialize: function(options) {
         if (options && undefined !== options.session) {
             this.set("session", options.session);
         }
+        
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
     },
@@ -215,10 +207,19 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.set("videos", false);
         this.set("subtitles", false);        
         this.set("id", id);
+        var session = this.get("session");
+        var filmsession = session.profile.getMovieSession(id);
+        var auth_code = session.profile.getMovieAuthCode(id);
         
-        this.refresh(true);
+        this.params+="session_id="+filmsession + "&auth_code="+auth_code+"&";
+        
+        var deferred = new $.Deferred();
 
-        return this;    
+        this.fetch().done(function() { deferred.resolve(); }).error(function(){
+            deferred.reject();
+        });
+        
+        return deferred.promise();
     },
     onLoadContent: function(event) {
 

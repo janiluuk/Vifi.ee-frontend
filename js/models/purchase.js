@@ -176,13 +176,22 @@ App.Models.Purchase = Backbone.Model.extend({
         if (options && undefined != options.model) {
             this.model = options.model;
         }
-        if (options && undefined != options.mobilepayment) {
-            this.mobilepayment = options.mobilepayment;
-        }
+        this.set("price", this.model.get("price"));
+
+        this.mobilepayment = new App.Models.MobilePurchase({model:options.model, session:options.session, payment: this}),
+        
+        this.listenTo(this.mobilepayment, 'all', function(evenName, options) {
+            
+          var type = evenName.split(/purchase:/)[1];
+          if (type) {
+              this.trigger(evenName, options);
+          }
+        }, this);
         
         this.listenTo(this.model, "change", function() {  
             this.set("price", this.model.get("price"));
-        }, this);
+            
+        }.bind(this), this);
         _.bindAll(this, 'purchase', 'onCodeAuth', 'verify', 'onVerifyResponse', 'sendCodeAuth', 'paymentCallback')
 
     },
@@ -192,7 +201,7 @@ App.Models.Purchase = Backbone.Model.extend({
         if(value === 'code' && this.get("code").length == 0) {
             return 'Vale kood, proovi uuesti!';
         }
-        if(value !== 'code' && this.get("email").length == 0) {
+        if(value !== 'code' && value !== 'mobile' && this.get("email").length == 0) {
             return 'Vale E-mail, proovi uuesti!';
         }
     },
@@ -217,7 +226,7 @@ App.Models.Purchase = Backbone.Model.extend({
     getAnonymousToken: function(callback) { 
         var email = this.get("email");
         if (!email || email == "") email = this.session.get("profile").get("email");
-        this.session.once("user:login", callback, this);
+        this.session.once("user:login:success", callback, this);
 
         return this.session.getToken(email);
 
@@ -327,8 +336,7 @@ App.Models.Purchase = Backbone.Model.extend({
         var form =  App.Utils.post(url, data);
 
         return form;
-
-
+        
     },
     // Purchase info for backend
 

@@ -65,7 +65,7 @@ App.Views.LoginForm = Backbone.View.extend({
             this.session = options.session;
             this.listenTo(this.session, "user:register:fail", this.onFail, this);
             this.listenTo(this.session, "user:login:fail", this.onFail, this);
-            this.listenTo(this.session, "user:login", this.onLogin, this);
+            this.listenTo(this.session, "user:login:success", this.onLogin, this);
             this.listenTo(this.session, "user:register:success", this.onSuccess, this);
         }    
     },
@@ -165,11 +165,7 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
 
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
       this.listenTo(this.model, "change:id", this.render, this);
-      this.listenTo(this.collection, "add", this.collectionview.addChildView, this);
-      this.listenTo(this.collection, "reset", this.renderCollection, this);
-      
       this.resetpasswordview = new App.Views.ResetPassword({model: this.model});
-
       this.render();
 
     },
@@ -202,14 +198,13 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
         });
         return false;
     },
-    renderCollection: function(item) {
+    renderCollection: function() {
       this.collectionview.setElement("#profilepage-mymovies-container");
       this.collectionview.render();
       return this;
     },
 
     renderProfile: function() { 
-
       this.profileview.setElement("#user-profile");
       this.profileview.render();
       return this;
@@ -294,8 +289,8 @@ App.Views.UserCollectionView = Backbone.View.extend({
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
         this.options = options || {};
-        this.listenTo(this.collection, "add", this.addChieldView, this);
-
+        this.listenTo(this.collection, "add", this.renderFilmViews, this);
+        this.listenTo(this.collection, "reset", this.render, this);
     },
     render: function() {
 
@@ -308,10 +303,11 @@ App.Views.UserCollectionView = Backbone.View.extend({
     },
 
     renderFilmViews: function() {
-        this.fragment = document.createDocumentFragment();
         this.$filmCollectionHolder.empty();
-        
-        if (this.collection.length > 0 ) { 
+        this.fragment = document.createDocumentFragment();
+
+        if (this.collection.length > 0 ) {
+            
             this.collection.each(function(model) {
                 this.addChildView(model);
 
@@ -327,13 +323,14 @@ App.Views.UserCollectionView = Backbone.View.extend({
         return this;
     },
     addChildView: function(model) {
+
         var filmView = new App.Views.UserFilmView({
             model: model,
         });
-
         $(this.fragment).append(filmView.render().el);
-
+        return filmView;
     },
+
 
 });
 
@@ -478,7 +475,7 @@ App.Views.LoginDialog = Backbone.View.extend({
         this.loginForm = new App.Views.LoginForm({
             session: options.session
         });
-        this.listenTo(this.session.profile, "user:login", this.showPayment, this);
+        this.listenTo(this.session, "user:login", this.showPayment, this);
     },
     showPayment: function() {
         this.parent.showPayment();
