@@ -116,8 +116,13 @@ App.Collections.FilterCollection = Backbone.Collection.extend({});
 App.Collections.UserCollection = Backbone.Collection.extend({
     localStorage: new Backbone.LocalStorage("Ticket"),
     model: App.User.Ticket,
-    initialize: function(options) { 
+    initialize: function(models, options) { 
+        if (options && undefined !== options.session) {
+            this.session = options.session;
+            this.session.on("change:user_id", this.reset, this);
+        }
         
+        if (options.session) 
         _.bindAll(this, 'updateUserCollection', 'parseModel');
         this.on("reset", this.updateUserCollection);
         this.on("add", this.updateUserCollection);
@@ -132,7 +137,6 @@ App.Collections.UserCollection = Backbone.Collection.extend({
                 model.destroy();
                 return false;
         }
-
         var original_film = app.collection.originalCollection.get(model.get("id"));
         if (original_film) {    
                 original_film.set("ticket", model);
@@ -141,12 +145,18 @@ App.Collections.UserCollection = Backbone.Collection.extend({
         return true;    
     },
   
-    updateUserCollection: function() {
+    updateUserCollection: function(model) {
 
         if (this.models.length == 0) {
             return false;
         }
         _.each(this.models, function(model) {
+
+            // Destroy all non anonymous tickets that are from different user
+            
+            if (this.session && _.isEmpty(model.get("user_id")) === false &&  model.get("user_id") != this.session.get("user_id"))
+            model.destroy();
+            else
             this.parseModel(model);
         }.bind(this));
         

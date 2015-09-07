@@ -24,6 +24,8 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
         options.model = this.user;
         _.bindAll(this, 'render', 'showBrowserPage', 'onResizeScreen');
+        this.listenTo(this.session, "ticket:purchase:done", this.showTicketPurchase, this);
+        
         this.api = new App.Utils.Api({
             model: this.session
         });
@@ -82,7 +84,23 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.scrollToTop(true);
         App.Utils.lazyload();        
     },
-
+    showTicketPurchase: function(ticket) {
+        
+        console.log(ticket);
+        
+         var id = ticket.get("vod_id");
+         var title = app.usercollection.get(id);                                                          
+        
+        if (title) {
+            if (!this.returnview)
+                this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
+            else
+                this.returnview.model.set(title.toJSON());
+                this.returnview.render();
+        }
+        
+        
+    },
     showBrowserPage: function() {
 
         $(".main-wrapper:not(#homepage)").hide();

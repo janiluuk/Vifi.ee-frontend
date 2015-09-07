@@ -13,7 +13,9 @@
                     <p>You have successfully purchased <b>"{{ purchase.title }}"</b>. Your activation code is:</p>
                     <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
                     <p class="extra-info">Valid until <b>{{ purchase.validtotext }}</b> </p>
-                    <p>You can use this code to watch the movie on any devices. A copy of the code has also been sent to your email <b>{{ email }} </b>.</p>                     
+                    <p>You can use this code to watch the movie on any devices.
+                    {{#if email }}  A copy of the code has also been sent to your email <b>{{ email }} </b>.</p> {{/if}}
+                      
 
                 <button id="continue-button" class="btn big green continue-button full"> Continue to film</button>
             </div>
@@ -182,4 +184,5 @@
         </div>
     </div>
 </script>
+
 

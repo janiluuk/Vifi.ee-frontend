@@ -43,10 +43,8 @@ _.extend(App.Models.ApiModel.prototype, {
                 format: 'json',
             }
         };
-
         if (data) params.data = _.extend(params.data, data);
         options.data = JSON.parse(JSON.stringify(params.data));
-        
         options.dataType = params.dataType;
         return options;
     },
@@ -165,10 +163,9 @@ App.Models.FilmSession = App.Models.ApiModel.extend({
 });
 
 App.Models.FilmContent = App.Models.ApiModel.extend({
-    url: function() {
-        return App.Settings.api_url + "content/" + this.get("id") + '?' + this.params;
-    },
-    params: '',
+
+    path: 'content',
+    params: {},
     
     defaults: function() { return {
         'id': false,
@@ -193,26 +190,35 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     initialize: function(options) {
         if (options && undefined !== options.session) {
             this.set("session", options.session);
+            this.onSessionLoad();
         }
-        
+        this.on("change:id", this.onVideoChange, this);
+        this.on("change:id", this.onSessionLoad, this);
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
+
     },
-    
+    onSessionLoad: function(id) {
+        if (id) { 
+        var session = this.get("session");
+        this.params.filmsession = session.profile.getMovieSession(id);
+        this.params.auth_code = session.profile.getMovieAuthCode(id);
+        }
+    },
+    onVideoChange: function() { 
+        this.set("videos", false);
+        this.set("subtitles", false);   
+        this.path = "content/"+this.get("id");
+    },
     /*
      * Load defined film content to the player
      */
 
     load: function (id) {
-        this.set("videos", false);
-        this.set("subtitles", false);        
+     
         this.set("id", id);
-        var session = this.get("session");
-        var filmsession = session.profile.getMovieSession(id);
-        var auth_code = session.profile.getMovieAuthCode(id);
-        
-        this.params+="session_id="+filmsession + "&auth_code="+auth_code+"&";
-        
+        this.onSessionLoad(id);
+
         var deferred = new $.Deferred();
 
         this.fetch().done(function() { deferred.resolve(); }).error(function(){
@@ -243,6 +249,48 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
             this.path = "content/" + this.get("id");
             if (fetch) this.fetch();
         }
-    }
+    },
+
+    /*
+     * Add subtitles to the content as their own collection
+     * @param array
+     * 
+     */
+
+    addVideos: function(videos) {  
+      var videofiles = [];
+        _.each(videos, function(video) {  
+
+          var videofile = new App.Player.VideoFile();
+            videofile.set("bitrate", video.bitrate);
+            videofile.set("src", video.mp4);
+            videofile.set("profile", video.profile);
+            videofiles.push(videofile);            
+        });
+        var collection = new App.Player.VideoFileCollection(videofiles);
+        this.set("videos", collection);
+        this.trigger("content:videos:loaded", this.get("videos"));
+
+    },
+
+    /*
+     * Add subtitles to the content as their own collection
+     * @param array
+     * 
+     */
+
+    addSubtitles: function(subtitles) {  
+        var subs = [];
+        _.each(subtitles, function(video) {  
+          var subtitle = new App.Player.SubtitleFile();
+            subtitle.set("language", video.language);
+            subtitle.set("file", video.file);
+            subtitle.set("code", video.code);
+            subs.push(subtitle);            
+        });
+        var collection = new App.Player.SubtitleFileCollection(subs);
+        this.set("subtitles", collection);        
+        this.trigger("content:subtitles:loaded", this.get("subtitles"));
+    }    
 });
 

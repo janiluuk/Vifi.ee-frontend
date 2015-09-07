@@ -25,12 +25,14 @@ window.app = _.extend({}, Backbone.Events);
         }
 
         app.template = new App.Utils.TemplateLoader();
+        var session = new App.User.Session();
+        var profile = session.get("profile");
         
         var genres = new App.Films.GenreCollection(data.genres);
         var banners = new App.Collections.BannerCollection(data.banners);
         var subscriptions = new App.Collections.SubscriptionCollection(data.subscriptions);
         var paymentmethods = new App.Collections.PaymentmethodCollection(data.paymentmethods);
-        var usercollection = new App.Collections.UserCollection();
+        var usercollection = new App.Collections.UserCollection([], {session:session});
         var sessioncollection = new App.Collections.FilmSessionCollection();
 
         var originalCollection = new App.Collections.FilmCollection(data.results, {parse:true});
@@ -44,8 +46,7 @@ window.app = _.extend({}, Backbone.Events);
             pagination: data.pagination,
             search: data.search
         });
-        var session = new App.User.Session();
-        var profile = session.get("profile");
+
 
         var player = new App.Player.MediaPlayer({session: session});
 	    var periods = new App.Collections.FilterCollection([{'id': '2014-2014', 'name': '2014'}, {'id': '2013-2013', 'name': '2013'}, {'id': '2000-2012', 'name': '00-ndad'},{'id': '1990-2000', 'name': '90-ndad'}, {'id': '1980-1990', 'name': '80-ndad'},{'id': '1900-1980', 'name': '60-70 ndad'} ]);

@@ -6,7 +6,9 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
 
     initialize: function(options) {
         this.options = options || {};
-
+        if (options && undefined != options.session) {
+            this.session = options.session;
+        }
         if (options && undefined != options.model) {
             this.model = options.model;
         }

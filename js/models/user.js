@@ -11,6 +11,7 @@ App.User.Ticket = Backbone.Model.extend({
         title: '',
         type: '',
         auth_code: '',
+        user_id: false,
         status: 'invalid',
     },    
 
@@ -281,6 +282,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         }
         return false;
     },
+
     hasSubscription: function() { 
         return this.get("subscriber") === true ? true : false;
     },
@@ -322,11 +324,8 @@ App.User.Profile = App.Models.ApiModel.extend({
     updatePurchases: function(cb) {
         var deferred = new $.Deferred();
         this.fetch().done(function() {
+            this.updateUserCollection();
             var tickets = this.get("tickets");
-            _.each(tickets, function(item) {  
-                var ticket = new App.User.Ticket(item);
-                app.usercollection.add(ticket);
-            });
             deferred.resolve(tickets);
         }.bind(this));
         return deferred.promise();
@@ -468,7 +467,7 @@ App.User.Session = Backbone.Model.extend({
         this.on('poll:enable', this.enable, this);
         this.on('poll:disable', this.disable, this);
         this.profile.on('user:profile:login', this.onUserAuthenticate, this);
-        this.on('ticket:received', this.onTicketReceived, this);
+        this.on('ticket:purchase', this.onTicketReceived, this);
         
         if (auth_data = this.cookie.parse()) {
             this.set(auth_data);
@@ -509,9 +508,15 @@ App.User.Session = Backbone.Model.extend({
     url: function() {
         return App.Settings.api_url + 'session/' + '?jsoncallback=?';
     },
-    onTicketReceived: function(ticket) { 
+    onTicketReceived: function(ticket) {
+        console.log(ticket);
+        
         if (ticket) {
-            app.usercollection.add(ticket);    
+            
+            ticket.set("user_id", this.get("user_id"));
+            app.usercollection.add(ticket); 
+            this.trigger("ticket:purchase:done", ticket);
+            
         }
         return false;
     },
@@ -572,6 +577,7 @@ App.User.Session = Backbone.Model.extend({
         this.profile.logout();
 
         this.trigger("user:logout");
+        app.usercollection.reset();
 
         app.router.navigate("/", {
             trigger: true
