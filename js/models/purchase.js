@@ -31,18 +31,19 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         this.sync("update").done(function(res) { this.onStatusReceive(res); }.bind(this));
     },
     
-     onStatusReceive: function(res) {
+    onStatusReceive: function(res) {
 
         $log(res);
 
-        if (res.status == "PENDING" && this.get("status") != "PENDING") {
+        if (res.status == "PENDING") {
             this.trigger("purchase:mobile:start",res);
             this.startTimer();            
+            
             this.set("authToken", res.authToken);
             this.set("phoneNumber", res.phoneNumber);
             this.set("status", res.status);
-            this.requestPaymentStatus(this.onStatusReceive);
             
+            this.requestPaymentStatus(this.onStatusReceive);
         }
         if (res.status == "fail") {
                this.set("status", "FAILED");
@@ -53,13 +54,20 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             
             setTimeout(function() { 
                 this.handleStatus();
-            }.bind(this),1000);
+            }.bind(this),1500);
         }
         
         if (res.status == "DONE") {
-            this.set(res);
+ 
             this.set("tickets", res.tickets);
             this.set("authToken", res.authToken);
+            this.set("status", res.status);
+            setTimeout(function() {this.handleStatus()}.bind(this),2000);
+
+            if (this.interval) {
+                clearInterval(this.ival);
+            }
+
         }
     },
 
@@ -80,13 +88,16 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         this.interval = setInterval(function() {
             this.handleStatus();
             var timeout = this.get("timeout");
+            var status = this.get("status");
+
             $log(timeout);
+
 
             if (this.get("pending") === false) {
                 this.stopTimer();
                 return false;
             }
-            if (timeout > 0) {
+            if (timeout > 0 && this.status != "DONE" && this.status != "PAYMENT") {
                 this.set("timeout",--timeout);
             } else {
                 this.trigger("purchase:mobile:error", "Timeout exceeded");
@@ -100,12 +111,14 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             clearInterval(this.interval);
         }
     },
-    handleStatus: function() { 
+    handleStatus: function() {
+        
         var status = this.get("status");
         $log(status);
+
         if (status == "PAYMENT") {
             this.trigger("purchase:mobile:success");
-            this.requestPaymentStatus(this.onStatusReceive());
+            this.requestPaymentStatus(this.onStatusReceive);
         }
         if (status == "PENDING") { 
             this.trigger("purchase:mobile:pending");
@@ -115,9 +128,11 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             this.trigger("purchase:mobile:error", "Payment failed");
         }
         if (status == "DONE") {
-            
+
             if (this.get("tickets")) {
-                
+
+                $log("Receiving tickets");
+
                 _.forEach(this.get("tickets"), function(item) {
                     var ticket = new App.User.Ticket(item);
                     this.trigger("purchase:ticket:received", ticket);
@@ -126,7 +141,11 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             
             this.trigger("purchase:mobile:done", "Success!");
         }
-
+        if (status == "PAYMENT") {
+            this.trigger("purchase:mobile:success");
+            this.requestPaymentStatus(this.onStatusReceive);
+        }
+        
         this.stopTimer();       
         return true;
     },

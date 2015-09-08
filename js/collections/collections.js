@@ -3,7 +3,7 @@ App.Collections = {};
     // pagers. We're going to begin using the requestPager first.
 App.Collections.FilmCollection = Backbone.Collection.extend({
     model: App.Models.Film,
-parse: function (resp, options) {
+    parse: function (resp, options) {
     var self = this;
     return _.map(resp, function (obj) {
         return new self.model(obj.film, options);
@@ -58,8 +58,12 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             } else   
             this.fetch({ reset: true, url: this.url, dataType: 'jsonp'});
         },
-        parse: function(data) {
-            return data.results;
+        parse: function (resp, options) {
+        var self = this;
+        return _.map(resp.results, function (obj) {
+            
+            return new self.model(obj.film, options);
+        });
         },
         featured: function() {
             var items = this.fullCollection.filter(function(data) {

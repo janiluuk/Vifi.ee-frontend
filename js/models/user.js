@@ -215,7 +215,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         if (this.session.get("auth_id") == "") {
             return false;
         }
-    this.fetch({
+        this.fetch({
             success: function(data) {
                 if (this.get("user_id") != "") {
                     this.session.set("user_id", this.get("user_id"));
@@ -260,7 +260,7 @@ App.User.Profile = App.Models.ApiModel.extend({
      
     getMovieSession: function(id) {
         var movie =  app.usercollection.findWhere({id:id});
-        if (movie) {
+        if (movie &&  movie.get("filmsession")) {
             var session = movie.get("filmsession").get("session_id");
             return session;
         }
@@ -455,6 +455,13 @@ App.User.Session = Backbone.Model.extend({
             activationCode: '',
         }
     },
+    url: function() {
+        return App.Settings.api_url + 'session/' + '?jsoncallback=?';
+    },
+    reset: function() {
+        this.set(this.defaults());
+        this.cookie.clear();
+    },    
     initialize: function() {
         this.cookie = App.User.Cookie;
         this.purchases = new App.User.Purchases({session: this});
@@ -500,24 +507,10 @@ App.User.Session = Backbone.Model.extend({
                 } else {
                     this.trigger("user:token:error", data.message);
                     if (callback) callback(data);
+                    if (errcb) errcb(data);
                 }
             }.bind(this), true);
         }
-    },
-    url: function() {
-        return App.Settings.api_url + 'session/' + '?jsoncallback=?';
-    },
-    onTicketReceived: function(ticket) {
-        console.log(ticket);
-        
-        if (ticket) {
-            
-            ticket.set("user_id", this.get("user_id"));
-            app.usercollection.add(ticket); 
-            this.trigger("ticket:purchase:done", ticket);
-            
-        }
-        return false;
     },
     getParams: function() {
         var options = {}
@@ -534,7 +527,9 @@ App.User.Session = Backbone.Model.extend({
         options.dataType = params.dataType;
         return options;
     },
+    
     /* Start poller */
+    
     enable: function() {
         if (!this.isLoggedIn() && !this.isEnabled()) {
             this.set("enabled", true);
@@ -542,65 +537,40 @@ App.User.Session = Backbone.Model.extend({
             this.send();
         }
     },
+    /* Stop poller */
+    
     disable: function() {
         this.set("enabled", false);
     },
-    onUserAuthenticate: function() {
     
-        if (this.profile.isAnonymous() !== true) {
-            this.set("logged_in", true);
-            this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));       
+    /* Start polling for a session */
+    
+    send: function() {
+        if (!this.isLoggedIn() && this.isEnabled()) {
+            if (this.counter > 10) {
+                $log("Disabling due to 10 failed attempts.");
+                this.disable();
+                return false;
+            }
+            this.fetch();
+            setTimeout(function() {
+                this.send();
+                this.counter++;
+            }.bind(this), 3000);
+        } else {
+            $log("Disabling polling, logged in or disabled");
+            this.disable();
         }
-
-        this.trigger("user:login:success", this.get("user_id"));
-        this.disable();
-    },
-    login: function(email, password) {
-        if (!password || !email) return false;
-        app.api.call(["user", "login", email, password], {}, function(data) {
-            if (data.status == "ok") {
-                this.set("user_id", data.user_id);
-                this.set("session_id", data.cookie);
-                this.set("auth_id", data.activationKey);
-                this.set("activationCode", data.activationCode);
-                this.trigger("user:login", data.message);
-                
-                //  this.session.enable();
-            } else {
-                this.trigger("user:login:fail", data);
-            }
-        }.bind(this));
     },    
-    logout: function() {
-        this.reset();
-        this.profile.logout();
-
-        this.trigger("user:logout");
-        app.usercollection.reset();
-
-        app.router.navigate("/", {
-            trigger: true
-        });
-        
-        return false;
+    isEnabled: function() {
+        return this.get("enabled");
     },
-    register: function(email, password) {
-        if (!password || !email) return false;
-        app.api.call(["user", "register", email, password], {}, function(data) {
-            if (data.status == "ok") {
-                this.set("user_id", data.user_id);
-                this.set("session_id", data.cookie);
-                this.set("auth_id", data.activationKey);
-                this.trigger("user:register:success", data);
-            } else {
-                this.trigger("user:register:fail", data);
-            }
-        }.bind(this));
-    },    
-    reset: function() {
-        this.set(this.defaults());
-        this.cookie.clear();
+    isLoggedIn: function() {
+        return this.get("logged_in");
     },
+    
+    /* Fetch info about the session */
+
     fetch: function() {
         if (!this.isEnabled()) return;
         if (!this.isLoggedIn()) this.path = this.get("activationCode");
@@ -624,35 +594,73 @@ App.User.Session = Backbone.Model.extend({
             }
         }.bind(this), "jsonp").error(function(data) {
             this.reset();
+            this.trigger("error", "Failed login. Something's up with service.")
             $log(data);
         }.bind(this));
     },
     
-    /* Start polling for a session */
+        
+    onUserAuthenticate: function() {
     
-    send: function() {
-        if (!this.isLoggedIn() && this.isEnabled()) {
-            if (this.counter > 10) {
-                $log("Disabling due to 10 failed attempts.");
-                this.disable();
-                return false;
-            }
-            this.fetch();
-            setTimeout(function() {
-                this.send();
-                this.counter++;
-            }.bind(this), 3000);
-        } else {
-            $log("Disabling polling, logged in or disabled");
-            this.disable();
+        if (this.profile.isAnonymous() !== true) {
+            this.set("logged_in", true);
+            this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));       
         }
+
+        this.trigger("user:login:success", this.get("user_id"));
+        this.disable();
     },
-    isEnabled: function() {
-        return this.get("enabled");
+    onTicketReceived: function(ticket) {
+        if (ticket) {
+            ticket.set("user_id", this.get("user_id"));
+            app.usercollection.add(ticket); 
+            this.trigger("ticket:purchase:done", ticket);
+        }
+        return false;
+    },    
+    login: function(email, password) {
+        if (!password || !email) return false;
+        app.api.call(["user", "login", email, password], {}, function(data) {
+            if (data.status == "ok") {
+                this.set("user_id", data.user_id);
+                this.set("session_id", data.cookie);
+                this.set("auth_id", data.activationKey);
+                this.set("activationCode", data.activationCode);
+                this.trigger("user:login", data.message);
+                
+                //  this.session.enable();
+            } else {
+                this.trigger("user:login:fail", data);
+            }
+        }.bind(this));
+    },    
+    logout: function() {
+        this.reset();
+        this.profile.logout();
+
+        this.trigger("user:logout");
+        app.usercollection.reset();
+        app.router.navigate("/", {
+            trigger: true
+        });
+        
+        return false;
     },
-    isLoggedIn: function() {
-        return this.get("logged_in");
-    }
+    register: function(email, password) {
+        if (!password || !email) return false;
+        app.api.call(["user", "register", email, password], {}, function(data) {
+            if (data.status == "ok") {
+                this.set("user_id", data.user_id);
+                this.set("session_id", data.cookie);
+                this.set("auth_id", data.activationKey);
+                this.trigger("user:register:success", data);
+            } else {
+                this.trigger("user:register:fail", data);
+            }
+        }.bind(this));
+    },    
+ 
+
 });
 App.User.Cookie = {
     settings: {
@@ -688,6 +696,8 @@ App.User.Cookie = {
         return false;
     },
     clear: function(cookie_name) {
+        if (!cookie_name) cookie_name = "vifi_session"; 
+        
         this.set("", cookie_name);        
         $.removeCookie(cookie_name, App.User.Cookie.settings);
     },

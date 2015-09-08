@@ -201,8 +201,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     onSessionLoad: function(id) {
         if (id) { 
         var session = this.get("session");
-        this.params.filmsession = session.profile.getMovieSession(id);
-        this.params.auth_code = session.profile.getMovieAuthCode(id);
+        if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
+        if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
         }
     },
     onVideoChange: function() { 
