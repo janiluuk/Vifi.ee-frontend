@@ -358,7 +358,8 @@ App.Utils.Notification = Backbone.Model.extend({
 
     notify: function(message, type, callback) { 
         message = message || "Empty message";
-
+                    console.log(callback);
+console.log(message);
         type = type || "notice";
 
             // create the notification
@@ -370,7 +371,9 @@ App.Utils.Notification = Backbone.Model.extend({
                 effect : 'thumbslider',
                 type : type, // notice, warning, error or success
                 onClose : function() {
-                    if (callback) callback();
+                    console.log(callback);
+                    
+                   // if (callback) callback();
                 }
             });
 

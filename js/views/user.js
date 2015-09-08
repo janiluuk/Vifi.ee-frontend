@@ -134,7 +134,7 @@ App.Views.LoginForm = Backbone.View.extend({
         if (email =="" || pass == "" || passverify == "") {  
             this.onFail({message: "Fill all the fields!"});
         } else { 
-            this.session.get("profile").register(email, pass);
+            this.session.register(email, pass);
         }
         return false;
     },
@@ -421,7 +421,7 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
                 var oldpass = this.model.get("password");
                 app.session.profile.changePassword(oldpass, pass);
             } else { 
-                app.session.profile.register(email, pass);
+                app.session.register(email, pass);
             }
             // this.model.save();
         }

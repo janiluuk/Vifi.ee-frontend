@@ -86,8 +86,7 @@ App.Views.BaseAppView = Backbone.View.extend({
     },
     showTicketPurchase: function(ticket) {
         
-        console.log(ticket);
-        
+
          var id = ticket.get("vod_id");
          var title = app.usercollection.get(id);                                                          
         

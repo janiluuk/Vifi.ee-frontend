@@ -119,11 +119,9 @@ App.Collections.UserCollection = Backbone.Collection.extend({
     initialize: function(models, options) { 
         if (options && undefined !== options.session) {
             this.session = options.session;
-            this.session.on("change:user_id", this.reset, this);
         }
         
-        if (options.session) 
-        _.bindAll(this, 'updateUserCollection', 'parseModel');
+        _.bindAll(this, 'updateUserCollection', 'parseModel','reset');
         this.on("reset", this.updateUserCollection);
         this.on("add", this.updateUserCollection);
         

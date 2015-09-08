@@ -215,8 +215,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         if (this.session.get("auth_id") == "") {
             return false;
         }
-
-        this.fetch({
+    this.fetch({
             success: function(data) {
                 if (this.get("user_id") != "") {
                     this.session.set("user_id", this.get("user_id"));

@@ -61,7 +61,7 @@ App.Forms.ResetPasswordFormView = App.Forms.FormView.extend({
                 var oldpass = this.model.get("password");
                 app.session.profile.changePassword(oldpass, pass);
             } else { 
-                app.session.profile.register(email, pass);
+                app.session.register(email, pass);
             }
             // this.model.save();
         }

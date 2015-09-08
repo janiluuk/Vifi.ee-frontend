@@ -34,7 +34,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
      onStatusReceive: function(res) {
 
         $log(res);
-        
+
         if (res.status == "PENDING" && this.get("status") != "PENDING") {
             this.trigger("purchase:mobile:start",res);
             this.startTimer();            
@@ -43,6 +43,9 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             this.set("status", res.status);
             this.requestPaymentStatus(this.onStatusReceive);
             
+        }
+        if (res.status == "fail") {
+               this.set("status", "FAILED");
         }
 
         if (res.status == "PAYMENT") {
