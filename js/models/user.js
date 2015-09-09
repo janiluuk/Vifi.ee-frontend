@@ -69,23 +69,7 @@ App.User.Ticket = Backbone.Model.extend({
         return true;
     }
 });
-App.User.FilmSession = App.Models.ApiModel.extend({ 
-    path: 'filmsession',
-    defaults: {  
-        'session_id' : '',
-        'timestamp' : '',
-        'watched' : false,
-    },
 
-    initialize: function(options) {
-        if (options && undefined !== options.session) {
-            this.set("session", options.session);
-        }
-        this.set("session_id", options.session_id);
-        this.set("timestamp", options.timestamp);        
-    }
-
-});
 App.User.Profile = App.Models.ApiModel.extend({
     path: 'profile',
     params: {},
@@ -511,8 +495,15 @@ App.User.Session = Backbone.Model.extend({
                 }
             }.bind(this), true);
         }
+
     },
-    getParams: function() {
+    /* 
+     * Get authentication parameters for doing API call.
+     * @param array - Optional parameters to add to the call
+     * @return object for the $.ajax call.
+     *
+     */
+    getParams: function(data) {
         var options = {}
         var params = {
             dataType: 'jsonp',
@@ -523,6 +514,9 @@ App.User.Session = Backbone.Model.extend({
                 format: 'json',
             }
         };
+        
+        if (data) params.data = _.extend(params.data, data);
+        
         options.data = JSON.parse(JSON.stringify(params.data));
         options.dataType = params.dataType;
         return options;

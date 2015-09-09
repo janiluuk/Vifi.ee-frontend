@@ -189,7 +189,6 @@ App.Utils.State = Backbone.Model.extend({
         for (key in dict) {
             if ((!_.indexOf(_.keys(this.defaults), key) || (this.defaults[key] != dict[key])) && dict[key] != undefined) {
                 if (dict[key] != "") hashables.push(key + '=' + escape(dict[key]));
-
             }
         }
 
@@ -207,9 +206,9 @@ App.Utils.State = Backbone.Model.extend({
        var len =  _.values(this.attributes).join("").length;
        return len == 0 ? true : false;
     },
+    
     setDefault: function() { 
         this.set(this.defaults);
-
     },
     isDefault: function() {
        return _.values(this.defaults).join("") == _.values(this.attributes).join("");
@@ -358,8 +357,6 @@ App.Utils.Notification = Backbone.Model.extend({
 
     notify: function(message, type, callback) { 
         message = message || "Empty message";
-                    console.log(callback);
-console.log(message);
         type = type || "notice";
 
             // create the notification
@@ -367,13 +364,11 @@ console.log(message);
 
                 message : '<div class="ns-thumb"><img width=64 height=64 src="/style/img/notify_'+type+'.jpg"/></div><div class="ns-content"><div class="ns-message"><div class="ns-message-container">'+message+'</div></div></div>',
                 layout : 'other',
-                ttl : 6000,
+                ttl : 5000,
                 effect : 'thumbslider',
                 type : type, // notice, warning, error or success
                 onClose : function() {
-                    console.log(callback);
-                    
-                   // if (callback) callback();
+                    if (callback) callback();
                 }
             });
 
@@ -429,6 +424,3 @@ Backbone.View.prototype.close = function(){
     this.onClose();
   }
 };
-
-
-

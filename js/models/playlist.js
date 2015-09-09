@@ -28,7 +28,6 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
     /**
      *  Parameters:
      *  film - Instance of a film.
-     *  filmsession - active film session 
      *  ticket - ticket for watching the content
      *  session - User session
      * 

@@ -1,16 +1,3 @@
-var oldSaveFunction = Backbone.Model.prototype.save;
-Backbone.Model.prototype.save = function(){
-    var returnedValue = oldSaveFunction.apply(this, arguments),
-        deferred = new $.Deferred();
-
-    if(_.isBoolean(returnedValue)){
-        deferred.reject();
-        return deferred.promise();
-    }
-
-    return returnedValue;
-}
-
 App.Models = {};
 
 App.Models.ApiModel = Backbone.Model.extend({
@@ -27,51 +14,33 @@ _.extend(App.Models.ApiModel.prototype, {
     url: function() {
         return App.Settings.api_url + this.path + '?' + $.param(this.params);
     },
-
-    getParams: function(data) {
-        var session = this.get("session");
-        if (!session) session = app.session;
-        
-        var options = {};
-        
-        var params = {
-            dataType: 'jsonp',
-            data: {
-                api_key: App.Settings.api_key,
-                authId: session.get("auth_id"),
-                sessionId: session.get("session_id"),
-                format: 'json',
-            }
-        };
-        if (data) params.data = _.extend(params.data, data);
-        options.data = JSON.parse(JSON.stringify(params.data));
-        options.dataType = params.dataType;
-        return options;
-    },
     // override backbone synch to force a jsonp call
     sync: function(method, model, options) {
 
         // Default JSON-request options.
         // passing options.url will override 
         // the default construction of the url in Backbone.sync
+        var data = ("undefined" == typeof(options)) ? {} : options.data;
+        
+        var session = this.get("session");
+        if (!session) session = app.session;
+        var sessionParams= session.getParams(data);
+        
         var type="GET";
         var dataType = "jsonp";
         var jsonp = "jsoncallback";
-        var data = ("undefined" == typeof(options)) ? {} : options.data;
         switch (method) {
             case "update":
             type="POST";
             jsonp = false;
-            options=this.getParams(data);
+            options=sessionParams;
             options.dataType=false;
             break;
         }
 
         if (undefined == model || model == false) model = this;
 
-        var defaultParams = this.getParams();
-        
-        _.extend(this.params, defaultParams.data);
+        _.extend(this.params, sessionParams.data);
         
         var params = _.extend({
             type: type,
@@ -141,24 +110,30 @@ _.extend(App.Models.Film.prototype,  {
             }
         });
         return true;
-
     },
  });
-App.Models.FilmSession = App.Models.ApiModel.extend({ 
-    path: 'filmsession',
+ 
+App.Models.FilmSession = Backbone.Model.extend({
+    path: 'update_session',
+    urlRoot: App.Settings.api_url,
+    idAttribute: 'session_id',
+    url: function() { return this.urlRoot+this.path+"/"+this.get("session_id")+"/"+this.get("timestamp")+"?format=json&api_key="+App.Settings.api_key; },
     defaults: {  
         'session_id' : '',
-        'timestamp' : '',
+        'timestamp' : 0,
         'watched' : false,
         'film_id' : ''
     },
     initialize: function(options) {
-        if (options && undefined !== options.session) {
-            this.set("session", options.session);
-        }
-        this.on("change:videos", this.onLoadContent, this);
-        this.on("change:subtitles", this.onLoadSubtitles, this);
+        this.on("change:session_id", this.onSessionLoad, this);
+        
+    },
+    onSessionLoad: function() {
+        
+        console.log(this.get("session_id"));
+        
     }
+
 
 });
 
@@ -167,24 +142,26 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     path: 'content',
     params: {},
     
-    defaults: function() { return {
-        'id': false,
-        'videos': [{
-                'mp4': '',
-                'profile': '',
-                'code': ''
-            }
-        ],
-        'images': {
-            'thumb': '',
-            'poster': ''
-        },
-        'subtitles': [{
-            'filename': '',
-            'code': '',
-            'language': ''
-        }],
-        session: {  } }
+    defaults: function() { 
+        return {
+            'id': false,
+            'videos': [{
+                    'mp4': '',
+                    'profile': '',
+                    'code': ''
+                }
+            ],
+            'images': {
+                'thumb': '',
+                'poster': ''
+            },
+            'subtitles': [{
+                'filename': '',
+                'code': '',
+                'language': ''
+            }],
+            session: {  } 
+        }
     },
 
     initialize: function(options) {
@@ -198,16 +175,27 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.on("change:subtitles", this.onLoadSubtitles, this);
 
     },
+    
+    /*
+     * Fetch Film session and auth code from the user ticket if they exist
+     */
+     
     onSessionLoad: function(id) {
+        this.params = {};
         if (id) { 
-        var session = this.get("session");
-        if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
-        if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
+            var session = this.get("session");
+            if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
+            if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
         }
     },
-    onVideoChange: function() { 
+    /*
+     * Reset content items to defaults
+     */    
+    resetContent: function() {
         this.set("videos", false);
-        this.set("subtitles", false);   
+        this.set("subtitles", false);
+    },
+    onVideoChange: function() { 
         this.path = "content/"+this.get("id");
     },
     /*
@@ -239,9 +227,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     onLoadSubtitles: function(event) {
 
         if (this.get("subtitles") != null && this.get("subtitles").length > 0)
-
-
-            this.trigger("subtitles:ready", this.get("subtitles"));
+        this.trigger("subtitles:ready", this.get("subtitles"));
     },
 
     refresh: function(fetch) {
