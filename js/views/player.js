@@ -1,5 +1,5 @@
 App.Views.PlayerView = Backbone.View.extend({
-    el: "#movie-page-header",
+    el: "#movie-player-container",
     model: App.Player.MediaPlayer,
     controlBar: false,
 
@@ -41,18 +41,22 @@ App.Views.PlayerView = Backbone.View.extend({
         console.log(element.width());
     },
     close: function() {
-        this.$el.empty().hide();
-        this.controlBar.remove();
+        this.$el.hide();
+        //this.controlBar.remove();
         this.model.trigger("mediaplayer:stop");
-        this.unbind();
-        this.stopListening();
+        //this.unbind();
+        //this.stopListening();
     },
+
     render: function() {
+        this.setElement("#movie-player-container");
+        
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
         this.$el.fadeIn();
         this.resize();
         return this;
     },
+
     renderControls: function(content) {
         this.controlBar = new App.Views.PlayerControlbar({model: content});
         this.controlBar.on('controlbar:change', this.onControlsChange, this);

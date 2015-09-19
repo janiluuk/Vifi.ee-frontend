@@ -116,7 +116,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             var rating = this.model.get("rt_ratings").critics_score;
             if (rating == -1 ) rating = this.model.get("rt_ratings").audience_score;
 
-            this.$("#rtratings").html('<a target="_blank" href="'+link+'"><span class="icon rottentomato"></span><span>'+ rating +'%</span></a>');
+            this.$("#rtratings").empty().append('<a target="_blank" href="'+link+'"><span class="icon rottentomato"></span><span>'+ rating +'%</span></a>');
         }
         return this;
     },
@@ -124,11 +124,9 @@ App.Views.MovieDetailView = Backbone.View.extend({
     
         this.$el.empty().append(this.template(this.model.toJSON()));
         this.isotope = false;
-        console.log("rendering");
         setTimeout(function() {
             App.Utils.lazyload();
             this.model.fetchRT();
-
             this.startCarousel();
             this.resetComments();
             this.enableRatings();
@@ -187,13 +185,13 @@ App.Views.MovieDetailView = Backbone.View.extend({
             this.playerView = new App.Views.PlayerView({
                 model: app.player
             });
-        app.player.load(this.model);
+            app.player.load(this.model);
 
         } else { 
             this.playerView.model.content.resetContent();
             this.playerView.render();
-            this.playerView.model.load(this.model);
-            app.movieview.playerView.$el.show()
+            app.player.load(this.model);
+            app.movieview.playerView.$el.show();
         }
         if (e) e.stopPropagation();
         return false;

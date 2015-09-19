@@ -457,10 +457,7 @@ App.User.Session = Backbone.Model.extend({
     url: function() {
         return App.Settings.api_url + 'session/' + '?jsoncallback=?';
     },
-    reset: function() {
-        this.set(this.defaults());
-        this.cookie.clear();
-    },    
+
     initialize: function() {
         this.cookie = App.User.Cookie;
         this.purchases = new App.User.CookiePurchases({session: this});
@@ -481,6 +478,13 @@ App.User.Session = Backbone.Model.extend({
 
         _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'onUserAuthenticate');
     },
+
+    /** Reset session, clear cookies. **/
+
+    reset: function() {
+        this.set(this.defaults());
+        this.cookie.clear();
+    },     
     
     /*
      * Get a token for user.
