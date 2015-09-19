@@ -6,51 +6,40 @@ App.Views.PlayerView = Backbone.View.extend({
     initialize: function() { 
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
         this.setElement("#movie-player-container");
-
         app.platform.on("screen:orientation:change", this.resize, this);
         this.listenTo(this.model, "player:ready", this.renderControls);
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "player:resize", this.resize, this);
         this.listenTo(app.router, "page:change", this.close, this);
         this.render();
-
     },
-    
+
+    /*
+     * Get the film ratio, and calculate the optimal player height and width
+     * 
+     */
+
     resize: function() {
         var element = $("#player-container");
         var ratio = this.model.ratio;
-        
         var nav_height = $('#video-container-heading').outerHeight();
         var footer_height = $('#video-container-footer').outerHeight();
-
-        var windowWidth = $(window).width();
-        var windowHeight = $(window).height();
-
         var orientation = App.Platforms.platform.getDeviceOrientation();
-        if (orientation == "portrait") { 
-            var player_width = $('#movie-page-header').width();
-
-        } else { 
-            
-            var player_width = $(window).width();
-        }
-        var player_height = player_width*ratio;
-        
-            element.width(Math.ceil(player_width));
-            element.height(Math.ceil(player_height));
-        console.log(element.width());
+        var player_width = (orientation == "portrait") ? $('#movie-page-header').width() : $(window).width();
+        var player_height = player_width*ratio;    
+        element.width(Math.ceil(player_width));
+        element.height(Math.ceil(player_height));
     },
     close: function() {
         this.$el.hide();
-        //this.controlBar.remove();
+        this.controlBar.remove();
         this.model.trigger("mediaplayer:stop");
         //this.unbind();
         //this.stopListening();
     },
 
     render: function() {
-        this.setElement("#movie-player-container");
-        
+        this.setElement("#movie-player-container");        
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
         this.$el.fadeIn();
         this.resize();
@@ -272,11 +261,11 @@ App.Views.TrailerView = Backbone.View.extend({
         clearTimeout(this.hideVideoNavigationTimeout);
     },
     touchVideoNavigationTimeout: function() {
+
         if (!$(this.optionsEl).is(":visible")) {
             $(this.optionsEl).fadeIn();
             $(this.infoEl).fadeIn();
         }
-
         clearTimeout(this.hideVideoNavigationTimeout);
         this.hideVideoNavigationTimeout = setTimeout(function() {
             $(this.optionsEl).fadeOut();

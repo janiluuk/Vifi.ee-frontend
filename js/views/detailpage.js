@@ -144,7 +144,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
     playTrailer: function(e) {
 
         if (e) e.preventDefault();
-        $("#gallery-swiper-container").fadeOut();
+        $("#gallery-swiper-container").fadeOut(function() { 
         if (!this.trailerView) {         
             this.trailerView = new App.Views.TrailerView({
                 model: this.model
@@ -156,6 +156,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
             this.trailerView.model.set(this.model.toJSON());
         }
         this.trailerView.playTrailer();
+    }.bind(this));
         e.stopPropagation();
 
     },
@@ -210,9 +211,8 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
         $(el).siblings().removeClass("active").hide();
         $(el).fadeIn().addClass("active");
-        App.Utils.lazyload();
 
-        setTimeout(function() { this.applyIsotope(); }.bind(this),2500);
+        setTimeout(function() { this.applyIsotope(); App.Utils.lazyload(); }.bind(this),2500);
 
     },
 
