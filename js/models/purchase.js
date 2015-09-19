@@ -137,6 +137,8 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
                     var ticket = new App.User.Ticket(item);
                     this.trigger("purchase:ticket:received", ticket);
                 }.bind(this));
+                this.set("tickets", []);
+                
             }
             
             this.trigger("purchase:mobile:done", "Success!");

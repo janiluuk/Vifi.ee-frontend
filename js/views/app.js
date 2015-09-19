@@ -88,7 +88,9 @@ App.Views.BaseAppView = Backbone.View.extend({
         
 
          var id = ticket.get("vod_id");
-         var title = app.usercollection.get(id);                                                          
+         var title = app.usercollection.get(id);
+         title.set("validtotext", title.getValidityText());
+                                                       
         
         if (title) {
             if (!this.returnview)

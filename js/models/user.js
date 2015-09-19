@@ -32,18 +32,30 @@ App.User.Ticket = Backbone.Model.extend({
          
          this.set("content", new App.Player.FilmContent({id: this.get("id"), ticket: this}));
          if (this.get("session")) { 
-            this.set("filmsession", new App.User.FilmSession(this.get("session")));
+            this.set("filmsession", new App.Models.FilmSession(this.get("session")));
          }
  
 
          if (!this.isExpired(data.validto)) this.set("status", "active");
-        // this.set("validtotext", this.getValidityText(data.validto));
+         if (data.validto) data.validtotext = this.getValidityText(data.validto);
          return data;
     },
 
+    /**
+     *
+     * Gets a humanized version of dates
+     * 
+     * @param {string} date String expression (YYYY-MM-DD HH:II:SS)
+     *
+     * @return {string} Date string
+     */
+    
     getValidityText: function(date) {
+
+        if (typeof(this.get("validto")) != "undefined")         
         if (!date) date = App.Utils.stringToDate(this.get("validto"));
-         return App.Utils.dateToHumanreadable(date);
+
+        return App.Utils.dateToHumanreadable(date);
          
     },
     /**
@@ -220,11 +232,6 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
 
 
-    purchase: function(movie) {
-        this.updatePurchases().done(function() {
-            if (this.hasMovie(movie)) this.trigger("purchase:successful", movie);
-        }.bind(this));
-    },
 
     hasMovie: function(movie) {
         var id = movie.get("id");
@@ -292,7 +299,6 @@ App.User.Profile = App.Models.ApiModel.extend({
     checkPurchases: function() {
         var films = this.purchases.getPurchases();
         if (_.isEmpty(films)) return false;
-        
         return films;
     },
     updateUserCollection: function() {
@@ -312,15 +318,23 @@ App.User.Profile = App.Models.ApiModel.extend({
             deferred.resolve(tickets);
         }.bind(this));
         return deferred.promise();
-    }
+    },
+    purchase: function(movie) {
+        this.updatePurchases().done(function() {
+            if (this.hasMovie(movie)) this.trigger("purchase:successful", movie);
+        }.bind(this));
+    },
+
 
 });
 
 /**
  * Purchases stored on the cookies 
+ * @param Session
+ * 
  */
  
-App.User.Purchases = Backbone.Model.extend({ 
+App.User.CookiePurchases = Backbone.Model.extend({ 
     
     initialize: function(options) {
         _.bindAll(this, 'getPurchases', 'setPurchases', 'removeFilm', 'cleanPurchases');
@@ -356,7 +370,8 @@ App.User.Purchases = Backbone.Model.extend({
     /**
      * Set initial collection of films from 
      * JSON array.
-     * 
+     *
+     * @param Object of all purchases
      * @return boolean
      * 
      */
@@ -448,7 +463,7 @@ App.User.Session = Backbone.Model.extend({
     },    
     initialize: function() {
         this.cookie = App.User.Cookie;
-        this.purchases = new App.User.Purchases({session: this});
+        this.purchases = new App.User.CookiePurchases({session: this});
         this.profile = new App.User.Profile({
             session: this,
             purchases: this.purchases,
@@ -457,7 +472,7 @@ App.User.Session = Backbone.Model.extend({
         this.on('poll:enable', this.enable, this);
         this.on('poll:disable', this.disable, this);
         this.profile.on('user:profile:login', this.onUserAuthenticate, this);
-        this.on('ticket:purchase', this.onTicketReceived, this);
+        this.once('ticket:purchase', this.onTicketReceived, this);
         
         if (auth_data = this.cookie.parse()) {
             this.set(auth_data);
@@ -478,7 +493,7 @@ App.User.Session = Backbone.Model.extend({
         if (!password) password = "";
         if (access_token && password == "") password = access_token;
         if (!this.isLoggedIn()) {
-            this.reset();
+            this.reset();   
 
             app.api.call(["get_token", email, password], {}, function(data) {
                 if (data.status == "ok") {

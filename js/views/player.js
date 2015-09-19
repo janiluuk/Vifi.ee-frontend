@@ -1,5 +1,5 @@
 App.Views.PlayerView = Backbone.View.extend({
-    el: "#movie-player-container",
+    el: "#movie-page-header",
     model: App.Player.MediaPlayer,
     controlBar: false,
 
@@ -15,33 +15,42 @@ App.Views.PlayerView = Backbone.View.extend({
         this.render();
 
     },
+    
     resize: function() {
+        var element = $("#player-container");
+        var ratio = this.model.ratio;
+        
         var nav_height = $('#video-container-heading').outerHeight();
         var footer_height = $('#video-container-footer').outerHeight();
 
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+
         var orientation = App.Platforms.platform.getDeviceOrientation();
         if (orientation == "portrait") { 
-            var player_width = this.$el.parent().parent().width();
+            var player_width = $('#movie-page-header').width();
+
         } else { 
+            
             var player_width = $(window).width();
         }
-        this.$el.width(player_width);
-
-        var player_height = player_width*this.model.ratio;
-        // $log("setting height "+ player_height);
-        this.$el.height(player_height);
-        $("#player-container").css({ height: player_height, width: player_width});
+        var player_height = player_width*ratio;
+        
+            element.width(Math.ceil(player_width));
+            element.height(Math.ceil(player_height));
+        console.log(element.width());
     },
     close: function() {
         this.$el.empty().hide();
         this.controlBar.remove();
         this.model.trigger("mediaplayer:stop");
         this.unbind();
-        this.remove();
+        this.stopListening();
     },
     render: function() {
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
         this.$el.fadeIn();
+        this.resize();
         return this;
     },
     renderControls: function(content) {

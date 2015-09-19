@@ -45,7 +45,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         if (undefined !== video) {
             var ratio = video.height / video.width;
             this.ratio = ratio;
-//            $log("setting ratio to " + ratio);
+            $log("setting ratio to " + ratio);
             this.trigger("player:resize", ratio);
         }
     },
@@ -144,7 +144,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         return true;
     },
     verifySession: function(movie) {
-        // Check if user is paired at all
+        // Check if user is pared at all
         if (!this.session.get("profile").hasMovie(movie)) {
             return false;
         }

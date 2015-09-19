@@ -124,9 +124,10 @@ App.Views.MovieDetailView = Backbone.View.extend({
     
         this.$el.empty().append(this.template(this.model.toJSON()));
         this.isotope = false;
-        this.model.fetchRT();
+        console.log("rendering");
         setTimeout(function() {
             App.Utils.lazyload();
+            this.model.fetchRT();
 
             this.startCarousel();
             this.resetComments();
@@ -181,15 +182,19 @@ App.Views.MovieDetailView = Backbone.View.extend({
         }
 
         $("#gallery-swiper-container").hide();
+        
         if (!this.playerView) {
             this.playerView = new App.Views.PlayerView({
                 model: app.player
             });
-        } else { 
-            this.playerView.initialize();
-
-        }
         app.player.load(this.model);
+
+        } else { 
+            this.playerView.model.content.resetContent();
+            this.playerView.render();
+            this.playerView.model.load(this.model);
+            app.movieview.playerView.$el.show()
+        }
         if (e) e.stopPropagation();
         return false;
 

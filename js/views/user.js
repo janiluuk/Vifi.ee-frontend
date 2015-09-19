@@ -404,7 +404,7 @@ App.Views.ResetPasswordForm = Backbone.View.extend({
         'click #change-password-save-button': 'changePassword'
     },
     initialize: function (options) {
-        if (options && options.profilef) this.profile = options.profile;
+        if (options && options.profile) this.profile = options.profile;
 
         // This hooks up the validation
         Backbone.Validation.bind(this);
