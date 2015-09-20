@@ -20,8 +20,7 @@ App.MediaPlayer = {
         if (this._videoElement.length == 0) {
             this._videoElement = $("<div>").attr("id", this.playerId).appendTo("#movie-player-container");
         }
-        if (!this.subtitles)
-        this.subtitles = new App.Player.Subtitles();
+
 
         return this._createPlayer();
     },
@@ -83,7 +82,7 @@ App.MediaPlayer = {
     _initSubtitles: function(content) {  
         if (!this.subtitles)
         this.subtitles = new App.Player.Subtitles();
-
+        this.subtitlesView = new App.Views.Subtitles({model: this.subtitles});    
         this.subtitles.load(content);
 
     },

@@ -130,6 +130,18 @@ App.Utils = {
                 }
             }
         },
+        toSeconds: function(t) {
+            var s = 0.0;
+            if (t) {
+                var p = t.split(':');
+                for (i = 0; i < p.length; i++) s = s * 60 + parseFloat(p[i].replace(',', '.'))
+            }
+            return parseInt(s * 1000);
+        },
+        strip: function(s) {
+            if (typeof(s) !== "undefined")
+            return s.replace(/^\s+|\s+$/g, "");
+        },
         stringToDate: function(s) {
             if (!s) return false;
 

@@ -1,5 +1,6 @@
 App.Views.PlayerView = Backbone.View.extend({
     el: "#movie-player-container",
+    subtitleEl: "subtitles",
     model: App.Player.MediaPlayer,
     controlBar: false,
 
@@ -37,7 +38,10 @@ App.Views.PlayerView = Backbone.View.extend({
         //this.unbind();
         //this.stopListening();
     },
+    onSubtitlesLoaded: function() {
 
+
+    },
     render: function() {
         this.setElement("#movie-player-container");        
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
@@ -52,6 +56,7 @@ App.Views.PlayerView = Backbone.View.extend({
         this.resize();
         return this;
     },
+
 
     onControlsChange: function(category, val) { 
         var evt = 'controlbar:'+category+':change';                
@@ -279,5 +284,53 @@ App.Views.TrailerView = Backbone.View.extend({
         return this;
     },
 });
+App.Views.Subtitles = Backbone.View.extend({
+    model: App.Models.Subtitles,
+    subtitleElement: 'subtitles',
+    el: '#player-container',
+
+    initialize: function(options) {
+
+        this.model = options.model;
+        _.bindAll(this, "loadSubtitles", "showSubtitle", "hideSubtitles", "render");
+        this.listenTo(this.model, "subtitles:show", this.showSubtitle, this);
+        this.listenTo(this.model, "subtitles:hide", this.hideSubtitles, this);
+        this.listenTo(this.model, "subtitles:loadfile", this.loadSubtitles, this);
+
+        this.render();  
+
+    },
+
+    showSubtitle: function(data) { 
+        $("#" + this.subtitleElement).html(data);
+    },
+    hideSubtitles: function() { 
+        $("#" + this.subtitleElement).html('');
+    },
+
+    loadSubtitles: function(url,code) {
+
+        $("#" + this.subtitleElement).hide().load(url, function(responseText, textStatus, req) {
+            var text = $("#" + this.subtitleElement).text();
+            $("#" + this.subtitleElement).empty().show();
+
+            this.model.parseSrt(text);
+            this.model.start();
+
+        }.bind(this));
+    },
+    render: function() {
+        this.setElement("#player-container");
+
+        $("#"+this.subtitleElement).remove();
+        $("<div>").attr("id", this.subtitleElement).appendTo(this.$el);
+
+        return this;
+
+    }
+
+
+    
+}) 
 
 
