@@ -15,37 +15,52 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         this.listenTo(this.model, 'change:id', this.render);
         this.listenTo(this.model, 'change:rt_ratings', this.renderRatings);
         _.bindAll(this, 'playMovie', 'render');
-        if (typeof(DISQUS) == "undefined") { 
-            this.enableComments();
-        }
+
         this.template = _.template(app.template.get("film"));
 
     },
+
+    /**
+     * Fetch IMDB rating using external service if film does not have one.
+     * 
+     * @return {void} 
+     */
+    
     enableRatings: function() {
         if (this.model.get("imdbrating") == false) { 
+            var rating = false;
             $('[id^="imdb-rating-api"]').remove();
+            this.$("imdbratings .rating").remove();
             (function(d,s,id){                                    
                 var js,stags=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return;}js=d.createElement(s);js.id=id;js.src="http://g-ec2.images-amazon.com/images/G/01/imdb/plugins/rating/js/rating.min.js";stags.parentNode.insertBefore(js,stags);
+                rating = $("#imdbratings .rating").text().replace("/10","");
+
             })(document,'script','imdb-rating-api');
+            if (rating) this.model.set("imdbrating", rating);
         }
 
     },
+    /**
+     * Enable Disqus thread if enabled by configuration.
+     * It will look for a div with id "disq_thread"
+     * 
+     */
+    
     enableComments: function() {
-
         if (!App.Settings.commentsEnabled) return false;
-
+        
+        window.disqus_identifier = this.model.get("seo_friendly_url");
         window.disqus_title = this.model.get("title");
-        window.disqus_shortname = App.Settings.disqus_shortname; // Required - Replace example with your forum shortname
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function() {
-            var dsq = document.createElement('script');
-            dsq.type = 'text/javascript';
-            dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-        this.resetComments();
-    },
+        window.disqus_url = window.location.href.replace("#", "#!");
+
+        if ("undefined" == typeof(DISQUS)) {
+            initDisqus();
+        }
+
+        if (typeof(DISQUS) != "undefined") { 
+            resetDisqus(this.model.get("seo_friendly_url"),  window.disqus_url,  window.disqus_url);
+        }
+    },    
     enableAddThis: function() {
         if (window.addthis) {
               window.addthis = null;
@@ -66,7 +81,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         
     },
     applyIsotope: function() {
-        if (!this.isotope)
+        if (!this.isotope) {
         this.isotope = $("#film-cast-container ul").isotope({
             layoutMode: 'fitRows',
             resizable: true,
@@ -88,7 +103,8 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             }
         });
         this.isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload() }, 300); } );
-
+        }
+        else this.isotope.isotope('layout');
     },
     enableYoutubePlayer: function() {
         if (typeof(YT) != "undefined") return false;
@@ -101,22 +117,12 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         return true;
 
     },
-    resetComments: function() {
-
-        if (!App.Settings.commentsEnabled) return false;
-        window.disqus_identifier = this.model.get("seo_friendly_url");
-        window.disqus_title = this.model.get("title");
-        window.disqus_url = window.location.href.replace("#", "#!");
-        if (typeof(DISQUS) != "undefined") { 
-            reset(this.model.get("seo_friendly_url"),  window.disqus_url,  window.disqus_url);
-        }
-    },
+ 
     renderRatings: function() {
         if (undefined != this.model.get("rt_ratings") && this.model.get("rt_ratings") != "") {
             var link = this.model.get("rt_links").alternate;
             var rating = this.model.get("rt_ratings").critics_score;
             if (rating == -1 ) rating = this.model.get("rt_ratings").audience_score;
-
             this.$("#rtratings").empty().append('<a target="_blank" href="'+link+'"><span class="icon rottentomato"></span><span>'+ rating +'%</span></a>');
         }
         return this;
@@ -126,20 +132,21 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         this.$el.empty().append(this.template(this.model.toJSON()));
         this.isotope = false;
         setTimeout(function() {
-            this.resetComments();
             this.startCarousel();
-            
             this.enableRatings();
             App.Utils.lazyload();
             this.model.fetchRT();
 
           //  this.enableAddThis(); 
+            App.Utils.lazyload();
 
         }.bind(this), 300);
 
         setTimeout(function() {
+
+            this.enableComments();
             this.enableYoutubePlayer();
-        }.bind(this),5500);
+        }.bind(this),3000);
         return this;
     
     },
@@ -222,7 +229,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         $(el).addClass("active");
         $(el).show();
 
-        setTimeout(function() {  App.Utils.lazyload(); this.applyIsotope();  }.bind(this),1500);
+        setTimeout(function() {  App.Utils.lazyload(); this.applyIsotope();  }.bind(this),1000);
         return false;
     },
 
@@ -253,6 +260,8 @@ App.Views.MovieDetailView = App.Views.Page.extend({
                 myMovieSwiper.swipeNext();
                 
             });
+            App.Utils.lazyload();
+            
         }
         window.filmnavSwiper = new Swiper('#film-tabbar-swiper-container', {
             slidesPerView: 'auto',

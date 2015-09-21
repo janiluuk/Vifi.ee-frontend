@@ -1,3 +1,9 @@
+$(document).ready(function() {
+    init();
+});
+
+
+
 window.app = _.extend({}, Backbone.Events);
 
     // Initialization event
@@ -12,7 +18,6 @@ window.app = _.extend({}, Backbone.Events);
         var deferred = new $.Deferred();
 
         App.Platforms.init();
-
         // check for hash and set state accordingly
         if (window.location.hash.indexOf('#search') != -1) {
             // start with empty state because Router will configure it later.
@@ -27,14 +32,12 @@ window.app = _.extend({}, Backbone.Events);
         app.template = new App.Utils.TemplateLoader();
         var session = new App.User.Session();
         var profile = session.get("profile");
-        
         var genres = new App.Films.GenreCollection(data.genres);
         var banners = new App.Collections.BannerCollection(data.banners);
         var subscriptions = new App.Collections.SubscriptionCollection(data.subscriptions);
         var paymentmethods = new App.Collections.PaymentmethodCollection(data.paymentmethods);
         var usercollection = new App.Collections.UserCollection([], {session:session});
         var sessioncollection = new App.Collections.FilmSessionCollection();
-
         var originalCollection = new App.Collections.FilmCollection(data.results, {parse:true});
 
         var collection = new App.Collections.PaginatedCollection(
@@ -96,11 +99,10 @@ function init() {
     $.getJSON(url, function(data) { 
         $.when(initApp(data)).then(function() { 
             app.trigger("app:ready");  
-            app.usercollection.fetch();
             
             setTimeout(function() { 
                 window.scrollTo(0,1);  
-            },2000);
+            },1000);
             
         },function() { 
             app.trigger("app:fail"); } ); 
@@ -187,12 +189,10 @@ function initFB() {
                 app.fbuser.set(response);
                 // Store the newly authenticated FB user
                 app.session.profile.trigger("user:facebook-connect", app.fbuser);
-
             });
         } else {
             app.fbuser.set(app.fbuser.defaults); // Reset current FB user
         }
- 
     });
     $(document).on('logout', function () {
         if (FB.getAccessToken() != null) {
@@ -213,8 +213,21 @@ function initFB() {
     });
 }
 
+/** Initialize Disqus if enabled */
+function initDisqus() {
+    if (!App.Settings.commentsEnabled) return false; 
+
+    window.disqus_shortname = App.Settings.disqus_shortname;     
+
+    var dso   = document.createElement("script");
+    dso.type  = "text/javascript";
+    dso.async = true;
+    dso.src  = '//' + disqus_shortname + '.disqus.com/embed.js';
+    document.getElementsByTagName('body')[0].appendChild(dso);
+}
+
 /* * * Disqus Reset Function * * */
-var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
+var resetDisqus = function (newIdentifier, newUrl, newTitle, newLanguage) {
     
     DISQUS.reset({
         reload: true,
@@ -227,9 +240,4 @@ var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
     });
 };
 
-
-$(document).ready(function() {
-    init();
-
-});
 
