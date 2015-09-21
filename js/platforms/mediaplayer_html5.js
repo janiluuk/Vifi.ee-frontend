@@ -21,8 +21,8 @@ App.MediaPlayer = {
             this._videoElement = $("<div>").attr("id", this.playerId).appendTo("#movie-player-container");
         }
 
-
         return this._createPlayer();
+
     },
     getCurrentTime: function() {
         if (this.plugin) return this.plugin.video.time * 1000;
@@ -31,9 +31,11 @@ App.MediaPlayer = {
         if (this._active) return false;
         if (!this.playlist) return false;
         var playlist = this.playlist.nextFile();
+        
         var playlistFiles = this.playlist.getPlaylistFiles();
         var _this = this;
-        var player = this._videoElement.flowplayer({
+
+        this.player = this._videoElement.flowplayer({
             rtmp: App.Settings.rtmp_url,
             adaptiveRatio: true,
 	        key: App.Settings.flowplayer_html5_key,
@@ -41,14 +43,12 @@ App.MediaPlayer = {
             embed: false,
             playlist: [playlistFiles],
         }).one('ready', function(ev, api, video) {
-            var api = flowplayer();
             var video = api.video;
-            
-            
+
+
             _this.plugin = api;
             _this.active();
-            window.api = api;
-
+        
             _this.trigger("mediaplayer:ratio:change", video);
             if (App.Settings.debug === true) _this._trackEvents();
             api.bind("pause", function(e, api) {
@@ -70,8 +70,9 @@ App.MediaPlayer = {
                 _this.trigger("mediaplayer:onbeforeseek");
             });
             api.resume();
-        });
-        return player;
+        }); 
+        
+        return this.player;
     },
     _playVideo: function() {
         this.currentStream = this.playlist.nextFile();
@@ -80,9 +81,12 @@ App.MediaPlayer = {
     },
 
     _initSubtitles: function(content) {  
-        if (!this.subtitles)
-        this.subtitles = new App.Player.Subtitles();
-        this.subtitlesView = new App.Views.Subtitles({model: this.subtitles});    
+        if (!this.subtitles) { 
+            this.subtitles = new App.Player.Subtitles();
+            this.subtitlesView = new App.Views.Subtitles({model: this.subtitles});    
+        } else {
+            this.subtitlesView.render()
+        }
         this.subtitles.load(content);
 
     },
@@ -93,15 +97,16 @@ App.MediaPlayer = {
 
     },
     disableSubtitles: function() { 
-
+        if (this.subtitles)
         this.subtitles.disable();
         this.trigger("mediaplayer:subtitles:disabled");
 
     },
     enableSubtitles: function() { 
-
+        if (this.subtitles) { 
         this.subtitles.enable();
         this.trigger("mediaplayer:subtitles:enabled");
+        }
     },
     
     stop: function(forced) {
@@ -111,7 +116,6 @@ App.MediaPlayer = {
                 this.deactive();
                 this._stopTrackingEvents();
                 if (!forced) this.trigger("mediaplayer:onstop");
-                else this.plugin.unload();
             } catch (e) {} // If this doesn't succeed, it doesn't matter, just die gracefully
         }
     },

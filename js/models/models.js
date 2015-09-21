@@ -5,14 +5,14 @@ App.Models.ApiModel = Backbone.Model.extend({
         'id': '',
         'session': false
     },
-    path: "",
     params: {}
 
 });
 
 _.extend(App.Models.ApiModel.prototype, { 
+    path: function() { return this.get("id"); },
     url: function() {
-        return App.Settings.api_url + this.path + '?' + $.param(this.params);
+        return App.Settings.api_url + this.path() + '?' + $.param(this.params);
     },
     // override backbone synch to force a jsonp call
     sync: function(method, model, options) {
@@ -70,16 +70,12 @@ App.Models.Banner = Backbone.Model.extend({
 App.Models.Film = App.Models.Product.extend({
 
     type: 'film',
-    path: 'details/',
+    path: function() { return 'details/'; },
 
 });
 _.extend(App.Models.Film.prototype,  { 
-    initialize: function(options) {
-        this.refresh();
-    },
-    refresh: function() {
-            this.path = "details/" + this.get("id");
-    },
+    path: function() { return "details/" + this.get("id"); },
+
     /**
      *  Retrieve Rotten tomatoe review's for the mobie
      *  @param int id 
@@ -118,11 +114,14 @@ App.Models.FilmSession = Backbone.Model.extend({
     urlRoot: App.Settings.api_url,
     idAttribute: 'session_id',
     url: function() { return this.urlRoot+this.path+"/"+this.get("session_id")+"/"+this.get("timestamp")+"?format=json&api_key="+App.Settings.api_key; },
-    defaults: {  
-        'session_id' : '',
-        'timestamp' : 0,
-        'watched' : false,
-        'film_id' : ''
+
+    defaults: function() {
+        return {  
+            'session_id' : '',
+            'timestamp' : 0,
+            'watched' : false,
+            'film_id' : ''
+        };   
     },
     initialize: function(options) {
         this.on("change:session_id", this.onSessionLoad, this);
@@ -137,146 +136,4 @@ App.Models.FilmSession = Backbone.Model.extend({
 
 });
 
-App.Models.FilmContent = App.Models.ApiModel.extend({
-
-    path: 'content',
-    params: {},
-    
-    defaults: function() { 
-        return {
-            'id': false,
-            'videos': [{
-                    'mp4': '',
-                    'profile': '',
-                    'code': ''
-                }
-            ],
-            'images': {
-                'thumb': '',
-                'poster': ''
-            },
-            'subtitles': [{
-                'filename': '',
-                'code': '',
-                'language': ''
-            }],
-            session: {  } 
-        }
-    },
-
-    initialize: function(options) {
-        if (options && undefined !== options.session) {
-            this.set("session", options.session);
-            this.onSessionLoad();
-        }
-        this.on("change:id", this.onVideoChange, this);
-        this.on("change:id", this.onSessionLoad, this);
-        this.on("change:videos", this.onLoadContent, this);
-        this.on("change:subtitles", this.onLoadSubtitles, this);
-
-    },
-    
-    /*
-     * Fetch Film session and auth code from the user ticket if they exist
-     */
-     
-    onSessionLoad: function(id) {
-        this.params = {};
-        if (id) { 
-            var session = this.get("session");
-            if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
-            if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
-        }
-    },
-    /*
-     * Reset content items to defaults
-     */    
-    resetContent: function() {
-        this.set("videos", false);
-        this.set("subtitles", false);
-    },
-    onVideoChange: function() { 
-        this.path = "content/"+this.get("id");
-    },
-    /*
-     * Load defined film content to the player
-     */
-
-    load: function (id) {
-     
-        this.set("id", id);
-        this.onSessionLoad(id);
-
-        var deferred = new $.Deferred();
-
-        this.fetch().done(function() { deferred.resolve(); }).error(function(){
-            deferred.reject();
-        });
-        
-        return deferred.promise();
-    },
-    onLoadContent: function(event) {
-
-        $log(this.get("videos"));
-        
-        if (this.get("videos").length > 0)
-            this.trigger("content:ready", this.get("videos"));
-
-    },
-
-    onLoadSubtitles: function(event) {
-
-        if (this.get("subtitles") != null && this.get("subtitles").length > 0)
-        this.trigger("subtitles:ready", this.get("subtitles"));
-    },
-
-    refresh: function(fetch) {
-        if (this.get("id") > 0) {
-            this.path = "content/" + this.get("id");
-            if (fetch) this.fetch();
-        }
-    },
-
-    /*
-     * Add subtitles to the content as their own collection
-     * @param array
-     * 
-     */
-
-    addVideos: function(videos) {  
-      var videofiles = [];
-        _.each(videos, function(video) {  
-
-          var videofile = new App.Player.VideoFile();
-            videofile.set("bitrate", video.bitrate);
-            videofile.set("src", video.mp4);
-            videofile.set("profile", video.profile);
-            videofiles.push(videofile);            
-        });
-        var collection = new App.Player.VideoFileCollection(videofiles);
-        this.set("videos", collection);
-        this.trigger("content:videos:loaded", this.get("videos"));
-
-    },
-
-    /*
-     * Add subtitles to the content as their own collection
-     * @param array
-     * 
-     */
-
-    addSubtitles: function(subtitles) {  
-        var subs = [];
-        _.each(subtitles, function(video) {  
-          var subtitle = new App.Player.SubtitleFile();
-            subtitle.set("language", video.language);
-            subtitle.set("file", video.file);
-            subtitle.set("code", video.code);
-            subs.push(subtitle);            
-        });
-        var collection = new App.Player.SubtitleFileCollection(subs);
-        this.set("subtitles", collection);        
-        this.trigger("content:subtitles:loaded", this.get("subtitles"));
-    }    
-});
 

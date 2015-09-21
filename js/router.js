@@ -70,7 +70,7 @@ App.Router = Backbone.Router.extend({
             });        
         }
     },
-    purchaseReturn: function (film) 
+    purchaseReturn: function() 
     {
         var films = app.user.checkPurchases();
         if (films) {
@@ -117,30 +117,16 @@ App.Router = Backbone.Router.extend({
         var _this = this;
 
         var films = app.user.checkPurchases();
+
+        /*
+         *  Check if user has purchases, navigate to confirmation page if so.
+         */
         
         if (films) {
-                
-            app.user.updatePurchases().then(function(collection) { 
-                
-                _.each(films, function(item) { 
-
-                    var id = parseInt(item.vod_id);
-                    var title = app.usercollection.get(id);                                                          
-                    
-                    if (title) {
-                        if (!this.returnview)
-                            this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
-                        else
-                            this.returnview.model.set(title.toJSON());
-                        
-                        this.returnview.render();
-                        return false;
-                    }   
-                }.bind(this));
-            }.bind(this));
+            this.navigate("/purchaseReturn", {
+                trigger: true
+            });  
         }        
-        
-
         
         film.fetch().done(function() {
             var playButtonText = "Vaata filmi (" + film.get("price") + ")";

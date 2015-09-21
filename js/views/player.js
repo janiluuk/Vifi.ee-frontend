@@ -33,7 +33,6 @@ App.Views.PlayerView = Backbone.View.extend({
     },
     close: function() {
         this.$el.hide();
-        this.controlBar.remove();
         this.model.trigger("mediaplayer:stop");
         //this.unbind();
         //this.stopListening();
@@ -45,7 +44,8 @@ App.Views.PlayerView = Backbone.View.extend({
     render: function() {
         this.setElement("#movie-player-container");        
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
-        this.$el.fadeIn();
+        this.$el.show();
+        this.$el.velocity("fadeIn", { duration: 300 });
         this.resize();
         return this;
     },
@@ -53,10 +53,11 @@ App.Views.PlayerView = Backbone.View.extend({
     renderControls: function(content) {
         this.controlBar = new App.Views.PlayerControlbar({model: content});
         this.controlBar.on('controlbar:change', this.onControlsChange, this);
+        this.$el.velocity("fadeIn", { duration: 200 });
         this.resize();
+
         return this;
     },
-
 
     onControlsChange: function(category, val) { 
         var evt = 'controlbar:'+category+':change';                
@@ -66,7 +67,7 @@ App.Views.PlayerView = Backbone.View.extend({
 
 App.Views.PlayerControlbar = Backbone.View.extend({ 
     el: '#video-container-footer',
-    model: App.Models.FilmContent,
+    model: App.Player.FilmContent,
     events: {
         'controlbar:change': 'onSelection',
 
@@ -148,11 +149,12 @@ App.Views.TrailerView = Backbone.View.extend({
         this.trigger("play:movie", event, this);
     },
     fadeOut: function() {
-        this.$el.fadeOut();
+        this.$el.velocity("fadeOut", { duration: 200 });
+
         return this;
     },
     fadeIn: function() {
-        this.$el.fadeIn();
+        this.$el.velocity("fadeIn", { duration: 200 });
         return this;
     },
     playTrailer: function() {
@@ -249,17 +251,18 @@ App.Views.TrailerView = Backbone.View.extend({
         this.player.playVideo();
     },
     close: function() {
-
-        this.player.destroy();
-        this.$el.fadeOut().empty();    
+        if (this.player) {
+            this.player.destroy();
+        }
+        this.$el.velocity("fadeOut", { duration: 200 }).empty();
         this.clearAllTimeouts();
         this._unbindKeys();
 
     },
     showNavigation: function() {
         this.clearAllTimeouts();
-        $(this.optionsEl).fadeIn();
-        $(this.infoEl).fadeIn();
+        $(this.optionsEl).velocity("fadeIn", { duration: 200 });
+        $(this.infoEl).velocity("fadeIn", { duration: 200 });
         this.touchVideoNavigationTimeout();
     },
     clearAllTimeouts: function() {
@@ -268,8 +271,9 @@ App.Views.TrailerView = Backbone.View.extend({
     touchVideoNavigationTimeout: function() {
 
         if (!$(this.optionsEl).is(":visible")) {
-            $(this.optionsEl).fadeIn();
-            $(this.infoEl).fadeIn();
+            $(this.optionsEl).velocity("fadeIn", { duration: 200 });
+            $(this.infoEl).velocity("fadeIn", { duration: 200 });
+
         }
         clearTimeout(this.hideVideoNavigationTimeout);
         this.hideVideoNavigationTimeout = setTimeout(function() {
@@ -279,14 +283,15 @@ App.Views.TrailerView = Backbone.View.extend({
     },
     render: function() {
         this.$el.empty().append(ich.trailerTemplate(this.model.toJSON()));
-        this.$el.fadeIn();
+        this.$el.velocity("fadeIn", { duration: 200 });
         this.equalizeHeight();
         return this;
     },
 });
+
 App.Views.Subtitles = Backbone.View.extend({
     model: App.Models.Subtitles,
-    subtitleElement: 'subtitles',
+    subtitleElement: '#subtitles',
     el: '#player-container',
 
     initialize: function(options) {
@@ -294,6 +299,7 @@ App.Views.Subtitles = Backbone.View.extend({
         this.model = options.model;
         _.bindAll(this, "loadSubtitles", "showSubtitle", "hideSubtitles", "render");
         this.listenTo(this.model, "subtitles:show", this.showSubtitle, this);
+        this.listenTo(this.model, "change:subtitledata", this.render, this);
         this.listenTo(this.model, "subtitles:hide", this.hideSubtitles, this);
         this.listenTo(this.model, "subtitles:loadfile", this.loadSubtitles, this);
 
@@ -302,17 +308,17 @@ App.Views.Subtitles = Backbone.View.extend({
     },
 
     showSubtitle: function(data) { 
-        $("#" + this.subtitleElement).html(data);
+        $(this.subtitleElement).html(data);
     },
     hideSubtitles: function() { 
-        $("#" + this.subtitleElement).html('');
+        $(this.subtitleElement).html('');
     },
 
     loadSubtitles: function(url,code) {
 
-        $("#" + this.subtitleElement).hide().load(url, function(responseText, textStatus, req) {
-            var text = $("#" + this.subtitleElement).text();
-            $("#" + this.subtitleElement).empty().show();
+        $(this.subtitleElement).hide().load(url, function(responseText, textStatus, req) {
+            var text = $(this.subtitleElement).text();
+            $(this.subtitleElement).empty().show();
 
             this.model.parseSrt(text);
             this.model.start();
@@ -322,8 +328,8 @@ App.Views.Subtitles = Backbone.View.extend({
     render: function() {
         this.setElement("#player-container");
 
-        $("#"+this.subtitleElement).remove();
-        $("<div>").attr("id", this.subtitleElement).appendTo(this.$el);
+        $(this.subtitleElement).remove();
+        $("<div>").attr("id", "subtitles").appendTo(this.$el);
 
         return this;
 

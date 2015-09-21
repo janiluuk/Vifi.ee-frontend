@@ -1,5 +1,6 @@
-App.Views.MovieDetailView = Backbone.View.extend({
+App.Views.MovieDetailView = App.Views.Page.extend({
     model: App.Models.Film,
+    transition: function() { return { in: 'slideDownIn', out: 'bounceUpOut' }},
     el: "#moviepage",
     events: {
         'click a#watchTrailer': 'playTrailer',
@@ -10,7 +11,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
         'click #film-tabbar-swiper-container .swiper-slide': 'changeTab'
     },
     initialize: function(options) {
-
+  
         this.listenTo(this.model, 'change:id', this.render);
         this.listenTo(this.model, 'change:rt_ratings', this.renderRatings);
         _.bindAll(this, 'playMovie', 'render');
@@ -86,7 +87,7 @@ App.Views.MovieDetailView = Backbone.View.extend({
                 queue: true,
             }
         });
-        this.isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload() }, 200); } );
+        this.isotope.isotope( 'on', 'layoutComplete', function() { setTimeout(function() { App.Utils.lazyload() }, 300); } );
 
     },
     enableYoutubePlayer: function() {
@@ -125,26 +126,31 @@ App.Views.MovieDetailView = Backbone.View.extend({
         this.$el.empty().append(this.template(this.model.toJSON()));
         this.isotope = false;
         setTimeout(function() {
+            this.resetComments();
+            this.startCarousel();
+            
+            this.enableRatings();
             App.Utils.lazyload();
             this.model.fetchRT();
-            this.startCarousel();
-            this.resetComments();
-            this.enableRatings();
 
           //  this.enableAddThis(); 
 
-        }.bind(this), 150);
+        }.bind(this), 300);
 
         setTimeout(function() {
             this.enableYoutubePlayer();
-        }.bind(this),5000);
+        }.bind(this),5500);
         return this;
     
     },
     playTrailer: function(e) {
 
         if (e) e.preventDefault();
-        $("#gallery-swiper-container").fadeOut(function() { 
+        $("#gallery-swiper-container").velocity("fadeOut", { duration: 400 ,
+         
+    /* Log all the animated divs. */
+    complete: function(elements) { 
+ 
         if (!this.trailerView) {         
             this.trailerView = new App.Views.TrailerView({
                 model: this.model
@@ -156,13 +162,15 @@ App.Views.MovieDetailView = Backbone.View.extend({
             this.trailerView.model.set(this.model.toJSON());
         }
         this.trailerView.playTrailer();
-    }.bind(this));
+    }.bind(this)
+    });
         e.stopPropagation();
-
+       
     },
     closeTrailer: function(e) {
         if (e) e.preventDefault();
-        $("#gallery-swiper-container").fadeIn();
+        $("#gallery-swiper-container").velocity("fadeIn", { duration: 500 });
+        if (this.trailerView)
         this.trailerView.close();
 
         if (e) e.stopPropagation();
@@ -170,8 +178,9 @@ App.Views.MovieDetailView = Backbone.View.extend({
 
     playMovie: function(e) {
         if (e) e.preventDefault();
-        $("#gallery-swiper-container").fadeIn();
-
+        $("#gallery-swiper-container").velocity("fadeOut", { duration: 500 });
+        
+    
         if (!app.session.get("profile").hasMovie(this.model)) {
             this.purchaseView = new App.Views.PurchaseView({
                 model: this.model,
@@ -192,7 +201,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
             this.playerView.model.content.resetContent();
             this.playerView.render();
             app.player.load(this.model);
-            app.movieview.playerView.$el.show();
         }
         if (e) e.stopPropagation();
         return false;
@@ -201,19 +209,21 @@ App.Views.MovieDetailView = Backbone.View.extend({
     closePlayer: function(e) {
         e.preventDefault();
         this.playerView.close();
-        $("#gallery-swiper-container").fadeIn();
+        $("#gallery-swiper-container").velocity("fadeIn", { duration: 500 });
         e.stopPropagation();
     },
     changeTab: function(e) {
         e.preventDefault();
         var attr = $(e.currentTarget).attr("data-rel");
         var el = $("#" + attr);
+        if ($(el).hasClass("active")) return false;
 
         $(el).siblings().removeClass("active").hide();
-        $(el).fadeIn().addClass("active");
+        $(el).addClass("active");
+        $(el).show();
 
-        setTimeout(function() { this.applyIsotope(); App.Utils.lazyload(); }.bind(this),2500);
-
+        setTimeout(function() {  App.Utils.lazyload(); this.applyIsotope();  }.bind(this),1500);
+        return false;
     },
 
     startCarousel: function() {
@@ -230,7 +240,6 @@ App.Views.MovieDetailView = Backbone.View.extend({
                 paginationClickable: true,
                 createPagination: true,
                 onSlideChangeStart: function(e) { 
-                    App.Utils.lazyload();
                 }
             });
 
@@ -245,22 +254,23 @@ App.Views.MovieDetailView = Backbone.View.extend({
                 
             });
         }
-
         window.filmnavSwiper = new Swiper('#film-tabbar-swiper-container', {
             slidesPerView: 'auto',
             mode: 'horizontal',
             loop: false,
             centeredSlides: true,
-            cssWidthAndHeight: false,
+            cssWidthAndHeight: true,
             onTouchEnd: function(e) {
                 var idx = e.activeIndex;
                 $("#film-tabbar-swiper-container .swiper-wrapper .swiper-slide:nth-child(" + (idx + 1) + ")").click();
             },
-
         });
+        
         $("#film-tabbar-swiper-container .swiper-slide").each(function(item) {
-            $(this).click(function() {
+            $(this).click(function(e) {
+                e.preventDefault();
                 filmnavSwiper.swipeTo(item);
+                
             })
         });
 

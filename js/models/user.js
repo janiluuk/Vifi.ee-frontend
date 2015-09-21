@@ -83,7 +83,7 @@ App.User.Ticket = Backbone.Model.extend({
 });
 
 App.User.Profile = App.Models.ApiModel.extend({
-    path: 'profile',
+    path: function() { return "profile" },
     params: {},
     defaults: function() {
         return {
@@ -108,7 +108,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         };
     },
     initialize: function(options) {
-        _.bindAll(this, 'connectFB', 'logout', 'FBcallback');
+        _.bindAll(this, 'connectFB', 'FBcallback');
         this.session = options.session;
         this.purchases = options.purchases;        
         this.session.on("change:auth_id", this.authorize, this);
@@ -117,36 +117,48 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.on("user:pair", this.pair, this);
         this.on("user:unpair", this.unpair, this);
     },
-    connectFB: function(data) {
-        var id = data.get("id");
+    /**
+     * Set profile information gotten from FB connect.
+     * @param {App.FBUser} fbuser Parameters gotten from FB Connect
+     *
+     * @return void
+     */
+    
+    connectFB: function(fbuser) {
+        var id = fbuser.get("id");
         if (id != "") {
             this.set("profile_picture", 'https://graph.facebook.com/' + id + '/picture')
-            this.set("lastname", data.get("last_name"));
-            this.set("firstname", data.get("first_name"));
-            this.set("email", data.get("email"));
-            this.set("name", data.get("name"));
+            this.set("lastname", fbuser.get("last_name"));
+            this.set("firstname", fbuser.get("first_name"));
+            this.set("email", fbuser.get("email"));
+            this.set("name", fbuser.get("name"));
             this.set("access_token", FB.getAccessToken());
-            this.session.getToken(data.get("email"), this.get("password"), this.get("access_token"), this.FBcallback);
+            this.session.getToken(fbuser.get("email"), this.get("password"), this.get("access_token"), this.FBcallback);
         }
     },
-    FBcallback: function(data) {
+
+    /**
+     * Connect user to the backend. ##FIXME - Needs extra validation
+     *
+     * @return void
+     */
+    
+    FBcallback: function() {
         var authId = this.session.get("auth_id");
         var email = this.get("email");
-        var token = FB.getAccessToken();
         if (email == "" || authId == "") {
             $log("missing params, not doing fb callback");
             return false;
         }
+
+        var token = FB.getAccessToken();
+
         app.api.call(["user", "connectFB", email], {
             token: token,
             authId: authId
         }, function(data) {
             $log("Authenticating with FBToken");
         });
-    },
-
-    logout: function() {
-        this.set(this.defaults());
     },
     changePassword: function(oldpass, password) {
         if (!password) return false;
@@ -225,14 +237,30 @@ App.User.Profile = App.Models.ApiModel.extend({
         return false;
     },
     deauthorize: function() {
-        this.reset();
+        this.clear();
         this.fetch().done(function() {
             return false;
         }.bind(this));
     },
 
+    /**
+     * Restore default settings
+     * @return {void} 
+     */
+    
+    clear: function() {
+        this.set(this.defaults());
+    },
 
-
+    /**
+     * Check if user has access to a item.
+     * 
+     * @param {App.Models.Film} movie Movie 
+     *
+     * @return boolean true if found from the user collection
+     * 
+     */
+    
     hasMovie: function(movie) {
         var id = movie.get("id");
         var movies = app.usercollection.where({
@@ -649,7 +677,7 @@ App.User.Session = Backbone.Model.extend({
     },    
     logout: function() {
         this.reset();
-        this.profile.logout();
+        this.profile.clear();
 
         this.trigger("user:logout");
         app.usercollection.reset();

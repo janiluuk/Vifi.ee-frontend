@@ -42,14 +42,14 @@ App.Views.BrowserPage = Backbone.View.extend({
                     "height": height,
                     "opacity": 0
                 });            
-            $("#search").animate({
+            $("#search").velocity({
                 "opacity": 0,
                 "height": height,
                 "min-height": height
             }, 200, false, function() {
                 $(this).hide();
 
-                $("#front-page-slider").show().animate({
+                $("#front-page-slider").show().velocity({
                     "opacity": 1
                 }, 400,false, function() {
                     setTimeout(function() {   
@@ -68,13 +68,13 @@ App.Views.BrowserPage = Backbone.View.extend({
                     "min-height": height,
                     "opacity" : 0
             });
-            $("#front-page-slider").animate({
+            $("#front-page-slider").velocity({
                 "min-height": height,
                 "height": height,
                 "opacity": 0
             }, 325, false, function() {
 
-                $("#search").show().animate({
+                $("#search").show().velocity({
                     "opacity": 1
                 }, 200);
                 $(this).hide();

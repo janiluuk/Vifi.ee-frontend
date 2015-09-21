@@ -1,3 +1,150 @@
+
+App.Models.FilmContent = App.Models.ApiModel.extend({
+
+    path: function() { return 'content/'+this.get("id"); },
+    params: {},
+    
+    defaults: function() { 
+        return {
+            'id': false,
+            'videos': [{
+                    'mp4': '',
+                    'profile': '',
+                    'code': ''
+                }
+            ],
+            'images': {
+                'thumb': '',
+                'poster': ''
+            },
+            'subtitles': [{
+                'filename': '',
+                'code': '',
+                'language': ''
+            }],
+            session: {  } 
+        }
+    },
+
+    initialize: function(options) {
+        if (options && undefined !== options.session) {
+            this.set("session", options.session);
+            this.onSessionLoad();
+        }
+        this.on("change:id", this.onSessionLoad, this);
+        this.on("change:videos", this.onLoadContent, this);
+        this.on("change:subtitles", this.onLoadSubtitles, this);
+
+    },
+    
+    /*
+     * Fetch Film session and auth code from the user ticket if they exist
+     */
+     
+    onSessionLoad: function(id) {
+        this.params = {};
+        if (id) { 
+            var session = this.get("session");
+            if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
+            if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
+        }
+    },
+    /*
+     * Reset content items to defaults
+     */    
+    resetContent: function() {
+        this.set("videos", false);
+        this.set("subtitles", false);
+    },
+
+
+    /*
+     * Load defined film content to the player
+     *
+     * @param int id - Id of the content to be included
+     * @return jQuery.deferred 
+     * 
+     */
+
+    load: function (id) {
+     
+        this.set("id", id);
+        this.onSessionLoad(id);
+
+        var deferred = new $.Deferred();
+
+        this.fetch().done(function() { deferred.resolve(); }).error(function(){
+            deferred.reject();
+        });
+        
+        return deferred.promise();
+    },
+    onLoadContent: function(event) {
+
+        $log(this.get("videos"));
+        
+        if (this.get("videos").length > 0)
+            this.trigger("content:ready", this.get("videos"));
+
+    },
+
+    onLoadSubtitles: function(event) {
+
+        if (this.get("subtitles") != null && this.get("subtitles").length > 0)
+        this.trigger("subtitles:ready", this.get("subtitles"));
+    },
+
+
+   addSession: function(session) {
+        var sess = new App.User.FilmSession(session);
+        this.set("filmsession", sess);
+        this.trigger("content:session:loaded", this.get("session"));
+
+    },
+    
+    /*
+     * Add subtitles to the content as their own collection
+     * @param array
+     * 
+     */
+
+    addVideos: function(videos) {  
+      var videofiles = [];
+        _.each(videos, function(video) {  
+
+          var videofile = new App.Player.VideoFile();
+            videofile.set("bitrate", video.bitrate);
+            videofile.set("src", video.mp4);
+            videofile.set("profile", video.profile);
+            videofiles.push(videofile);            
+        });
+        var collection = new App.Player.VideoFileCollection(videofiles);
+        this.set("videos", collection);
+        this.trigger("content:videos:loaded", this.get("videos"));
+
+    },
+
+    /*
+     * Add subtitles to the content as their own collection
+     * @param array
+     * 
+     */
+
+    addSubtitles: function(subtitles) {  
+        var subs = [];
+        _.each(subtitles, function(video) {  
+          var subtitle = new App.Player.SubtitleFile();
+            subtitle.set("language", video.language);
+            subtitle.set("file", video.file);
+            subtitle.set("code", video.code);
+            subs.push(subtitle);            
+        });
+        var collection = new App.Player.SubtitleFileCollection(subs);
+        this.set("subtitles", collection);        
+        this.trigger("content:subtitles:loaded", content);
+    }    
+});
+
 App.Player.FilmContent = App.Models.ApiModel.extend({
     url : function() { return App.Settings.api_url + this.path + "/" + this.get("id") + "?"; },
     path: 'content',

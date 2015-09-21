@@ -242,7 +242,7 @@ App.Views.UserPairView = Backbone.View.extend({
     confirmunpair: function(e) {
         e.preventDefault();        
         var el = $(e.currentTarget).parent().parent();
-        el.addClass("fadeOutLeft140").fadeOut();
+        el.addClass("fadeOutLeft140").velocity("fadeOut", { duration: 200 });
         var id = $(el).data("id");
         this.model.trigger("user:unpair", id);
     },

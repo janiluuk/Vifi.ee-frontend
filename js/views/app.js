@@ -71,27 +71,22 @@ App.Views.BaseAppView = Backbone.View.extend({
         if (instant) { 
             $("body, #content-container").scrollTop(0);
         } else { 
-            $("body, #content-container").stop().animate({
+            $("body, #content-container").stop().velocity({
                 scrollTop: 0
-            }, 600,callback);
+            }, 500,callback);
         }
 
     },
     showMoviePage: function() {
         this.scrollTop = this.$("#content-container").scrollTop() + $("body").scrollTop();
-        $(".main-wrapper:not(#moviepage)").hide();
-        $("#moviepage").fadeIn("fast");
-        this.scrollToTop(true);
-        App.Utils.lazyload();        
+        app.goto(app.movieview, scroll);
     },
     showTicketPurchase: function(ticket) {
         
-
          var id = ticket.get("vod_id");
          var title = app.usercollection.get(id);
          title.set("validtotext", title.getValidityText());
-                                                       
-        
+                                                    
         if (title) {
             if (!this.returnview)
                 this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
@@ -103,9 +98,11 @@ App.Views.BaseAppView = Backbone.View.extend({
         
     },
     showBrowserPage: function() {
+        app.goto(app.homepage);
 
         $(".main-wrapper:not(#homepage)").hide();
         $("#homepage").css("visibility", "visible");
+        
         $("#homepage").show();
         
 
@@ -114,6 +111,7 @@ App.Views.BaseAppView = Backbone.View.extend({
             app.homepage.browserview.filterview.filterbarview.enableCarosel();
             this.browserInitialized = true;
         }            
+    
         app.homepage.browserview.$isotope.isotope('layout');
         app.homepage.browserview.renderResults();
         App.Utils.lazyload();
@@ -152,18 +150,111 @@ App.Views.BaseAppView = Backbone.View.extend({
         }
         this.$("#content-container").scrollTop(0);
         $("#contentpage").show();
+    },
+    
+    goto: function (view, scroll) {
+      // cache the current view and the new view
+      var previous = this.currentPage || null;
+      var next = view;
+
+      if (previous) {
+        previous.transitionOut(function() {
+            
+            if (scroll) this.scrollToTop(true);
+
+            
+        }.bind(this));
+
+
+      }
+        next.transitionIn(); 
+//      next.render({ page: true });  // render the next view
+  //    this.$el.append( next.$el );  // append the next view to the body (the el for this root view)
+      this.currentPage = next;
+
     }
 });
-App.Views.HomePage = Backbone.View.extend({
+ // Base view class for providing transition capabilities 
+  // perhaps better named something like AnimView?
+ App.Views.Page = Backbone.View.extend({
+
+    transition: function() { return { in: "slideUpIn", out:'slideDownOut'}},
+
+    // base render class that checks whether the the view is to be a 'page' 
+    // aka meant for transitions; This is somewhat of an anti-pattern in that 
+    // each view inheriting from this will have to trigger this render method 
+    // with a 'super' call. A better remedy is to provide a check for a method
+    // like onRender() and trigger it with correct context so that views which
+    // inherit from this can provide an onRender() method for any additional 
+    // rendering logic specific to that view. 
+    render: function(options) {
+      
+      // as part of refactor, show the current instance of the view using render
+      console.debug('Render triggered for the ' + this.className + ' View with cid: ' + this.cid);
+
+      options = options || {};
+
+      if (options.page === true) {
+        this.$el.addClass('page');
+      }
+      
+      // From comment above, refactoring to use onRender() instead of override
+      if (_.isFunction(this.onRender())) {
+        // trigger whatever current/caller view's onRender() method
+        this.onRender();
+      }
+
+      return this;
+    },
+
+    transitionIn: function (callback) {
+
+      var view = this;
+          
+        view.$el.velocity('transition.'+view.transition().in,{duration:400, easing:'easeInSine' },{complete:function() {
+          if (_.isFunction(callback)) {
+            callback();
+            console.log('Callback triggered on transitionend for TransitionIn method');
+          }
+        }.bind(this)});
+        
+      
+
+    },
+
+    transitionOut: function (callback) {
+
+      var view = this;
+        view.$el.velocity('transition.'+view.transition().out,{ 
+            duration:400,
+easing:'easeInSine',            
+            complete:function() {
+                
+            if (_.isFunction(callback)) {
+            callback();   // hard to track bug! He's binding to transitionend each time transitionOut called 
+                        // resulting in the callback being triggered callback * num of times transitionOut
+                        // has executed
+            console.log('Callback triggered on transitionend for TransitionOut method');
+         }
+        }});
+      
+
+}
+     
+ });
+  
+
+App.Views.HomePage = App.Views.Page.extend({
     el: $("#homepage"),
+    transition: function() { return {in: 'slideDownIn', out: 'slideDownOut' }},
     initialize: function(options) {
         this.browserview = new App.Views.BrowserPage({
             collection: options.collection,
             filters: options.filters,
             sort: options.sort,
-            initialState: options.initialFilterState
+            initialState: options.initialFilterState,
         });
-        
+
         this.featuredview = new App.Views.FeaturedView({
             collection: options.collection.featured(),
             banners: options.banners,
@@ -213,9 +304,9 @@ App.Views.TopMenu = Backbone.View.extend({
 
         var query = $('#main-search-box').val();
         if (query != "") {
-            $("#clear-search-text-button").fadeIn("fast");
+            $("#clear-search-text-button").velocity("fadeIn", { duration: 400 });
         } else {
-            $("#clear-search-text-button").fadeOut("fast");
+            $("#clear-search-text-button").velocity("fadeOut", { duration: 400 });
         }
         return true;
 
@@ -349,7 +440,7 @@ App.Views.CarouselView = Backbone.View.extend({
         var el = $("#"+attr);
         $(e.currentTarget).siblings().removeClass("active");
         $(el).siblings().removeClass("active").hide();
-        $(el).fadeIn().addClass("active");
+        $(el).velocity("fadeIn", {duration:700}).addClass("active");
         return false;
     },
     startCarousel: function(initialSlide) {
@@ -577,3 +668,4 @@ App.Views.Error = App.Views.ContentView.extend({
         Backbone.history.loadUrl(Backbone.history.fragment);
     }
 });
+

@@ -49,7 +49,20 @@ App.Player.MediaPlayer = Backbone.Model.extend({
             this.trigger("player:resize", ratio);
         }
     },
+    onContentReady: function(content) {
+        
+        this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
+        var _this = this; 
+        this.player.speedtest(function() {  
 
+            _this.playlist.addFiles(_this.content);
+            if (_this.player.init(_this.playlist)) {
+                _this.trigger("player:ready", _this.content);
+
+            }
+        }.bind(this.player));
+
+    },
     onSubtitlesChange: function(code) {
 
         if (code == "reset")  { 
@@ -109,20 +122,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.player.unload();
 
     },
-    onContentReady: function(content) {
-        
-        this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
-        var _this = this; 
-        this.player.speedtest(function() {  
 
-            _this.playlist.addFiles(_this.content);
-            if (_this.player.init(_this.playlist)) {
-                _this.trigger("player:ready", _this.content);
-
-            }
-        }.bind(this.player));
-
-    },
     /*
      * Calculate ending time for the film.
      * @params duration - total length of film in minutes
@@ -588,7 +588,7 @@ App.Player.Subtitles = Backbone.Model.extend({
             }
         }
         this.set("subtitledata", subtitledata);
-        this.trigger("subtitledata:change");
+        this.trigger("change:subtitledata");
 
         return subtitledata;
     },
