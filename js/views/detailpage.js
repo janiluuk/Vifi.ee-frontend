@@ -153,7 +153,8 @@ App.Views.MovieDetailView = App.Views.Page.extend({
     playTrailer: function(e) {
 
         if (e) e.preventDefault();
-        $("#gallery-swiper-container").velocity("fadeOut", { duration: 400 ,
+
+        $("#gallery-swiper-container").velocity("fadeOut", { duration: 400,
          
     /* Log all the animated divs. */
     complete: function(elements) { 
@@ -176,19 +177,19 @@ App.Views.MovieDetailView = App.Views.Page.extend({
     },
     closeTrailer: function(e) {
         if (e) e.preventDefault();
-        $("#gallery-swiper-container").velocity("fadeIn", { duration: 500 });
+        $("#gallery-swiper-container").velocity("fadeIn", { duration: 300 });
         if (this.trailerView)
         this.trailerView.close();
-
         if (e) e.stopPropagation();
     },
 
     playMovie: function(e) {
         if (e) e.preventDefault();
-        $("#gallery-swiper-container").velocity("fadeOut", { duration: 500 });
         
     
         if (!app.session.get("profile").hasMovie(this.model)) {
+            $("#gallery-swiper-container").velocity("fadeIn", { duration: 300 });
+
             this.purchaseView = new App.Views.PurchaseView({
                 model: this.model,
                 session: app.session
@@ -196,7 +197,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             return false;
         }
 
-        $("#gallery-swiper-container").hide();
+        $("#gallery-swiper-container").velocity("fadeOut", { duration: 300 });
         
         if (!this.playerView) {
             this.playerView = new App.Views.PlayerView({

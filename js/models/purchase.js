@@ -1,9 +1,35 @@
+
+/**
+ * EMT Mobile payment
+ */
+
 App.Models.MobilePurchase = App.Models.ApiModel.extend({
-    defaults: { pending: false, authToken: false, phoneNumber : false, timeout: 60, status: false},
-    url: function() { return App.Settings.api_url+"payment/emtpayment/"+this.model.get("id")     },
-    interval: false,
+
     model: App.Models.Film,
 
+    defaults: { 
+        pending: false, 
+        authToken: false, 
+        phoneNumber : false, 
+        timeout: 60, 
+        tickets: false,
+        status: false
+    },
+    
+    url: function() { return App.Settings.api_url+"payment/emtpayment/"+this.model.get("id")     },
+    
+    interval: false,
+
+    /**
+     *
+     * @param object options.session - User session object
+     * @param object options.model - Product object
+     * @param object options.parent - Purchase model object 
+     * 
+     *
+     * @return {[type]} [description]
+     */
+    
     initialize: function(options) {
         this.options = options || {};
         if (options && undefined != options.session) {
@@ -21,136 +47,26 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         this.on("change:status", this.handleStatus, this);
         this.on("purchase:mobile:done", this.stopTimer, this);
         this.on("purchase:mobile:error", this.stopTimer, this);
-        this.on("purchase:mobile:success", this.stopTimer, this);
         
     },
 
+    /**
+     * Initialize payment
+     * 
+     */
+
     initPayment: function() {
-        $log("initialisation");
+
         if (this.get("pending") == true) throw ("Payment already ongoing!");
         this.sync("update").done(function(res) { this.onStatusReceive(res); }.bind(this));
     },
+
+    /*
+     * Query the status of the payment and do an callback when done.
+     *
+     * @param function callback - Callback with the data when done.
+     */
     
-    onStatusReceive: function(res) {
-
-        $log(res);
-
-        if (res.status == "PENDING") {
-            this.trigger("purchase:mobile:start",res);
-            this.startTimer();            
-            
-            this.set("authToken", res.authToken);
-            this.set("phoneNumber", res.phoneNumber);
-            this.set("status", res.status);
-            
-            this.requestPaymentStatus(this.onStatusReceive);
-        }
-        if (res.status == "fail") {
-               this.set("status", "FAILED");
-        }
-
-        if (res.status == "PAYMENT") {
-            this.set("status", res.status);
-            
-            setTimeout(function() { 
-                this.handleStatus();
-            }.bind(this),1500);
-        }
-        
-        if (res.status == "DONE") {
- 
-            this.set("tickets", res.tickets);
-            this.set("authToken", res.authToken);
-            this.set("status", res.status);
-            setTimeout(function() {this.handleStatus()}.bind(this),2000);
-
-            if (this.interval) {
-                clearInterval(this.ival);
-            }
-
-        }
-    },
-
-    resetPayment: function() {
-        this.stopTimer();
-        this.set(this.defaults);
-    },
-
-    startTimer: function() {
-        this.resetPayment();
-
-        if (this.interval) {
-            clearInterval(this.ival);
-        }
-        
-        this.set("pending",true);
-
-        this.interval = setInterval(function() {
-            this.handleStatus();
-            var timeout = this.get("timeout");
-            var status = this.get("status");
-
-            $log(timeout);
-
-
-            if (this.get("pending") === false) {
-                this.stopTimer();
-                return false;
-            }
-            if (timeout > 0 && this.status != "DONE" && this.status != "PAYMENT") {
-                this.set("timeout",--timeout);
-            } else {
-                this.trigger("purchase:mobile:error", "Timeout exceeded");
-            } 
-        }.bind(this),1000);
-    },
-
-    stopTimer: function() { 
-        this.set("pending",false);
-        if (this.interval) {
-            clearInterval(this.interval);
-        }
-    },
-    handleStatus: function() {
-        
-        var status = this.get("status");
-        $log(status);
-
-        if (status == "PAYMENT") {
-            this.trigger("purchase:mobile:success");
-            this.requestPaymentStatus(this.onStatusReceive);
-        }
-        if (status == "PENDING") { 
-            this.trigger("purchase:mobile:pending");
-            return false;
-        }
-        if (status == "FAILED") {
-            this.trigger("purchase:mobile:error", "Payment failed");
-        }
-        if (status == "DONE") {
-
-            if (this.get("tickets")) {
-
-                $log("Receiving tickets");
-
-                _.forEach(this.get("tickets"), function(item) {
-                    var ticket = new App.User.Ticket(item);
-                    this.trigger("purchase:ticket:received", ticket);
-                }.bind(this));
-                this.set("tickets", []);
-                
-            }
-            
-            this.trigger("purchase:mobile:done", "Success!");
-        }
-        if (status == "PAYMENT") {
-            this.trigger("purchase:mobile:success");
-            this.requestPaymentStatus(this.onStatusReceive);
-        }
-        
-        this.stopTimer();       
-        return true;
-    },
     requestPaymentStatus: function(callback) { 
         var authToken = this.get("authToken");
         if (!authToken || authToken == "") {
@@ -159,6 +75,167 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         app.api.call(["payment/emtpayment", this.model.get("id")], {authToken: authToken}, callback);
     },
 
+    /*
+     * Handle the status received from the status request
+     * 
+     * PENDING - Start the timer
+     * FAILED - Error on the transaction
+     * PAYMENT - Acknowledged
+     * DONE - Payment received
+     *
+     * @param object res - JSON array from the response
+     * 
+     */
+    
+    onStatusReceive: function(res) {
+
+        $log(res);
+
+        if (res.status == "PENDING") {
+            this.trigger("purchase:mobile:start",res);
+            this.startTimer();            
+            this.set("authToken", res.authToken);
+            this.set("phoneNumber", res.phoneNumber);
+            this.set("status", res.status);
+            
+            this.requestPaymentStatus(this.onStatusReceive);
+        }
+
+        if (res.status == "fail" || res.status == "FAILED") {
+               this.set("status", "FAILED");
+        }
+
+        if (res.status == "PAYMENT") {
+            this.set("status", res.status);
+        }
+        
+        if (res.status == "DONE") {
+            this.set("tickets", res.tickets);
+            this.set("authToken", res.authToken);
+            this.set("status", res.status);
+        }
+    },
+
+    /*
+     * Reset to default settings
+     * 
+     */
+    
+    resetPayment: function() {
+        this.stopTimer();
+        this.set(this.defaults);
+    },
+
+    /**
+     * Start polling 
+     * 
+     */
+    
+    startTimer: function() {
+        this.resetPayment();        
+        this.set("pending",true);
+
+        this.interval = setInterval(function() {
+            this.handleStatus();
+            var timeout = this.get("timeout");
+            var status = this.get("status");
+
+            if (this.get("pending") === false) {
+                this.stopTimer();
+                return false;
+            }
+
+            /** If we have already received PAYMENT or DONE messages, don't fire a timeout **/
+            if (timeout > 0 && this.status != "DONE" && this.status != "PAYMENT") {
+                this.set("timeout",--timeout);
+            } else {
+                this.trigger("purchase:mobile:error", "Timeout exceeded");
+            } 
+        }.bind(this),1000);
+    },
+
+    /*
+     * Stop polling
+     * 
+     */
+    
+    stopTimer: function() { 
+        this.set("pending",false);
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
+    },
+
+    /*
+     * On status change, change the state accordingly and trigger 
+     * the status events to the UI
+     *
+     * @return boolean - true if timer was stopped.
+     * 
+     */
+    
+    handleStatus: function() {
+        
+        var status = this.get("status");
+        $log(status);
+
+        /* Waiting on phone call */
+
+        if (status == "PENDING") { 
+            this.trigger("purchase:mobile:pending");
+            return false;
+        }
+
+        /* Payment acknowledged, start polling for final DONE status */
+
+        if (status == "PAYMENT") {
+            this.trigger("purchase:mobile:success");
+
+            this.paymentIval = setInterval(function() { 
+                this.requestPaymentStatus(this.onStatusReceive);
+            }.bind(this),1000);
+
+        }
+
+        /* Error occured */
+
+        if (status == "FAILED") {
+            this.trigger("purchase:mobile:error", "Payment failed");
+        }
+
+        /* Received acknowledgement for successful payment */
+
+        if (status == "DONE") {
+
+            if (this.paymentIval) clearInterval(this.paymentIval);
+
+            /* Tickets found, add them to user */
+
+            if (this.get("tickets")) {
+                
+                $log("Receiving tickets");
+
+                _.forEach(this.get("tickets"), function(item) {
+                    var ticket = new App.User.Ticket(item);
+                    this.trigger("purchase:ticket:received", ticket);
+                }.bind(this));
+
+                this.set("tickets", []);
+
+                this.trigger("purchase:mobile:done", "Success!");
+
+            } else {
+    
+                /* No tickets found, lets try again */
+
+                setTimeout(function() { 
+                    this.requestPaymentStatus(this.onStatusReceive);
+                }.bind(this),1000);     
+            }
+        }
+        this.stopTimer();       
+        return true;
+    },
 });
 
 App.Models.Purchase = Backbone.Model.extend({

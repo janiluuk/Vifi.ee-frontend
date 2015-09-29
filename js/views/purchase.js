@@ -104,7 +104,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
             session: this.session,
             parent: this
         });
-        this.listenTo(this.paymentView.payment, "purchase:ticket:received", function(ticket) {  this.session.trigger("ticket:purchase",ticket); console.log(ticket);  }.bind(this), this);
+        this.listenTo(this.paymentView.payment, "purchase:ticket:received", function(ticket) {  this.session.trigger("ticket:purchase",ticket);  }.bind(this), this);
         this.render();
     },
     showLogin: function() {
