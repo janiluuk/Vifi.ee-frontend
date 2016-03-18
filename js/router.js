@@ -51,8 +51,28 @@ App.Router = Backbone.Router.extend({
         this.options = options;
         this.on('route', this.onRoute, this);
         this.on('change:title', this.onChangeTitle, this);
-
+        this.on('action', this.onAction, this);
     },
+
+    onAction: function(category, action, label) {
+
+        if ( !category || !action ) {
+            return false;
+        }
+
+        if (App.Settings.google_analytics_enabled) { 
+
+            if (!label) label=action;
+
+            ga('send', {
+              hitType: 'event',
+              eventCategory: category,
+              eventAction: action,
+              eventLabel: label
+            });
+        }
+    },
+    
     onRoute: function(route) {
         this.trigger("page:change", route);
         app.sidemenu.closeSideBar();
@@ -64,6 +84,7 @@ App.Router = Backbone.Router.extend({
     {
         $(document).attr('title', title + ' - ' + App.Settings.sitename);
         if (App.Settings.google_analytics_enabled) { 
+            ga('set', 'page', window.location.hash);
             ga('send', 'pageview', {
               'page': this.currentPage,
               'title': title, 

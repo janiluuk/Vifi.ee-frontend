@@ -22,6 +22,7 @@ App.Views.MobilePurchase = Backbone.View.extend({
 
     initPayment: function(e) {
         e.preventDefault();
+        app.router.trigger("action","payment", "init", "Payment started for mobile purchase");
         this.$("button").addClass("loading");   
         this.model.initPayment();
         return false;        
@@ -241,6 +242,8 @@ App.Views.PaymentDialog = Backbone.View.extend({
             this.payment.purchase(this.model);
             this.$("#confirm-purchase-button").addClass("loading");
         }
+        app.router.trigger("action","payment", "start", "Payment started for "+this.payment.get("method"));
+
         return false;
     },
     onVerifySuccess: function() {
@@ -249,11 +252,15 @@ App.Views.PaymentDialog = Backbone.View.extend({
     onPaymentSuccess: function() {
         this.$("#confirm-purchase-button").removeClass("loading");
         this.remove();
+        app.router.trigger("action","payment", "success", "Payment successful for "+this.payment.get("method")+ " for "+this.getEmail());
+
         app.movieview.playMovie();
     },
     onPaymentError: function(message) {
 
         message = tr(message);
+        app.router.trigger("action","payment", "error", "Payment unsuccesful for "+this.payment.get("method")+ " for "+this.getEmail()+", "+message);
+
         this.$("#confirm-purchase-button").removeClass("loading");
         Backbone.Validation.callbacks.invalid(this, 'code', message);
         app.trigger("error", message);
@@ -331,6 +338,7 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
         e.preventDefault();
         var id = this.model.get("id");
         app.user.purchases.removeFilm(id);
+        app.trigger("action","payment", "success", "Payment successful for "+this.model.get("title")+ " for "+app.user.get("email"));
 
         this.close();
         this.parent.close();

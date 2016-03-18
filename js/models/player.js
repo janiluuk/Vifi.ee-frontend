@@ -31,6 +31,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
         this.player.on("subtitles:unload", this.disableSubtitles, this);
         this.player.on("subtitles:load", this.loadSubtitles, this);
+        this.player.on("all", this.onPlayerAction, this);
         this.player.on("mediaplayer:onbeforeseek", this.disableSubtitles, this);
         this.player.on("mediaplayer:onseek", this.enableSubtitles, this);        
         this.player.on("mediaplayer:ratio:change", this.onChangeRatio, this);
@@ -40,6 +41,17 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.on('controlbar:subtitles:change', this.onSubtitlesChange, this);
 
         this.ready = true;
+    },
+
+    onPlayerAction: function(evt, arg, arg2) {
+        
+        if (!evt) return false;
+
+        var parts = evt.split(":");
+        var evt = parts.shift();
+        var action = parts.shift();
+        app.router.trigger("action", evt, action, "Mediaplayer event on "+app.platform.name);
+
     },
     onChangeRatio: function(video) {
         if (undefined !== video) {
@@ -105,11 +117,15 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.trigger("subtitles:enabled");
     },
     load: function(movie) {
+
         if (!movie) return false;
         var id = movie.get("id");
+        app.router.trigger("action","player", "load", "Loading "+ movie.get("title"));
+
         this.content.load(id);
     },
     play: function() {
+        app.router.trigger("action","player", "play", "Playing content");
         this.player.play();
     },
     stop: function() {
@@ -516,8 +532,7 @@ App.Player.Playlist = function() {
 
 
 App.Player.Subtitles = Backbone.Model.extend({
-    videoElement: 'player-container',
-    subtitleElement: 'subtitles',
+
     defaults: function() { return {subtitledata: false}},
     subtitles: {},
     currentSubtitle: null,
@@ -532,6 +547,13 @@ App.Player.Subtitles = Backbone.Model.extend({
         this.on("button:player-subtitles", this.handleSubtitleSelection, this);
     },
 
+    /**
+     * React to subtitle selection.
+     * @param {string} sel Selected code (ee,fi ..)
+     * 
+     *
+     */
+    
     handleSubtitleSelection: function(sel) {
 
         if (sel == "none") this.disable();
@@ -541,27 +563,69 @@ App.Player.Subtitles = Backbone.Model.extend({
         }
     },
 
+    /**
+     * Disable subtitles
+     * @return {void} 
+     */
+    
     disable: function() {
         this.trigger("subtitles:hide");
         this.enabled = false;
         this.trigger("subtitles:disabled");
-        //$log("Disabling subtitles");
+        $log("Disabling subtitles");
         if (this.ival) clearInterval(this.ival);
 
     },
+    
+    /**
+     * Enable subtitles
+     * @return {void} 
+     */
+    
     enable: function() {
         if (this.enabled) return;
         this.trigger("subtitles:hide");
         this.enabled = true;
-       // $log("Enabling subtitles");
+        $log("Enabling subtitles");
         this.trigger("subtitles:enabled");
+        this.start();
 
     },
+
+    /**
+     * Disable timer and set all to defaults
+     * 
+     * @return boolean True if success
+     */
+    
+    unload: function() {
+        
+        if (!this.enabled) return false;
+        this.disable();
+        this.subtitles = false;
+        this.currentSubtitle = false;
+        this.language = false;
+        this.trigger("subtitles:unloaded");
+
+        return true;
+    },
+    
+    /**
+     *
+     * Parse a string and cut it into timecode keyed object + set the new
+     * data to be ready for processing
+     * 
+     * @param {string} srt Complete SRT string
+     *
+     * @return {Object} Object containing timecoded entries for showing the
+     * captions.
+     * 
+     */
+    
     parseSrt: function(srt) { 
         if (!srt) return {};
         srt = srt.replace(/\r\n|\r|\n/g, '\n');        
         srt = App.Utils.strip(srt);
-
         var srt_ = srt.split('\n\n');
         var subtitledata = {};
 
@@ -588,21 +652,27 @@ App.Player.Subtitles = Backbone.Model.extend({
             }
         }
         this.set("subtitledata", subtitledata);
-        this.trigger("change:subtitledata");
+        this.trigger("change:subtitledata", subtitledata);
 
         return subtitledata;
     },
 
+    /**
+     * Start periodic polling 
+     * 
+     */
+    
     start: function() {
 
         this.trigger("subtitles:hide");
         this.currentSubtitle = -1;
+        var subtitledata = this.get("subtitledata");
+        if (!subtitledata) throw new ("No subtitle data to parse!");
 
-        var ival = setInterval(function() {
+        this.ival = setInterval(function() {
             if (!this.enabled) clearInterval(this.ival);
             var currentTime = app.player.getCurrentTime();
             var subtitle = -1;
-            var subtitledata = this.get("subtitledata");
             for (s in subtitledata) {
                 if (s > currentTime) break;
                 subtitle = s;
@@ -610,7 +680,6 @@ App.Player.Subtitles = Backbone.Model.extend({
 
             if (subtitle > 0) {
                 if (subtitle != this.currentSubtitle) {
-
                     if (currentTime > 0) this.trigger("subtitles:show", subtitledata[subtitle].t);
                     this.currentSubtitle = subtitle;
                     $log("Setting subtitle at " + currentTime + " - " + subtitledata[subtitle].t);
@@ -620,9 +689,15 @@ App.Player.Subtitles = Backbone.Model.extend({
                 }
             }
         }.bind(this), 100);
-        this.ival = ival;
     },
-
+    /**
+     * Load collection containing App.Player.SubtitleFile items
+     * 
+     * @param {App.Player.SubtitleFileCollection} subtitles Collection containing Subtitle items
+     * @param {boolean} nodefault Set to true if default language should not be loaded.
+     *
+     */
+    
     load: function(subtitles, nodefault) {
         if (!subtitles) return false;
         this.subtitles = {};
@@ -638,6 +713,16 @@ App.Player.Subtitles = Backbone.Model.extend({
         this.trigger("subtitles:added", subtitles);
         if (!nodefault) this.loadLanguage();
     },
+    
+
+
+    /**
+     *
+     * @param {string} code Country identificator (f.ex fi,se,ee)
+     *
+     * @return {boolean} True if successful
+     */
+    
     loadLanguage: function(code) {
 
         if (!code) code = this.defaultCode;
@@ -658,13 +743,7 @@ App.Player.Subtitles = Backbone.Model.extend({
 
         return false;
     },
-    unload: function() {
-        this.trigger("subtitles:unloaded");
-        this.disable();
-        this.subtitles = false;
-        this.currentSubtitle = false;
-        this.language = false;
-    }
+ 
 
 });
 _.extend(App.Player.Subtitles, Backbone.Events);
