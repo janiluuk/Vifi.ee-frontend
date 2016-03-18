@@ -12,9 +12,9 @@
             <div id="payment-section" class="popup-section">
                     <p>You have successfully purchased <b>"{{ purchase.title }}"</b>. Your activation code is:</p>
                     <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
-                    <p class="extra-info">Valid until <b>{{ purchase.validtotext }}</b> </p>
+                    <p class="extra-info">Valid until <b>{{ prettyDate purchase.validto }}</b> </p>
                     <p>You can use this code to watch the movie on any devices.
-                    {{#if email }}  A copy of the code has also been sent to your email <b>{{ email }} </b>.</p> {{/if}}
+                    {{#if email }}  A copy of the code has also been sent to your email <b>{{ email }} </b>. {{/if}}</p>
                       
 
                 <button id="continue-button" class="btn big green continue-button full"> Continue to film</button>
@@ -75,7 +75,7 @@
                 <div class="payment-method-data"  id="payment-code" style="display:none">
                     <h3>Sisesta filmi kood</h3>
                     <input type="password" style="display:none"/>                        
-                    <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
+                    <input type="password" value="" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
                 </div>
                 <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
                 </form>
@@ -121,6 +121,7 @@
         <p class="info">
             Head vaatamist!
         </p>
+        <button onclick="js:return false;" id="mobile-payment-continue" class="btn big green full">Vaata filmi</button>
     </div>
 
 </script>
@@ -151,7 +152,7 @@
         <div class="col-content">
             <div class="popup-section">
                 <div class="film-title">{{ description }}</div>
-                <div class="film-description price">{{ price }} EUR / {{ duration }} {{ units }} </div>
+                <div class="film-description price">{{ price }} EUR / {{ duration }} {{trans units}}}</div>
             </div>
 
             <div id="payment-section" class="popup-section">

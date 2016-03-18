@@ -2,7 +2,7 @@ App.Settings = {
     // properties
         sitename: 'Vifi',
         skin: 'vifi',
-        version: '010315',
+        version: '011015',
         debug: false,
         commentsEnabled: true,
         sortingEnabled: true,
@@ -13,14 +13,15 @@ App.Settings = {
         flowplayer_html5_key: '$202296466927761',
         google_analytics_code: 'UA-66018559-1',
         initial_film_amount: 300,
-        domain: 'vifi.ee',
+        domain: 'www.vifi.ee',
+        cookie_name: 'vifi_session',
         api_key: '298fh23hhdff11',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         disqus_shortname: 'vifi',
         api_url: "http://gonzales.vifi.ee/api/",
         rtmp_url: "rtmp://media.vifi.ee/vod",
         hls_url: "http://media.vifi.ee:1935/tv",
-        subtitles_url: "http://beta.vifi.ee/subs/",
+        subtitles_url: "http://www.vifi.ee/subs/",
         mp4_url: "http://gonzales.vifi.ee/zsf/",
         speedtest_url: 'http://backend.vifi.ee/files/bwtest.jpg',    
 
@@ -66,7 +67,11 @@ App.Translations = {
             'No' : 'Ei',
             'Yes' : 'Jah',
             'Invalid code' : 'Vale kood',
-            'All Genres' : 'Kõik genred'
+            'All Genres' : 'Kõik genred',
+            'Hours' : 'Tundi',
+            'Days' : 'Päeva',
+            'Weeks' : 'Nädala',
+            'Months' : 'Kuud'
         },
         'en' : { 
             'eesti' : 'Estonian',
