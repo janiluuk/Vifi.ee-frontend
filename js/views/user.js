@@ -151,6 +151,8 @@ App.Views.LoginForm = Backbone.View.extend({
 });
 App.Views.ProfileView =  App.Views.CarouselView.extend({ 
     model: App.User.Profile,
+    isrendered: false,
+    swiperCreated: false,
     el: '#contentpage',
     events: {
         'click #edit-profile-button, #edit-profile-cancel-button': 'editProfile',
@@ -165,8 +167,8 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
 
       this.collectionview = new App.Views.UserCollectionView({collection: this.collection});
       this.listenTo(this.model, "change:id", this.render, this);
+
       this.resetpasswordview = new App.Views.ResetPassword({model: this.model});
-      this.render();
 
     },
     updateProfile: function(e) {
@@ -211,16 +213,27 @@ App.Views.ProfileView =  App.Views.CarouselView.extend({
     },
 
     render: function() {
-      this.$el.html(ich.profileTemplate(this.model.toJSON()));
+      
+
+      if (!this.isrendered) {
+        this.isrendered = true;
+        this.$el.html(ich.profileTemplate(this.model.toJSON()));
+      }
       this.resetpasswordview.setElement("#reset-password").render();
       this.renderProfile();
       this.renderCollection();
+      if (!this.swiperCreated) {
+        this.swiperCreated = true;
+
       setTimeout(function() { 
             this.swiper = this.startCarousel(this.options.swipeTo);
         }.bind(this),150);
+       }
+
       return this;
     }
 });
+
 App.Views.UserPairView = Backbone.View.extend({ 
     model: App.User.Profile,
     events:  { 
@@ -297,15 +310,14 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.$el.empty();       
         this.$el.append('<ul class="user-filmcollection-list"></ul>');
         this.$filmCollectionHolder = this.$('.user-filmcollection-list');
-        this.renderFilmViews();
-
         return this;
     },
 
     renderFilmViews: function() {
-        this.$filmCollectionHolder.empty();
         this.fragment = document.createDocumentFragment();
-
+        if (this.collection.length == 1) {
+                this.$filmCollectionHolder.empty();
+        }
         if (this.collection.length > 0 ) {
             
             this.collection.each(function(model) {

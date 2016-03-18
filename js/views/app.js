@@ -435,11 +435,12 @@ App.Views.CarouselView = Backbone.View.extend({
     swiperState: false,
      changeTab: function(e) {
         e.preventDefault();
-        
+    
         var attr = $(e.currentTarget).attr("data-rel");
         var el = $("#"+attr);
         $(e.currentTarget).siblings().removeClass("active");
         $(el).siblings().removeClass("active").hide();
+
         $(el).velocity("fadeIn", {duration:700}).addClass("active");
         return false;
     },
@@ -455,8 +456,8 @@ App.Views.CarouselView = Backbone.View.extend({
             initialSlide: initialSlide,
             onTouchEnd: function(e) {
                 var idx = e.activeIndex;
-                $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child(" + (idx + 1) + ")").click().siblings().removeClass("active");
-
+                $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child(" + (idx + 1) + ")").siblings().removeClass("active");
+                return false;
             },
             onSwiperCreated: function() {
                 if (_this.options.swipeTo) {
@@ -471,8 +472,10 @@ App.Views.CarouselView = Backbone.View.extend({
 
         });
         this.$('.swiper-slide').on('click', this.changeTab);
+
         $(this.options.swiperEl + " .swiper-slide").each(function(item) {
             $(this).click(function(e) {
+
                 _this.options.swipeTo = item;
                 e.preventDefault();
                 _this.swiper.swipeTo(item);

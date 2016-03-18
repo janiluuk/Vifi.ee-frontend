@@ -90,7 +90,7 @@
         <!--CHANGE PASSWORD VIEW-->
         <div id="change-password-view">
             <div class="row-fluid">
-                {{#ifCond role '==' 'Anonymous customer'}}
+                {{#ifCond role '==' 'Anonymous user'}}
                 <button id="change-password-button" class="btn float_right">{{trans "Create password"}}</button>
                 {{/ifCond}} {{#ifCond role '==' 'Registered customer'}}
                 <button id="change-password-button" class="btn float_right">{{ trans "Change password"}}</button>

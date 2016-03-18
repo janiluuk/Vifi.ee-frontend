@@ -11,6 +11,7 @@ App.Settings = {
         featured_slides_limit: 6,
         flowplayer_flash_key:  '#$05466e2f492e2ca07a3',
         flowplayer_html5_key: '$202296466927761',
+        google_analytics_enabled: true,
         google_analytics_code: 'UA-66018559-1',
         initial_film_amount: 300,
         domain: 'www.vifi.ee',
