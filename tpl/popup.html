@@ -10,14 +10,18 @@
             </div>
 
             <div id="payment-section" class="popup-section">
-                    <p>You have successfully purchased <b>"{{ purchase.title }}"</b>. Your activation code is:</p>
+                    <p>Sinu ost filmile <b>"{{ purchase.title }}"</b> õnnestus. Sinu vaatamiskood on:</p>
                     <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
-                    <p class="extra-info">Valid until <b>{{ prettyDate purchase.validto }}</b> </p>
-                    <p>You can use this code to watch the movie on any devices.
-                    {{#if email }}  A copy of the code has also been sent to your email <b>{{ email }} </b>. {{/if}}</p>
-                      
 
-                <button id="continue-button" class="btn big green continue-button full"> Continue to film</button>
+                        <p>Võid kasutada seda koodi filmi vaatamiseks iga seadme pealt. </p>
+
+		   <p class="extra-info">Kood kehtib kuni <b>{{ purchase.validtotext }}</b> </p>
+                    <p> {{#if email }} Vaatamiskood saadeti ka antud emailile: <b>{{ email }} </b>{{/if}}</p>
+                    
+		    
+                   <p>Head vaatamist!</p>
+
+                <button id="continue-button" class="btn big green continue-button full">Alusta</button>
             </div>
         </div>
     </div>

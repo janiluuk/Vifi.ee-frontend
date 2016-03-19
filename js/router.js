@@ -93,17 +93,19 @@ App.Router = Backbone.Router.extend({
     },
     purchaseReturn: function() 
     {
-        var films = app.user.checkPurchases();
+
+	    var films = app.user.checkPurchases();
         if (films) {
                 
             app.user.updatePurchases().then(function(collection) { 
                 
                 _.each(films, function(item) { 
-
+		  
                     var id = parseInt(item.vod_id);
                     var title = app.usercollection.get(id);                                                          
-                    
                     if (title) {
+			title.set("validtotext", title.getValidityText());
+
                         if (!this.returnview)
                             this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
                         else
@@ -127,7 +129,8 @@ App.Router = Backbone.Router.extend({
         }
         this.trigger("change:title", "Search results");
     },
-    showFilm: function(id, autoplay) {
+    
+	showFilm: function(id, autoplay) {
         var film = app.collection.fullCollection.get(id);
             if (!film) {
                 film = new App.Models.Film({
@@ -138,13 +141,12 @@ App.Router = Backbone.Router.extend({
         var _this = this;
 
         var films = app.user.checkPurchases();
-
         /*
          *  Check if user has purchases, navigate to confirmation page if so.
          */
         
         if (films) {
-            this.navigate("/purchaseReturn", {
+            this.navigate("/return", {
                 trigger: true
             });  
         }        

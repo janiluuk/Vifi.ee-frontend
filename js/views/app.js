@@ -81,12 +81,13 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.scrollTop = this.$("#content-container").scrollTop() + $("body").scrollTop();
         app.goto(app.movieview, scroll);
     },
+
     showTicketPurchase: function(ticket) {
         
          var id = ticket.get("vod_id");
          var title = app.usercollection.get(id);
          title.set("validtotext", title.getValidityText());
-                                                    
+    
         if (title) {
             if (!this.returnview)
                 this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
