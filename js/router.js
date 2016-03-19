@@ -59,7 +59,7 @@ App.Router = Backbone.Router.extend({
         if ( !category || !action ) {
             return false;
         }
-
+        
         if (App.Settings.google_analytics_enabled) { 
 
             if (!label) label=action;
@@ -287,7 +287,7 @@ App.Router = Backbone.Router.extend({
         this.views.contactview.render();
         if (typeof(google) == "undefined") { 
             $("<script />", {
-                src: 'http://maps.google.com/maps/api/js?sensor=false&callback=gMapsCallback',
+                src: '//maps.google.com/maps/api/js?sensor=false&callback=gMapsCallback',
                 type: 'text/javascript'
             }).appendTo("head");
 

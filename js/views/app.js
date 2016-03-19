@@ -457,6 +457,8 @@ App.Views.CarouselView = Backbone.View.extend({
             onTouchEnd: function(e) {
                 var idx = e.activeIndex;
                 $(_this.options.swiperEl + " .swiper-wrapper .swiper-slide:nth-child(" + (idx + 1) + ")").siblings().removeClass("active");
+                App.Utils.lazyload();
+
                 return false;
             },
             onSwiperCreated: function() {

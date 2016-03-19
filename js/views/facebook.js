@@ -142,8 +142,8 @@ App.Views.FB.PostUI = Backbone.View.extend({
             {
                 method:'feed',
                 name:'Sociogram Application',
-                link:'http://coenraets.org/blog/sociogram',
-                picture:'http://coenraets.org/sociogram/img/sociogram.jpg',
+                link:'https://coenraets.org/blog/sociogram',
+                picture:'https://coenraets.org/sociogram/img/sociogram.jpg',
                 caption:'by Christophe Coenraets',
                 description:'Sociogram is a simple application that shows how to use the Facebook JavaScript SDK and the Graph API.'
             },

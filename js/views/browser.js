@@ -129,7 +129,7 @@ App.Views.BrowserPage = Backbone.View.extend({
         }
     },
     redirectToBaseURL: function() {
-        window.location = 'http://' + window.location.host + '/#search/' + this.collection.querystate.getHash();
+        window.location = '//' + window.location.host + '/#search/' + this.collection.querystate.getHash();
     },
     onChangeDuration: function(model, duration) {
         //This is a state change event, not a dom event

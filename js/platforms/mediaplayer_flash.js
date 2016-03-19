@@ -55,7 +55,7 @@ App.MediaPlayer = {
         var _this = this;
 
         this.plugin = flowplayer(this.playerId, {
-            src: 'http://beta.vifi.ee/swf/flowplayer.commercial-3.2.15.swf',
+            src: '//www.vifi.ee/swf/flowplayer.commercial-3.2.15.swf',
             wmode: 'opaque'
         }, {
             key: App.Settings.flowplayer_flash_key,
@@ -136,22 +136,22 @@ App.MediaPlayer = {
             },
             plugins: {
                 rtmp: {
-                    url: 'http://beta.vifi.ee/swf/flowplayer.rtmp-3.2.11.swf',
+                    url: '//www.vifi.ee/swf/flowplayer.rtmp-3.2.11.swf',
                     netConnectionUrl: 'rtmp://media.vifi.ee/vod'                    
                 },
                 // the captions plugin
                 captions: {
-                    url: 'http://beta.vifi.ee/swf/flowplayer.captions-3.2.9.swf',
+                    url: '//www.vifi.ee/swf/flowplayer.captions-3.2.9.swf',
                     captionTarget: 'content',
                     button: null
                 },
                     secure: {
-                    url:'http://beta.vifi.ee/swf/flowplayer.securestreaming-3.2.3.swf',
+                    url:'//www.vifi.ee/swf/flowplayer.securestreaming-3.2.3.swf',
                     token: 'jambal4ika'
                 },
              
                 content: {
-                    url: 'http://beta.vifi.ee/swf/flowplayer.content-3.2.8.swf',
+                    url: '//www.vifi.ee/swf/flowplayer.content-3.2.8.swf',
                     bottom: 7,
                     height: "17%",
                     width: '80%',

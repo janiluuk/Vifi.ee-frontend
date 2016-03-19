@@ -32,7 +32,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             $('[id^="imdb-rating-api"]').remove();
             this.$("imdbratings .rating").remove();
             (function(d,s,id){                                    
-                var js,stags=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return;}js=d.createElement(s);js.id=id;js.src="http://g-ec2.images-amazon.com/images/G/01/imdb/plugins/rating/js/rating.min.js";stags.parentNode.insertBefore(js,stags);
+                var js,stags=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return;}js=d.createElement(s);js.id=id;js.src="/js/vendor/rating.min.js";stags.parentNode.insertBefore(js,stags);
                 rating = $("#imdbratings .rating").text().replace("/10","");
 
             })(document,'script','imdb-rating-api');
@@ -131,6 +131,8 @@ App.Views.MovieDetailView = App.Views.Page.extend({
     
         this.$el.empty().append(this.template(this.model.toJSON()));
         this.isotope = false;
+
+
         setTimeout(function() {
             this.startCarousel();
             this.enableRatings();

@@ -242,7 +242,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
             this.payment.purchase(this.model);
             this.$("#confirm-purchase-button").addClass("loading");
         }
-        app.router.trigger("action","payment", "start", "Payment started for "+this.payment.get("method"));
+        app.router.trigger("action","payment", "start", "Payment started with "+this.payment.get("method")+ " for "+ this.model.get("title"));
 
         return false;
     },
@@ -252,14 +252,14 @@ App.Views.PaymentDialog = Backbone.View.extend({
     onPaymentSuccess: function() {
         this.$("#confirm-purchase-button").removeClass("loading");
         this.remove();
-        app.router.trigger("action","payment", "success", "Payment successful for "+this.payment.get("method")+ " for "+this.getEmail());
+        app.router.trigger("action","payment", "success", "Payment successful with "+this.payment.get("method")+ " for "+ this.model.get("title"));
 
         app.movieview.playMovie();
     },
     onPaymentError: function(message) {
 
         message = tr(message);
-        app.router.trigger("action","payment", "error", "Payment unsuccesful for "+this.payment.get("method")+ " for "+this.getEmail()+", "+message);
+        app.router.trigger("action","payment", "error", "Payment unsuccesful with "+this.payment.get("method")+ " for "+ this.model.get("title")+", "+message);
 
         this.$("#confirm-purchase-button").removeClass("loading");
         Backbone.Validation.callbacks.invalid(this, 'code', message);
@@ -338,8 +338,7 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
         e.preventDefault();
         var id = this.model.get("id");
         app.user.purchases.removeFilm(id);
-        app.trigger("action","payment", "success", "Payment successful for "+this.model.get("title")+ " for "+app.user.get("email"));
-
+        app.router.trigger("action","payment", "success", "Payment successful with method "+this.model.get("title")+ " for "+app.user.get("email") ? app.user.get("email") : " anonymous user");
         this.close();
         this.parent.close();
         app.router.showFilm(id,true);

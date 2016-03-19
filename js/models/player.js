@@ -33,7 +33,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.player.on("subtitles:load", this.loadSubtitles, this);
         this.player.on("all", this.onPlayerAction, this);
         this.player.on("mediaplayer:onbeforeseek", this.disableSubtitles, this);
-        this.player.on("mediaplayer:onseek", this.enableSubtitles, this);        
+        this.player.on("mediaplayer:onseek", this.enableSubtitles, this);
         this.player.on("mediaplayer:ratio:change", this.onChangeRatio, this);
         this.on("mediaplayer:stop", this.stop, this);
         this.on("mediaplayer:resume", this.play, this);
@@ -44,13 +44,14 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
 
     onPlayerAction: function(evt, arg, arg2) {
-        
-        if (!evt) return false;
+
+
 
         var parts = evt.split(":");
         var evt = parts.shift();
         var action = parts.shift();
-        app.router.trigger("action", evt, action, "Mediaplayer event on "+app.platform.name);
+
+        app.router.trigger("action", evt, action, "Mediaplayer event on " + app.platform.name);
 
     },
     onChangeRatio: function(video) {
@@ -62,13 +63,21 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
     },
     onContentReady: function(content) {
-        
+
         this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
-        var _this = this; 
-        this.player.speedtest(function() {  
+        var _this = this;
+        this.player.speedtest(function() {
 
             _this.playlist.addFiles(_this.content);
             if (_this.player.init(_this.playlist)) {
+                
+                var files = _this.playlist.getPlaylistFiles();
+                var file = "";
+                if (files) {
+                    file = files[0].mp4;
+                }
+
+                app.router.trigger("action", "player", "play", "Playing content " + file);
                 _this.trigger("player:ready", _this.content);
 
             }
@@ -77,31 +86,31 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
     onSubtitlesChange: function(code) {
 
-        if (code == "reset")  { 
+        if (code == "reset") {
             var item = this.content.get("subtitles");
-        } else { 
-        
-            var item = _.filter(this.content.get("subtitles"), function(item) { 
-                return item.code == code; 
+        } else {
+
+            var item = _.filter(this.content.get("subtitles"), function(item) {
+                return item.code == code;
             });
         }
 
-        if (typeof(item) != "undefined" && _.isEmpty(item) !== true) { 
+        if (typeof(item) != "undefined" && _.isEmpty(item) !== true) {
             var file = item[0].file;
             this.player.loadSubtitles(item[0]);
-        } else { 
+        } else {
             this.disableSubtitles();
-        
+
         }
     },
 
     onSubtitlesReady: function(subtitles) {
-	 
+
         this.player._initSubtitles(subtitles);
 
     },
 
-    loadSubtitles: function(filename) { 
+    loadSubtitles: function(filename) {
         this.player.loadSubtitles(filename);
         this.trigger("subtitles:loaded");
 
@@ -120,19 +129,19 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
         if (!movie) return false;
         var id = movie.get("id");
-        app.router.trigger("action","player", "load", "Loading "+ movie.get("title"));
+        app.router.trigger("action", "player", "load", "Loading " + movie.get("title"));
 
         this.content.load(id);
     },
     play: function() {
-        app.router.trigger("action","player", "play", "Playing content");
+
         this.player.play();
     },
     stop: function() {
         this.player.stop();
     },
     unload: function() {
-        if (this.player.subtitles) { 
+        if (this.player.subtitles) {
             this.player.subtitles.unload();
         }
         this.player.unload();
@@ -187,7 +196,8 @@ App.Player.Platforms.Core = {
     _testSize: 200000,
     speedtest: function(callback) {
         callback = callback || $noop;
-        if (!App.Settings.speedtest_url) { callback(); 
+        if (!App.Settings.speedtest_url) {
+            callback();
             return;
         }
         //$log(" ___ PERFORMING SPEEDTEST ___ ");
@@ -197,7 +207,7 @@ App.Player.Platforms.Core = {
         startTime = (new Date()).getTime();
 
         function getResults() {
-          //  $log(" ___ SPEEDTEST SUCCESS ___ ");
+            //  $log(" ___ SPEEDTEST SUCCESS ___ ");
             var duration = Math.round((endTime - startTime) / 1000);
             var bitsLoaded = _this._testSize * 8;
             var speedBps = Math.round(bitsLoaded / duration);
@@ -221,7 +231,7 @@ App.Player.Platforms.Core = {
         $log("___ TRACK EVENTS CALLED ___ ");
         if (this.eventsBound) return;
         //$log(" ___ BINDING EVENTS ___ ");
-      //  this.plugin.bind(this._eventsToTrack.join(" "), this._eventHandler, this);
+        //  this.plugin.bind(this._eventsToTrack.join(" "), this._eventHandler, this);
         this.eventsBound = true;
     },
 
@@ -282,11 +292,11 @@ App.Player.Platforms.Core = {
             this._playVideo();
         } else if (this._videoElement) {
             if (!this.plugin.playing) {
-               // $log(" Calling Video Element Play")
+                // $log(" Calling Video Element Play")
                 this.resume();
 
             } else {
-               // $log(" Calling Video Element Pause ")
+                // $log(" Calling Video Element Pause ")
                 this.pause();
             }
         }
@@ -366,9 +376,9 @@ App.Player.Platforms.Core = {
             case 'seek':
                 this.trigger("mediaplayer:seek");
                 break;
-           case 'beforeseek':
+            case 'beforeseek':
                 this.trigger("mediaplayer:beforeseek");
-                break;                
+                break;
             case 'error':
                 this.trigger("mediaplayer:videoerror");
                 break;
@@ -451,7 +461,7 @@ App.Player.Playlist = function() {
         _.each(profiles, function(profile) {
             var profile_bitrate = parseInt(profile.bitrate);
 
-            $log(" TESTING file.bitrate: " + profile.bitrate + ", my bitrate: " +user_bitrate);
+            $log(" TESTING file.bitrate: " + profile.bitrate + ", my bitrate: " + user_bitrate);
             if (profile_bitrate > file_bitrate && profile_bitrate < user_bitrate) {
 
                 file = profile;
@@ -459,9 +469,9 @@ App.Player.Playlist = function() {
 
             if (min_bitrate > profile_bitrate) min_bitrate = profile.bitrate;
         });
-        $log("Minimum bitrate: "+min_bitrate);
+        $log("Minimum bitrate: " + min_bitrate);
 
-        $log("Choosing "+file.mp4+ " as the default video");
+        $log("Choosing " + file.mp4 + " as the default video");
 
         return file;
     },
@@ -481,9 +491,9 @@ App.Player.Playlist = function() {
         var mp4_url = App.Settings.mp4_url + file;
         var mpegurl = App.Settings.hls_url + '/' + file + '/playlist.m3u8'
         var playlist_item = [{
-                mp4: mp4_url
+            mp4: mp4_url
         }, {
-                mpegurl: mpegurl
+            mpegurl: mpegurl
 
         }, {
             flash: 'mp4:' + file.replace('.mp4', '')
@@ -533,7 +543,11 @@ App.Player.Playlist = function() {
 
 App.Player.Subtitles = Backbone.Model.extend({
 
-    defaults: function() { return {subtitledata: false}},
+    defaults: function() {
+        return {
+            subtitledata: false
+        }
+    },
     subtitles: {},
     currentSubtitle: null,
     defaultCode: 'ee',
@@ -543,17 +557,17 @@ App.Player.Subtitles = Backbone.Model.extend({
     ival: false,
     enabled: true,
     initialize: function() {
-        _.bindAll(this, 'load', 'start', 'start', 'enable',  'disable', 'loadLanguage');
+        _.bindAll(this, 'load', 'start', 'start', 'enable', 'disable', 'loadLanguage');
         this.on("button:player-subtitles", this.handleSubtitleSelection, this);
     },
 
     /**
      * React to subtitle selection.
      * @param {string} sel Selected code (ee,fi ..)
-     * 
+     *
      *
      */
-    
+
     handleSubtitleSelection: function(sel) {
 
         if (sel == "none") this.disable();
@@ -565,9 +579,9 @@ App.Player.Subtitles = Backbone.Model.extend({
 
     /**
      * Disable subtitles
-     * @return {void} 
+     * @return {void}
      */
-    
+
     disable: function() {
         this.trigger("subtitles:hide");
         this.enabled = false;
@@ -576,12 +590,12 @@ App.Player.Subtitles = Backbone.Model.extend({
         if (this.ival) clearInterval(this.ival);
 
     },
-    
+
     /**
      * Enable subtitles
-     * @return {void} 
+     * @return {void}
      */
-    
+
     enable: function() {
         if (this.enabled) return;
         this.trigger("subtitles:hide");
@@ -594,12 +608,12 @@ App.Player.Subtitles = Backbone.Model.extend({
 
     /**
      * Disable timer and set all to defaults
-     * 
+     *
      * @return boolean True if success
      */
-    
+
     unload: function() {
-        
+
         if (!this.enabled) return false;
         this.disable();
         this.subtitles = false;
@@ -609,22 +623,22 @@ App.Player.Subtitles = Backbone.Model.extend({
 
         return true;
     },
-    
+
     /**
      *
      * Parse a string and cut it into timecode keyed object + set the new
      * data to be ready for processing
-     * 
+     *
      * @param {string} srt Complete SRT string
      *
      * @return {Object} Object containing timecoded entries for showing the
      * captions.
-     * 
+     *
      */
-    
-    parseSrt: function(srt) { 
+
+    parseSrt: function(srt) {
         if (!srt) return {};
-        srt = srt.replace(/\r\n|\r|\n/g, '\n');        
+        srt = srt.replace(/\r\n|\r|\n/g, '\n');
         srt = App.Utils.strip(srt);
         var srt_ = srt.split('\n\n');
         var subtitledata = {};
@@ -632,7 +646,7 @@ App.Player.Subtitles = Backbone.Model.extend({
         for (s in srt_) {
             st = srt_[s].split('\n');
             if (st.length >= 2) {
-        
+
                 n = st[0];
                 i = App.Utils.strip(st[1].split(' --> ')[0]);
                 o = App.Utils.strip(st[1].split(' --> ')[1]);
@@ -658,16 +672,16 @@ App.Player.Subtitles = Backbone.Model.extend({
     },
 
     /**
-     * Start periodic polling 
-     * 
+     * Start periodic polling
+     *
      */
-    
+
     start: function() {
 
         this.trigger("subtitles:hide");
         this.currentSubtitle = -1;
         var subtitledata = this.get("subtitledata");
-        if (!subtitledata) throw new ("No subtitle data to parse!");
+        if (!subtitledata) throw new("No subtitle data to parse!");
 
         this.ival = setInterval(function() {
             if (!this.enabled) clearInterval(this.ival);
@@ -692,12 +706,12 @@ App.Player.Subtitles = Backbone.Model.extend({
     },
     /**
      * Load collection containing App.Player.SubtitleFile items
-     * 
+     *
      * @param {App.Player.SubtitleFileCollection} subtitles Collection containing Subtitle items
      * @param {boolean} nodefault Set to true if default language should not be loaded.
      *
      */
-    
+
     load: function(subtitles, nodefault) {
         if (!subtitles) return false;
         this.subtitles = {};
@@ -713,7 +727,7 @@ App.Player.Subtitles = Backbone.Model.extend({
         this.trigger("subtitles:added", subtitles);
         if (!nodefault) this.loadLanguage();
     },
-    
+
 
 
     /**
@@ -722,7 +736,7 @@ App.Player.Subtitles = Backbone.Model.extend({
      *
      * @return {boolean} True if successful
      */
-    
+
     loadLanguage: function(code) {
 
         if (!code) code = this.defaultCode;
@@ -737,14 +751,13 @@ App.Player.Subtitles = Backbone.Model.extend({
             this.trigger("subtitles:load", code);
             this.trigger("subtitles:loadfile", this.subtitleFile);
             this.start();
-            
+
             return true;
         }
 
         return false;
     },
- 
+
 
 });
 _.extend(App.Player.Subtitles, Backbone.Events);
-

@@ -17,7 +17,7 @@
             <% _.each(images.backdrops, function(img) {  %>
             <div class="swiper-slide">
                 <div class="featured-item">
-                    <div class="featured-item-background b-lazy" data-src="http://gonzales.vifi.ee/files/images/image.php?src=<%-img%>&w=1280&h=720"></div>
+                    <div class="featured-item-background b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%-img%>&w=1280&h=720"></div>
                 </div>
             </div>
             <% }); %>
@@ -38,7 +38,7 @@
     <!-- Film Info -->
     <div id="film-info-container" class="float_left">
         <div class="film-poster float_left">
-        <img class="b-lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="http://gonzales.vifi.ee/files/images/image.php?src=<%- poster_url.replace("/original/", "/w300/")%>&w=300&h=400" /></div>
+        <img class="b-lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%- poster_url.replace("/original/", "/w300/")%>&w=300&h=400" /></div>
         <div class="film-info float_left">
             <div class="film-title"><%-title %></div>
             <div class="film-description"><span><%-year %></span> - <span><%-genres_text %></span> - <span><%-running_time_text %></span></div>
@@ -51,10 +51,10 @@
                                     if (imdbrating) { 
                                 %>
                                 
-                                <span class=" imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="http://www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1" target="_blank"><img src="http://g-ecx.images-amazon.com/images/G/01/imdb/plugins/rating/images/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
+                                <span class=" imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1" target="_blank"><img src="/style/img/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
                                 <% 
                                  } else { %>
-                                <span class="imdbRatingPlugin" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a target="_blank" href="http://www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1"><img src="http://g-ecx.images-amazon.com/images/G/01/imdb/plugins/rating/images/imdb_46x22.png" /> </a></span>
+                                <span class="imdbRatingPlugin" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a target="_blank" href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1"><img src="/style/img/imdb_46x22.png" /> </a></span>
                                 <% } 
                             } %>
                             </td>
@@ -114,7 +114,7 @@
             if (actor.image_url == null) actor.image_url = '/style/img/anonymous_avatar.jpg';
             %>
             <li class="item">
- <div class="item-image b-lazy" data-src="<%=actor.image_url.replace("/original/", "/w300/")%>"></div>
+ <div class="item-image b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%=actor.image_url.replace("/original/", "/w300/")%>"></div>
                  <div class="item-info">
                     <div class="item-info-title">
                         <span><%= actor.name %></span>

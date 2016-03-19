@@ -90,7 +90,7 @@ _.extend(App.Models.Film.prototype,  {
         this.set("rt_ratings","");
         this.set("rt_links","");
 
-        var url = 'http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?apikey='+App.Settings.rt_api_key+'&type=imdb&id='+imdb_id.replace("tt","");
+        var url = '/proxy.php?url=http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?apikey='+App.Settings.rt_api_key+'&type=imdb&id='+imdb_id.replace("tt","");
         
         var _this = this;
 
