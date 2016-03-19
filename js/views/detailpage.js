@@ -27,7 +27,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
      */
     
     enableRatings: function() {
-        if (this.model.get("imdbrating") == false) { 
+        if (this.model.get("imdbrating") == false || this.model.get("imdbrating") == "Data" || this.model.get("imdbrating") == null) { 
             var rating = false;
             $('[id^="imdb-rating-api"]').remove();
             this.$("imdbratings .rating").remove();

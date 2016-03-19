@@ -2040,6 +2040,9 @@ ul#movie-interactive-button-row li {
 .film-rating, .film-rating table {
     width: 100%;
 }
+.film-rating table td {
+    width: 35%;
+}
 
 .film-rating table {
     background: #d8d3d3;

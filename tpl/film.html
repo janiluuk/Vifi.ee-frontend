@@ -47,8 +47,8 @@
                     <tbody>
                         <tr>
                             <td id="imdbratings">
-                                <% if (imdb_id != null ) { 
-                                    if (imdbrating) { 
+                                <% if (imdb_id != null) { 
+                                    if (imdbrating && imdbrating != "Data") { 
                                 %>
                                 
                                 <span class=" imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1" target="_blank"><img src="/style/img/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
@@ -58,9 +58,12 @@
                                 <% } 
                             } %>
                             </td>
-                            <td id="rtratings"><%
+                            <td id="rtratings">
+
+				<%
                                 if (typeof(rt_ratings) !== "undefined" && rt_ratings != "" && rt_ratings.critics_score > -1){
                                 %>
+				<br/>
                                     <a target="_blank" href="<%-rt_links.alternate%>"><span class="icon rottentomato"></span>
                                     <span>
                                     <%-rt_ratings.critics_score %>%
@@ -70,6 +73,8 @@
                                 } 
                                 %>
                             </td>
+                            <td id="mcratings"></td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -90,7 +95,11 @@
                         <tr>
                             <td><%-language %></td>
                             <td><%-countries %></td>
-                            <td><% _.each(subtitles, function(subtitle) { %>
+                            <td><%
+				if (subtitles.length < 1) {
+				%>Subtiitreid pole.<%
+				} 
+				_.each(subtitles, function(subtitle) { %>
                                 <%= subtitle %>
                             <% }); %></td>
                         </tr>
