@@ -25,12 +25,12 @@
 <script type="text/html" id="purchaseDialogTemplate">
     <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
         <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-        <div class="col-img" style="background-image: url('//gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}');">
+        <div class="col-img" style="background-image: url('//gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=320&h=600');">
         </div>
         <div class="col-content">
             <div class="popup-section">
                 <div class="film-title">{{ title }}</div>
-                <div class="film-description price">{{ price }} EUR</div>
+                <div class="film-description price">{{ price }} € / <b>48h</b></div>
                 <div class="film-language">
                     <table>
                         <tbody>
@@ -43,7 +43,7 @@
                                 <td>{{#if subtitles }}
                                 {{#subtitles}}{{this}} {{/subtitles}}
                                 {{else}}
-                                No subtitles
+                                Subtiitreid pole
                                 {{/if}}
                                 </td>
                             </tr>

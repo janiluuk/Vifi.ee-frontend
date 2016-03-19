@@ -136,7 +136,6 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         setTimeout(function() {
             this.startCarousel();
             this.enableRatings();
-            App.Utils.lazyload();
             this.model.fetchRT();
 
           //  this.enableAddThis(); 
@@ -145,10 +144,11 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         }.bind(this), 300);
 
         setTimeout(function() {
-
+            App.Utils.lazyload();
             this.enableComments();
             this.enableYoutubePlayer();
-        }.bind(this),3000);
+        }.bind(this),2500);
+
         return this;
     
     },
@@ -261,7 +261,8 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             $('#moviepage .arrow-right').show().on('click', function(e) {
                 e.preventDefault()
                 myMovieSwiper.swipeNext();
-                
+                App.Utils.lazyload();
+       
             });
             App.Utils.lazyload();
             

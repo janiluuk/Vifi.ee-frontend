@@ -17,7 +17,7 @@
             <% _.each(images.backdrops, function(img) {  %>
             <div class="swiper-slide">
                 <div class="featured-item">
-                    <div class="featured-item-background b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%-img%>&w=1280&h=720"></div>
+                    <div class="featured-item-background b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%-img%>&w=1280&h=390"></div>
                 </div>
             </div>
             <% }); %>
@@ -111,10 +111,10 @@
             var characters = _.map(actor.character, function(char) { return char });
                 actor.character = "'"+characters.join(", ")+"'";
             }
-            if (actor.image_url == null) actor.image_url = '/style/img/anonymous_avatar.jpg';
+            if (actor.image_url == null) actor.image_url = 'http://www.vifi.ee/style/img/anonymous_avatar.jpg';
             %>
             <li class="item">
- <div class="item-image b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%=actor.image_url.replace("/original/", "/w300/")%>"></div>
+ <div class="item-image b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%=actor.image_url.replace("/original/", "/w300/")%>&w=180&h=260"></div>
                  <div class="item-info">
                     <div class="item-info-title">
                         <span><%= actor.name %></span>
