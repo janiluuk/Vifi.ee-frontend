@@ -19,6 +19,11 @@
         return "selected";
       }
 </script>
+<script id="imageHelper" class="helper" data-args="image_url,width,height,a,zc" type="text/html">   
+      return App.Utils.getImageUrl(image_url,width,height,a,zc);
+
+</script>
+
 <script id="ifCond" class="helper" data-args="v1,operator,v2,options" type="text/html">
     switch (operator) {
         case '==':

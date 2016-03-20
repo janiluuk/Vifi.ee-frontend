@@ -45,8 +45,6 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
     onPlayerAction: function(evt, arg, arg2) {
 
-
-
         var parts = evt.split(":");
         var evt = parts.shift();
         var action = parts.shift();
@@ -54,6 +52,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         app.router.trigger("action", evt, action, "Mediaplayer event on " + app.platform.name);
 
     },
+
     onChangeRatio: function(video) {
         if (undefined !== video) {
             var ratio = video.height / video.width;
@@ -64,7 +63,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
     onContentReady: function(content) {
 
-        this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
+        this.content.set("endingtidia", this.getEndingTime(this.content.get("running_time")));
         var _this = this;
         this.player.speedtest(function() {
 
@@ -196,13 +195,13 @@ App.Player.Platforms.Core = {
     _testSize: 200000,
     speedtest: function(callback) {
         callback = callback || $noop;
-        if (!App.Settings.speedtest_url) {
+        if (!App.Settings.Player.speedtest_url) {
             callback();
             return;
         }
         //$log(" ___ PERFORMING SPEEDTEST ___ ");
         var _this = this;
-        var imageAddr = App.Settings.speedtest_url + "?n=" + Math.random();
+        var imageAddr = App.Settings.Player.speedtest_url + "?n=" + Math.random();
         var startTime, endTime;
         startTime = (new Date()).getTime();
 
@@ -488,8 +487,8 @@ App.Player.Playlist = function() {
     this.generatePlaylistItem = function(file) {
         if (!file) return false;
         if (file[0] == '/') file = file.substring(1);
-        var mp4_url = App.Settings.mp4_url + file;
-        var mpegurl = App.Settings.hls_url + '/' + file + '/playlist.m3u8'
+        var mp4_url = App.Settings.Player.mp4_url + file;
+        var mpegurl = App.Settings.Player.hls_url + '/' + file + '/playlist.m3u8'
         var playlist_item = [{
             mp4: mp4_url
         }, {
@@ -551,7 +550,7 @@ App.Player.Subtitles = Backbone.Model.extend({
     subtitles: {},
     currentSubtitle: null,
     defaultCode: 'ee',
-    srtUrl: App.Settings.subtitles_url,
+    srtUrl: App.Settings.Player.subtitles_url,
     subtitleFile: '',
     language: 'ee',
     ival: false,
@@ -681,7 +680,9 @@ App.Player.Subtitles = Backbone.Model.extend({
         this.trigger("subtitles:hide");
         this.currentSubtitle = -1;
         var subtitledata = this.get("subtitledata");
-        if (!subtitledata) throw new("No subtitle data to parse!");
+        //$log(subtitledata);
+
+        //if (!subtitledata) throw new("No subtitle data to parse!");
 
         this.ival = setInterval(function() {
             if (!this.enabled) clearInterval(this.ival);

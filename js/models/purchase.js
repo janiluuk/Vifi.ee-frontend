@@ -16,7 +16,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         status: false
     },
     
-    url: function() { return App.Settings.api_url+"payment/emtpayment/"+this.model.get("id")     },
+    url: function() { return App.Settings.Api.url+"payment/emtpayment/"+this.model.get("id")     },
     
     interval: false,
 
@@ -426,10 +426,10 @@ App.Models.Purchase = Backbone.Model.extend({
 
         var info =  this.generatePurchaseInfo();
 
-        var url = App.Settings.api_url + "payment/payment/" + info.film_id + "?";
+        var url = App.Settings.Api.url + "payment/payment/" + info.film_id + "?";
 
         var data = { 
-            'api_key' : App.Settings.api_key,
+            'api_key' : App.Settings.Api.key,
             'token' : info.auth_id,
             'user_id' : info.user_id,
             'method_id' : info.method_id,

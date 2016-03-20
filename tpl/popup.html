@@ -6,20 +6,21 @@
         <div class="col-content">
             <div class="popup-section">
                 <div class="film-title">{{trans "Thank you"}}!</div>
-   
             </div>
 
             <div id="payment-section" class="popup-section">
+
                     <p>Sinu ost filmile <b>"{{ purchase.title }}"</b> õnnestus. Sinu vaatamiskood on:</p>
                     <p class="activation-code"><span>{{ purchase.auth_code }} </span></p>
 
-                        <p>Võid kasutada seda koodi filmi vaatamiseks iga seadme pealt. </p>
+                    <p>Võid kasutada seda koodi filmi vaatamiseks iga seadme pealt. </p>
 
-		   <p class="extra-info">Kood kehtib kuni <b>{{ purchase.validtotext }}</b> </p>
+                    <p class="extra-info">Kood kehtib kuni <b>{{ purchase.validtotext }}</b> </p>
                     <p> {{#if email }} Vaatamiskood saadeti ka antud emailile: <b>{{ email }} </b>{{/if}}</p>
                     
-		    
-                   <p>Head vaatamist!</p>
+		            <p class="info">
+                        Head vaatamist!
+                    </p>
 
                 <button id="continue-button" class="btn big green continue-button full">Alusta</button>
             </div>
@@ -29,7 +30,7 @@
 <script type="text/html" id="purchaseDialogTemplate">
     <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
         <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-        <div class="col-img" style="background-image: url('//gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=320&h=600');">
+        <div class="col-img" style="background-image: url('{{imageHelper poster_url 320 600}}');">
         </div>
         <div class="col-content">
             <div class="popup-section">

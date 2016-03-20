@@ -95,7 +95,7 @@ window.app = _.extend({}, Backbone.Events);
 
 function init() {
     app.trigger("app:init");
-    var url = App.Settings.api_url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.api_key+"&jsoncallback=?";
+    var url = App.Settings.Api.url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.Api.key+"&jsoncallback=?";
     $.getJSON(url, function(data) { 
         $.when(initApp(data)).then(function() { 
             app.trigger("app:ready");  
@@ -110,7 +110,7 @@ function init() {
 
 }
 
- function initCached() {
+function initCached() {
     var cachedUrl = "//www.vifi.ee/init.json";
     $.getJSON(cachedUrl, function(data) { var parsed = JSON.parse(data); initApp(parsed)}, "json");
 }

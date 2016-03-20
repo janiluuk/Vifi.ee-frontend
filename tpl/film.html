@@ -17,7 +17,7 @@
             <% _.each(images.backdrops, function(img) {  %>
             <div class="swiper-slide">
                 <div class="featured-item">
-                    <div class="featured-item-background b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%-img%>&w=1280&a=t&zc=2"></div>
+                    <div class="featured-item-background b-lazy" data-src="<%= App.Utils.getImageUrl(img,1280,false,"t",2)%>"></div>
                 </div>
             </div>
             <% }); %>
@@ -38,7 +38,7 @@
     <!-- Film Info -->
     <div id="film-info-container" class="float_left">
         <div class="film-poster float_left">
-        <img class="b-lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%- poster_url.replace("/original/", "/w300/")%>&w=300&h=400" /></div>
+        <img class="b-lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="<%-App.Utils.getImageUrl(poster_url.replace("/original/", "/w300/"),300,400)%>" /></div>
         <div class="film-info float_left">
             <div class="film-title"><%-title %></div>
             <div class="film-description"><span><%-year %></span> - <span><%-genres_text %></span> - <span><%-running_time_text %></span></div>
@@ -60,10 +60,9 @@
                             </td>
                             <td id="rtratings">
 
-				<%
+				                <%
                                 if (typeof(rt_ratings) !== "undefined" && rt_ratings != "" && rt_ratings.critics_score > -1){
                                 %>
-				<br/>
                                     <a target="_blank" href="<%-rt_links.alternate%>"><span class="icon rottentomato"></span>
                                     <span>
                                     <%-rt_ratings.critics_score %>%
@@ -96,11 +95,11 @@
                             <td><%-language %></td>
                             <td><%-countries %></td>
                             <td><%
-				if (subtitles.length < 1) {
-				%>Subtiitreid pole.<%
-				} 
-				_.each(subtitles, function(subtitle) { %>
-                                <%= subtitle %>
+            				if (subtitles.length < 1) {
+            				%>Subtiitreid pole.<%
+            				} 
+            				_.each(subtitles, function(subtitle) { %>
+                            <%= subtitle %>
                             <% }); %></td>
                         </tr>
                     </tbody>
@@ -120,10 +119,10 @@
             var characters = _.map(actor.character, function(char) { return char });
                 actor.character = "'"+characters.join(", ")+"'";
             }
-            if (actor.image_url == null) actor.image_url = 'http://www.vifi.ee/style/img/anonymous_avatar.jpg';
+            if (actor.image_url == null) actor.image_url = '/img/anonymous_avatar.jpg';
             %>
             <li class="item">
- <div class="item-image b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src=<%=actor.image_url.replace("/original/", "/w300/")%>&w=180&h=260"></div>
+ <div class="item-image b-lazy" data-src="<%-App.Utils.getImageUrl(actor.image_url.replace("/original/", "/w300/"),180,260)%>"></div>
                  <div class="item-info">
                     <div class="item-info-title">
                         <span><%= actor.name %></span>

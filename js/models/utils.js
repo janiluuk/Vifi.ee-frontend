@@ -63,7 +63,20 @@ App.Utils = {
             App.Utils.bLazy.revalidate();
         }
     },
+    
+    /** Build TimThumb image optimiser url for given image */
+    /** Parameters, url, width, height, align(t,b,l,r) and zoomcrop(1-3) */
 
+    getImageUrl: function(image_url,width,height,a,zc) {
+        if (App.Settings.image_optimizer_enabled === false) return image_url;
+
+        var url=App.Settings.image_optimiser_url + "?src="+image_url;      
+        if (width) url+="&w="+width;
+        if (height) url+="&h="+height;
+        if (zc) url+= "&zc="+zc;
+        if (a) url+= "&a="+a;       
+        return url;
+    },
     // Underscore template loader
 
     TemplateLoader: function () {
@@ -330,7 +343,7 @@ App.Utils.Api = Backbone.Model.extend({
         if (_.isArray(action)) action = action.join("/");
         var sessionParams = app.session.getParams();
         params = _.extend(params, sessionParams.data);
-        var url = App.Settings.api_url+action+"/?format=json&api_key="+App.Settings.api_key+"&";
+        var url = App.Settings.Api.url+action+"/?format=json&api_key="+App.Settings.Api.key+"&";
         $.post(url,params, function(data) { this.parseResponse(data, callback, silent);  }.bind(this));
 
     },
@@ -338,7 +351,7 @@ App.Utils.Api = Backbone.Model.extend({
         if (_.isArray(action)) action = action.join("/");
         var sessionParams = app.session.getParams();
         params = _.extend(params, sessionParams.data);
-        var url = App.Settings.api_url+action+"/?format=json&callback=?&api_key="+App.Settings.api_key+"&";
+        var url = App.Settings.Api.url+action+"/?format=json&callback=?&api_key="+App.Settings.Api.key+"&";
         $.getJSON(url,params, function(data) {  this.parseResponse(data, callback, silent);  }.bind(this), "jsonp");
     }
 }),

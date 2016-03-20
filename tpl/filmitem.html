@@ -1,7 +1,7 @@
 <script type="text/html" id="filmitemTemplate">
 <a href="#{{seo_friendly_url }}">
    <div class="item-inner">
-       <div class="item-image b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=191&h=281">
+       <div class="item-image b-lazy" data-src="{{imageHelper poster_url '191' '281'}}">
        </div>
        <div class="btn-play"></div>
        
@@ -22,7 +22,7 @@
 <script type="text/html" id="userfilmitemTemplate">
 
 <a href="#{{seo_friendly_url }}">
-<div class="item-image b-lazy" data-src="//gonzales.vifi.ee/files/images/image.php?src={{ poster_url }}&w=191&h=281"></div></a>
+<div class="item-image b-lazy" data-src="{{imageHelper poster_url '191' '281'}}"></div></a>
 <div class="item-info">
     <div class="item-info-title">{{title }}</div>
     <div class="item-info-footer">

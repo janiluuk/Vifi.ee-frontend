@@ -146,7 +146,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
 });
 
 App.Player.FilmContent = App.Models.ApiModel.extend({
-    url : function() { return App.Settings.api_url + this.path + "/" + this.get("id") + "?"; },
+    url : function() { return App.Settings.Api.url + this.path + "/" + this.get("id") + "?"; },
     path: 'content',
     defaults: function() {
         return {

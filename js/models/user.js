@@ -483,7 +483,7 @@ App.User.Session = Backbone.Model.extend({
         }
     },
     url: function() {
-        return App.Settings.api_url + 'session/' + '?jsoncallback=?';
+        return App.Settings.Api.url + 'session/' + '?jsoncallback=?';
     },
 
     initialize: function() {
@@ -555,7 +555,7 @@ App.User.Session = Backbone.Model.extend({
         var params = {
             dataType: 'jsonp',
             data: {
-                api_key: App.Settings.api_key,
+                api_key: App.Settings.Api.key,
                 authId: this.get("auth_id"),
                 sessionId: this.get("session_id"),
                 format: 'json',

@@ -25,8 +25,8 @@ App.Collections.FilmSessionCollection = Backbone.Collection.extend({
 /* User collection for playlist items */
 
 App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
-        baseUrl: App.Settings.api_url + 'search/',
-        url: App.Settings.api_url + "search?api_key=" +App.Settings.api_key+ "&",
+        baseUrl: App.Settings.Api.url + 'search/',
+        url: App.Settings.Api.url + "search?api_key=" +App.Settings.Api.key+ "&",
 
         // Enable infinite paging
         mode: "infinite",
@@ -109,7 +109,7 @@ App.Films.GenreCollection = Backbone.Collection.extend({
     baseUrl: '',
     initialize: function(models, options) {},
     update: function() {
-        this.url = this.baseUrl + '&api_key=' + App.Settings.api_key + '&jsoncallback=?';
+        this.url = this.baseUrl + '&api_key=' + App.Settings.Api.key + '&jsoncallback=?';
     },
     parse: function(response) {
         return response.objects;
