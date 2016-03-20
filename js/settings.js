@@ -78,8 +78,11 @@ App.Translations = {
             'Create password': 'Loo parool',
             'No results' : 'Antud otsinguga tulemusi ei leitud. Täpsustage palun otsingut ja kontrollige üle ka teised filtrid (kategooria, kestvus, aasta)',
             'No purchases' : 'Ei ostusid',
+            'You have registered successfully' : 'Registreerimine õnnestus',
+            'Fill all the fields' : 'Täida kõik väljad',
+            'Passwords do not match' : 'Paroolid pole samad',
     	    'Thank you' : 'Tänud!',
-	    'No' : 'Ei',
+	        'No' : 'Ei',
             'Yes' : 'Jah',
             'Invalid code' : 'Vale kood',
             'All Genres' : 'Kõik genred',
@@ -92,7 +95,6 @@ App.Translations = {
             'eesti' : 'Estonian',
             'english' : 'English',
             'No results' : 'Ei tulemusi'
-
         }
  
 }

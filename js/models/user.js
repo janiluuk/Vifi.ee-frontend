@@ -126,6 +126,8 @@ App.User.Profile = App.Models.ApiModel.extend({
     
     connectFB: function(fbuser) {
         var id = fbuser.get("id");
+        console.log(id);
+
         if (id != "") {
             this.set("profile_picture", 'https://graph.facebook.com/' + id + '/picture')
             this.set("lastname", fbuser.get("last_name"));
@@ -133,7 +135,8 @@ App.User.Profile = App.Models.ApiModel.extend({
             this.set("email", fbuser.get("email"));
             this.set("name", fbuser.get("name"));
             this.set("access_token", FB.getAccessToken());
-            this.session.getToken(fbuser.get("email"), this.get("password"), this.get("access_token"), this.FBcallback);
+            this.session.getToken(fbuser.get("email"),false,false, this.FBcallback);
+
         }
     },
 
@@ -698,7 +701,7 @@ App.User.Session = Backbone.Model.extend({
             } else {
                 this.trigger("user:register:fail", data);
             }
-        }.bind(this));
+        }.bind(this),true);
     },    
  
 
