@@ -236,19 +236,23 @@ App.Router = Backbone.Router.extend({
     },
     filmcollection: function() {
         
-        if (!this.views.profile)
+        if (!this.views.profile) {
             this.views.profile = new App.Views.ProfileView({
                 swiperEl: '#profile-tabbar-swiper-container',
                 model: app.session.get("profile"),
                 swipeTo: 1
             });
+
+        }
         else {
             this.views.profile.options.swipeTo = 1;
             this.views.profile.model.set(app.session.get("profile").toJSON());
-            this.views.profile.render();
+
         }
+        this.views.profile.render();
+
         this.trigger("change:title", "My films");
-           
+        
         app.showContentPage("myfilms");
 
     },
