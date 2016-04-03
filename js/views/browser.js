@@ -1,3 +1,88 @@
+App.Views.FeaturedView = Backbone.View.extend({
+    swiperel: '#featured-slides',
+    el: '#front-page-slider',
+    collection: App.Collections.PaginatedCollection,
+    initialized: false,
+    initialize: function(options) {
+        this.querystate = options.querystate;
+        this.fragment = document.createDocumentFragment();            
+        this.banners = options.banners;
+        this.listenTo(this.querystate, "change:q", this.onQueryChange, this);
+        if (this.querystate.get("q").length > 0) {
+            this.$el.hide();
+        } 
+
+    },
+    onQueryChange: function() {
+        if (this.querystate.get("q").length > 0) { 
+            this.trigger("search:open");
+        } else { 
+            this.trigger("search:close");
+        }
+    },
+    resetView: function() { 
+          setTimeout(function() {
+            this.$el.empty();
+            this.render();
+        }.bind(this),85);
+    },
+    render: function() {
+        this.$el.empty().append(ich.featuredTemplate());
+        var counter = 0;
+
+            this.banners.forEach(function(item) {               
+                $(this.fragment).append(ich.bannerItemTemplate(item.toJSON()));
+                counter++;
+            }.bind(this));
+            _.each(this.collection, function(item) {
+                if (counter < App.Settings.featured_slides_limit) {
+                    counter++;
+                    var shortOverview = item.get('overview').substr(0, 210) + "...";
+                    item.set("shortOverview",shortOverview);
+                    $(this.fragment).append(ich.featuredItemTemplate(item.toJSON()));
+                }
+            }.bind(this));
+     
+        $(this.swiperel).empty().append(this.fragment);
+       
+        if (counter < 2) { 
+            this.$(".arrow-left, .arrow-right").hide();
+
+        } else {
+            setTimeout(function() {
+                    this.startCarousel();
+            }.bind(this), 1800);
+        }
+
+        setTimeout(function() {
+           App.Utils.lazyload();
+        },250);
+        return this;
+    },
+    startCarousel: function() {
+
+        window.mySwiper = new Swiper('#featured-swiper-container', {
+            //Your options here:
+            mode: 'horizontal',
+            loop: true,
+            pagination: '.pagination',
+            paginationClickable: true,
+            createPagination: true,
+            onSlideChangeStart: function(e) {
+                App.Utils.lazyload();
+            }
+        });
+        $('#featured-swiper-container .arrow-left').on('click', function(e) {
+            e.preventDefault();
+            mySwiper.swipePrev();
+        });
+        $('#featured-swiper-container .arrow-right').on('click', function(e) {
+            e.preventDefault();
+            mySwiper.swipeNext();
+        });
+    }
+});
+
 App.Views.BrowserPage = Backbone.View.extend({
     model: App.Models.Film,
     el: '#browser-content',

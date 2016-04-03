@@ -126,7 +126,6 @@ App.User.Profile = App.Models.ApiModel.extend({
     
     connectFB: function(fbuser) {
         var id = fbuser.get("id");
-        console.log(id);
 
         if (id != "") {
             this.set("profile_picture", 'https://graph.facebook.com/' + id + '/picture')
@@ -136,7 +135,6 @@ App.User.Profile = App.Models.ApiModel.extend({
             this.set("name", fbuser.get("name"));
             this.set("access_token", FB.getAccessToken());
             this.session.getToken(fbuser.get("email"),false,false, this.FBcallback);
-
         }
     },
 

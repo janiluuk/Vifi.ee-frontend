@@ -146,7 +146,6 @@ App.Views.LoginForm = Backbone.View.extend({
 });
 App.Views.ProfileView = App.Views.CarouselView.extend({
     model: App.User.Profile,
-    isrendered: false,
     swiperCreated: false,
     el: '#contentpage',
     events: {
@@ -165,6 +164,11 @@ App.Views.ProfileView = App.Views.CarouselView.extend({
             collection: this.collection
         });
         this.listenTo(this.model, "change:id", this.render, this);
+        this.collectionview = new App.Views.UserCollectionView({
+            collection: this.collection
+        });
+        this.listenTo(this.collection, "add", this.renderCollection, this);
+
         this.resetpasswordview = new App.Views.ResetPassword({
             model: this.model
         });
@@ -208,19 +212,15 @@ App.Views.ProfileView = App.Views.CarouselView.extend({
         return this;
     },
     render: function() {
-        if (!this.isrendered) {
-            this.isrendered = true;
-            this.$el.html(ich.profileTemplate(this.model.toJSON()));
-        }
+        
+        this.$el.html(ich.profileTemplate(this.model.toJSON()));
         this.resetpasswordview.setElement("#reset-password").render();
         this.renderProfile();
         this.renderCollection();
-        if (!this.swiperCreated) {
-            this.swiperCreated = true;
+
             setTimeout(function() {
                 this.swiper = this.startCarousel(this.options.swipeTo);
             }.bind(this), 150);
-        }
         return this;
     }
 });
@@ -286,13 +286,13 @@ App.Views.UserCollectionView = Backbone.View.extend({
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
         this.options = options || {};
-        this.listenTo(this.collection, "add", this.renderFilmViews, this);
-        this.listenTo(this.collection, "reset", this.render, this);
     },
     render: function() {
         this.$el.empty();
         this.$el.append('<ul class="user-filmcollection-list"></ul>');
         this.$filmCollectionHolder = this.$('.user-filmcollection-list');
+        this.renderFilmViews();
+        
         return this;
     },
     renderFilmViews: function() {
