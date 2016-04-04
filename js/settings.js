@@ -36,7 +36,7 @@ App.Settings = {
 
         Api: {
             url: '//gonzales.vifi.ee/api/',
-            key: '298fh23hhdff11'
+            key: '3df1238af4a6d4a01442'
         },
 
         /** Search Settings **/
