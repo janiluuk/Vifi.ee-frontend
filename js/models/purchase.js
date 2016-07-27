@@ -13,7 +13,8 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         phoneNumber : false, 
         timeout: 60, 
         tickets: false,
-        status: false
+        status: false,
+        statusMessage: false
     },
     
     url: function() { return App.Settings.Api.url+"payment/emtpayment/"+this.model.get("id")     },
@@ -103,6 +104,8 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
 
         if (res.status == "fail" || res.status == "FAILED") {
                this.set("status", "FAILED");
+               this.set("statusMessage", res.statusMessage);    
+               this.handleStatus();
         }
 
         if (res.status == "PAYMENT") {
@@ -139,16 +142,18 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             this.handleStatus();
             var timeout = this.get("timeout");
             var status = this.get("status");
-
+            var statusMessage = this.get("statusMessage");
+            
             if (this.get("pending") === false) {
                 this.stopTimer();
                 return false;
             }
 
             /** If we have already received PAYMENT or DONE messages, don't fire a timeout **/
-            if (timeout > 0 && this.status != "DONE" && this.status != "PAYMENT") {
+            if (timeout > 0 && this.get("status") != "DONE" && this.get("status") != "PAYMENT") {
                 this.set("timeout",--timeout);
             } else {
+
                 this.trigger("purchase:mobile:error", "Timeout exceeded");
             } 
         }.bind(this),1000);
@@ -199,8 +204,10 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
 
         /* Error occured */
 
-        if (status == "FAILED") {
-            this.trigger("purchase:mobile:error", "Payment failed");
+        if (status == "fail" || status == "FAILED") {
+            
+            this.trigger("purchase:mobile:error", this.get("statusMessage"));
+            
         }
 
         /* Received acknowledgement for successful payment */

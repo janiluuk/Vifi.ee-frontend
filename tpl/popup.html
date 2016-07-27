@@ -111,7 +111,12 @@
             <b>Makse ebaõnnestus</b>
         </p>
         <p class="info">
-            Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu. 
+                {{#if statusMessage }}
+                {{#statusMessage}}{{this}} 
+                {{/statusMessage}}
+                {{else}}
+                Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu. 
+                {{/if}}        
         </p>
         <button id="mobile-payment-try-again" class="btn big green full">Proovi uuesti</button>
     </div>
