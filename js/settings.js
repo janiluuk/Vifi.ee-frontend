@@ -89,12 +89,14 @@ App.Translations = {
             'Hours' : 'Tundi',
             'Days' : 'Päeva',
             'Weeks' : 'Nädala',
-            'Months' : 'Kuud'
+            'Months' : 'Kuud',
+            'Timed out' : 'Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu.'
         },
         'en' : { 
             'eesti' : 'Estonian',
             'english' : 'English',
-            'No results' : 'Ei tulemusi'
+            'No results' : 'Ei tulemusi',
+            'Timed out' : 'Timed out'
         }
  
 }

@@ -47,7 +47,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         
         this.on("change:status", this.handleStatus, this);
         this.on("purchase:mobile:done", this.stopTimer, this);
-        this.on("purchase:mobile:error", this.stopTimer, this);
+        this.on("purchase:mobile:timeout", this.onTimeout, this);
         
     },
 
@@ -142,7 +142,6 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             this.handleStatus();
             var timeout = this.get("timeout");
             var status = this.get("status");
-            var statusMessage = this.get("statusMessage");
             
             if (this.get("pending") === false) {
                 this.stopTimer();
@@ -154,11 +153,21 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
                 this.set("timeout",--timeout);
             } else {
 
-                this.trigger("purchase:mobile:error", "Timeout exceeded");
+                this.trigger("purchase:mobile:timeout", "Timeout exceeded");
             } 
         }.bind(this),1000);
     },
 
+    /*
+     * Timeout event
+     * 
+     */
+
+    onTimeout: function() { 
+        this.set("statusMessage", tr("Timed out"));
+        this.stopTimer();        
+    },
+    
     /*
      * Stop polling
      * 
@@ -205,9 +214,9 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
         /* Error occured */
 
         if (status == "fail" || status == "FAILED") {
-            
+            if (this.get("statusMessage") != "Unknown") {
             this.trigger("purchase:mobile:error", this.get("statusMessage"));
-            
+            }
         }
 
         /* Received acknowledgement for successful payment */
