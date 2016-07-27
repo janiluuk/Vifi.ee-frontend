@@ -48,7 +48,10 @@ App.Views.MobilePurchase = Backbone.View.extend({
     },
 
     renderFailure: function() {
-        this.$el.html(ich.mobilePaymentFailureTemplate(this.model.toJSON()));        
+        console.log(this.model.toJSON());
+        
+        this.$el.html(ich.mobilePaymentFailureTemplate(this.model.toJSON()));  
+        
         return this;        
     },
     renderSuccess: function() {
@@ -62,6 +65,7 @@ App.Views.MobilePurchase = Backbone.View.extend({
     },
 
     onPaymentError:function() {
+        
         this.renderFailure();
         return false;
     },

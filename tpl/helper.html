@@ -19,7 +19,11 @@
         return "selected";
       }
 </script>
-<script id="imageHelper" class="helper" data-args="image_url,width,height,a,zc" type="text/html">   
+<script id="imageHelper" class="helper" data-args="image_url,width,height,a,zc,replace,replace_to" type="text/html">   
+      if (replace) {
+        image_url = image_url.replace(replace, replace_to);
+      }
+      
       return App.Utils.getImageUrl(image_url,width,height,a,zc);
 
 </script>
