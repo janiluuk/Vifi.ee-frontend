@@ -1550,11 +1550,12 @@ a.arrow-right {
 
 .swiper-nav .swiper-wrapper{
     margin: 0 auto;
-    -webkit-animation: slideRightDelay 1.5s ease-in-out; /* Chrome, Safari, Opera */
+/*    -webkit-animation: slideRightDelay 1.5s ease-in-out;
     -moz-animation: slideRightDelay 1.5s ease-in-out;
     -ms-animation: slideRightDelay 1.5s ease-in-out;
     -o-animation: slideRightDelay 1.5s ease-in-out; 
-    animation: slideRightDelay 1.5s ease-in-out;
+    animation: slideRightDelay 1.5s ease-in-out; */
+
 }
 
 .swiper-nav .swiper-slide {

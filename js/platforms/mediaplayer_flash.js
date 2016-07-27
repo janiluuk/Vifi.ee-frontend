@@ -187,7 +187,7 @@ App.MediaPlayer = {
     },
     loadSubtitles: function(subtitles) {
 
-        var file = App.Settings.subtitles_url + subtitles.file;
+        var file = App.Settings.Player.subtitles_url + subtitles.file;
 
         if (typeof($f) == "undefined") return false;
 
