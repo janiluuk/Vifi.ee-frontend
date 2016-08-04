@@ -32,7 +32,7 @@ App.Views.PlayerView = Backbone.View.extend({
         element.height(Math.ceil(player_height));
     },
     close: function() {
-        //this.$el.hide();
+        this.$el.hide();
         this.model.trigger("mediaplayer:stop");
         //this.unbind();
         //this.stopListening();

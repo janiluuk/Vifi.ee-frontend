@@ -36,7 +36,7 @@ App.Settings = {
 
         Api: {
             url: '//gonzales.vifi.ee/api/',
-            key: '3df1238af4a6d4a01442'
+            key: '298fh23hhdff11'
         },
 
         /** Search Settings **/
@@ -89,12 +89,28 @@ App.Translations = {
             'Hours' : 'Tundi',
             'Days' : 'Päeva',
             'Weeks' : 'Nädala',
-            'Months' : 'Kuud'
+            'Months' : 'Kuud',
+            'Timed out' : 'Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu.',
+            'Invalid merchant' : 'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Transaction cannot be completed.': 'Makse ei ole lubatud. M-makse lubamiseks palun võta ühendust mobiilioperaatori klienditoega',
+            'Requested function code not supported':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Insufficient funds':'Kontol pole piisavalt vahendeid või on lubatud limiit ületatud. Palun võta ühendust mobiilioperaatori klienditoega',
+            'Transaction is not permitted':'Makse ei ole lubatud. M-makse lubamiseks palun võta ühendust mobiilioperaatori klienditoega.',
+            'Exceeds withdrawal amount limit':'Summa ületab lubatud päevalimiidi',
+            'Accepted':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Invalid transaction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Format error':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'System malfunction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Time out waiting for response':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Duplicate transaction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega', 
+            'Original transaction missing' :'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Transaction in progress' :'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega'
         },
         'en' : { 
             'eesti' : 'Estonian',
             'english' : 'English',
-            'No results' : 'Ei tulemusi'
+            'No results' : 'Ei tulemusi',
+            'Timed out' : 'Timed out'
         }
  
 }

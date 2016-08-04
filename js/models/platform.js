@@ -11,7 +11,6 @@ window.$log = function(log) { 
             log = JSON.stringify(log);
         }
         app.trigger("flash", log, 4000);
-        console.log(log); 
 
     }
     
