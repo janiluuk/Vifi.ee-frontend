@@ -11,6 +11,7 @@ App.Views.MobilePurchase = Backbone.View.extend({
         this.model = options.model;
         this.listenTo(this.model, "purchase:mobile:success", this.onPaymentSuccess, this);
         this.listenTo(this.model, "purchase:mobile:error", this.onPaymentError, this);
+        this.listenTo(this.model, "purchase:mobile:timeout", this.onPaymentError, this);
         this.listenTo(this.model, "purchase:mobile:done", this.onPaymentDone, this);
         this.listenTo(this.model, "purchase:mobile:start", this.onPaymentStart, this);
         this.listenTo(this.model, 'change:timeout', this.renderTimeout, this);
@@ -48,10 +49,7 @@ App.Views.MobilePurchase = Backbone.View.extend({
     },
 
     renderFailure: function() {
-        console.log(this.model.toJSON());
-        
         this.$el.html(ich.mobilePaymentFailureTemplate(this.model.toJSON()));  
-        
         return this;        
     },
     renderSuccess: function() {
@@ -65,7 +63,6 @@ App.Views.MobilePurchase = Backbone.View.extend({
     },
 
     onPaymentError:function() {
-        
         this.renderFailure();
         return false;
     },
@@ -166,6 +163,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.listenTo(this.model, "change", this.onModelChange, this);
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
         this.listenTo(this.payment, "purchase:error", this.onPaymentError, this);
+        
         this.listenTo(this.payment, "purchase:verify:error", this.onPaymentError, this);
         this.listenTo(this.payment, "purchase:verify:successful", this.onVerifySuccess, this);
 
