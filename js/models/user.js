@@ -306,6 +306,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         return this.get("subscriber") === true ? true : false;
     },
     isAnonymous: function() {
+
         if (this.get("email") == "anonymous@vifi.ee") return true;
         if (this.get("role") == "" || this.get("role") == "Guest") return true;
         return false;
@@ -643,13 +644,14 @@ App.User.Session = Backbone.Model.extend({
     
         
     onUserAuthenticate: function() {
-    
+
         if (this.profile.isAnonymous() !== true) {
             this.set("logged_in", true);
             this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));       
+            this.trigger("user:login:success", this.get("user_id"));
+
         }
 
-        this.trigger("user:login:success", this.get("user_id"));
         this.disable();
     },
     onTicketReceived: function(ticket) {

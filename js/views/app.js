@@ -255,9 +255,16 @@ App.Views.HomePage = App.Views.Page.extend({
             sort: options.sort,
             initialState: options.initialFilterState,
         });
+        var featured = options.collection.featured();
+
+        featured = _.rest(featured.reverse(),_.size(featured)- App.Settings.featured_slides_limit);
+
+        if (App.Settings.featured_slides_randomize === true) {
+                featured = _.shuffle(featured);
+        }
 
         this.featuredview = new App.Views.FeaturedView({
-            collection: options.collection.featured(),
+            collection: featured,
             banners: options.banners,
             querystate: options.collection.querystate
         });

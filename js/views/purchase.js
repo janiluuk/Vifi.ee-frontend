@@ -56,6 +56,10 @@ App.Views.MobilePurchase = Backbone.View.extend({
         this.$el.html(ich.mobilePaymentSuccessTemplate(this.model.toJSON()));        
         return this;        
     },
+    renderProcessing: function() {
+        this.$el.html(ich.mobilePaymentProcessingTemplate(this.model.toJSON()));        
+        return this;        
+    },
 
     onPaymentStart: function() {
         this.renderPendingView(this.model);
@@ -66,9 +70,8 @@ App.Views.MobilePurchase = Backbone.View.extend({
         this.renderFailure();
         return false;
     },
-
     onPaymentSuccess: function() {
-        this.renderSuccess();
+        this.renderProcessing();
         return false;
     },
     onPaymentDone: function() {
@@ -162,6 +165,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         
         this.listenTo(this.model, "change", this.onModelChange, this);
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
+
         this.listenTo(this.payment, "purchase:error", this.onPaymentError, this);
         
         this.listenTo(this.payment, "purchase:verify:error", this.onPaymentError, this);

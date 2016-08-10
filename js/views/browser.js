@@ -66,12 +66,14 @@ App.Views.FeaturedView = Backbone.View.extend({
             mode: 'horizontal',
             loop: true,
             pagination: '.pagination',
+            autoplay: App.Settings.featured_slides_autoplay_interval,
             paginationClickable: true,
             createPagination: true,
             onSlideChangeStart: function(e) {
                 App.Utils.lazyload();
             }
         });
+
         $('#featured-swiper-container .arrow-left').on('click', function(e) {
             e.preventDefault();
             mySwiper.swipePrev();

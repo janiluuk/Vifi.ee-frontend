@@ -104,7 +104,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
 
         if (res.status == "fail" || res.status == "FAILED") {
                this.set("status", "FAILED");
-               this.set("statusMessage", res.statusMessage);    
+               this.set("statusMessage", tr(res.statusMessage));    
                this.handleStatus();
         }
 
@@ -116,6 +116,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             this.set("tickets", res.tickets);
             this.set("authToken", res.authToken);
             this.set("status", res.status);
+
         }
     },
 
