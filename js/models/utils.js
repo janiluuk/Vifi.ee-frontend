@@ -31,6 +31,10 @@ App.Utils = {
     template: function(id) {
         return _.template( $('#'+id).html());
     },
+    nl2br: function(str, is_xhtml) {
+        var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+        return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+    },
 
     // Icanhaz handlebars loader
 
@@ -410,6 +414,7 @@ App.Utils.Notification = Backbone.Model.extend({
 }, Backbone.Events);
 
 window.tr = App.Utils.translate;
+window.nl2br = App.Utils.nl2br;
 
 _.extend(Backbone.Validation.callbacks, {
     valid: function (view, attr, selector) {
