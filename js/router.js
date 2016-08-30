@@ -23,7 +23,9 @@ App = {
         'watchfilmsfromtv' : 'Filmi vaatamine läbi teleri',
         'faq' : 'Korduma kippuvad küsimused'
     }
-}
+} 
+
+
 App.Router = Backbone.Router.extend({
     views: {},
     models: {},
@@ -59,7 +61,8 @@ App.Router = Backbone.Router.extend({
         if ( !category || !action ) {
             return false;
         }
-        
+    
+
         if (App.Settings.google_analytics_enabled) { 
 
             if (!label) label=action;
@@ -77,12 +80,12 @@ App.Router = Backbone.Router.extend({
         this.trigger("page:change", route);
         app.sidemenu.closeSideBar();
         this.currentPage = route;
-        
-
     },
     onChangeTitle: function (title) 
     {
         $(document).attr('title', title + ' - ' + App.Settings.sitename);
+        App.Settings.page_change_callback(title, window.location.hash);
+        
         if (App.Settings.google_analytics_enabled) { 
             ga('set', 'page', window.location.hash);
             ga('send', 'pageview', {
@@ -104,7 +107,7 @@ App.Router = Backbone.Router.extend({
                     var id = parseInt(item.vod_id);
                     var title = app.usercollection.get(id);                                                          
                     if (title) {
-			title.set("validtotext", title.getValidityText());
+			            title.set("validtotext", title.getValidityText());
 
                         if (!this.returnview)
                             this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
@@ -230,8 +233,8 @@ App.Router = Backbone.Router.extend({
         if (!this.views.subscriptionview) 
         this.views.subscriptionview = new App.Views.SubscriptionView({subscriptions: app.options.subscriptions});
         this.views.subscriptionview.render();
-        app.showContentPage("subscription");
-        this.trigger("change:title", "Subscription");
+        app.showContentPage("subscription","Subscription information");
+
 
 
     },
@@ -252,9 +255,8 @@ App.Router = Backbone.Router.extend({
         }
         this.views.profile.render();
 
-        this.trigger("change:title", "My films");
-        
-        app.showContentPage("myfilms");
+        app.showContentPage("myfilms","My films");
+
 
     },
     pairdevice: function() {
@@ -269,24 +271,22 @@ App.Router = Backbone.Router.extend({
 
         $('#contentpage').empty();
         this.views.pairview.render();
-        this.trigger("change:title", "Pair Device");
-
-        app.showContentPage("pairtv");
+        app.showContentPage("pairtv", "Pair Device");
 
     },
    
     showErrorPage: function(type) {
         this.views.errorview = new App.Views.Error({type: type});
         this.views.errorview.render();
-        this.trigger("change:title", "Error!");
-        app.showContentPage("error");
+        app.showContentPage("error", "Error!");
+
             
     },
     showRecoveryPage: function(key, email) {
             this.views.recoveryview = new App.Views.RecoveryView({key: key, email: email});
             this.views.recoveryview.render();
-            this.trigger("change:title", "Recovery form");
-            app.showContentPage("recovery");
+            app.showContentPage("recovery",  "Recovery form");
+
             
     },
     showContactPage: function() {
@@ -304,9 +304,8 @@ App.Router = Backbone.Router.extend({
             this.init_map();
         }
         this.views.contactview.$el.fadeIn();
-        this.trigger("change:title", "Contact Us!");
+        app.showContentPage("contact", "Contact Us!");
 
-        app.showContentPage("contact");
         
     },
     init_map: function() {
@@ -321,10 +320,15 @@ App.Router = Backbone.Router.extend({
         var infowindow = new google.maps.InfoWindow({content:"<b>Vifi OÜ</b><br/>Roseni 5<br/> Tallinn" });google.maps.event.addListener(marker, "click", function(){infowindow.open(map,marker);});
         infowindow.open(map,marker);
     },
-    showContentPage: function(template) {
-
+    showContentPage: function(template, title) {
+        
         var name = template.split("-").join("");
-        var title = _.find(App.ContentPages, function(title, idx) { return idx == name });
+
+        if (_.isEmpty(title)) {
+            title = _.find(App.ContentPages, function(title, idx) { return idx == name });
+        }
+        
+        this.trigger("change:title", title);
         this.views.contentview = new App.Views.ContentView({title: title, template: name+"Template"});
         this.views.contentview.render().$el.fadeIn();
         app.showContentPage(name);
