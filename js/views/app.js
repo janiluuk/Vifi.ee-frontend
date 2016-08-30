@@ -215,7 +215,6 @@ App.Views.BaseAppView = Backbone.View.extend({
         view.$el.velocity('transition.'+view.transition().in,{duration:400, easing:'easeInSine' },{complete:function() {
           if (_.isFunction(callback)) {
             callback();
-            console.log('Callback triggered on transitionend for TransitionIn method');
           }
         }.bind(this)});
         
@@ -235,7 +234,6 @@ easing:'easeInSine',
             callback();   // hard to track bug! He's binding to transitionend each time transitionOut called 
                         // resulting in the callback being triggered callback * num of times transitionOut
                         // has executed
-            console.log('Callback triggered on transitionend for TransitionOut method');
          }
         }});
       

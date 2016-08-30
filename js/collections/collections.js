@@ -78,16 +78,19 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
             });
             return new App.Films.UserCollection(items);
         },
-        sortByAttribute: function(attribute, desc) {
-            
+        sortByAttribute: function(attribute, desc) { 
+	
+	    this.setSorting(attribute, desc ? 1 : -1, {full: true});
+	/*
             var asc_comparator = function (model) { 
 
                 model.get(attribute);
             }
+	*/
             this.querystate.set("sort", attribute);
-            
-            this.fullCollection.comparator = desc ? this.reverseSortBy(asc_comparator) : asc_comparator;
-            this.fullCollection.sort();
+//
+//            this.fullCollection.comparator = desc ? this.reverseSortBy(asc_comparator) : asc_comparator;
+//            this.fullCollection.sort();
             return true;
         },
         reverseSortBy: function(sortByFunction) {

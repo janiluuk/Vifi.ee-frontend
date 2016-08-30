@@ -232,7 +232,8 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     onSort: function(field, desc) {
         this.onLoadingStart();
-        this.collection.sortByAttribute(field, desc);
+    
+    this.collection.sortByAttribute(field, desc);
         return false;
     },
     onLoadingStart: function() {
