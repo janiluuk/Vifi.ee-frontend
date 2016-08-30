@@ -21,7 +21,9 @@ App.Settings = {
         image_optimizer_enabled: true,
         image_optimiser_url: '//gonzales.vifi.ee/files/images/image.php',
 
-
+        page_change_callback: function(title, parameters) {
+        },
+        
         /** Player Settings **/
 
         Player:  {
