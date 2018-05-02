@@ -7,7 +7,7 @@ $(document).ready(function() {
 window.app = _.extend({}, Backbone.Events);
 
     // Initialization event
-    app.on('app:init', function() { 
+    app.on('app:init', function() {
         if (App.Settings.debug === true)
         $log("Starting at "+new Date().getTime());}
     );
@@ -50,7 +50,7 @@ window.app = _.extend({}, Backbone.Events);
             search: data.search
         });
 
-            
+
         var player = new App.Player.MediaPlayer({session: session});
 	    var periods = new App.Collections.FilterCollection([{'id': '2016', 'name': '2016'}, {'id': '2010-2015', 'name': '2010-2015'}, {'id': '2000-2009', 'name': '00-ndad'},{'id': '1990-2000', 'name': '90-ndad'}, {'id': '1980-1990', 'name': '80-ndad'},{'id': '1900-1980', 'name': '60-70 ndad'} ]);
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
@@ -59,34 +59,34 @@ window.app = _.extend({}, Backbone.Events);
         initFB();
         initGA();
 
-        App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() { 
+        App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() {
             app.template.load(['film'], function () {
 
-                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, banners: banners, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});      
-                
+                window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, banners: banners, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});
+
                 // Bind ready event when everything has been loaded
 
                 app.on('app:ready', function() {
-                        app.collection.querystate.setFromUrl(); 
-                        app.user.updatePurchases(); 
-                        if (App.Settings.debug === true) { 
-                            $log("App ready, finished at "+new Date().getTime()); 
+                        app.collection.querystate.setFromUrl();
+                        app.user.updatePurchases();
+                        if (App.Settings.debug === true) {
+                            $log("App ready, finished at "+new Date().getTime());
                         }
                 }.bind(this));
-                
+
                 // Bind startup fail event for catching the initialization failures.
 
-                app.on('app:fail', function() { 
-                    $error("Could not startup the application!" ); 
+                app.on('app:fail', function() {
+                    $error("Could not startup the application!" );
                 }.bind(this));
 
                 window.history = Backbone.history.start();
-                
+
                 deferred.resolve(app);
-                
+
                 delete(data);
 
-            }.bind(this)); 
+            }.bind(this));
         });
         return deferred.promise();
     }
@@ -96,16 +96,16 @@ window.app = _.extend({}, Backbone.Events);
 function init() {
     app.trigger("app:init");
     var url = App.Settings.Api.url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.Api.key+"&jsoncallback=?";
-    $.getJSON(url, function(data) { 
-        $.when(initApp(data)).then(function() { 
-            app.trigger("app:ready");  
-            
-            setTimeout(function() { 
-                window.scrollTo(0,1);  
+    $.getJSON(url, function(data) {
+        $.when(initApp(data)).then(function() {
+            app.trigger("app:ready");
+
+            setTimeout(function() {
+                window.scrollTo(0,1);
             },1000);
-            
-        },function() { 
-            app.trigger("app:fail"); } ); 
+
+        },function() {
+            app.trigger("app:fail"); } );
     }.bind(this), "jsonp");
 
 }
@@ -151,13 +151,13 @@ function initGA() {
 
 /** Init Facebook events */
 
-function initFB() { 
+function initFB() {
 
     window.fbAsyncInit = function () {
 
     FB.Event.subscribe('auth.statusChange', function (response) {
         $(document).trigger('fbStatusChange', response);
-        
+
     });
 
     FB.init({
@@ -165,27 +165,30 @@ function initFB() {
         channelUrl: '//www.vifi.ee/channel.html', // Channel File
         status: true, // check login status
         cookie: true, // enable cookies to allow the server to access the session
-        xfbml: true  // parse XFBML
+        xfbml: true, // parse XFBML
+        version          : 'v2.7',
+        frictionlessRequests: true,
+        init: true,
+        level: "debug",
+        signedRequest: null,
+        viewMode: "website",
+        autoRun: true
+
     });
 
     };
+ (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
 
     // Load the SDK Asynchronously
-    (function (d) {
-        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-        if (d.getElementById(id)) {
-            return;
-        }
-        js = d.createElement('script');
-        js.id = id;
-        js.async = true;
-        js.src = "//connect.facebook.net/en_US/all.js";
-        ref.parentNode.insertBefore(js, ref);
-    }(document));
-
     $(document).on('fbStatusChange', function (event, data) {
         if (data.status === 'connected') {
-            FB.api('/me', function (response) {
+            FB.api('/me', {fields: 'email, first_name, last_name'}, function (response) {
                 app.fbuser.set(response);
                 // Store the newly authenticated FB user
                 app.session.profile.trigger("user:facebook-connect", app.fbuser);
@@ -202,22 +205,21 @@ function initFB() {
         app.session.logout();
         return false;
     });
-    
+
     $(document).on('login', function () {
         app.session.reset();
         app.session.enable();
         FB.login(function(response) {
-
-        }, {scope: 'email,publish_actions'});
+        }, {scope: 'email, public_profile'});
         return false;
     });
 }
 
 /** Initialize Disqus if enabled */
 function initDisqus() {
-    if (!App.Settings.commentsEnabled) return false; 
+    if (!App.Settings.commentsEnabled) return false;
 
-    window.disqus_shortname = App.Settings.disqus_shortname;     
+    window.disqus_shortname = App.Settings.disqus_shortname;
 
     var dso   = document.createElement("script");
     dso.type  = "text/javascript";
@@ -228,7 +230,7 @@ function initDisqus() {
 
 /* * * Disqus Reset Function * * */
 var resetDisqus = function (newIdentifier, newUrl, newTitle, newLanguage) {
-    
+
     DISQUS.reset({
         reload: true,
         config: function () {
