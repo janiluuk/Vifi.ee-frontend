@@ -686,7 +686,98 @@ Pagination Styles
 .flowplayer .fp-controls,.flowplayer .fp-title,.flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close,.flowplayer .fp-embed,.flowplayer.aside-time .fp-time{background-color:#000;background-color:rgba(0,0,0,0.65);}
 .no-background.flowplayer .fp-controls,.no-background.flowplayer .fp-title,.no-background.flowplayer .fp-fullscreen,.no-background.flowplayer .fp-unload,.no-background.flowplayer .fp-close,.no-background.flowplayer .fp-embed,.no-background.flowplayer.aside-time .fp-time{background-color:transparent !important;background-image:-webkit-gradient(linear,left top,left bottom,from(transparent),to(transparent)) !important;background-image:-webkit-linear-gradient(top,transparent,transparent) !important;background-image:-moz-linear-gradient(top,transparent,transparent) !important;background-image:-o-linear-gradient(top,transparent,transparent) !important;background-image:linear-gradient(to bottom,transparent,transparent) !important;text-shadow:0 0 1px #000}
 .no-background.flowplayer .fp-play,.no-background.flowplayer .fp-brand{background-color:transparent !important;background-image:-webkit-gradient(linear,left top,left bottom,from(transparent),to(transparent)) !important;background-image:-webkit-linear-gradient(top,transparent,transparent) !important;background-image:-moz-linear-gradient(top,transparent,transparent) !important;background-image:-o-linear-gradient(top,transparent,transparent) !important;background-image:linear-gradient(to bottom,transparent,transparent) !important;text-shadow:0 0 1px #000}
-.flowplayer.fixed-controls .fp-controls{background-color:#000}
+.flowplayer.fixed-controls .fp-controls{background-color:#000;}
+.is-hovered .fp-ui,.is-chromecast .fp-ui,.is-paused .fp-ui,.is-touched .fp-ui{background-image:linear-gradient(to top, rgba(0,0,0,0.5), transparent 15%),linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 20%)}
+.flowplayer{transition:filter .5s}
+.is-chromecast .fp-ui,.is-paused .fp-ui,.is-touched .fp-ui{background-image:linear-gradient(to top, rgba(0,0,0,0.5), transparent 15%),linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 20%)}
+.is-loading-2{filter:blur(6px)}
+
+.flowplayer .fp-chromecast-engine {
+    position: absolute;
+    display: none;
+    z-index:99;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    color: #fff;
+}
+.is-chromecast .fp-chromecast-engine {
+      display: block;
+}
+.fp-chromecast-button{
+  height:1.6em;
+  width:1.8em;
+  display:inline-block;
+  opacity: 0.7;
+  cursor:pointer;
+  transition:transform 0.2s ease-in;margin-left:0.2em;margin-right:0.2em
+}
+.flowplayer .fp-chromecast-engine-status {
+      font-size: 150%;
+}
+.flowplayer .is-chromecast .fp-engine {
+      left: -9999em;
+      top: -9999em;
+      bottom: auto;
+      right: auto;
+}
+.flowplayer .is-chromecast .fp-chromecast-engine { display: block; z-index: 99;}
+
+.flowplayer .fp-chromecast-engine-icon {
+      -webkit-mask-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii4xIi8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+CiAgICA8cGF0aCBkPSJNMSAxOHYzaDNjMC0xLjY2LTEuMzQtMy0zLTN6bTAtNHYyYzIuNzYgMCA1IDIuMjQgNSA1aDJjMC0zLjg3LTMuMTMtNy03LTd6bTE4LTdINXYxLjYzYzMuOTYgMS4yOCA3LjA5IDQuNDEgOC4zNyA4LjM3SDE5Vjd6TTEgMTB2MmM0Ljk3IDAgOSA0LjAzIDkgOWgyYzAtNi4wOC00LjkzLTExLTExLTExem0yMC03SDNjLTEuMSAwLTIgLjktMiAydjNoMlY1aDE4djE0aC03djJoN2MxLjEgMCAyLS45IDItMlY1YzAtMS4xLS45LTItMi0yeiIvPgo8L3N2Zz4=');
+      mask-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii4xIi8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+CiAgICA8cGF0aCBkPSJNMSAxOHYzaDNjMC0xLjY2LTEuMzQtMy0zLTN6bTAtNHYyYzIuNzYgMCA1IDIuMjQgNSA1aDJjMC0zLjg3LTMuMTMtNy03LTd6bTE4LTdINXYxLjYzYzMuOTYgMS4yOCA3LjA5IDQuNDEgOC4zNyA4LjM3SDE5Vjd6TTEgMTB2MmM0Ljk3IDAgOSA0LjAzIDkgOWgyYzAtNi4wOC00LjkzLTExLTExLTExem0yMC03SDNjLTEuMSAwLTIgLjktMiAydjNoMlY1aDE4djE0aC03djJoN2MxLjEgMCAyLS45IDItMlY1YzAtMS4xLS45LTItMi0yeiIvPgo8L3N2Zz4=');
+      -webkit-mask-size: 100% 100%;
+      background-color: #fff;
+      margin: 10% auto 2em;
+      height: 2.5em;
+      width: 2.5em;
+}
+.fp-chromecast {
+    position: absolute;
+    left: 20px;
+    top: 0px;  
+}
+.fp-chromecast .fp-chromecast-button {
+       position: absolute;
+       top: 20%;
+       bottom: 20%;
+       right: 20%;
+       left: 20%;
+       z-index:5;
+       -webkit-mask-size: 100% 100%;
+       background-color: #fff; 
+}
+     .is-active, .is-chromecast .fp-chromecast-button {
+         background-color: #00a7c8;
+      }
+
+      .fp-chromecast .fp-chromecast-button {
+         -webkit-mask-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii4xIi8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+CiAgICA8cGF0aCBkPSJNMSAxOHYzaDNjMC0xLjY2LTEuMzQtMy0zLTN6bTAtNHYyYzIuNzYgMCA1IDIuMjQgNSA1aDJjMC0zLjg3LTMuMTMtNy03LTd6bTE4LTdINXYxLjYzYzMuOTYgMS4yOCA3LjA5IDQuNDEgOC4zNyA4LjM3SDE5Vjd6TTEgMTB2MmM0Ljk3IDAgOSA0LjAzIDkgOWgyYzAtNi4wOC00LjkzLTExLTExLTExem0yMC03SDNjLTEuMSAwLTIgLjktMiAydjNoMlY1aDE4djE0aC03djJoN2MxLjEgMCAyLS45IDItMlY1YzAtMS4xLS45LTItMi0yeiIvPgo8L3N2Zz4=');
+         mask-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii4xIi8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+CiAgICA8cGF0aCBkPSJNMSAxOHYzaDNjMC0xLjY2LTEuMzQtMy0zLTN6bTAtNHYyYzIuNzYgMCA1IDIuMjQgNSA1aDJjMC0zLjg3LTMuMTMtNy03LTd6bTE4LTdINXYxLjYzYzMuOTYgMS4yOCA3LjA5IDQuNDEgOC4zNyA4LjM3SDE5Vjd6TTEgMTB2MmM0Ljk3IDAgOSA0LjAzIDkgOWgyYzAtNi4wOC00LjkzLTExLTExLTExem0yMC03SDNjLTEuMSAwLTIgLjktMiAydjNoMlY1aDE4djE0aC03djJoN2MxLjEgMCAyLS45IDItMlY1YzAtMS4xLS45LTItMi0yeiIvPgo8L3N2Zz4=');
+       }
+
+.is-chromecast {
+     background-color: #333;
+}
+
+.is-chromecast .fp-flash-disabled {
+      display: none !important;
+}
+.is-chromecast .fp-engine{
+      left: -9999em;
+      top: -9999em;
+      bottom: auto;
+      right: auto;
+}
+
+.fp-fullscreen, .fp-unload, .fp-close, .fp-chromecast-engine {
+      display: inline-block;
+      text-align: center;
+      cursor: pointer;
+      margin-left: 0.3em;
+}
+
 .flowplayer .fp-timeline{background-color:#a5a5a5}
 .flowplayer .fp-buffer{background-color:#eee}
 .flowplayer .fp-progress{background-color:#00a7c8}
@@ -751,7 +842,7 @@ Pagination Styles
 .is-embedded.flowplayer .fp-logo{display:block}
 .fixed-controls.flowplayer .fp-logo{bottom:15px}
 .flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close{position:absolute;top:10px;left:auto;right:10px;display:block;width:30px;height:23px;text-align:center;cursor:pointer;height:30px;width:30px;}
-.is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-close{right:auto;left:10px}
+.is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-close  {right:auto;left:10px}
 .flowplayer .fp-unload,.flowplayer .fp-close{display:none}
 .flowplayer .fp-play{display:none;height:30px !important;position:absolute;bottom:0;left:0;text-align:center;}
 .is-rtl.flowplayer .fp-play{left:auto;right:0}
@@ -877,10 +968,10 @@ Pagination Styles
 .flowplayer.is-mouseout .fp-title{overflow:hidden}
 .flowplayer.is-mouseout .fp-timeline{margin:0 !important}
 .flowplayer.is-mouseout .fp-timeline{-webkit-transition:height .15s .3s,top .15s .3s,margin .15s .3s;-moz-transition:height .15s .3s,top .15s .3s,margin .15s .3s;transition:height .15s .3s,top .15s .3s,margin .15s .3s;height:4px;top:0;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}
-.flowplayer.is-mouseout .fp-fullscreen,.flowplayer.is-mouseout .fp-unload,.flowplayer.is-mouseout .fp-elapsed,.flowplayer.is-mouseout .fp-remaining,.flowplayer.is-mouseout .fp-duration,.flowplayer.is-mouseout .fp-embed,.flowplayer.is-mouseout .fp-volume,.flowplayer.is-mouseout .fp-play,.flowplayer.is-mouseout .fp-menu,.flowplayer.is-mouseout .fp-brand,.flowplayer.is-mouseout .fp-timeline-tooltip,.flowplayer.is-mouseout.aside-time .fp-time{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
+.flowplayer.is-mouseout .fp-fullscreen,.flowplayer. .flowplayer.is-mouseout .fp-chromecast-button,.flowplayer.is-mouseout .fp-unload,.flowplayer.is-mouseout .fp-elapsed,.flowplayer.is-mouseout .fp-remaining,.flowplayer.is-mouseout .fp-duration,.flowplayer.is-mouseout .fp-embed,.flowplayer.is-mouseout .fp-volume,.flowplayer.is-mouseout .fp-play,.flowplayer.is-mouseout .fp-menu,.flowplayer.is-mouseout .fp-brand,.flowplayer.is-mouseout .fp-timeline-tooltip,.flowplayer.is-mouseout.aside-time .fp-time{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
 .flowplayer.is-mouseover .fp-controls,.flowplayer.fixed-controls .fp-controls{height:30px}
 .flowplayer.is-mouseover .fp-title,.flowplayer.fixed-controls .fp-title{height:30px}
-.flowplayer.is-mouseover .fp-fullscreen,.flowplayer.fixed-controls .fp-fullscreen,.flowplayer.is-mouseover .fp-unload,.flowplayer.fixed-controls .fp-unload,.flowplayer.is-mouseover .fp-elapsed,.flowplayer.fixed-controls .fp-elapsed,.flowplayer.is-mouseover .fp-remaining,.flowplayer.fixed-controls .fp-remaining,.flowplayer.is-mouseover .fp-duration,.flowplayer.fixed-controls .fp-duration,.flowplayer.is-mouseover .fp-embed,.flowplayer.fixed-controls .fp-embed,.flowplayer.is-mouseover .fp-logo,.flowplayer.fixed-controls .fp-logo,.flowplayer.is-mouseover .fp-volume,.flowplayer.fixed-controls .fp-volume,.flowplayer.is-mouseover .fp-play,.flowplayer.fixed-controls .fp-play,.flowplayer.is-mouseover .fp-menu,.flowplayer.fixed-controls .fp-menu{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
+.flowplayer.is-mouseover .fp-fullscreen,.flowplayer.fixed-controls .fp-fullscreen,.flowplayer.is-mouseover .fp-unload,.flowplayer.is-mouseover .fp-chromecast-button,.flowplayer.fixed-controls .fp-unload,.flowplayer.is-mouseover .fp-elapsed,.flowplayer.fixed-controls .fp-elapsed,.flowplayer.is-mouseover .fp-remaining,.flowplayer.fixed-controls .fp-remaining,.flowplayer.is-mouseover .fp-duration,.flowplayer.fixed-controls .fp-duration,.flowplayer.is-mouseover .fp-embed,.flowplayer.fixed-controls .fp-embed,.flowplayer.is-mouseover .fp-logo,.flowplayer.fixed-controls .fp-logo,.flowplayer.is-mouseover .fp-volume,.flowplayer.fixed-controls .fp-volume,.flowplayer.is-mouseover .fp-play,.flowplayer.fixed-controls .fp-play,.flowplayer.is-mouseover .fp-menu,.flowplayer.fixed-controls .fp-menu{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer.fixed-controls .fp-volume{display:block}
 .flowplayer.fixed-controls .fp-controls{bottom:-30px;}
 .is-fullscreen.flowplayer.fixed-controls .fp-controls{bottom:0}
@@ -1104,6 +1195,7 @@ Pagination Styles
 .flowplayer.is-ready.is-muted .fp-mute{opacity:.5;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50)}
 .flowplayer.is-mouseout .fp-controls{height:0;-webkit-transition:height .15s .3s;-moz-transition:height .15s .3s;transition:height .15s .3s}
 .flowplayer.is-mouseout .fp-timeline{margin:0 !important}
+.flowplayer.is-mouseout .fp-chromecast-button {opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s !important}
 .flowplayer.is-mouseout .fp-timeline{-webkit-transition:height .15s .3s,top .15s .3s,margin .15s .3s;-moz-transition:height .15s .3s,top .15s .3s,margin .15s .3s;transition:height .15s .3s,top .15s .3s,margin .15s .3s;height:4px;top:0;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}
 .flowplayer.is-mouseout .fp-fullscreen,.flowplayer.is-mouseout .fp-unload,.flowplayer.is-mouseout .fp-elapsed,.flowplayer.is-mouseout .fp-remaining,.flowplayer.is-mouseout .fp-duration,.flowplayer.is-mouseout .fp-embed,.flowplayer.is-mouseout .fp-volume,.flowplayer.is-mouseout .fp-play{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
 .flowplayer.is-mouseover .fp-controls,.flowplayer.fixed-controls .fp-controls{height:20px}

@@ -377,6 +377,7 @@ engineImpl = function flashEngine(player, root) {
       api;
 
    var win = window;
+   var suspended;
 
    var engine = {
       engineName: engineImpl.engineName,
@@ -400,6 +401,14 @@ engineImpl = function flashEngine(player, root) {
         if (source.src && !isAbsolute(source.src) && !player.conf.rtmp && !source.rtmp) source.src = common.createAbsoluteUrl(source.src);
         return source;
       },
+
+      suspendEngine: function() {
+        suspended = true;
+      },
+      resumeEngine: function() {
+        suspended = false;
+      },
+
 
       load: function(video) {
          loadVideo = video;
@@ -533,7 +542,8 @@ engineImpl = function flashEngine(player, root) {
 
 
             api.pollInterval = setInterval(function () {
-               if (!api) return;
+               if (!api || suspended) return;
+
                var status = api.__status ? api.__status() : null;
 
                if (!status) return;
@@ -1066,6 +1076,7 @@ flowplayer.engines.push(engine);
 var flowplayer = _dereq_('../flowplayer'),
     TYPE_RE = _dereq_('./resolve').TYPE_RE,
     scriptjs = _dereq_('scriptjs'),
+    common = _dereq_('../common'),
     bean = _dereq_('bean');
 flowplayer(function(player, root) {
 
@@ -1135,7 +1146,141 @@ flowplayer(function(player, root) {
 
 });
 
-},{"../flowplayer":18,"./resolve":13,"bean":20,"scriptjs":29}],6:[function(_dereq_,module,exports){
+flowplayer(function(api, root) {
+  scriptjs('https://www.gstatic.com/cv/js/sender/v1/cast_sender.js');
+  window['__onGCastApiAvailable'] = function(loaded) {
+    if (!loaded) return;
+    initialize();
+  };
+
+  var conf = api.conf.chromecast || {}
+    , session
+    , timer;
+
+  function initialize() {
+    var applicationId, sessionRequest, apiConfig;
+    applicationId = conf.applicationId || chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID;
+    sessionRequest = new chrome.cast.SessionRequest(applicationId);
+    apiConfig = new chrome.cast.ApiConfig(
+      sessionRequest,
+      sessionListener,
+      receiverListener
+    );
+    chrome.cast.initialize(apiConfig, onInitSuccess, onError);
+  }
+
+  function sessionListener() {
+    console.log('sessionListener');
+  }
+
+  function receiverListener(ev) {
+    if (ev !== "available") return;
+    createUIElements();
+  }
+
+  function onInitSuccess() {
+    /* noop */
+  }
+
+  function onError(err) {
+    console.log(err);
+  }
+
+  function createUIElements() {
+    var btnContainer = common.find('.fp-ui', root)[0];
+    common.find('.fp-chromecast', btnContainer).forEach(common.removeNode);
+    common.find('.fp-chromecast-engine', root).forEach(common.removeNode);
+        var trigger = common.createElement('a', { 'class': 'fp-chromecast', title: 'Play on Cast device'})
+      , btn = common.createElement('span', { 'class': 'fp-chromecast-button' });
+    trigger.appendChild(btn);
+
+    btnContainer.insertBefore(trigger, common.find('.fp-fullscreen', btnContainer)[0]);
+    var chromeCastEngine = common.createElement('div', { 'class': 'fp-chromecast-engine' })
+      , chromeCastStatus = common.createElement('p', { 'class': 'fp-chromecast-engine-status' })
+      , chromeCastIcon = common.createElement('p', { 'class': 'fp-chromecast-engine-icon' });
+    chromeCastEngine.appendChild(chromeCastIcon);
+    chromeCastEngine.appendChild(chromeCastStatus);
+    var engine = common.find('.fp-engine', root)[0];
+    if (!engine) common.prepend(common.find('.fp-player', root)[0] || root, chromeCastEngine);
+    else engine.parentNode.insertBefore(chromeCastEngine, engine);
+
+  }
+
+  function destroy() {
+    clearInterval(timer);
+    timer = null;
+    api.release();
+    common.toggleClass(root, 'is-chromecast', false);
+  }
+
+  bean.on(root, 'click', '.fp-chromecast', function(ev) {
+    ev.preventDefault();
+    if (session) {
+
+      api.trigger('pause', [api]);
+      session.stop();
+      session = null;
+      destroy();
+      return;
+    } else {
+      destroy();
+        
+        common.toggleClass(root, 'is-chromecast', false);
+    }
+
+    if (api.playing) api.pause();
+    chrome.cast.requestSession(function(s) {
+      session = s;
+      var receiverName = session.receiver.friendlyName;
+      common.html(common.find('.fp-chromecast-engine-status')[0], 'Playing on device ' + receiverName);
+      var mediaInfo = new chrome.cast.media.MediaInfo(api.video.src);
+
+      var request = new chrome.cast.media.LoadRequest(mediaInfo);
+
+      session.loadMedia(request, onMediaDiscovered, function onMediaError(error) { destroy(); console.log(error)});
+
+      function onMediaDiscovered(media) {
+        media.addUpdateListener(function(alive) {
+          if (!session) return; // Already destoryed
+          timer = timer || setInterval(function() {
+            console.log(session);
+             api.trigger('progress', [media, api, media.getEstimatedTime()]);
+          }, 500);
+          if (!alive) {
+            destroy();
+            api.trigger('finish', [api]);
+          } else {
+            common.toggleClass(root, 'is-chromecast', true);
+            api.hijack({
+              pause: function() {
+                media.pause();
+              },
+              resume: function() {
+                media.play();
+              },
+              seek: function(time) {
+                var req = new chrome.cast.media.SeekRequest();
+                req.currentTime = time;
+                media.seek(req);
+              }
+            });
+          }
+          var playerState = media.playerState;
+          if (api.paused && playerState === chrome.cast.media.PlayerState.PLAYING) api.trigger('resume', [api]);
+          if (api.playing && playerState === chrome.cast.media.PlayerState.PAUSED) api.trigger('pause', [api]);
+          common.toggleClass(root, 'is-loading', playerState === chrome.cast.media.PlayerState.BUFFERING);
+        }.bind(this));
+      }
+    }.bind(this), function(err) {
+      console.error('requestSession error', err);
+                  destroy();
+    });
+  });
+
+});
+
+
+},{"../common":1,"../flowplayer":18,"./resolve":13,"bean":20,"scriptjs":29}],6:[function(_dereq_,module,exports){
 'use strict';
 var flowplayer = _dereq_('../flowplayer'),
     ClassList = _dereq_('class-list'),
@@ -3224,6 +3369,21 @@ function initializePlayer(element, opts, callback) {
          rtl: isRTL,
 
          // methods
+
+         //
+         hijack: function(hijack) {
+            try {
+              api.engine.pause();
+            } catch (e) { /* */ }
+            api.hijacked = hijack;
+         },
+         release: function() {
+            try {
+              api.engine.resume();
+            } catch (e) { /* */ }
+            api.hijacked = false;
+         },
+
          load: function(video, callback) {
 
             if (api.error || api.loading) return;
@@ -3273,6 +3433,8 @@ function initializePlayer(element, opts, callback) {
          },
 
          pause: function(fn) {
+            if (api.hijacked) return api.hijacked.pause(fn) | api;
+
             if (api.ready && !api.seeking && !api.loading) {
                engine.pause();
                api.one("pause", fn);
@@ -3281,6 +3443,7 @@ function initializePlayer(element, opts, callback) {
          },
 
          resume: function() {
+            if (api.hijacked) return api.hijacked.resume() | api;
 
             if (api.ready && api.paused) {
                engine.resume();
@@ -3305,12 +3468,16 @@ function initializePlayer(element, opts, callback) {
             seek(false) -> 10% backward
          */
          seek: function(time, callback) {
-            if (api.ready && !api.live) {
+            if (typeof time == "boolean") {
+               var delta = api.video.duration * 0.1;
+               time = api.video.time + (time ? delta : -delta);
+               time = Math.min(Math.max(time, 0), api.video.duration - 0.1).toFixed(1);
+            }
+            if (api.hijacked) return api.hijacked.seek(time, callback) | api;
 
-               if (typeof time == "boolean") {
-                  var delta = api.video.duration * 0.1;
-                  time = api.video.time + (time ? delta : -delta);
-               }
+            if (api.ready && !api.live) {
+               lastSeekPosition = time;
+
                time = lastSeekPosition = Math.min(Math.max(time, 0), api.video.duration - 0.1).toFixed(1);
                var ev = api.trigger('beforeseek', [api, time], true);
                if (!ev.defaultPrevented) {

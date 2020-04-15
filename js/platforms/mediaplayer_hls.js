@@ -44,7 +44,8 @@ try {
         flowplayer('#'+ this.playerId, {
             defaultQuality: "720p",
             adaptiveRatio: true,
-            hlsFix: true,
+            hlsFix: false,
+            autoPlay: true,
             engine: 'html5',
             embed: false,
             clip: sources
@@ -76,8 +77,9 @@ try {
                 _this.trigger("mediaplayer:onbeforeseek");
             });
             api.resume();
-
-           $("#"+_this.playerId+ " a").remove();
+            $(".flowplayer a.fp-brand").remove();
+            $(".flowplayer a[href*='flowplayer.org']").remove();
+        
         }.bind(this));
 
 }

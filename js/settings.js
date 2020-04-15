@@ -2,9 +2,10 @@ App.Settings = {
     // properties
         version: '011016',
         sitename: 'Vifi',
-        domain: 'vifi.ee',        
+        domain: 'vifi.ee',
         skin: 'vifi',
-        cookie_name: 'vifi_session',        
+        cookie_name: 'vifi_session',
+        anonymous_username: 'anonymous@vifi.ee',
         debug: false,
         commentsEnabled: true,
         sortingEnabled: true,
@@ -12,69 +13,71 @@ App.Settings = {
         language: 'est',
         featured_slides_limit: 6,
         featured_slides_randomize: true,
-        featured_slides_autoplay_interval : 6000,        
-        initial_film_amount: 300,        
+        featured_slides_autoplay_interval : 6000,
+        initial_film_amount: 300,
         google_analytics_enabled: true,
         google_analytics_code: 'UA-33921368-1', //UA-66018559-1',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         disqus_shortname: 'vifi',
         image_optimizer_enabled: true,
-        image_optimiser_url: '//gonzales.vifi.ee/files/images/image.php',
-
+        image_optimiser_url: '//dev.vifi.ee/files/images/image.php',
         page_change_callback: function(title, parameters) {
         },
-        
+        Payment: {
+            'default_method' : 'code',
+            'mobile' : {'autostart' : true }
+        },
         /** Player Settings **/
 
         Player:  {
             flowplayer_flash_key:  '#$05466e2f492e2ca07a3',
-            flowplayer_html5_key: '$202296466927761',            
-            hls_url: '//media.vifi.ee:1935/tv',
+            flowplayer_html5_key: '$202296466927761',
+            hls_url: '//media.vifi.ee/vod/_definst_',
             mp4_url: '//gonzales.vifi.ee/zsf/',
             rtmp_url: 'rtmp://media.vifi.ee/vod',
-            speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',    
-            subtitles_url: '//www.vifi.ee/subs/'
+            speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
+            subtitles_url: '//beta.vifi.ee/subs/'
         },
 
         /** API Settings **/
 
         Api: {
-            url: '//gonzales.vifi.ee/api/',
-            key: '298fh23hhdff11'
+            url: '//dev.vifi.ee/api/',
+            key: '298fh23hhdff112'
         },
 
         /** Search Settings **/
 
         Search: {
 
-            default_query_params: { 
+            default_query_params: {
                   totalPages: null,
                   totalRecords: null,
                   sortKey: 'sort',
                   limit: 400
             },
- 
+
             // Initial pagination states
             // You can remap the query parameters from `state` keys from
             // the default to those your server supports
 
-            default_search_state: { 
-                q:'', 
-                genres: undefined, 
-                periods: undefined, 
+            default_search_state: {
+                q:'',
+                genres: undefined,
+                periods: undefined,
                 durations: undefined
             },
 
-            default_pagination_state: { 
+            default_pagination_state: {
                 pageSize: 12,
                 sortKey: 'updated_at',
-                order: 1,
+                order: 0,
             }
         }
 }
 
-App.Translations = { 
-        'est' : { 
+App.Translations = {
+        'est' : {
             'Eesti' : 'Eesti',
             'English' : 'Inglise',
             'Clear' : 'Puhasta',
@@ -85,8 +88,8 @@ App.Translations = {
             'You have registered successfully' : 'Registreerimine õnnestus',
             'Fill all the fields' : 'Täida kõik väljad',
             'Passwords do not match' : 'Paroolid pole samad',
-    	    'Thank you' : 'Tänud!',
-	        'No' : 'Ei',
+            'Thank you' : 'Tänud!',
+            'No' : 'Ei',
             'Yes' : 'Jah',
             'Invalid code' : 'Vale kood',
             'All Genres' : 'Kõik genred',
@@ -106,15 +109,15 @@ App.Translations = {
             'Format error':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'System malfunction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Time out waiting for response':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
-            'Duplicate transaction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega', 
+            'Duplicate transaction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Original transaction missing' :'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Transaction in progress' :'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega'
         },
-        'en' : { 
+        'en' : {
             'eesti' : 'Estonian',
             'english' : 'English',
             'No results' : 'Ei tulemusi',
             'Timed out' : 'Timed out'
         }
- 
+
 }
