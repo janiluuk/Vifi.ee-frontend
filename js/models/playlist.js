@@ -3,8 +3,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
 
     path: function() { return 'content/'+this.get("id"); },
     params: {},
-    
-    defaults: function() { 
+
+    defaults: function() {
         return {
             'id': false,
             'videos': [{
@@ -22,7 +22,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
                 'code': '',
                 'language': ''
             }],
-            session: {  } 
+            session: {  }
         }
     },
 
@@ -36,11 +36,11 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.on("change:subtitles", this.onLoadSubtitles, this);
 
     },
-    
+
     /*
      * Fetch Film session and auth code from the user ticket if they exist
      */
-     
+
     onSessionLoad: function(id) {
         this.params = {};
         if (id) { 
@@ -51,7 +51,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     },
     /*
      * Reset content items to defaults
-     */    
+     */
     resetContent: function() {
         this.set("videos", false);
         this.set("subtitles", false);
@@ -62,12 +62,12 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
      * Load defined film content to the player
      *
      * @param int id - Id of the content to be included
-     * @return jQuery.deferred 
-     * 
+     * @return jQuery.deferred
+     *
      */
 
     load: function (id) {
-     
+
         this.set("id", id);
         this.onSessionLoad(id);
 
@@ -76,13 +76,12 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.fetch().done(function() { deferred.resolve(); }).error(function(){
             deferred.reject();
         });
-        
+
         return deferred.promise();
     },
     onLoadContent: function(event) {
 
         $log(this.get("videos"));
-        
         if (this.get("videos").length > 0)
             this.trigger("content:ready", this.get("videos"));
 
@@ -101,22 +100,22 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.trigger("content:session:loaded", this.get("session"));
 
     },
-    
+
     /*
      * Add subtitles to the content as their own collection
      * @param array
-     * 
+     *
      */
 
-    addVideos: function(videos) {  
+    addVideos: function(videos) { 
       var videofiles = [];
-        _.each(videos, function(video) {  
+        _.each(videos, function(video) { 
 
           var videofile = new App.Player.VideoFile();
             videofile.set("bitrate", video.bitrate);
             videofile.set("src", video.mp4);
             videofile.set("profile", video.profile);
-            videofiles.push(videofile);            
+            videofiles.push(videofile);
         });
         var collection = new App.Player.VideoFileCollection(videofiles);
         this.set("videos", collection);
@@ -127,22 +126,22 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     /*
      * Add subtitles to the content as their own collection
      * @param array
-     * 
+     *
      */
 
-    addSubtitles: function(subtitles) {  
+    addSubtitles: function(subtitles) { 
         var subs = [];
-        _.each(subtitles, function(video) {  
+        _.each(subtitles, function(video) { 
           var subtitle = new App.Player.SubtitleFile();
             subtitle.set("language", video.language);
             subtitle.set("file", video.file);
             subtitle.set("code", video.code);
-            subs.push(subtitle);            
+            subs.push(subtitle);
         });
         var collection = new App.Player.SubtitleFileCollection(subs);
-        this.set("subtitles", collection);        
+        this.set("subtitles", collection);
         this.trigger("content:subtitles:loaded", content);
-    }    
+    }
 });
 
 App.Player.FilmContent = App.Models.ApiModel.extend({
@@ -171,13 +170,13 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
         'session': { },
         }
     },
-    
+
     /**
      *  Parameters:
      *  film - Instance of a film.
      *  ticket - ticket for watching the content
      *  session - User session
-     * 
+     *
      */
     initialize: function(options) {
 
@@ -189,7 +188,7 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
               this.set("filmsession", options.film.get("ticket").get("filmsession"));
             }
         }
-        
+
         if (options && undefined !== options.session) {
             this.set("filmsession", options.session);
         }
@@ -212,61 +211,61 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
          this.trigger("content:loaded", data);
         }.bind(this)).error(
         function(data) {
-         this.trigger("content:error", data); 
+         this.trigger("content:error", data);
        }.bind(this));
 
     },
-    onContentLoaded: function(data) { 
+    onContentLoaded: function(data) {
         this.parse(data);
         alert("content loaded");
-      
+
     },
-    parse: function(results) { 
-      
+    parse: function(results) {
+
         this.addSession(results.sessiondata);
         this.addVideos(results.videos);
         this.addSubtitles(results.subtitles);
         return results;
-    }, 
+    },
     addSession: function(session) {
         var sess = new App.User.FilmSession(session);
         this.set("filmsession", sess);
         this.trigger("content:session:loaded", this.get("session"));
 
     },
-    addVideos: function(videos) {  
+    addVideos: function(videos) { 
       var videofiles = [];
-        _.each(videos, function(video) {  
+        _.each(videos, function(video) { 
 
           var videofile = new App.Player.VideoFile();
             videofile.set("bitrate", video.bitrate);
             videofile.set("src", video.mp4);
             videofile.set("profile", video.profile);
-            videofiles.push(videofile);            
+            videofiles.push(videofile);
         });
         var collection = new App.Player.VideoFileCollection(videofiles);
         this.set("videos", collection);
         this.trigger("content:videos:loaded", this.get("videos"));
 
     },
-    addSubtitles: function(subtitles) {  
+    addSubtitles: function(subtitles) { 
       var subs = [];
-        _.each(subtitles, function(video) {  
+        _.each(subtitles, function(video) { 
 
           var subtitle = new App.Player.SubtitleFile();
             subtitle.set("language", video.language);
             subtitle.set("file", video.file);
             subtitle.set("code", video.code);
-            subs.push(subtitle);            
+            subs.push(subtitle);
         });
         var collection = new App.Player.SubtitleFileCollection(subs);
-        this.set("subtitles", collection);        
+        this.set("subtitles", collection);
         this.trigger("content:subtitles:loaded", this.get("subtitles"));
     }
 });
 
 
-App.Player.VideoFile = Backbone.Model.extend({ 
+App.Player.VideoFile = Backbone.Model.extend({
   defaults: { 
     bitrate: false,
     src: false,
@@ -275,8 +274,8 @@ App.Player.VideoFile = Backbone.Model.extend({
     resolution: false,
     selected: false
   },
-  getPlaylist: function() { 
-      
+  getPlaylist: function() {
+
       var file = this.get("src");
       if (!file) return false;
 
@@ -288,13 +287,14 @@ App.Player.VideoFile = Backbone.Model.extend({
                 type: 'video/mp4',
                 src: mp4_url,
                 mp4: mp4_url
-            }, 
+            },
             {
                 type: 'application/x-mpegurl',
                 mpegurl: mpegurl,
-                src: mpegurl
+                src: mpegurl,
 
-            }, 
+
+            },
             {
                 type: 'video/flash',
                 flash: 'mp4:' + file.replace('.mp4', ''),
@@ -310,13 +310,13 @@ App.Player.VideoFileCollection = Backbone.Collection.extend({
 
     findMinBitrate : function(min_bitrate) { 
       var items = this.filter(function(item) { if (item.get("bitrate") < min_bitrate) return item; });
-      if (_.size(items) == 0) { 
-          
+      if (_.size(items) == 0) {
+
           items.push(this.getLowest());
       }
       return items;
     },
-    findClosestBitrate: function(bitrate) { 
+    findClosestBitrate: function(bitrate) {
         var collection = this.findMinBitrate(bitrate);
         var curr = collection[0];
         if (collection.size == 1) return curr;
@@ -343,11 +343,11 @@ App.Player.VideoFileCollection = Backbone.Collection.extend({
 
 
 App.Player.SubtitleFile = Backbone.Model.extend({
-    defaults: { 
+    defaults: {
       'filename' : '',
       'code' : '',
       'language': '',
-      'active' : false      
+      'active' : false
     }
 });
 App.Player.SubtitleFileCollection = Backbone.Collection.extend({
@@ -363,30 +363,30 @@ App.Player.Playlist = Backbone.Collection.extend({
       currentIndex : 0
     },
     setCurrentIndex : function(index) {
-      if (undefined == typeof(this.models[index])) return false; 
+      if (undefined == typeof(this.models[index])) return false;
       $log("Playlist index set to: " + index);
       this.set("currentIndex", index);
       this.set("activeItem", this.models[index]);
       return true;
     },
-    isLast: function() { 
+    isLast: function() {
       return this.get("currentIndex")+1 == this.size();
     },
     isLooping: function() {
         return this.get("looping");
     },
     loop: function(toLoop) {
-        this.looping = !!toLoop; // force a boolean
-    },    
-    currentItem: function() { 
+        this  loopoping = !!toLoop; // force a boolean
+    },
+    currentItem: function() {
         var currentIndex = this.get("currentIndex");
         var item = this.models[currentIndex];
         return item;
     },
-    currentIndex: function() { 
+    currentIndex: function() {
       return this.get("currentIndex");
     },
-    hasNext: function() { 
+    hasNext: function() {
       var next = this.get("currentIndex")+1;
       return (undefined == typeof(this.models[next])) ? false : true;
     },
@@ -400,7 +400,7 @@ App.Player.Playlist = Backbone.Collection.extend({
         if (!this.isLooping()) return null;
       }
       this.setCurrentIndex(this.currentIndex() + 1);
-      var item = this.currentItem(); 
+      var item = this.currentItem();
       return file;
     }
 });

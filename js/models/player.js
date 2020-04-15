@@ -10,6 +10,8 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     ratio: 9 / 16,
     initialize: function(options) {
         if (this.ready) return false;
+        _.bindAll(this, 'load');
+
         this.content = new App.Models.FilmContent({
             session: options.session
         });
@@ -21,8 +23,8 @@ App.Player.MediaPlayer = Backbone.Model.extend({
             this.set("movie", options.movie);
             this.load(options.movie);
         }
+
         this.player = App.MediaPlayer;
-        _.bindAll(this, 'load');
 
         this.content.on('subtitles:ready', this.onSubtitlesReady, this);
         this.content.on("content:ready", this.onContentReady, this);
@@ -63,24 +65,25 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
     onContentReady: function(content) {
 
-        this.content.set("endingtidia", this.getEndingTime(this.content.get("running_time")));
+        this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
         var _this = this;
-        this.player.speedtest(function() {
+        _this.playlist.addFiles(_this.content);
 
-            _this.playlist.addFiles(_this.content);
+        this.player.speedtest(function(bitrate) {
+
+
+
             if (_this.player.init(_this.playlist)) {
-                
                 var files = _this.playlist.getPlaylistFiles();
                 var file = "";
                 if (files) {
                     file = files[0].mp4;
                 }
-
                 app.router.trigger("action", "player", "play", "Playing content " + file);
                 _this.trigger("player:ready", _this.content);
 
             }
-        }.bind(this.player));
+        }.bind(this));
 
     },
     onSubtitlesChange: function(code) {
@@ -159,7 +162,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         return App.Utils.minutesToTime(duration);
     },
     getCurrentTime: function() {
-        return this.player.getCurrentTime();
+        return this.player.getCurrentTime() > 0 ? this.player.getCurrentTime() : 0;
     },
     updateCurrentTime: function() {
         var currentTime = App.Player.getCurrentTime();
@@ -196,7 +199,7 @@ App.Player.Platforms.Core = {
     speedtest: function(callback) {
         callback = callback || $noop;
         if (!App.Settings.Player.speedtest_url) {
-            callback();
+            if (callback) callback();
             return;
         }
         //$log(" ___ PERFORMING SPEEDTEST ___ ");
@@ -208,9 +211,11 @@ App.Player.Platforms.Core = {
         function getResults() {
             //  $log(" ___ SPEEDTEST SUCCESS ___ ");
             var duration = Math.round((endTime - startTime) / 1000);
+            if (duration === 0 ) duration = 1;
             var bitsLoaded = _this._testSize * 8;
             var speedBps = Math.round(bitsLoaded / duration);
             var bitrate = (speedBps / 1024).toFixed(2);
+
             if (parseInt(bitrate) > 100) _this.userBitrate = bitrate;
             if (callback) callback(bitrate);
 
@@ -222,6 +227,7 @@ App.Player.Platforms.Core = {
             getResults();
         }
         download.src = imageAddr;
+
     },
     setVideoElement: function(element) {
         this._videoElement = $(element);
@@ -257,7 +263,7 @@ App.Player.Platforms.Core = {
         $(this._videoElement).show();
     },
     setCurrentIndex: function(index) {
-        $log(" Setting current Index ");
+        $log(" Setting current Index to "+index);
         if (this.playlist) {
             this.currentIndex = index;
             this.playlist.setCurrentIndex(index);
@@ -404,7 +410,7 @@ App.Player.Playlist = function() {
     this.looping = true;
     /*
     A Playlist Format, an Array of Arrays of Hashes
-    
+
     [
         {
             // First Video
@@ -424,7 +430,7 @@ App.Player.Playlist = function() {
             ]
         }
     ]
-    
+
     */
     this.resetIndex = function() {
         this.currentIndex = 0;
@@ -439,7 +445,6 @@ App.Player.Playlist = function() {
             if (!this.looping) return null;
         }
         this.setCurrentIndex(this.currentItemIndex() + 1);
-
         // Should be the largest bitrate
         var file = this.getPlaylistItem(this.files[this.currentIndex]);
 
@@ -476,6 +481,7 @@ App.Player.Playlist = function() {
     },
     this.getPlaylistFiles = function() {
         var content = this.nextFile();
+
         var files = this.generatePlaylistItem(content.mp4);
         return files;
     }
@@ -489,14 +495,23 @@ App.Player.Playlist = function() {
         if (file[0] == '/') file = file.substring(1);
         var mp4_url = App.Settings.Player.mp4_url + file;
         var mpegurl = App.Settings.Player.hls_url + '/' + file + '/playlist.m3u8'
-        var playlist_item = [{
-            mp4: mp4_url
-        }, {
-            mpegurl: mpegurl
+        var playlist_item = [
 
-        }, {
-            flash: 'mp4:' + file.replace('.mp4', '')
-        }, ];
+            {
+                type: 'application/x-mpegurl',
+                mpegurl: mpegurl,
+                src: mpegurl,
+
+            },
+
+            {
+                type: 'video/flash',
+                flash: 'mp4:' + file.replace('.mp4', ''),
+                src: 'mp4:' + file.replace('.mp4', '')
+
+            }
+        ];
+
         return playlist_item;
     },
     this.addFiles = function(files) {

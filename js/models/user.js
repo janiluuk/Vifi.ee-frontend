@@ -529,8 +529,11 @@ App.User.Session = Backbone.Model.extend({
         if (access_token && password == "") password = access_token;
         if (!this.isLoggedIn()) {
             this.reset();
+            var params = ["get_token", email, password];
+            if (password == "")
+            var params = ["get_token", email];
 
-            app.api.call(["get_token", email, password], {}, function(data) {
+            app.api.call(params, {}, function(data) {
                 if (data.status == "ok") {
                     if (data.token) {
                         this.set("auth_id", data.token);
@@ -649,9 +652,8 @@ App.User.Session = Backbone.Model.extend({
         if (this.profile.isAnonymous() !== true) {
             this.set("logged_in", true);
             this.cookie.write(this.get("user_id"), this.get("auth_id"), this.get("session_id"));
-            this.trigger("user:login:success", this.get("user_id"));
-
         }
+        this.trigger("user:login:success", this.get("user_id"));
 
         this.disable();
     },

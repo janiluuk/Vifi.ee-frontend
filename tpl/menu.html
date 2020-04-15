@@ -1,7 +1,7 @@
 <script type="text/html" id="topmenuTemplate">
 
     <div id="toolbar-left-group">
-       {{#if profile_picture}} 
+       {{#if profile_picture}}
         <div id="menu-dragger" class="float_left" style="background-image: url({{profile_picture}}?width=90&height=90); background-size: auto 45px;"></div>
         {{else}}
         <div id="menu-dragger" class="menu-icon float_left" style="background-image: url('style/img/menu-icon.png'); background-size: 90px;"></div>
@@ -29,7 +29,7 @@
 <script type="text/html" id="sidemenuTemplate">
 
             <div id="side-menu" class="snap-drawer snap-drawer-left">
-                        {{#if name}}                       
+                        {{#if name}}
                         <h3>{{ name }}</h3>
                         <ul class="side-menu-list">
                             <a href="#me" id="menu-me"><li>Minu konto</li></a>
@@ -38,7 +38,7 @@
                             <a class="logout" href="#"><li>Logi välja </li></a>
                         </ul>
                         {{else}}
-                        
+
 
                         <div id="login-register-form">
                             {{>fbLoginPartial}}
@@ -54,13 +54,14 @@
                         <h3>24/7 tugitelefon:</h3>
                         <ul class="side-menu-list">
                             <li id="hotline-number">58 667 570</li>
-                        </ul>                        
+                        </ul>
 
                         <h3>Tugi</h3>
                         <ul class="side-menu-list" id="side-menu-content-pages">
-                  
+
                             <a id="menu-termsandconditions" href="#/page/terms-and-conditions"><li>Kasutustingimused</li></a>
                             <a id="menu-faq" href="#/page/faq"><li>Korduma kippuvad küsimused</li></a>
+                            <a id="menu-gdpr" href="#/page/gdpr"><li>Isikuandmete käitlemine</li></a>
                             <a id="menu-watchfilmsfromtv" href="#/page/watch-films-from-tv" href="#"><li>Filmi vaatamine läbi teleri</li></a>
                             <a id="menu-contact" href="#contact"><li>Tagasiside</li></a>
                         </ul>
@@ -74,6 +75,6 @@
                             <a href="https://www.facebook.com/pages/Vifiee/385723814833754" target="_blank"><li id="facebook"></li></a>
                             <a href="https://twitter.com/vifi_ee" target="_blank"><li id="twitter"></li></a>
                             <a href="https://www.vifi.ee/feed" target="_blank"><li id="rss"></li></a>
-                        </ul>                        
+                        </ul>
             </div>
         </script>

@@ -6,19 +6,18 @@ window.$noop = function(input) {
 }
 
 window.$log = function(log) { 
-    if (App.Settings.debug === true) { 
-        if (typeof(log)== "object") { 
+    if (App.Settings.debug === true) {
+        if (typeof(log)== "object") {
             log = JSON.stringify(log);
         }
         app.trigger("flash", log, 4000);
-
     }
-    
+
 };
 
 window.$error = function(log) { 
-    if (App.Settings.debug === true) { 
-        if (typeof(log)== "object") { 
+    if (App.Settings.debug === true) {
+        if (typeof(log)== "object") {
             log = JSON.stringify(log);
         }
         app.trigger("error", log);
@@ -42,7 +41,7 @@ App.Platforms = {
     },
 
     init: function() {
- 
+
         _.each(this.supportedPlatforms, function(platform) {
             if (!platform.defaultPlatform && platform.detectPlatform()) {
 
@@ -70,7 +69,7 @@ App.Platforms = {
 App.Platform = function(name) {
     this.name = name;
     this.defaultPlatform = true;
-    this._mediaPlayer = "html5";
+    this._mediaPlayer = "hls";
 
     this.start = $noop;
     this.exit = $noop;
@@ -128,12 +127,12 @@ App.Platform.prototype.fetchMediaPlayer = function() {
         //$log("Adding media player path: " + path);
         $('<script async src="'+path+'" type="text/javascript"></script>').appendTo("head");
         var pluginpath = "js/vendor/flowplayer."+this._mediaPlayer.toLowerCase()+".js";
-            // $log("Adding flowplayer path: " + path);
+             $log("Adding flowplayer path: " + pluginpath);
             $("<script/>", {
                 src: pluginpath,
                 type: 'text/javascript'
             }).appendTo("head");
-               
+
     }
 }
 
@@ -173,7 +172,7 @@ App.Platform.prototype.addPlatformCSS = function() {
 
 }
 
-// Override this 
+// Override this
 App.Platform.prototype.detectPlatform = function() {
     if (!this.defaultPlatform) $log(" <<< PLATFORM MUST OVERRIDE THE DETECT PLATFORM METHOD >>>");
 }
@@ -197,12 +196,12 @@ _.extend(App.Platform.prototype, Backbone.Events);
     var browser = new App.Platform('browser');
     // browser.needsProxy = true;
     // We want this to fail, and get added as default
-    
+
     browser.setResolution(window.screen.width, window.screen.height);
     browser.defaultPlatform = true;
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("html5");
-    
+    browser.setMediaPlayer("hls");
+
 }());
 
 (function() {
@@ -214,37 +213,37 @@ _.extend(App.Platform.prototype, Backbone.Events);
     };
     browser.updateScreen = function(silent) {
         var orientation = this.getDeviceOrientation();
-        if (typeof(screen) != "undefined") { 
+        if (typeof(screen) != "undefined") {
             window.screen.availWidth = $(window).width();
             window.screen.availHeight = $(window).height();
         }
 
         this.setResolution(screen.availWidth, screen.availHeight);
         if (!silent) this.trigger("screen:resize", screen.availWidth, screen.availHeight);
-        
+
         if (orientation != this.orientation) {
-                this.orientation = orientation;                
+                this.orientation = orientation;
                 if (!silent) this.trigger("screen:orientation:change", this.orientation);
         }
 
-        
+
     };
     browser.init = function() {
-        $(window).on('resize', function(e) { 
+        $(window).on('resize', function(e) {
             this.updateScreen();
            // alert("screen changed to "+this.matrix()+" "+this.orientation);
         }.bind(browser));
         this.updateScreen(true);
 
-    };  
+    };
     window.addEventListener("orientationchange", this.updateScreen);
 
     browser.setResolution($(window).outerWidth(), $(window).outerHeight());
 
     browser.defaultPlatform = false;
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("html5");
-   
+    browser.setMediaPlayer("hls");
+
 }());
 
 /* The second default platform "flash" */

@@ -12,43 +12,47 @@ App.MediaPlayer = {
     wasMuted: false,
     bitrate: false,
     allowFastFoward: true,
+    player: false,
+
     _eventsToTrack: ['error', 'finish', 'fullscreen', 'fullscreen-exit', 'progress', 'seek', 'pause', 'unload', 'resume', 'ready', 'volume'],
     init: function(playlist) {
+
         if (playlist) this.setPlaylist(playlist);
-        var _this = this;
+
         this._videoElement = $("#" + this.playerId);
+
         if (this._videoElement.length == 0) {
             this._videoElement = $("<div>").attr("id", this.playerId).appendTo("#movie-player-container");
         }
 
-        return this._createPlayer();
+        this._createPlayer();
 
+        return true;
     },
     getCurrentTime: function() {
         if (this.plugin) return this.plugin.video.time * 1000;
     },
     _createPlayer: function() {
+
         if (this._active) return false;
         if (!this.playlist) return false;
-        var playlist = this.playlist.nextFile();
+try {
 
         var playlistFiles = this.playlist.getPlaylistFiles();
         var _this = this;
-console.log(playlistFiles);
-
-        this.player = this._videoElement.flowplayer({
-            rtmp: 0,
+        var sources = {sources: playlistFiles};
+        flowplayer('#'+ this.playerId, {
+            defaultQuality: "720p",
             adaptiveRatio: true,
+            hlsFix: true,
             engine: 'html5',
-	        key: App.Settings.flowplayer_html5_key,
-            preload: "auto",
             embed: false,
-            playlist: playlistFiles,
-        }).one('ready', function(ev, api, video) {
+            clip: sources
+        }, function(ev,api) {
+
             var video = api.video;
-
-
             _this.plugin = api;
+
             _this.active();
 
             _this.trigger("mediaplayer:ratio:change", video);
@@ -72,9 +76,15 @@ console.log(playlistFiles);
                 _this.trigger("mediaplayer:onbeforeseek");
             });
             api.resume();
-        });
 
-        return this.player;
+           $("#"+_this.playerId+ " a").remove();
+        }.bind(this));
+
+}
+catch(err) {
+        alert(err.message);
+}
+        return true;
     },
     _playVideo: function() {
         this.currentStream = this.playlist.nextFile();

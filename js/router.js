@@ -17,13 +17,14 @@ App = {
     Player: {},
     MediaPlayer: {},
     User: {},
-    Event: {},   
+    Event: {},
     ContentPages: {
-        'termsandconditions' : 'Kasutustingimused',
+        'gdpr' : 'Isikuandmete töötlemine',
+        'termsandconditions' : 'Kasutus- ,müügi- ja ostutingimused',
         'watchfilmsfromtv' : 'Filmi vaatamine läbi teleri',
         'faq' : 'Korduma kippuvad küsimused'
     }
-} 
+}
 
 
 App.Router = Backbone.Router.extend({
@@ -61,9 +62,9 @@ App.Router = Backbone.Router.extend({
         if ( !category || !action ) {
             return false;
         }
-    
 
-        if (App.Settings.google_analytics_enabled) { 
+
+        if (App.Settings.google_analytics_enabled) {
 
             if (!label) label=action;
 
@@ -75,37 +76,37 @@ App.Router = Backbone.Router.extend({
             });
         }
     },
-    
+
     onRoute: function(route) {
         this.trigger("page:change", route);
         app.sidemenu.closeSideBar();
         this.currentPage = route;
     },
-    onChangeTitle: function (title) 
+    onChangeTitle: function (title)
     {
         $(document).attr('title', title + ' - ' + App.Settings.sitename);
         App.Settings.page_change_callback(title, window.location.hash);
-        
-        if (App.Settings.google_analytics_enabled) { 
+
+        if (App.Settings.google_analytics_enabled) {
             ga('set', 'page', window.location.hash);
             ga('send', 'pageview', {
               'page': this.currentPage,
-              'title': title, 
-            });        
+              'title': title,
+            });
         }
     },
-    purchaseReturn: function() 
+    purchaseReturn: function()
     {
 
 	    var films = app.user.checkPurchases();
         if (films) {
-                
-            app.user.updatePurchases().then(function(collection) { 
-                
-                _.each(films, function(item) { 
-		  
+
+            app.user.updatePurchases().then(function(collection) {
+
+                _.each(films, function(item) {
+
                     var id = parseInt(item.vod_id);
-                    var title = app.usercollection.get(id);                                                          
+                    var title = app.usercollection.get(id);
                     if (title) {
 			            title.set("validtotext", title.getValidityText());
 
@@ -117,11 +118,11 @@ App.Router = Backbone.Router.extend({
 
                         this.returnview.render();
                         return false;
-                    }   
+                    }
                 }.bind(this));
             }.bind(this));
         }
-       return false; 
+       return false;
     },
     search: function(searchStateHash) {
 
@@ -132,7 +133,7 @@ App.Router = Backbone.Router.extend({
         }
         this.trigger("change:title", "Search results");
     },
-    
+
 	showFilm: function(id, autoplay) {
         var film = app.collection.fullCollection.get(id);
             if (!film) {
@@ -140,20 +141,20 @@ App.Router = Backbone.Router.extend({
                 id: id
             });
         }
-        
+
         var _this = this;
 
         var films = app.user.checkPurchases();
         /*
          *  Check if user has purchases, navigate to confirmation page if so.
          */
-        
+
         if (films) {
             this.navigate("/return", {
                 trigger: true
-            });  
-        }        
-        
+            });
+        }
+
         film.fetch().done(function() {
             var playButtonText = "Vaata filmi (" + film.get("price") + ")";
             if (app.user.hasMovie(film)) {
@@ -175,7 +176,7 @@ App.Router = Backbone.Router.extend({
             var url = film.get("seo_friendly_url");
             _this.navigate(url, {
                 trigger: false
-            });            
+            });
             app.showMoviePage();
             if (autoplay === true) app.movieview.playMovie();
             _this.trigger("change:title", film.get("title"));
@@ -184,10 +185,10 @@ App.Router = Backbone.Router.extend({
 
     },
     purchaseSuccess: function(id) {
-        var title = app.usercollection.get(id);                                                          
-                
+        var title = app.usercollection.get(id);
+
         if (!title) return false;
-        
+
         if (!this.returnview)
                 this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
         else
@@ -200,7 +201,7 @@ App.Router = Backbone.Router.extend({
         var currentPage = this.currentPage;
 
         if (currentPage != "homePage" && currentPage != "search") {
-            app.showBrowserPage();  
+            app.showBrowserPage();
         }
         if (currentPage == "showFilm") {
             app.collection.querystate.setQueryString();
@@ -208,7 +209,7 @@ App.Router = Backbone.Router.extend({
 
         this.trigger("change:title", "Home");
     },
-  
+
     me: function() {
 
         if (!this.views.profile)
@@ -223,14 +224,14 @@ App.Router = Backbone.Router.extend({
         }
 
         this.views.profile.render();
-            
+
         app.showContentPage("me");
         this.trigger("change:title", "My profile");
 
     },
     subscription: function() {
-    
-        if (!this.views.subscriptionview) 
+
+        if (!this.views.subscriptionview)
         this.views.subscriptionview = new App.Views.SubscriptionView({subscriptions: app.options.subscriptions});
         this.views.subscriptionview.render();
         app.showContentPage("subscription","Subscription information");
@@ -239,7 +240,7 @@ App.Router = Backbone.Router.extend({
 
     },
     filmcollection: function() {
-        
+
         if (!this.views.profile) {
             this.views.profile = new App.Views.ProfileView({
                 swiperEl: '#profile-tabbar-swiper-container',
@@ -274,25 +275,25 @@ App.Router = Backbone.Router.extend({
         app.showContentPage("pairtv", "Pair Device");
 
     },
-   
+
     showErrorPage: function(type) {
         this.views.errorview = new App.Views.Error({type: type});
         this.views.errorview.render();
         app.showContentPage("error", "Error!");
 
-            
+
     },
     showRecoveryPage: function(key, email) {
             this.views.recoveryview = new App.Views.RecoveryView({key: key, email: email});
             this.views.recoveryview.render();
             app.showContentPage("recovery",  "Recovery form");
 
-            
+
     },
     showContactPage: function() {
         this.views.contactview = new App.Views.ContactView();
         this.views.contactview.render();
-        if (typeof(google) == "undefined") { 
+        if (typeof(google) == "undefined") {
             $("<script />", {
                 src: '//maps.google.com/maps/api/js?sensor=false&callback=gMapsCallback',
                 type: 'text/javascript'
@@ -300,16 +301,16 @@ App.Router = Backbone.Router.extend({
 
             $(window).bind('gMapsLoaded',app.router.init_map);
 
-        } else { 
+        } else {
             this.init_map();
         }
         this.views.contactview.$el.fadeIn();
         app.showContentPage("contact", "Contact Us!");
 
-        
+
     },
     init_map: function() {
-        if (typeof(google) == "undefined") { 
+        if (typeof(google) == "undefined") {
             setTimeout(function() { this.init_map(); }.bind(this),400);
             return false;
         }
@@ -321,13 +322,13 @@ App.Router = Backbone.Router.extend({
         infowindow.open(map,marker);
     },
     showContentPage: function(template, title) {
-        
+
         var name = template.split("-").join("");
 
         if (_.isEmpty(title)) {
             title = _.find(App.ContentPages, function(title, idx) { return idx == name });
         }
-        
+
         this.trigger("change:title", title);
         this.views.contentview = new App.Views.ContentView({title: title, template: name+"Template"});
         this.views.contentview.render().$el.fadeIn();

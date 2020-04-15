@@ -4,7 +4,7 @@ App.Views.PlayerView = Backbone.View.extend({
     model: App.Player.MediaPlayer,
     controlBar: false,
 
-    initialize: function() { 
+    initialize: function() {
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
         this.setElement("#movie-player-container");
         app.platform.on("screen:orientation:change", this.resize, this);
@@ -17,7 +17,7 @@ App.Views.PlayerView = Backbone.View.extend({
 
     /*
      * Get the film ratio, and calculate the optimal player height and width
-     * 
+     *
      */
 
     resize: function() {
@@ -27,9 +27,11 @@ App.Views.PlayerView = Backbone.View.extend({
         var footer_height = $('#video-container-footer').outerHeight();
         var orientation = App.Platforms.platform.getDeviceOrientation();
         var player_width = (orientation == "portrait") ? $('#movie-page-header').width() : $(window).width();
-        var player_height = player_width*ratio;    
+        var player_height = player_width*ratio;
+
         element.width(Math.ceil(player_width));
         element.height(Math.ceil(player_height));
+
     },
     close: function() {
         this.$el.hide();
@@ -42,11 +44,10 @@ App.Views.PlayerView = Backbone.View.extend({
 
     },
     render: function() {
-        this.setElement("#movie-player-container");        
+        this.setElement("#movie-player-container");
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
         this.$el.show();
         this.$el.velocity("fadeIn", { duration: 300 });
-        this.resize();
         return this;
     },
 
@@ -59,29 +60,29 @@ App.Views.PlayerView = Backbone.View.extend({
         return this;
     },
 
-    onControlsChange: function(category, val) { 
-        var evt = 'controlbar:'+category+':change';                
+    onControlsChange: function(category, val) {
+        var evt = 'controlbar:'+category+':change';
         this.model.trigger(evt, val);
     }
 });
 
-App.Views.PlayerControlbar = Backbone.View.extend({ 
+App.Views.PlayerControlbar = Backbone.View.extend({
     el: '#video-container-footer',
     model: App.Player.FilmContent,
     events: {
         'controlbar:change': 'onSelection',
 
     },
-    initialize: function(options) { 
+    initialize: function(options) {
         this.listenTo(this.model, "change", this.render, this);
         this.render();
-    
+
     },
     onSelection: function(ev) { 
         var el = $(ev.target);
         var category = el.data('category');
         var val = el.find("option:selected").val();
-        this.trigger('controlbar:'+category, val);        
+        this.trigger('controlbar:'+category, val);
 
     },
 
@@ -92,7 +93,7 @@ App.Views.PlayerControlbar = Backbone.View.extend({
             var val = $(this).find("option:selected").val();
             var category = $(this).data('category');
            _this.trigger('controlbar:change', category, val);
-        }); 
+        });
 
         return this;
     },
@@ -139,8 +140,8 @@ App.Views.TrailerView = Backbone.View.extend({
           //  Vifi.KeyHandler.bind("keyhandler:"+item, eval("this."+key), this);
         }.bind(this));
     },
-    _unbindKeys: function() { 
-        _.each(this._keyMap, function(key,item) { 
+    _unbindKeys: function() {
+        _.each(this._keyMap, function(key,item) {
           //  Vifi.KeyHandler.unbind("keyhandler:"+item, eval("this."+key));
         }.bind(this));
     },
@@ -159,7 +160,7 @@ App.Views.TrailerView = Backbone.View.extend({
     },
     playTrailer: function() {
         this.setElement("#movie-trailer-container");
-        
+
         if (this.model.get("youtube_id")) {
             this.render();
             this._bindKeys();
@@ -180,7 +181,7 @@ App.Views.TrailerView = Backbone.View.extend({
         if (youtubeid) {
 
             this.done = false;
-            
+
             this.player = new YT.Player('ytplayer', {
                 playerVars: {
                     'autoplay': 1,
@@ -206,7 +207,7 @@ App.Views.TrailerView = Backbone.View.extend({
         }
     },
     stop: function() {
-        if (this.player) { 
+        if (this.player) {
           this.player.stopVideo();
           this.done = true;
           this.close();
@@ -226,7 +227,7 @@ App.Views.TrailerView = Backbone.View.extend({
         this.player.seekTo(time);
 
     },
-    onClose: function() { 
+    onClose: function() {
         this.trigger("trailer:close");
     },
 
@@ -237,9 +238,9 @@ App.Views.TrailerView = Backbone.View.extend({
         var currentMute = this.player.isMuted();
         $log("Current mute: "+currentMute);
 
-        if (currentMute !== true) { 
+        if (currentMute !== true) {
             $log("Muting audio");
-            this.player.mute(); 
+            this.player.mute();
 
         } else {
             $log("UnMuting audio");
@@ -303,14 +304,14 @@ App.Views.Subtitles = Backbone.View.extend({
         this.listenTo(this.model, "subtitles:hide", this.hideSubtitles, this);
         this.listenTo(this.model, "subtitles:loadfile", this.loadSubtitles, this);
 
-        this.render();  
+        this.render();
 
     },
 
-    showSubtitle: function(data) { 
+    showSubtitle: function(data) {
         $(this.subtitleElement).html(data);
     },
-    hideSubtitles: function() { 
+    hideSubtitles: function() {
         $(this.subtitleElement).html('');
     },
 
@@ -336,7 +337,7 @@ App.Views.Subtitles = Backbone.View.extend({
     }
 
 
-    
-}) 
+
+})
 
 
