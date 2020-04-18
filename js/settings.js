@@ -5,6 +5,7 @@ App.Settings = {
         domain: 'vifi.ee',
         skin: 'vifi',
         cookie_name: 'vifi_session',
+        cookie_options: {path : '/', domain: '.vifi.ee'},
         anonymous_username: 'anonymous@vifi.ee',
         debug: false,
         commentsEnabled: true,

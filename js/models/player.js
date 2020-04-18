@@ -46,7 +46,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
 
     onPlayerAction: function(evt, arg, arg2) {
-
+        $log("Got player event: " + evt);
         var parts = evt.split(":");
         var evt = parts.shift();
         var action = parts.shift();
@@ -64,14 +64,13 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
     },
     onContentReady: function(content) {
+        console.log(content);
 
         this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
         var _this = this;
         _this.playlist.addFiles(_this.content);
 
         this.player.speedtest(function(bitrate) {
-
-
 
             if (_this.player.init(_this.playlist)) {
                 var files = _this.playlist.getPlaylistFiles();
@@ -128,26 +127,30 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.trigger("subtitles:enabled");
     },
     load: function(movie) {
-
         if (!movie) return false;
         var id = movie.get("id");
-        app.router.trigger("action", "player", "load", "Loading " + movie.get("title"));
 
+        app.router.trigger("action", "player", "load", "Loading " + movie.get("title"));
+        $log("Loading content " +id);
         this.content.load(id);
     },
     play: function() {
-
         this.player.play();
     },
     stop: function() {
         this.player.stop();
     },
     unload: function() {
+        $log("Unloading player");
+
         if (this.player.subtitles) {
             this.player.subtitles.unload();
         }
         this.player.unload();
 
+    },
+    isReady: function() {
+        return this.player && this.player.isReady();
     },
 
     /*
@@ -236,7 +239,7 @@ App.Player.Platforms.Core = {
         $log("___ TRACK EVENTS CALLED ___ ");
         if (this.eventsBound) return;
         //$log(" ___ BINDING EVENTS ___ ");
-        //  this.plugin.bind(this._eventsToTrack.join(" "), this._eventHandler, this);
+        this.plugin.bind(this._eventsToTrack.join(" "), this._eventHandler, this);
         this.eventsBound = true;
     },
 
@@ -250,8 +253,6 @@ App.Player.Platforms.Core = {
     },
     unload: function() {
         this.player.stop();
-        this.deactive();
-
     },
     setPlaylist: function(playlist) {
         $log(" Setting new Playlist ");
@@ -305,6 +306,7 @@ App.Player.Platforms.Core = {
                 this.pause();
             }
         }
+        this.active();
     },
     resume: function() {
         try {
@@ -602,7 +604,6 @@ App.Player.Subtitles = Backbone.Model.extend({
         this.trigger("subtitles:disabled");
         $log("Disabling subtitles");
         if (this.ival) clearInterval(this.ival);
-
     },
 
     /**

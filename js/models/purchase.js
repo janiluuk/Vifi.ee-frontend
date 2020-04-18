@@ -275,6 +275,12 @@ App.Models.Purchase = Backbone.Model.extend({
         method_id: {
             required:true,
         },
+        termsconditions: {
+          required:true,
+          acceptance: true,
+          msg: 'Please accept the terms before continuing'
+        },
+
         price: {
           required: true,
           min: 0.01,

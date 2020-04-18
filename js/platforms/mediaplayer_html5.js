@@ -87,7 +87,7 @@ console.log(playlistFiles);
             this.subtitles = new App.Player.Subtitles();
             this.subtitlesView = new App.Views.Subtitles({model: this.subtitles});
         } else {
-            this.subtitlesView.render()
+            this.subtitlesView.render();
         }
         this.subtitles.load(content);
 
@@ -148,6 +148,9 @@ console.log(playlistFiles);
         var playing = (this.plugin.playing ? true : false);
         return playing;
     },
+    isReady: function() {
+        return (this.plugin.ready === true);
+    },       
     duration: function() {
         if (_.isNaN(this.plugin.video.duration)) {
             return null;

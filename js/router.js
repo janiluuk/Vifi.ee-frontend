@@ -1,4 +1,4 @@
-/**
+    /**
  *
  *  App Engine
  *
@@ -77,8 +77,8 @@ App.Router = Backbone.Router.extend({
         }
     },
 
-    onRoute: function(route) {
-        this.trigger("page:change", route);
+    onRoute: function(route, params) {
+        this.trigger("page:change", route, params);
         app.sidemenu.closeSideBar();
         this.currentPage = route;
     },
@@ -169,10 +169,11 @@ App.Router = Backbone.Router.extend({
                 app.movieview.render();
 
             } else {
-                if (app.movieview.model.get("id") != film.id) {
+                    $log("Loading movie info to page");
                     app.movieview.model.set(film.toJSON());
-                }
+                    app.movieview.render();
             }
+
             var url = film.get("seo_friendly_url");
             _this.navigate(url, {
                 trigger: false

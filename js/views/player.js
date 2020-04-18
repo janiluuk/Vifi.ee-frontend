@@ -3,16 +3,16 @@ App.Views.PlayerView = Backbone.View.extend({
     subtitleEl: "subtitles",
     model: App.Player.MediaPlayer,
     controlBar: false,
-
     initialize: function() {
+        
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
-        this.setElement("#movie-player-container");
         app.platform.on("screen:orientation:change", this.resize, this);
-        this.listenTo(this.model, "player:ready", this.renderControls);
+        this.listenTo(this.model, "player:ready", this.renderControls, this);
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "player:resize", this.resize, this);
         this.listenTo(app.router, "page:change", this.close, this);
         this.render();
+
     },
 
     /*
@@ -21,6 +21,7 @@ App.Views.PlayerView = Backbone.View.extend({
      */
 
     resize: function() {
+
         var element = $("#player-container");
         var ratio = this.model.ratio;
         var nav_height = $('#video-container-heading').outerHeight();
@@ -35,19 +36,24 @@ App.Views.PlayerView = Backbone.View.extend({
     },
     close: function() {
         this.$el.hide();
-        this.model.trigger("mediaplayer:stop");
-        //this.unbind();
+        this.model.stop();
         //this.stopListening();
     },
+    show: function() {
+        this.$el.show();
+        //this.unbind();
+        //this.stopListening();
+    },    
     onSubtitlesLoaded: function() {
 
 
     },
     render: function() {
-        this.setElement("#movie-player-container");
+
+        this.setElement(this.el);
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
         this.$el.show();
-        this.$el.velocity("fadeIn", { duration: 300 });
+
         return this;
     },
 
@@ -57,12 +63,14 @@ App.Views.PlayerView = Backbone.View.extend({
         this.$el.velocity("fadeIn", { duration: 200 });
         this.resize();
 
-        return this;
     },
 
     onControlsChange: function(category, val) {
         var evt = 'controlbar:'+category+':change';
         this.model.trigger(evt, val);
+    },
+    onPageChange: function(page, params) {
+        this.close();
     }
 });
 
@@ -71,12 +79,11 @@ App.Views.PlayerControlbar = Backbone.View.extend({
     model: App.Player.FilmContent,
     events: {
         'controlbar:change': 'onSelection',
-
     },
     initialize: function(options) {
         this.listenTo(this.model, "change", this.render, this);
-        this.render();
 
+        this.render();
     },
     onSelection: function(ev) { 
         var el = $(ev.target);

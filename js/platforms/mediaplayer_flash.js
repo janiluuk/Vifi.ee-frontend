@@ -285,6 +285,9 @@ App.MediaPlayer = {
             }
         }
     },
+    isReady: function() {
+        return (this.plugin.ready === true);
+    },
     playing: function() {
         return (this.plugin.isPlaying() === true) ? true : false;
     },

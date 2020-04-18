@@ -1244,7 +1244,7 @@ flowplayer(function(api, root) {
           if (!session) return; // Already destoryed
           timer = timer || setInterval(function() {
             console.log(session);
-             api.trigger('progress', [media, api, media.getEstimatedTime()]);
+            api.trigger('progress', [media, api, media.getEstimatedTime()]);
           }, 500);
           if (!alive) {
             destroy();

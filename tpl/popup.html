@@ -72,7 +72,7 @@
                 <input type="hidden" name="method" id="method"/>
                 <div class="payment-method-data" id="payment-email" style="display:none">
                     <h3>Email</h3>
-                    <p>Emailile saadetakse pilet, millega saate filmi 48 tunni jooksul korduvvaadata. Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".
+                    <p>Emailile saadetakse pilet, millega saate filmi <b>48 tunni</b> jooksul korduvvaadata. Palume mitte unustada peale makse sooritamist vajutada nuppu "Tagasi kaupmehe juurde".
 </p>
                     <input type="text" name="email" id="payment-method-email" class="vifi-text-input" value="{{email}}" placeholder="Sinu e-posti aadress"></input>
                 </div>
@@ -82,6 +82,9 @@
                     <input type="password" style="display:none"/>                        
                     <input type="password" value="" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
                 </div>
+                <div class="payment-method-terms" id="termsconditions-wrapper">                
+                <input type="checkbox" name="termsconditions" id="termsconditions" value="true"/><label for="termsconditions">Nõustun <a target="_blank" href="/#page/termsandconditions">kasutustingimustega</a> ja <a target="_blank" href="/#page/gdpr">Privaatsustingimustega. </a> </label></div>
+
                 <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
                 </form>
             </div>

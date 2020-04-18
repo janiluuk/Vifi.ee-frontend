@@ -12,6 +12,7 @@ window.$log = function(log) { 
         }
         app.trigger("flash", log, 4000);
     }
+console.log(log);
 
 };
 
@@ -22,7 +23,6 @@ window.$error = function(log) { 
         }
         app.trigger("error", log);
         app.trigger("flash", '<b><span class="error">'+log+'</span></b>', 4000);
-
     }
 };
 

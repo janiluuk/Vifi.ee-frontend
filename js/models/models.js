@@ -9,8 +9,8 @@ App.Models.ApiModel = Backbone.Model.extend({
 
 });
 
-_.extend(App.Models.ApiModel.prototype, { 
-    path: function() { return this.get("id"); },   
+_.extend(App.Models.ApiModel.prototype, {
+    path: function() { return this.get("id"); },
     url: function() {
         return App.Settings.Api.url + this.path() + '?' + $.param(this.params);
     },
@@ -18,14 +18,14 @@ _.extend(App.Models.ApiModel.prototype, {
     sync: function(method, model, options) {
 
         // Default JSON-request options.
-        // passing options.url will override 
+        // passing options.url will override
         // the default construction of the url in Backbone.sync
         var data = ("undefined" == typeof(options)) ? {} : options.data;
-        
+
         var session = this.get("session");
         if (!session) session = app.session;
         var sessionParams= session.getParams(data);
-        
+
         var type="GET";
         var dataType = "jsonp";
         var jsonp = "jsoncallback";
@@ -41,7 +41,7 @@ _.extend(App.Models.ApiModel.prototype, {
         if (undefined == model || model == false) model = this;
 
         _.extend(this.params, sessionParams.data);
-        
+
         var params = _.extend({
             type: type,
             dataType: dataType,
@@ -49,23 +49,82 @@ _.extend(App.Models.ApiModel.prototype, {
             jsonp: jsonp, // the api requires the jsonp callback name to be this exact name
             processData: true
         }, options);
-        
+
         // Make the request.
         return $.ajax(params);
     },
 
 });
 
-App.Models.Product = App.Models.ApiModel.extend({ 
+App.Models.Product = App.Models.ApiModel.extend({
 
 });
-App.Models.Subscription = App.Models.Product.extend({ 
+App.Models.Subscription = App.Models.Product.extend({
     type: 'subscription'
 });
 
 App.Models.Banner = Backbone.Model.extend({
 
 });
+App.Models.CookieModel = Backbone.Model.extend({
+        idAttribute: 'name',
+        defaults: {
+            days: 2
+        },
+
+        destroy: function () {
+            this.set({
+                value: "",
+                days: -1
+            }).save();
+
+            $.removeCookie(this.get("name"), App.Settings.cookie_options);
+        },
+
+        validate: function (attrs) {
+            if(!attrs.name) {
+                return "Cookie needs name";
+            }
+        },
+
+        get: function (name) {
+            if(name == 'value') {
+                var value = this.attributes[name];
+                if(value[0] == '"') {
+                    value = value.slice(1, value.length - 1);
+                }
+                return decodeURIComponent(value);
+            } else {
+                return this.attributes[name];
+            }
+        },
+
+        save: function () {
+            var pieces = [];
+            var value = this.get('value');
+            if(value.match(/[^\w\d]/)) {
+                value = '"'.concat(encodeURIComponent(value), '"');
+            }
+            pieces.push(this.get('name').concat("=", value));
+            if (this.get('days')) {
+                var date = new Date();
+                date.setTime(date.getTime()+(this.get('days')*24*60*60*1000));
+                pieces.push("expires".concat('=',date.toGMTString()));
+            }
+            if (this.get('path')) {
+                pieces.push("path".concat('=', this.get('path')));
+            }
+            if (this.get('domain')) {
+                pieces.push("domain".concat('=', this.get('domain')));
+            }
+            if (this.get('secure')) {
+                pieces.push("secure");
+            }
+            $log("Saving cookie :"+pieces.join('; '));
+            document.cookie = pieces.join('; ');
+        }
+    });
+
 
 App.Models.Film = App.Models.Product.extend({
 
@@ -73,17 +132,17 @@ App.Models.Film = App.Models.Product.extend({
     path: function() { return 'details/'; },
 
 });
-_.extend(App.Models.Film.prototype,  { 
+_.extend(App.Models.Film.prototype,  {
     path: function() { return "details/" + this.get("id"); },
 
     /**
      *  Retrieve Rotten tomatoe review's for the mobie
-     *  @param int id 
-     *  
+     *  @param int id
+     *
      */
     fetchRT: function(id) {
 
-        if (id) imdb_id = id; 
+        if (id) imdb_id = id;
         else imdb_id = this.get("imdb_id");
 
         if (undefined == imdb_id || imdb_id == "") return false;
@@ -91,14 +150,14 @@ _.extend(App.Models.Film.prototype,  {
         this.set("rt_links","");
 
         var url = '/proxy.php?url=http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?apikey='+App.Settings.rt_api_key+'&type=imdb&id='+imdb_id.replace("tt","");
-        
+
         var _this = this;
 
         $.ajax({
             url: url,
             async: true,
             dataType: "jsonp",
-            success: function(res) { 
+            success: function(res) {
                 _this.set("rt_links", res.links);
                 if (typeof(res.ratings) != "undefined" && (res.ratings.critics_score > 0 || res.ratings.audience_score > 0) )
                 _this.set("rt_ratings", res.ratings);
@@ -108,7 +167,7 @@ _.extend(App.Models.Film.prototype,  {
         return true;
     },
  });
- 
+
 App.Models.FilmSession = Backbone.Model.extend({
     path: 'update_session',
     urlRoot: App.Settings.Api.url,
@@ -116,16 +175,16 @@ App.Models.FilmSession = Backbone.Model.extend({
     url: function() { return this.urlRoot+this.path+"/"+this.get("session_id")+"/"+this.get("timestamp")+"?format=json&api_key="+App.Settings.Api.key; },
 
     defaults: function() {
-        return {  
+        return {
             'session_id' : '',
             'timestamp' : 0,
             'watched' : false,
             'film_id' : ''
-        };   
+        };
     },
     initialize: function(options) {
         this.on("change:session_id", this.onSessionLoad, this);
-        
+
     },
     onSessionLoad: function() {
         console.log(this.get("session_id"));

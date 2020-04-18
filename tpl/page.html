@@ -10,13 +10,8 @@
             <ul id="content-body-list" class="film-list"></ul>
             <button style="display:none" id="loadMore">Lae juurde</button>
         </div>
-        <!-- Footer -->
-        <div class="page-footer float_left">
-            <div id="goTop" class="goTop">
-                <span class="arrowup"></span>
-                <p>Tagasi</p>
-            </div>
-        </div>
+
+                    {{>footerPartial}}                
 </script>
 <!-- Empty list item -->
 <script id="emptyListTemplate" type="text/html">
@@ -462,3 +457,32 @@ andnud vastava nõusoleku. Kui klient ei soovi saada otseturustusteateid, siis t
             </div>
         </div>
 </script>
+
+<!-- Homepage -->
+<script type="text/html" id="footerPartial" class="partial">
+<!-- Footer -->
+        <div class="page-footer float_left">
+            <div id="goTop" class="goTop">
+                <span class="arrowup"></span>
+                <p>Tagasi</p>
+            </div>
+            <div class="footer-container">
+                <div class="inner">
+                    <div class="span4 float_left">
+                        <ul class="unstyled">
+                             <li class="heading">Vificom OÜ, Aadress: Rotermanni 5, 10111 Tallinn, Email: abi@vifi.ee</li>
+                            <li class="heading">24/7 tugitelefon:</li>
+                            <li>+372 58 667 570</li>
+                          </ul>
+                    </div>
+                    <div class="span4 float_left">
+                        <ul class="unstyled">
+                            <li> <a href="#/page/gdpr">Privaatsustingimused</a> </li>
+                            <li> <a href="#page/terms-and-conditions">Kasutustingimused</a> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+</script>
+
