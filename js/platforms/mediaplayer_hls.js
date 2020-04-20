@@ -84,14 +84,21 @@ App.MediaPlayer = {
         this.play();
     },
     _initSubtitles: function(content) { 
-        if (!this.subtitles) {
-            this.subtitles = new App.Player.Subtitles();
-            this.subtitlesView = new App.Views.Subtitles({
-                model: this.subtitles
-            });
-        } else {
-            this.subtitlesView.render()
+        $log("Initializing subtitles");
+
+        if (this.subtitles) {
+            this.subtitles.unload();
+            this.subtitles.unbind();
+        }   
+        this.subtitles = new App.Player.Subtitles();
+
+        if (this.subtitlesView) { 
+            this.subtitlesView.close();
+            this.subtitlesView.unbind();
         }
+        this.subtitlesView = new App.Views.Subtitles({
+            model: this.subtitles
+        });
         this.subtitles.load(content);
     },
     loadSubtitles: function(subtitles) {

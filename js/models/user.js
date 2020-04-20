@@ -25,7 +25,7 @@ App.User.Ticket = Backbone.Model.extend({
         } else {
             data.vod_id = data.id;
         }
-        this.set("content", new App.Player.FilmContent({
+        this.set("content", new App.Models.FilmContent({
             id: this.get("id"),
             ticket: this
         }));

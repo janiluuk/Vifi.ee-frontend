@@ -1,6 +1,6 @@
 App.Views.PlayerView = Backbone.View.extend({
     el: "#movie-player-container",
-    subtitleEl: "subtitles",
+    subtitleEl: "#subtitles",
     model: App.Player.MediaPlayer,
     controlBar: false,
     initialize: function() {
@@ -35,11 +35,13 @@ App.Views.PlayerView = Backbone.View.extend({
 
     },
     close: function() {
+        this.setElement(this.el);
         this.$el.hide();
         this.model.stop();
         //this.stopListening();
     },
     show: function() {
+        this.setElement(this.el);        
         this.$el.show();
         //this.unbind();
         //this.stopListening();
@@ -76,9 +78,10 @@ App.Views.PlayerView = Backbone.View.extend({
 
 App.Views.PlayerControlbar = Backbone.View.extend({
     el: '#video-container-footer',
-    model: App.Player.FilmContent,
+    model: App.Models.FilmContent,
     events: {
         'controlbar:change': 'onSelection',
+
     },
     initialize: function(options) {
         this.listenTo(this.model, "change", this.render, this);
@@ -95,6 +98,7 @@ App.Views.PlayerControlbar = Backbone.View.extend({
 
     render: function() {
         var _this = this;
+        this.setElement(this.el);
         this.$el.empty().append(ich.playerControlsTemplate(this.model.toJSON()));
         $('.select-box').fancySelect().on('change.fs', function(e) {
             var val = $(this).find("option:selected").val();
@@ -184,7 +188,7 @@ App.Views.TrailerView = Backbone.View.extend({
             }.bind(this), 600);
             return false;
         }
-        var youtubeid = this.model.get("youtube_id");
+        var youtubeid = _thi.model.get("youtube_id");
         if (youtubeid) {
 
             this.done = false;
@@ -298,7 +302,7 @@ App.Views.TrailerView = Backbone.View.extend({
 });
 
 App.Views.Subtitles = Backbone.View.extend({
-    model: App.Models.Subtitles,
+    model: App.Player.Subtitles,
     subtitleElement: '#subtitles',
     el: '#player-container',
 
@@ -310,6 +314,7 @@ App.Views.Subtitles = Backbone.View.extend({
         this.listenTo(this.model, "change:subtitledata", this.render, this);
         this.listenTo(this.model, "subtitles:hide", this.hideSubtitles, this);
         this.listenTo(this.model, "subtitles:loadfile", this.loadSubtitles, this);
+
 
         this.render();
 
@@ -334,10 +339,10 @@ App.Views.Subtitles = Backbone.View.extend({
         }.bind(this));
     },
     render: function() {
-        this.setElement("#player-container");
-
         $(this.subtitleElement).remove();
+
         $("<div>").attr("id", "subtitles").appendTo(this.$el);
+        this.setElement(this.el);        
 
         return this;
 

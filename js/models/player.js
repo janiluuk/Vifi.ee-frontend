@@ -64,7 +64,6 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
     },
     onContentReady: function(content) {
-        console.log(content);
 
         this.content.set("endingtime", this.getEndingTime(this.content.get("running_time")));
         var _this = this;

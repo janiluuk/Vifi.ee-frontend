@@ -141,7 +141,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             App.Utils.lazyload();
             this.enableComments();
             this.enableYoutubePlayer();
-        }.bind(this), 1500);
+        }.bind(this), 1000);
         return this;
     },
     playTrailer: function(e) {
@@ -193,10 +193,10 @@ App.Views.MovieDetailView = App.Views.Page.extend({
                 app.player.player.init(app.player.player.playlist);
             } else {
                 this.playerView.render();
-                $log("loading content to player");
                 app.player.load(this.model);
             }
         }
+        $("#close-player").show();
         if (e) e.stopPropagation();
         return false;
     },
@@ -207,6 +207,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         e.stopPropagation();
     },
     showCarousel: function() {
+        $("#close-player").hide();      
         $("#gallery-swiper-container").velocity("fadeIn", {
             duration: 500
         });

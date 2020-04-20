@@ -260,7 +260,7 @@ App.Player.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.SubtitleFileCollection(subs);
         this.set("subtitles", collection);
-        this.trigger("content:subtitles:loaded", this.get("subtitles"));
+        this.trigger("subtitles:ready", this.get("subtitles"));
     }
 });
 
