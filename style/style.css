@@ -662,7 +662,12 @@ button#loadMore.loading:before {
 button#loadMore:hover {
     background-color: #90AFBB;
 }
-
+.video-selector {
+    float: left;
+    width: 33.2%;
+    box-sizing: border-box;
+    padding: 0.5%;
+}
 .btn.clear, .btn.clear.loading {
     background: rgba(0, 0, 0, 0.2);
     padding: 60px 15px 10px 15px;
@@ -2143,21 +2148,6 @@ ul#movie-interactive-button-row li {
 
 #player-container {
     float: left;
-}
-
-.flowplayer .fp-progress {
-    background-color: #42C515 !important;
-}
-
-.flowplayer .fp-buffer {
-    background-color: #A18E8E !important;
-}
-
-.video-selector {
-    float: left;
-    width: 33.2%;
-    box-sizing: border-box;
-    padding: 0.5%;
 }
 
 #movie-player-container #video-container-footer, #movie-player-container #player-container {

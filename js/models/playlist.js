@@ -22,19 +22,20 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
                 'code': '',
                 'language': ''
             }],
-            session: {  }
+            session: {  },
+            filmsession: false,
         }
     },
 
     initialize: function(options) {
         if (options && undefined !== options.session) {
             this.set("session", options.session);
-            this.onSessionLoad();
         }
+
         this.on("change:id", this.onSessionLoad, this);
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
-
+        this.on('change:filmsession', this.onSessionLoad, this);
     },
 
     /*
@@ -44,10 +45,17 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     onSessionLoad: function(id) {
         this.params = {};
         if (id) { 
+               $log("[Content] Looking for existing ticket with film id: "+id);
             var session = this.get("session");
             if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
             if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
-        }
+            if (_.isEmpty(this.params) !== false) {
+              $log("[Content] Found existing ticket: "+JSON.stringify(this.params));
+            } else {
+              $log("[Content] No existing ticket for film id: "+id);
+            }
+
+        } 
     },
     /*
      * Reset content items to defaults
@@ -55,6 +63,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     resetContent: function() {
         this.set("videos", false);
         this.set("subtitles", false);
+        this.set("filmsession", false); 
+        $log("[Content] Reset content");       
     },
 
 
@@ -69,10 +79,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     load: function (id) {
 
         this.set("id", id);
-        this.onSessionLoad(id);
 
         var deferred = new $.Deferred();
-
         this.fetch().done(function() { deferred.resolve(); }).error(function(){
             deferred.reject();
         });
@@ -81,24 +89,33 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     },
     onLoadContent: function(event) {
 
-        $log(this.get("videos"));
         if (this.get("videos").length > 0)
             this.trigger("content:ready", this.get("videos"));
+        else 
+            this.trigger("content:reset");
+    },
 
+    onLoadSession: function(event) {
+
+        if (this.get("filmsession") != false && this.get("filmsession").length > 0) {
+            this.trigger("content:filmsession:ready", this.get("filmsession"));
+        } else {
+            this.trigger("content:filmsession:reset", this.get("filmsession"));
+        }
     },
 
     onLoadSubtitles: function(event) {
 
         if (this.get("subtitles") != null && this.get("subtitles").length > 0)
-        this.trigger("subtitles:ready", this.get("subtitles"));
+        this.trigger("content:subtitles:ready", this.get("subtitles"));
     },
 
 
    addSession: function(session) {
         var sess = new App.User.FilmSession(session);
         this.set("filmsession", sess);
-        this.trigger("content:session:loaded", this.get("session"));
-
+        this.trigger("content:filmsession:loaded", this.get("filmsession"));
+        $log("[Content] Got session: "+ sess.toJSON());                
     },
 
     /*
@@ -119,6 +136,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.VideoFileCollection(videofiles);
         this.set("videos", collection);
+        $log("[Content] Got videos: "+ collection.toJSON());                
+
         this.trigger("content:videos:loaded", this.get("videos"));
 
     },
@@ -140,127 +159,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.SubtitleFileCollection(subs);
         this.set("subtitles", collection);
+        $log("[Content] Got subtitles: "+ collection.toJSON());                
         this.trigger("content:subtitles:loaded", content);
-    }
-});
-
-App.Player.FilmContent = App.Models.ApiModel.extend({
-    url : function() { return App.Settings.Api.url + this.path + "/" + this.get("id") + "?"; },
-    path: 'content',
-    defaults: function() {
-        return {
-        'id': false,
-        'videos': [{
-                'mp4': '',
-                'profile': '',
-                'code': ''
-            }
-        ],
-        'ticket' : false,
-        'images': {
-            'thumb': '',
-            'poster': ''
-        },
-        'subtitles': [{
-            'file': '',
-            'code': '',
-            'language': ''
-        }],
-        'filmsession' : false,
-        'session': { },
-        }
-    },
-
-    /**
-     *  Parameters:
-     *  film - Instance of a film.
-     *  ticket - ticket for watching the content
-     *  session - User session
-     *
-     */
-    initialize: function(options) {
-
-        if (options && undefined !== options.film) {
-            this.set("film", options.film);
-            this.set("id", options.film.get("id"));
-            if (options.film.get("ticket")) {
-              this.set("ticket", options.film.get("ticket"));
-              this.set("filmsession", options.film.get("ticket").get("filmsession"));
-            }
-        }
-
-        if (options && undefined !== options.session) {
-            this.set("filmsession", options.session);
-        }
-        if (options && undefined !== options.ticket) {
-            this.set("ticket", options.ticket);
-        }
-        if (app.session) {
-          this.set("session", app.session);
-        }
-        this.on("content:loaded", this.onContentLoaded);
-    },
-
-    fetchContent: function() {
-      var ticket = this.get("ticket");
-      var auth_code = ticket ? ticket.get("auth_code") : "";
-      var session_id = this.get("filmsession").get("session_id");
-
-      this.sync("GET",this,this.getParams({session_id: session_id, auth_code: auth_code})).done(
-        function(data) {
-         this.trigger("content:loaded", data);
-        }.bind(this)).error(
-        function(data) {
-         this.trigger("content:error", data);
-       }.bind(this));
-
-    },
-    onContentLoaded: function(data) {
-        this.parse(data);
-        alert("content loaded");
-
-    },
-    parse: function(results) {
-
-        this.addSession(results.sessiondata);
-        this.addVideos(results.videos);
-        this.addSubtitles(results.subtitles);
-        return results;
-    },
-    addSession: function(session) {
-        var sess = new App.User.FilmSession(session);
-        this.set("filmsession", sess);
-        this.trigger("content:session:loaded", this.get("session"));
-
-    },
-    addVideos: function(videos) { 
-      var videofiles = [];
-        _.each(videos, function(video) { 
-
-          var videofile = new App.Player.VideoFile();
-            videofile.set("bitrate", video.bitrate);
-            videofile.set("src", video.mp4);
-            videofile.set("profile", video.profile);
-            videofiles.push(videofile);
-        });
-        var collection = new App.Player.VideoFileCollection(videofiles);
-        this.set("videos", collection);
-        this.trigger("content:videos:loaded", this.get("videos"));
-
-    },
-    addSubtitles: function(subtitles) { 
-      var subs = [];
-        _.each(subtitles, function(video) { 
-
-          var subtitle = new App.Player.SubtitleFile();
-            subtitle.set("language", video.language);
-            subtitle.set("file", video.file);
-            subtitle.set("code", video.code);
-            subs.push(subtitle);
-        });
-        var collection = new App.Player.SubtitleFileCollection(subs);
-        this.set("subtitles", collection);
-        this.trigger("subtitles:ready", this.get("subtitles"));
     }
 });
 

@@ -10,9 +10,10 @@ window.$log = function(log) { 
         if (typeof(log)== "object") {
             log = JSON.stringify(log);
         }
-        app.trigger("flash", log, 4000);
+        app.trigger("flash", log, 5000);
     }
-console.log(log);
+    
+    console.log(log);
 
 };
 
@@ -22,8 +23,9 @@ window.$error = function(log) { 
             log = JSON.stringify(log);
         }
         app.trigger("error", log);
-        app.trigger("flash", '<b><span class="error">'+log+'</span></b>', 4000);
+        app.trigger("flash", '<b><span class="error">'+log+'</span></b>', 8000);
     }
+    console.log('[ERROR]'+log);
 };
 
 App.Platforms = {
@@ -58,7 +60,7 @@ App.Platforms = {
         }
         $log("<< PLATFORM IS: (" + this.platform.name + ") >>");
         this.platform.init();
-        //this.platform.addPlatformCSS();
+        this.platform.addPlatformCSS();
         this.platform.fetchMediaPlayer();
     }
 }
@@ -69,7 +71,7 @@ App.Platforms = {
 App.Platform = function(name) {
     this.name = name;
     this.defaultPlatform = true;
-    this._mediaPlayer = "hls";
+    this._mediaPlayer = "fp7";
 
     this.start = $noop;
     this.exit = $noop;
@@ -156,8 +158,8 @@ App.Platform.prototype.matrix = function() {
 }
 
 App.Platform.prototype.addPlatformCSS = function() {
-    // $log(" ADDING PLATFORM CSS FOR PLATFORM: " + this.name  + " path: css/platforms/"+this.name.toLowerCase()+".css and resolution: css/resolutions/"+this.matrix()+".css" );
-    $("<link/>", {
+    $log(" ADDING PLATFORM CSS FOR PLATFORM: " + this.name  + " path: css/platforms/"+this.name.toLowerCase()+".css and resolution: css/resolutions/"+this.matrix()+".css" );
+    /*$("<link/>", {
         rel: "stylesheet",
         type: "text/css",
         href: "style/" + this.matrix() + ".css"
@@ -168,7 +170,7 @@ App.Platform.prototype.addPlatformCSS = function() {
         type: "text/css",
         href: "style/" + this.name.toLowerCase() + ".css"
     }).appendTo("head");
-
+    */
 
 }
 
@@ -200,7 +202,15 @@ _.extend(App.Platform.prototype, Backbone.Events);
     browser.setResolution(window.screen.width, window.screen.height);
     browser.defaultPlatform = true;
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("hls");
+    browser.setMediaPlayer("fp7");
+
+    browser.addPlatformCSS = function() {
+            $("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "//cdn.flowplayer.com/releases/native/stable/style/flowplayer.css"
+    }).appendTo("head");
+    }
 
 }());
 
@@ -275,5 +285,47 @@ _.extend(App.Platform.prototype, Backbone.Events);
     browser.defaultPlatform = false;
     App.Platforms.addSupportedPlatform(browser);
     browser.setMediaPlayer("flash");
+
+}());
+
+(function() {
+    var browser = new App.Platform('mobile');
+    // browser.needsProxy = true;
+    browser.detectPlatform = function() {
+        return jQuery.browser.mobile;
+
+    };
+    browser.updateScreen = function(silent) {
+        var orientation = this.getDeviceOrientation();
+        if (typeof(screen) != "undefined") {
+            window.screen.availWidth = $(window).width();
+            window.screen.availHeight = $(window).height();
+        }
+
+        this.setResolution(screen.availWidth, screen.availHeight);
+        if (!silent) this.trigger("screen:resize", screen.availWidth, screen.availHeight);
+
+        if (orientation != this.orientation) {
+                this.orientation = orientation;
+                if (!silent) this.trigger("screen:orientation:change", this.orientation);
+        }
+
+
+    };
+    browser.init = function() {
+        $(window).on('resize', function(e) {
+            this.updateScreen();
+           // alert("screen changed to "+this.matrix()+" "+this.orientation);
+        }.bind(browser));
+        this.updateScreen(true);
+
+    };
+    window.addEventListener("orientationchange", this.updateScreen);
+
+    browser.setResolution($(window).outerWidth(), $(window).outerHeight());
+
+    browser.defaultPlatform = false;
+    App.Platforms.addSupportedPlatform(browser);
+    browser.setMediaPlayer("hls");
 
 }());
