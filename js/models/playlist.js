@@ -47,6 +47,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         if (id) { 
                $log("[Content] Looking for existing ticket with film id: "+id);
             var session = this.get("session");
+            this
             if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
             if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
             if (_.isEmpty(this.params) !== false) {

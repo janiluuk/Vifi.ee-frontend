@@ -31,10 +31,12 @@ App.Settings = {
         /** Player Settings **/
 
         Player:  {
+            defaultMediaPlayer: 'fp7',
+            flowplayer_fp6_key: '$202296466927761',
             flowplayer_flash_key:  '#$05466e2f492e2ca07a3',
             flowplayer_html5_key: '$202296466927761',
             flowplayer_fp7_token: 'eyJraWQiOiJMNE5JZWNidlR5T0MiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJjIjoie1wiYWNsXCI6NCxcImlkXCI6XCJMNE5JZWNidlR5T0NcIn0iLCJpc3MiOiJGbG93cGxheWVyIn0.Ji_KqLLl5wJm28h1wdv_Lb1QSC-_9NyA7mIZS4HHIlIr6V29c3UYYkFsbo2jZQON35f_PC4xHk7hqLIGwMnJIw',
-            hls_url: '//media.vifi.ee/vod/_definst_',
+            hls_url: 'https://media.vifi.ee/vod/vod',
             mp4_url: '//gonzales.vifi.ee/zsf/',
             rtmp_url: 'rtmp://media.vifi.ee/vod',
             speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',

@@ -71,7 +71,7 @@ App.Platforms = {
 App.Platform = function(name) {
     this.name = name;
     this.defaultPlatform = true;
-    this._mediaPlayer = "fp7";
+    this._mediaPlayer = "html5";
 
     this.start = $noop;
     this.exit = $noop;
@@ -158,20 +158,14 @@ App.Platform.prototype.matrix = function() {
 }
 
 App.Platform.prototype.addPlatformCSS = function() {
-    $log(" ADDING PLATFORM CSS FOR PLATFORM: " + this.name  + " path: css/platforms/"+this.name.toLowerCase()+".css and resolution: css/resolutions/"+this.matrix()+".css" );
-    /*$("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "style/" + this.matrix() + ".css"
-    }).appendTo("head");
-
-    $("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "style/" + this.name.toLowerCase() + ".css"
-    }).appendTo("head");
-    */
-
+    if (this._mediaPlayer) {
+        $log(" ADDING PLATFORM CSS FOR PLATFORM: " + this.name  + " path: /style/vendor/flowplayer."+this._mediaPlayer.toLowerCase()+".css");
+        $("<link/>", {
+            rel: "stylesheet",
+            type: "text/css",
+            href: "/style/vendor/flowplayer." + this._mediaPlayer.toLowerCase() + ".css"
+        }).appendTo("head");
+    }
 }
 
 // Override this
@@ -201,16 +195,9 @@ _.extend(App.Platform.prototype, Backbone.Events);
 
     browser.setResolution(window.screen.width, window.screen.height);
     browser.defaultPlatform = true;
-    App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("fp7");
+    browser.setMediaPlayer(App.Settings.Player.defaultMediaPlayer);
 
-    browser.addPlatformCSS = function() {
-            $("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "//cdn.flowplayer.com/releases/native/stable/style/flowplayer.css"
-    }).appendTo("head");
-    }
+    App.Platforms.addSupportedPlatform(browser);
 
 }());
 
@@ -220,7 +207,7 @@ _.extend(App.Platform.prototype, Backbone.Events);
     browser.detectPlatform = function() {
         return jQuery.browser.mobile;
 
-    };
+    };  
     browser.updateScreen = function(silent) {
         var orientation = this.getDeviceOrientation();
         if (typeof(screen) != "undefined") {
@@ -251,8 +238,10 @@ _.extend(App.Platform.prototype, Backbone.Events);
     browser.setResolution($(window).outerWidth(), $(window).outerHeight());
 
     browser.defaultPlatform = false;
+
+    browser.setMediaPlayer(App.Settings.Player.defaultMediaPlayer);
     App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("hls");
+
 
 }());
 
@@ -263,7 +252,7 @@ _.extend(App.Platform.prototype, Backbone.Events);
     // browser.needsProxy = true;
 
     browser.detectPlatform = function() {
-        if (jQuery.browser.mobile) return false;
+        return false;
         try {
             if (navigator.plugins != null && navigator.plugins.length > 0) {
                 return navigator.plugins["Shockwave Flash"] && true;
@@ -288,44 +277,3 @@ _.extend(App.Platform.prototype, Backbone.Events);
 
 }());
 
-(function() {
-    var browser = new App.Platform('mobile');
-    // browser.needsProxy = true;
-    browser.detectPlatform = function() {
-        return jQuery.browser.mobile;
-
-    };
-    browser.updateScreen = function(silent) {
-        var orientation = this.getDeviceOrientation();
-        if (typeof(screen) != "undefined") {
-            window.screen.availWidth = $(window).width();
-            window.screen.availHeight = $(window).height();
-        }
-
-        this.setResolution(screen.availWidth, screen.availHeight);
-        if (!silent) this.trigger("screen:resize", screen.availWidth, screen.availHeight);
-
-        if (orientation != this.orientation) {
-                this.orientation = orientation;
-                if (!silent) this.trigger("screen:orientation:change", this.orientation);
-        }
-
-
-    };
-    browser.init = function() {
-        $(window).on('resize', function(e) {
-            this.updateScreen();
-           // alert("screen changed to "+this.matrix()+" "+this.orientation);
-        }.bind(browser));
-        this.updateScreen(true);
-
-    };
-    window.addEventListener("orientationchange", this.updateScreen);
-
-    browser.setResolution($(window).outerWidth(), $(window).outerHeight());
-
-    browser.defaultPlatform = false;
-    App.Platforms.addSupportedPlatform(browser);
-    browser.setMediaPlayer("hls");
-
-}());

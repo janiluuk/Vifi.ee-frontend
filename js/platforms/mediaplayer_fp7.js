@@ -33,21 +33,24 @@ App.MediaPlayer = {
 
             var playlistFiles = this.playlist.getPlaylistFiles();
             var _this = this;
-            $log("Initializing flowplayer to "+ this.playerId + " element with playlist " + JSON.stringify(playlistFiles));
+            var sources = {
+                sources: playlistFiles[0]
+            };
+
+            $log("Initializing flowplayer to "+ this.playerId + " element with playlist " + JSON.stringify(sources));
             this.plugin = flowplayer('#' + this.playerId, {
                 token: App.Settings.Player.flowplayer_fp7_token,
                 auto_orient: true,
                 autoplay: true,
                 muted: false,
                 embed: false,
-                hls :  { native: true },
-                src: playlistFiles[0].src,
+                hls : { native: true },
+                src: playlistFiles,
                 plugins: [
                     'subtitles',
                     'qsel',
                     'keyboard',
                     'chromecast',
-                    'hls',
                     'airplay'
                 ]                
             });

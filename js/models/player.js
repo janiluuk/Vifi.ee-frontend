@@ -26,7 +26,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
         this.player = App.MediaPlayer;
 
-        this.content.on('subtitles:ready', this.onSubtitlesReady, this);
+        this.content.on('content:subtitles:ready', this.onSubtitlesReady, this);
         this.content.on("content:ready", this.onContentReady, this);
 
         this.player.on("mediaplayer:pause", this.disableSubtitles, this);
@@ -105,7 +105,8 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
 
     onSubtitlesReady: function(subtitles) {
-
+        alert("JEE");
+        
         this.player._initSubtitles(subtitles);
 
     },
