@@ -25,7 +25,7 @@ App.MediaPlayer = {
         return true;
     },
     getCurrentTime: function() {
-        if (this.plugin) return this.plugin.currentTime * 1000;
+        if (this.plugin) return this.plugin.currentTime;
     },
     _createPlayer: function() {
         if (!this.playlist) return false;
@@ -71,6 +71,10 @@ App.MediaPlayer = {
                 _this.plugin.on("ended", function(e) {
                     _this.trigger("mediaplayer:onstop");
                 });
+                _this.plugin.on("timeupdate", function(e) {
+                    _this.trigger("mediaplayer:timeupdate");
+                });
+
                 _this.plugin.on("seeked", function(e) {
         
                     $log("Seeking to " + App.Utils.convertMstoHumanReadable(e.target.currentTime * 1000).toString());

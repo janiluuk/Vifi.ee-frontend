@@ -1,6 +1,6 @@
 App.User = {};
 App.User.Ticket = Backbone.Model.extend({
-    filmsession: false,
+    playsession: false,
     content: false,
     defaults: {
         id: false,
@@ -25,13 +25,10 @@ App.User.Ticket = Backbone.Model.extend({
         } else {
             data.vod_id = data.id;
         }
-        this.set("content", new App.Models.FilmContent({
-            id: this.get("id"),
-            ticket: this
-        }));
-        if (this.get("session")) {
-            this.set("filmsession", new App.Models.FilmSession(this.get("session")));
-        }
+        var playsession = new App.User.FilmSession(this.get("session"));
+
+        this.set("playsession", playsession);
+
         if (!this.isExpired(data.validto)) this.set("status", "active");
         if (data.validto) data.validtotext = this.getValidityText(data.validto);
         return data;
@@ -643,9 +640,9 @@ App.User.Profile = App.Models.ApiModel.extend({
         var movie = app.usercollection.findWhere({
             id: id
         });
-        if (movie && movie.get("filmsession")) {
-            var session = movie.get("filmsession").get("session_id");
-            return session;
+        if (movie && movie.get("playsession")) {
+            var session_id = movie.get("playsession").get("session_id");
+            return session_id;
         }
         return false;
     },
@@ -660,8 +657,8 @@ App.User.Profile = App.Models.ApiModel.extend({
             id: id
         });
         if (movie) {
-            var session = movie.get("auth_code");
-            return session;
+            var code = movie.get("auth_code");
+            return code;
         }
         return false;
     },
@@ -697,6 +694,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         var tickets = this.get("tickets");
         _.each(tickets, function(item) {
             var ticket = new App.User.Ticket(item);
+
             app.usercollection.add(ticket);
         });
         return app.usercollection;

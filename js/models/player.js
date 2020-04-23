@@ -13,8 +13,11 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         _.bindAll(this, 'load');
 
         this.content = new App.Models.FilmContent({
-            session: options.session
+            session: options.session,
+            player: this,
+
         });
+
         this.playlist = new App.Player.Playlist;
         if (options && undefined != options.session) {
             this.set("session", options.session);
@@ -22,13 +25,13 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         if (options && undefined != options.movie) {
             this.set("movie", options.movie);
             this.load(options.movie);
-        }
+        }   
 
         this.player = App.MediaPlayer;
-
+        this.content.on('content:playsession:ready', this.onPlaySessionReady, this);
         this.content.on('content:subtitles:ready', this.onSubtitlesReady, this);
         this.content.on("content:ready", this.onContentReady, this);
-
+        this.player.on("mediaplayer:timeupdate", this.onTimeUpdate,this);
         this.player.on("mediaplayer:pause", this.disableSubtitles, this);
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
         this.player.on("subtitles:unload", this.disableSubtitles, this);
@@ -46,7 +49,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
 
     onPlayerAction: function(evt, arg, arg2) {
-        $log("Got player event: " + evt);
+        //$log("Got player event: " + evt);
         var parts = evt.split(":");
         var evt = parts.shift();
         var action = parts.shift();
@@ -104,8 +107,17 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
     },
 
+    onTimeUpdate: function(time) {
+        this.get("playsession").trigger("player:timeupdate", this.player.getCurrentTime());
+    },
+
+    onPlaySessionReady: function(session) {
+        this.set("playsession", session);        
+        this.content.trigger("player:playsession:ready");
+
+    },
+
     onSubtitlesReady: function(subtitles) {
-        alert("JEE");
         
         this.player._initSubtitles(subtitles);
 

@@ -23,19 +23,28 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
                 'language': ''
             }],
             session: {  },
-            filmsession: false,
         }
     },
 
     initialize: function(options) {
+        this.on("change:id", this.onSessionLoad, this);
+        this.on("change:videos", this.onLoadContent, this);
+        this.on("change:subtitles", this.onLoadSubtitles, this);
+        this.on('change:playsession', this.onLoadPlaySession, this);
+
         if (options && undefined !== options.session) {
             this.set("session", options.session);
         }
 
-        this.on("change:id", this.onSessionLoad, this);
-        this.on("change:videos", this.onLoadContent, this);
-        this.on("change:subtitles", this.onLoadSubtitles, this);
-        this.on('change:filmsession', this.onSessionLoad, this);
+        this.set("playsession", new App.User.FilmSession());
+
+        if (options && undefined !== options.playsession) {
+            this.set("playsession", options.playsession);
+        }
+        if (options && undefined !== options.player) {
+            this.set("player", options.player);
+        }
+
     },
 
     /*
@@ -47,10 +56,9 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         if (id) { 
                $log("[Content] Looking for existing ticket with film id: "+id);
             var session = this.get("session");
-            this
-            if (session.profile.getMovieSession(id)) this.params.filmsession = session.profile.getMovieSession(id);
+            if (session.profile.getMovieSession(id)) this.params.session_id = session.profile.getMovieSession(id);
             if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
-            if (_.isEmpty(this.params) !== false) {
+            if (_.isEmpty(this.params) === false) {
               $log("[Content] Found existing ticket: "+JSON.stringify(this.params));
             } else {
               $log("[Content] No existing ticket for film id: "+id);
@@ -58,13 +66,14 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
 
         } 
     },
+
     /*
      * Reset content items to defaults
      */
     resetContent: function() {
         this.set("videos", false);
         this.set("subtitles", false);
-        this.set("filmsession", false); 
+        this.set("playsession", false); 
         $log("[Content] Reset content");       
     },
 
@@ -96,12 +105,13 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
             this.trigger("content:reset");
     },
 
-    onLoadSession: function(event) {
-
-        if (this.get("filmsession") != false && this.get("filmsession").length > 0) {
-            this.trigger("content:filmsession:ready", this.get("filmsession"));
+    onLoadPlaySession: function(data) {
+        if (data != false) {
+            $log('Playsession loaded');
+            var playsession = new App.User.FilmSession(data.get("playsession"));
+            this.trigger("content:playsession:ready", playsession);
         } else {
-            this.trigger("content:filmsession:reset", this.get("filmsession"));
+            this.trigger("content:playsession:reset", playsession);
         }
     },
 
@@ -114,8 +124,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
 
    addSession: function(session) {
         var sess = new App.User.FilmSession(session);
-        this.set("filmsession", sess);
-        this.trigger("content:filmsession:loaded", this.get("filmsession"));
+        this.set("playsession", sess);
+        this.trigger("content:playsession:loaded", this.get("playsession"));
         $log("[Content] Got session: "+ sess.toJSON());                
     },
 

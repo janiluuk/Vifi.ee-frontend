@@ -383,7 +383,10 @@ App.Models.Purchase = Backbone.Model.extend({
         if (session_id != "") {
             this.session.set("session_id", session_id);
             var id = this.model.get("id");
-
+            var movie = app.collection.originalCollection.get(id);
+            var filmsession = new App.User.FilmSession();
+            filmsession.set("session_id", session_id);
+            movie.set("playsession", filmsession);
             app.usercollection.add(app.collection.originalCollection.get(id));
             this.trigger("purchase:successful");
         }

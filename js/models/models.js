@@ -168,29 +168,3 @@ _.extend(App.Models.Film.prototype,  {
     },
  });
 
-App.Models.FilmSession = Backbone.Model.extend({
-    path: 'update_session',
-    urlRoot: App.Settings.Api.url,
-    idAttribute: 'session_id',
-    url: function() { return this.urlRoot+this.path+"/"+this.get("session_id")+"/"+this.get("timestamp")+"?format=json&api_key="+App.Settings.Api.key; },
-
-    defaults: function() {
-        return {
-            'session_id' : '',
-            'timestamp' : 0,
-            'watched' : false,
-            'film_id' : ''
-        };
-    },
-    initialize: function(options) {
-        this.on("change:session_id", this.onSessionLoad, this);
-
-    },
-    onSessionLoad: function() {
-        console.log(this.get("session_id"));
-    }
-
-
-});
-
-

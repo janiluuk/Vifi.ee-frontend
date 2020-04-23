@@ -181,22 +181,30 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             return false;
         }
         this.hideCarousel();
-        if (!this.playerView) {
+        if (this.playerView && app.player.content && app.player.content.get("id") != this.model.get("id")) {
+            this.playerView.close();
+            this.playerView.unbind();
+
             this.playerView = new App.Views.PlayerView({
                 model: app.player
             });
             app.player.load(this.model);
+            this.listenTo(this.playerView, 'player:close', this.closePlayer, this);
         } else {
             if (app.player.content && app.player.content.get("id") == this.model.get("id")) {
                 this.playerView.render();
                 app.movieview.playerView.model.trigger("player:ready", app.movieview.playerView.model);              
                 app.player.player.init(app.player.player.playlist);
             } else {
-                this.playerView.render();
-                app.player.load(this.model);
+            this.playerView = new App.Views.PlayerView({
+                model: app.player
+            });
+            app.player.load(this.model);
+            this.listenTo(this.playerView, 'player:close', this.closePlayer, this);                
             }
         }
         $("#close-player").show();
+
         if (e) e.stopPropagation();
         return false;
     },

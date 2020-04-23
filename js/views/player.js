@@ -3,12 +3,16 @@ App.Views.PlayerView = Backbone.View.extend({
     subtitleEl: "#subtitles",
     model: App.Player.MediaPlayer,
     controlBar: false,
+    events: {
+        'click #close-player': 'onClosePlayer',
+    },
     initialize: function() {
-        
+        this.setElement(this.el);
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
         app.platform.on("screen:orientation:change", this.resize, this);
         this.listenTo(this.model, "player:ready", this.renderControls, this);
         this.listenTo(this.model, "change", this.render, this);
+
         this.listenTo(this.model, "player:resize", this.resize, this);
         this.listenTo(app.router, "page:change", this.close, this);
         this.render();
@@ -32,6 +36,7 @@ App.Views.PlayerView = Backbone.View.extend({
 
         element.width(Math.ceil(player_width));
         element.height(Math.ceil(player_height));
+        this.setElement(this.el);
 
     },
     close: function() {
@@ -50,10 +55,15 @@ App.Views.PlayerView = Backbone.View.extend({
 
 
     },
+    onClosePlayer: function() {
+        this.trigger('player:close');
+        this.close();
+    },
     render: function() {
 
-        this.setElement(this.el);
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
+        this.setElement(this.el);
+
         this.$el.show();
 
         return this;
