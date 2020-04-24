@@ -12,9 +12,6 @@ window.$log = function(log) { 
         }
         app.trigger("flash", log, 5000);
     }
-    
-    console.log(log);
-
 };
 
 window.$error = function(log) { 

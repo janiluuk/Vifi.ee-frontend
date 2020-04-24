@@ -22,8 +22,8 @@ App.Views.MovieDetailView = App.Views.Page.extend({
     },
     /**
      * Fetch IMDB rating using external service if film does not have one.
-     * 
-     * @return {void} 
+     *
+     * @return {void}
      */
     enableRatings: function() {
         if (this.model.get("imdbrating") == false || this.model.get("imdbrating") == "Data" || this.model.get("imdbrating") == null) {
@@ -47,7 +47,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
     /**
      * Enable Disqus thread if enabled by configuration.
      * It will look for a div with id "disq_thread"
-     * 
+     *
      */
     enableComments: function() {
         if (!App.Settings.commentsEnabled) return false;
@@ -134,11 +134,10 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             this.startCarousel();
             this.enableRatings();
             this.model.fetchRT();
-            //  this.enableAddThis(); 
+            //  this.enableAddThis();
             App.Utils.lazyload();
         }.bind(this), 200);
         setTimeout(function() {
-            App.Utils.lazyload();
             this.enableComments();
             this.enableYoutubePlayer();
         }.bind(this), 1000);
@@ -166,12 +165,15 @@ App.Views.MovieDetailView = App.Views.Page.extend({
     },
     closeTrailer: function(e) {
         if (e) e.preventDefault();
-        this.hideCarousel();
         if (this.trailerView) this.trailerView.close();
+        this.showCarousel();
+
         if (e) e.stopPropagation();
     },
     playMovie: function(e) {
         if (e) e.preventDefault();
+        if (e) e.stopPropagation();
+
         if (!app.session.get("profile").hasMovie(this.model)) {
             this.showCarousel();
             this.purchaseView = new App.Views.PurchaseView({
@@ -180,42 +182,47 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             })
             return false;
         }
-        this.hideCarousel();
-        if (this.playerView && app.player.content && app.player.content.get("id") != this.model.get("id")) {
-            this.playerView.close();
-            this.playerView.unbind();
 
-            this.playerView = new App.Views.PlayerView({
-                model: app.player
-            });
-            app.player.load(this.model);
-            this.listenTo(this.playerView, 'player:close', this.closePlayer, this);
-        } else {
-            if (app.player.content && app.player.content.get("id") == this.model.get("id")) {
+
+        if (app.player.content && app.player.content.get("id") == this.model.get("id")) {
                 this.playerView.render();
-                app.movieview.playerView.model.trigger("player:ready", app.movieview.playerView.model);              
+                this.hideCarousel();
                 app.player.player.init(app.player.player.playlist);
-            } else {
-            this.playerView = new App.Views.PlayerView({
-                model: app.player
-            });
-            app.player.load(this.model);
-            this.listenTo(this.playerView, 'player:close', this.closePlayer, this);                
-            }
+                this.playerView.model.trigger("player:ready", app.movieview.playerView.model);
+                if (e) e.stopPropagation();
+                return false;
         }
+
+        if (this.playerView && app.player.content) {
+            this.playerView.close();
+            this.stopListening(this.playerView);
+        }
+
+        this.playerView = new App.Views.PlayerView({
+            model: app.player
+        });
+
+        app.player.load(this.model);
+        this.listenTo(this.playerView, 'player:close', this.closePlayer, this);
+
+        this.hideCarousel();
+
         $("#close-player").show();
 
-        if (e) e.stopPropagation();
         return false;
     },
     closePlayer: function(e) {
-        e.preventDefault();
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         this.playerView.close();
+        this.playerView.model.stop();
+        
         this.showCarousel();
-        e.stopPropagation();
     },
     showCarousel: function() {
-        $("#close-player").hide();      
+        $("#close-player").hide();
         $("#gallery-swiper-container").velocity("fadeIn", {
             duration: 500
         });

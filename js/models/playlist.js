@@ -37,6 +37,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         }
 
         this.set("playsession", new App.User.FilmSession());
+        this.listenTo(this.get("playsession"), 'playsession:overridden', this);
 
         if (options && undefined !== options.playsession) {
             this.set("playsession", options.playsession);
@@ -64,7 +65,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
               $log("[Content] No existing ticket for film id: "+id);
             }
 
-        } 
+        }
     },
 
     /*
@@ -73,8 +74,8 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     resetContent: function() {
         this.set("videos", false);
         this.set("subtitles", false);
-        this.set("playsession", false); 
-        $log("[Content] Reset content");       
+        this.set("playsession", false);
+        $log("[Content] Reset content");
     },
 
 
@@ -101,7 +102,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
 
         if (this.get("videos").length > 0)
             this.trigger("content:ready", this.get("videos"));
-        else 
+        else
             this.trigger("content:reset");
     },
 
@@ -114,7 +115,9 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
             this.trigger("content:playsession:reset", playsession);
         }
     },
-
+    onPlaySessionOverridden: function() {
+        this.trigger("content:playsession:overridden");
+    },
     onLoadSubtitles: function(event) {
 
         if (this.get("subtitles") != null && this.get("subtitles").length > 0)
@@ -126,7 +129,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         var sess = new App.User.FilmSession(session);
         this.set("playsession", sess);
         this.trigger("content:playsession:loaded", this.get("playsession"));
-        $log("[Content] Got session: "+ sess.toJSON());                
+        $log("[Content] Got session: "+ sess.toJSON());
     },
 
     /*
@@ -147,7 +150,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.VideoFileCollection(videofiles);
         this.set("videos", collection);
-        $log("[Content] Got videos: "+ collection.toJSON());                
+        $log("[Content] Got videos: "+ collection.toJSON());
 
         this.trigger("content:videos:loaded", this.get("videos"));
 
@@ -170,7 +173,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.SubtitleFileCollection(subs);
         this.set("subtitles", collection);
-        $log("[Content] Got subtitles: "+ collection.toJSON());                
+        $log("[Content] Got subtitles: "+ collection.toJSON());
         this.trigger("content:subtitles:loaded", content);
     }
 });

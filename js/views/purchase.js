@@ -227,16 +227,18 @@ App.Views.PaymentDialog = Backbone.View.extend({
         $("#" + method).addClass("selected");
         $("#method").val(method);
         if (method == "code") {
+            $("#payment-method-terms").hide();
+
             $("#payment-code").show();
         } else if (method == "mobile") {
             $("#payment-email").hide();         
-
+            $("#payment-method-terms").hide();
             $("#payment-mobile").show();
             $("#confirm-purchase-button").hide();
         } else {
             $("#payment-email").show();
             $("#confirm-purchase-button").show();
-
+            $("#payment-method-terms").show();
         }
     },
     initPayment: function(e) {
@@ -256,11 +258,13 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.$("#confirm-purchase-button").removeClass("loading");
     },    
     onPaymentSuccess: function() {
-        this.$("#confirm-purchase-button").removeClass("loading");
-        this.remove();
+
         app.router.trigger("action","payment", "success", "Payment successful with "+this.payment.get("method")+ " for "+ this.model.get("title"));
 
         app.movieview.playMovie();
+        this.$("#confirm-purchase-button").removeClass("loading");
+        this.remove();
+        app.scrollToTop();
     },
     onPaymentError: function(message) {
 

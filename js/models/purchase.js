@@ -276,9 +276,7 @@ App.Models.Purchase = Backbone.Model.extend({
             required:true,
         },
         termsconditions: {
-          required:true,
-          acceptance: true,
-          msg: 'Please accept the terms before continuing'
+          fn: 'validateTerms',
         },
 
         price: {
@@ -322,6 +320,7 @@ App.Models.Purchase = Backbone.Model.extend({
 
     },
 
+
     validateMethod: function(value, attr, computedState) {
 
         if(value === 'code' && this.get("code").length == 0) {
@@ -329,6 +328,13 @@ App.Models.Purchase = Backbone.Model.extend({
         }
         if(value !== 'code' && value !== 'mobile' && this.get("email").length == 0) {
             return 'Vale E-mail, proovi uuesti!';
+        }
+    },
+
+    validateTerms: function(value, attr, computedState) {
+
+        if(value === '0' && this.get("method") != "code" && this.get("method") != "mobile") {
+            return 'Please accept terms and conditions';
         }
     },
 

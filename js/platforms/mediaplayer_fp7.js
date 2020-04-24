@@ -24,8 +24,13 @@ App.MediaPlayer = {
         this._createPlayer();
         return true;
     },
+    unload: function()
+    {
+        this.stop();
+        flowplayer.instances[0].destroy();
+    },
     getCurrentTime: function() {
-        if (this.plugin) return this.plugin.currentTime;
+        if (this.plugin) return this.plugin.currentTime * 1000;
     },
     _createPlayer: function() {
         if (!this.playlist) return false;
@@ -52,7 +57,7 @@ App.MediaPlayer = {
                     'keyboard',
                     'chromecast',
                     'airplay'
-                ]                
+                ]
             });
             this.plugin.on('loadeddata', function(e) {
 
@@ -60,6 +65,10 @@ App.MediaPlayer = {
                 _this.active();
                 _this.plugin.togglePlay(true);
                 if (App.Settings.debug === true) _this._trackEvents();
+
+                if (_this.subtitles) {
+                    _this.subtitles.loadLanguage();
+                }
 
                 _this.trigger("mediaplayer:ratio:change", { width: video.videoWidth, height: video.videoHeight});
                 _this.plugin.on("pause", function(e) {
@@ -76,9 +85,8 @@ App.MediaPlayer = {
                 });
 
                 _this.plugin.on("seeked", function(e) {
-        
+
                     $log("Seeking to " + App.Utils.convertMstoHumanReadable(e.target.currentTime * 1000).toString());
-                    $log("seeking:" + _this.plugin.seeking + " " + App.Utils.convertMstoHumanReadable(e.target.currentTime * 1000).toString() + " / " + App.Utils.convertMstoHumanReadable(e.target.duration * 1000).toString());
                     _this.trigger("mediaplayer:onseek", e.target.currentTime);
                 });
                 _this.plugin.on("seeking", function(e) {
@@ -105,24 +113,27 @@ App.MediaPlayer = {
             this.subtitles.unload();
             this.subtitles.unbind();
             this.subtitles.destroy();
-        }   
+        }
         this.subtitles = new App.Player.Subtitles();
 
-        if (this.subtitlesView) { 
+        if (this.subtitlesView) {
             this.subtitlesView.close();
             this.subtitlesView.unbind();
         }
         this.subtitlesView = new App.Views.Subtitles({
             model: this.subtitles
         });
+
         this.subtitles.load(content);
+        this.enableSubtitles();
+
     },
     loadSubtitles: function(subtitles) {
         var code = subtitles.code;
         this.subtitles.handleSubtitleSelection(code);
     },
     disableSubtitles: function() {
-        if (this.subtitles) { 
+        if (this.subtitles) {
             this.subtitles.disable();
             this.trigger("mediaplayer:subtitles:disabled");
         }

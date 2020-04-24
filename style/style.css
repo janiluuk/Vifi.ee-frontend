@@ -2146,6 +2146,35 @@ ul#movie-interactive-button-row li {
     position: relative;
 }
 
+div#video-container-footer
+{
+    opacity:0;
+    -webkit-transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.5s ease-in-out;    
+}
+.fp-togglable {
+    -webkit-transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.5s ease-in-out;
+}
+#movie-player-container:hover div#video-container-footer
+{
+    opacity:1;
+}
+
+div#video-container-heading 
+{
+    opacity:0;
+    -webkit-transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.5s ease-in-out;    
+}
+div#movie-player-container:hover div#video-container-heading
+{
+    opacity:0.5;
+}
+
 #player-container {
     float: left;
 }

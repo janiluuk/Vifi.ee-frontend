@@ -12,7 +12,7 @@ App.Views.PlayerView = Backbone.View.extend({
         app.platform.on("screen:orientation:change", this.resize, this);
         this.listenTo(this.model, "player:ready", this.renderControls, this);
         this.listenTo(this.model, "change", this.render, this);
-
+        this.listenTo(this.model, "player:sessionoverridden", this.onForcedClose, this);
         this.listenTo(this.model, "player:resize", this.resize, this);
         this.listenTo(app.router, "page:change", this.close, this);
         this.render();
@@ -40,29 +40,34 @@ App.Views.PlayerView = Backbone.View.extend({
 
     },
     close: function() {
+        this.model.stop();        
         this.setElement(this.el);
         this.$el.hide();
-        this.model.stop();
         //this.stopListening();
     },
     show: function() {
-        this.setElement(this.el);        
+        this.setElement(this.el);
         this.$el.show();
         //this.unbind();
         //this.stopListening();
-    },    
+    },
     onSubtitlesLoaded: function() {
 
 
     },
-    onClosePlayer: function() {
-        this.trigger('player:close');
+    onClosePlayer: function(e) {
+        this.trigger('player:close', e);
         this.close();
     },
+    onForcedClose: function() {
+        this.trigger('player:close');
+    },
+
     render: function() {
+        this.setElement(this.el);
 
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
-        this.setElement(this.el);
+        $("<div>").attr("id", "subtitles").appendTo("#player-container");
 
         this.$el.show();
 
@@ -198,7 +203,7 @@ App.Views.TrailerView = Backbone.View.extend({
             }.bind(this), 600);
             return false;
         }
-        var youtubeid = _thi.model.get("youtube_id");
+        var youtubeid = _this.model.get("youtube_id");
         if (youtubeid) {
 
             this.done = false;
@@ -324,8 +329,6 @@ App.Views.Subtitles = Backbone.View.extend({
         this.listenTo(this.model, "change:subtitledata", this.render, this);
         this.listenTo(this.model, "subtitles:hide", this.hideSubtitles, this);
         this.listenTo(this.model, "subtitles:loadfile", this.loadSubtitles, this);
-
-
         this.render();
 
     },
@@ -338,11 +341,10 @@ App.Views.Subtitles = Backbone.View.extend({
     },
 
     loadSubtitles: function(url,code) {
-
+        this.render();
         $(this.subtitleElement).hide().load(url, function(responseText, textStatus, req) {
             var text = $(this.subtitleElement).text();
             $(this.subtitleElement).empty().show();
-
             this.model.parseSrt(text);
             this.model.start();
 
@@ -350,10 +352,8 @@ App.Views.Subtitles = Backbone.View.extend({
     },
     render: function() {
         $(this.subtitleElement).remove();
-
-        $("<div>").attr("id", "subtitles").appendTo(this.$el);
-        this.setElement(this.el);        
-
+        $("<div>").attr("id", "subtitles").appendTo("#player-container");
+        this.setElement(this.el);
         return this;
 
     }
