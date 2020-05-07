@@ -1459,6 +1459,7 @@ a.arrow-right {
     z-index: 0;
     background-repeat: no-repeat;
     background-size: cover;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.8) 45%,rgba(0,0,0,0.8) 60%,rgba(0,0,0,0.9) 100%);
 }
 
 .swiper-slide, .featured-item {
@@ -1473,15 +1474,14 @@ a.arrow-right {
 .featured-item-info {
     z-index: 999;
 
-    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.85) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(40%,rgba(0,0,0,0.45)), color-stop(70%,rgba(0,0,0,0.7)), color-stop(100%,rgba(0,0,0,0.85))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* IE10+ */
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.85) 100%); /* W3C */
+    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 45%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,0.92) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(45%,rgba(0,0,0,0.65)), color-stop(70%,rgba(0,0,0,0.8)), color-stop(100%,rgba(0,0,0,0.92))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 45%,rgba(0,0,0,0.8) 70%,rgba(0,0,0,0.92) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 65%,rgba(0,0,0,0.8) 70%,rgba(0,0,0,0.92) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 65%,rgba(0,0,0,0.8) 70%,rgba(0,0,0,0.92) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 45%,rgba(0,0,0,0.8) 70%,rgba(0,0,0,0.92) 100%); /* W3C */
     filter: progid:DXImageTransf    orm.Microsoft.gradient( startColorstr='#00000000', endColorstr='#d9000000',GradientType=0 ); /* IE6-9 */
     position: absolute;
-    width: 90%;
     bottom: 0;
     padding: 2.5em 5% 3.5em 5%;
 }
@@ -1491,7 +1491,7 @@ a.arrow-right {
     letter-spacing: -0.4px;
     font-weight: 700;
     color: #ddd;
-    text-shadow: 0 1px 1px #333;
+    text-shadow: 0 1px 10px rgba(51, 51, 51, 0.85);
     line-height: 1.1em;
     margin-bottom: 0.2em;
 }
@@ -1500,7 +1500,7 @@ a.arrow-right {
     font-size: 1.4em;
     line-height: 1.5em;
     color: #ddd;
-    text-shadow: 0 1px 1px #333;
+    text-shadow: 0 1px 10px rgba(51, 51, 51, 0.85);
     width: 60%;
 }
 
@@ -1517,6 +1517,34 @@ a.arrow-right {
     -webkit-backface-visibility:hidden; /* Chrome and Safari */
     -moz-backface-visibility:hidden; /* Firefox */
     -ms-backface-visibility:hidden; /* Internet Explorer 10+ */
+
+
+    /*Color gradient */
+    background: rgb(2,0,36);
+    background: linear-gradient(185deg, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 100%);
+
+    /* For animation */
+    background-size: 400% 400%;
+    -webkit-animation: AnimationName 41s ease infinite;
+    -moz-animation: AnimationName 41s ease infinite;
+    animation: AnimationName 41s ease infinite;
+
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:90% 0%}
+    50%{background-position:11% 100%}
+    100%{background-position:90% 0%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:90% 0%}
+    50%{background-position:11% 100%}
+    100%{background-position:90% 0%}
+}
+@keyframes AnimationName {
+    0%{background-position:90% 0%}
+    50%{background-position:11% 100%}
+    100%{background-position:90% 0%}
 }
 
 .main-wrapper {
@@ -2151,24 +2179,24 @@ div#video-container-footer
     opacity:0;
     -webkit-transition: opacity 0.5s ease-in-out;
     -moz-transition: opacity 0.5s ease-in-out;
-    transition: opacity 0.5s ease-in-out;    
+    transition: opacity 0.5s ease-in-out;
 }
 .fp-togglable {
     -webkit-transition: opacity 0.5s ease-in-out;
     -moz-transition: opacity 0.5s ease-in-out;
     transition: opacity 0.5s ease-in-out;
 }
-#movie-player-container:hover div#video-container-footer
+#movie-page-header:hover div#video-container-footer
 {
     opacity:1;
 }
 
-div#video-container-heading 
+div#video-container-heading
 {
     opacity:0;
     -webkit-transition: opacity 0.5s ease-in-out;
     -moz-transition: opacity 0.5s ease-in-out;
-    transition: opacity 0.5s ease-in-out;    
+    transition: opacity 0.5s ease-in-out;
 }
 div#movie-player-container:hover div#video-container-heading
 {
