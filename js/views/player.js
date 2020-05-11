@@ -42,12 +42,13 @@ App.Views.PlayerView = Backbone.View.extend({
     close: function() {
         this.model.stop();        
         this.setElement(this.el);
-        this.$el.hide();
+        this.$el.velocity("fadeOut", { duration: 200 });
         //this.stopListening();
     },
     show: function() {
         this.setElement(this.el);
-        this.$el.show();
+        this.$el.velocity("fadeIn", { duration: 200 });
+
         //this.unbind();
         //this.stopListening();
     },
@@ -70,7 +71,7 @@ App.Views.PlayerView = Backbone.View.extend({
         $("<div>").attr("id", "subtitles").appendTo("#player-container");
 
         this.$el.show();
-
+        $("#content-container").scrollTo(0,0);
         return this;
     },
 
@@ -79,7 +80,6 @@ App.Views.PlayerView = Backbone.View.extend({
         this.controlBar.on('controlbar:change', this.onControlsChange, this);
         this.$el.velocity("fadeIn", { duration: 200 });
         this.resize();
-
     },
 
     onControlsChange: function(category, val) {
