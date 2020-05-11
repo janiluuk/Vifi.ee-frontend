@@ -37,7 +37,12 @@ App.Views.FeaturedView = Backbone.View.extend({
             _.each(this.collection, function(item) {
                 if (counter < App.Settings.featured_slides_limit) {
                     counter++;
-                    var shortOverview = item.get('overview').substr(0, 210) + "...";
+		    var overview = item.get('overview');
+		    var shortOverview = '';
+
+		if (overview !== null)
+                    shortOverview = item.get('overview').substr(0, 210) + "...";
+		   
                     item.set("shortOverview",shortOverview);
                     $(this.fragment).append(ich.featuredItemTemplate(item.toJSON()));
                 }

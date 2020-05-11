@@ -124,17 +124,12 @@ App.Collections.UserCollection = Backbone.Collection.extend({
             return item.get("id") == id
         });
     },
-    parseModel: function(model) {
-        if (!model.isValid()) {
-            $log("Invalid model, deleting " + model.get("id"));
-            model.destroy();
+    parseModel: function(ticket) {
+        if (!ticket.isValid()) {
+            $log("Invalid model, deleting " + ticket.get("id"));
+            ticket.destroy();
             return false;
         }
-        var original_film = app.collection.originalCollection.get(model.get("id"));
-        if (original_film) {
-            original_film.set("ticket", model);
-        }
-        model.save();
         return true;
     },
     updateUserCollection: function(model) {

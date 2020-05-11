@@ -1,18 +1,16 @@
-
 App.Models.FilmContent = App.Models.ApiModel.extend({
-
-    path: function() { return 'content/'+this.get("id"); },
+    path: function() {
+        return 'content/' + this.get("id");
+    },
     params: {},
-
     defaults: function() {
         return {
             'id': false,
             'videos': [{
-                    'mp4': '',
-                    'profile': '',
-                    'code': ''
-                }
-            ],
+                'mp4': '',
+                'profile': '',
+                'code': ''
+            }],
             'images': {
                 'thumb': '',
                 'poster': ''
@@ -22,52 +20,44 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
                 'code': '',
                 'language': ''
             }],
-            session: {  },
+            session: {},
+            playsession: App.User.FilmSession
         }
     },
-
     initialize: function(options) {
         this.on("change:id", this.onSessionLoad, this);
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
-        this.on('change:playsession', this.onLoadPlaySession, this);
-
-        if (options && undefined !== options.session) {
-            this.set("session", options.session);
-        }
-
-        this.set("playsession", new App.User.FilmSession());
-        this.listenTo(this.get("playsession"), 'playsession:overridden', this);
-
         if (options && undefined !== options.playsession) {
             this.set("playsession", options.playsession);
+        } else {
+            this.set("playsession", new App.User.FilmSession());
         }
+        this.on('change:playsession', this.onLoadPlaySession, this);
+
+
         if (options && undefined !== options.player) {
             this.set("player", options.player);
         }
-
+        this.listenTo(this.get("playsession"), 'playsession:overridden', this);
     },
-
     /*
      * Fetch Film session and auth code from the user ticket if they exist
      */
-
     onSessionLoad: function(id) {
         this.params = {};
         if (id) { 
-               $log("[Content] Looking for existing ticket with film id: "+id);
+            $log("[Content] Looking for existing ticket with film id: " + id);
             var session = this.get("session");
             if (session.profile.getMovieSession(id)) this.params.session_id = session.profile.getMovieSession(id);
             if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
             if (_.isEmpty(this.params) === false) {
-              $log("[Content] Found existing ticket: "+JSON.stringify(this.params));
+                $log("[Content] Found existing ticket: " + JSON.stringify(this.params));
             } else {
-              $log("[Content] No existing ticket for film id: "+id);
+                $log("[Content] No existing ticket for film id: " + id);
             }
-
         }
     },
-
     /*
      * Reset content items to defaults
      */
@@ -77,8 +67,6 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.set("playsession", false);
         $log("[Content] Reset content");
     },
-
-
     /*
      * Load defined film content to the player
      *
@@ -86,30 +74,25 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
      * @return jQuery.deferred
      *
      */
-
-    load: function (id) {
-
+    load: function(id) {
         this.set("id", id);
-
         var deferred = new $.Deferred();
-        this.fetch().done(function() { deferred.resolve(); }).error(function(){
+        this.fetch().done(function() {
+            deferred.resolve();
+        }).error(function() {
             deferred.reject();
         });
-
         return deferred.promise();
     },
     onLoadContent: function(event) {
-
-        if (this.get("videos").length > 0)
-            this.trigger("content:ready", this.get("videos"));
-        else
-            this.trigger("content:reset");
+        if (this.get("videos").length > 0) this.trigger("content:ready", this.get("videos"));
+        else this.trigger("content:reset");
     },
-
     onLoadPlaySession: function(data) {
         if (data != false) {
             $log('Playsession loaded');
-            var playsession = new App.User.FilmSession(data.get("playsession"));
+            var playsession = data.playsession;
+
             this.trigger("content:playsession:ready", playsession);
         } else {
             this.trigger("content:playsession:reset", playsession);
@@ -119,30 +102,17 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         this.trigger("content:playsession:overridden");
     },
     onLoadSubtitles: function(event) {
-
-        if (this.get("subtitles") != null && this.get("subtitles").length > 0)
-        this.trigger("content:subtitles:ready", this.get("subtitles"));
+        if (this.get("subtitles") != null && this.get("subtitles").length > 0) this.trigger("content:subtitles:ready", this.get("subtitles"));
     },
-
-
-   addSession: function(session) {
-        var sess = new App.User.FilmSession(session);
-        this.set("playsession", sess);
-        this.trigger("content:playsession:loaded", this.get("playsession"));
-        $log("[Content] Got session: "+ sess.toJSON());
-    },
-
     /*
      * Add subtitles to the content as their own collection
      * @param array
      *
      */
-
     addVideos: function(videos) { 
-      var videofiles = [];
+        var videofiles = [];
         _.each(videos, function(video) { 
-
-          var videofile = new App.Player.VideoFile();
+            var videofile = new App.Player.VideoFile();
             videofile.set("bitrate", video.bitrate);
             videofile.set("src", video.mp4);
             videofile.set("profile", video.profile);
@@ -150,22 +120,18 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.VideoFileCollection(videofiles);
         this.set("videos", collection);
-        $log("[Content] Got videos: "+ collection.toJSON());
-
+        $log("[Content] Got videos: " + collection.toJSON());
         this.trigger("content:videos:loaded", this.get("videos"));
-
     },
-
     /*
      * Add subtitles to the content as their own collection
      * @param array
      *
      */
-
     addSubtitles: function(subtitles) { 
         var subs = [];
         _.each(subtitles, function(video) { 
-          var subtitle = new App.Player.SubtitleFile();
+            var subtitle = new App.Player.SubtitleFile();
             subtitle.set("language", video.language);
             subtitle.set("file", video.file);
             subtitle.set("code", video.code);
@@ -173,102 +139,91 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.SubtitleFileCollection(subs);
         this.set("subtitles", collection);
-        $log("[Content] Got subtitles: "+ collection.toJSON());
-        this.trigger("content:subtitles:loaded", content);
     }
 });
-
-
 App.Player.VideoFile = Backbone.Model.extend({
-  defaults: { 
-    bitrate: false,
-    src: false,
-    active: false,
-    type: false,
-    resolution: false,
-    selected: false
-  },
-  getPlaylist: function() {
-
-      var file = this.get("src");
-      if (!file) return false;
-
-      if (file[0] == '/') file = file.substring(1);
+    defaults: { 
+        bitrate: false,
+        src: false,
+        active: false,
+        type: false,
+        resolution: false,
+        selected: false
+    },
+    getPlaylist: function() {
+        var file = this.get("src");
+        if (!file) return false;
+        if (file[0] == '/') file = file.substring(1);
         var mp4_url = App.Settings.mp4_url + file;
         var mpegurl = App.Settings.hls_url + '/' + file + '/playlist.m3u8';
-        var playlist_item = [
-            {
-                type: 'video/mp4',
-                src: mp4_url,
-                mp4: mp4_url
-            },
-            {
-                type: 'application/x-mpegurl',
-                mpegurl: mpegurl,
-                src: mpegurl,
-
-
-            },
-            {
-                type: 'video/flash',
-                flash: 'mp4:' + file.replace('.mp4', ''),
-                src: 'mp4:' + file.replace('.mp4', '')
-
-            }
-        ];
-      return playlist_item;
-  }
+        var playlist_item = [{
+            type: 'video/mp4',
+            src: mp4_url,
+            mp4: mp4_url
+        }, {
+            type: 'application/x-mpegurl',
+            mpegurl: mpegurl,
+            src: mpegurl,
+        }, {
+            type: 'video/flash',
+            flash: 'mp4:' + file.replace('.mp4', ''),
+            src: 'mp4:' + file.replace('.mp4', '')
+        }];
+        return playlist_item;
+    }
 });
 App.Player.VideoFileCollection = Backbone.Collection.extend({
     model: App.Player.VideoFile,
-
-    findMinBitrate : function(min_bitrate) { 
-      var items = this.filter(function(item) { if (item.get("bitrate") < min_bitrate) return item; });
-      if (_.size(items) == 0) {
-
-          items.push(this.getLowest());
-      }
-      return items;
+    findMinBitrate: function(min_bitrate) { 
+        var items = this.filter(function(item) {
+            if (item.get("bitrate") < min_bitrate) return item;
+        });
+        if (_.size(items) == 0) {
+            items.push(this.getLowest());
+        }
+        return items;
     },
     findClosestBitrate: function(bitrate) {
         var collection = this.findMinBitrate(bitrate);
         var curr = collection[0];
         if (collection.size == 1) return curr;
-        var item = _.map(coll.findMinBitrate(bitrate), function(item) {  if (Math.abs(bitrate - item.get("bitrate")) < Math.abs(bitrate - curr.get("bitrate"))) curr=item; } );
+        var item = _.map(coll.findMinBitrate(bitrate), function(item) {
+            if (Math.abs(bitrate - item.get("bitrate")) < Math.abs(bitrate - curr.get("bitrate"))) curr = item;
+        });
         return curr;
     },
-    getBitrates : function() {
-      return this.pluck("bitrate");
+    getBitrates: function() {
+        return this.pluck("bitrate");
     },
     setActive: function(file) { 
-      return this.map(function(item) { if (item == file) item.set("active",true); else item.set("active", false); });
+        return this.map(function(item) {
+            if (item == file) item.set("active", true);
+            else item.set("active", false);
+        });
     },
     getActive: function() { 
-      return this.map(function(item) { if (item.get("active") == true) return item; });
+        return this.map(function(item) {
+            if (item.get("active") == true) return item;
+        });
     },
-
     getLowest: function() {
-      return this.min(this.pluck("bitrate"));
+        return this.min(this.pluck("bitrate"));
     },
     getHighest: function() {
-      return this.max(this.pluck("bitrate"));
+        return this.max(this.pluck("bitrate"));
     }
 });
-
-
 App.Player.SubtitleFile = Backbone.Model.extend({
     defaults: {
-      'filename' : '',
-      'code' : '',
-      'language': '',
-      'active' : false
+        'filename': '',
+        'code': '',
+        'language': '',
+        'active': false
     }
 });
 App.Player.SubtitleFileCollection = Backbone.Collection.extend({
     model: App.Player.SubtitleFile
-
 });
-
 /*
 App.Player.Playlist = Backbone.Collection.extend({
     model: App.Player.Content,
@@ -321,13 +276,30 @@ App.Player.Playlist = Backbone.Collection.extend({
 _.extend(App.Player.Playlist, Backbone.Events);
 */
 var videos = [
-new App.Player.VideoFile({"bitrate":1500, "src":'fff.mp4', 'type':'video/mp4'}),
-new App.Player.VideoFile({"bitrate":6500, "src":'asdjaisdj.mp4', 'type':'video/mp4'}),
-new App.Player.VideoFile({"bitrate":500, "src":'add.mp4', 'type':'video/mp4'}),
-new App.Player.VideoFile({"bitrate":200, "src":'asdjaisdj.mp4', 'type':'video/mp4'}),
-new App.Player.VideoFile({"bitrate":2500, "src":'asdjaisdj.mp4', 'type':'video/flv'})
+    new App.Player.VideoFile({
+        "bitrate": 1500,
+        "src": 'fff.mp4',
+        'type': 'video/mp4'
+    }),
+    new App.Player.VideoFile({
+        "bitrate": 6500,
+        "src": 'asdjaisdj.mp4',
+        'type': 'video/mp4'
+    }),
+    new App.Player.VideoFile({
+        "bitrate": 500,
+        "src": 'add.mp4',
+        'type': 'video/mp4'
+    }),
+    new App.Player.VideoFile({
+        "bitrate": 200,
+        "src": 'asdjaisdj.mp4',
+        'type': 'video/mp4'
+    }),
+    new App.Player.VideoFile({
+        "bitrate": 2500,
+        "src": 'asdjaisdj.mp4',
+        'type': 'video/flv'
+    })
 ];
 var coll = new App.Player.VideoFileCollection(videos);
-
-
-

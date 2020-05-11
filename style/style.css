@@ -1518,17 +1518,6 @@ a.arrow-right {
     -moz-backface-visibility:hidden; /* Firefox */
     -ms-backface-visibility:hidden; /* Internet Explorer 10+ */
 
-
-    /*Color gradient */
-    background: rgb(2,0,36);
-    background: linear-gradient(185deg, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 100%);
-
-    /* For animation */
-    background-size: 400% 400%;
-    -webkit-animation: AnimationName 41s ease infinite;
-    -moz-animation: AnimationName 41s ease infinite;
-    animation: AnimationName 41s ease infinite;
-
 }
 
 @-webkit-keyframes AnimationName {
@@ -2476,10 +2465,12 @@ ul#subscription-benefit-list li .icon {
     }
 }
 
+
 @media only screen and (max-width: 1600px) {
 
     #content-container {
         background: url('img/blur_background_1600.jpg') no-repeat center center;
+        background-size: 400% 400%;
     }
 
 }
@@ -2488,6 +2479,8 @@ ul#subscription-benefit-list li .icon {
 
     #content-container {
         background: url('img/blur_background_1280.jpg') no-repeat center center;
+        /*Color gradient */
+        background-size: 400% 400%;
     }
 
     .main-wrapper {

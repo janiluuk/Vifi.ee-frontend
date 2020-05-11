@@ -228,8 +228,9 @@ App.Views.PaymentDialog = Backbone.View.extend({
         $("#method").val(method);
         if (method == "code") {
             $("#payment-method-terms").hide();
-
             $("#payment-code").show();
+            $("#confirm-purchase-button").show();
+
         } else if (method == "mobile") {
             $("#payment-email").hide();         
             $("#payment-method-terms").hide();

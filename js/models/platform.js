@@ -129,7 +129,6 @@ App.Platform.prototype.fetchMediaPlayer = function() {
              $log("Adding flowplayer path: " + pluginpath);
             $("<script/>", {
                 src: pluginpath,
-                async: true,
                 type: 'text/javascript'
             }).appendTo("body");
 
@@ -159,11 +158,10 @@ App.Platform.prototype.addPlatformCSS = function() {
     if (this._mediaPlayer) {
         $log(" ADDING PLATFORM CSS FOR PLATFORM: " + this.name  + " path: /style/vendor/flowplayer."+this._mediaPlayer.toLowerCase()+".css");
         $("<link/>", {
-            rel: "preload",
+	    rel: "stylesheet",
             type: "text/css",
-            async: true,
             href: "/style/vendor/flowplayer." + this._mediaPlayer.toLowerCase() + ".css"
-        }).appendTo("body");
+        }).appendTo("head");
     }
 }
 

@@ -114,7 +114,8 @@ App.Router = Backbone.Router.extend({
                             this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
                         else
                             this.returnview.model.set(title.toJSON());
-                        $.removeCookie('film', { path: '/', domain: '.'+App.Settings.domain });
+    
+	                    $.removeCookie('film', { path: '/', domain: '.'+App.Settings.domain });
 
                         this.returnview.render();
                         return false;
@@ -178,6 +179,7 @@ App.Router = Backbone.Router.extend({
             _this.navigate(url, {
                 trigger: false
             });
+
             app.showMoviePage();
             if (autoplay === true) app.movieview.playMovie();
             _this.trigger("change:title", film.get("title"));

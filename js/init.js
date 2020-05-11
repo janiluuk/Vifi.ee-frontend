@@ -56,8 +56,6 @@ window.app = _.extend({}, Backbone.Events);
 	    var durations = new App.Collections.FilterCollection([{'id': '0-30', 'name': '0-30min'}, {'id': '30-60', 'name': '30-60min'}, {'id': '60', 'name': '60+min'}]);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Viimati lisatud', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Vaadatuimad'}]);
         var eventhandler = _.extend({}, Backbone.Events);
-        initFB();
-        initGA();
 
         App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() {
             app.template.load(['film'], function () {
@@ -65,7 +63,7 @@ window.app = _.extend({}, Backbone.Events);
                 window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, banners: banners, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});
 
                 // Bind ready event when everything has been loaded
-
+	initGA();
                 app.on('app:ready', function() {
                         app.collection.querystate.setFromUrl();
                         app.user.updatePurchases();
@@ -83,6 +81,7 @@ window.app = _.extend({}, Backbone.Events);
                 window.history = Backbone.history.start();
 
                 deferred.resolve(app);
+        	initFB();
 
                 delete(data);
 
@@ -157,7 +156,6 @@ function initFB() {
 
     FB.Event.subscribe('auth.statusChange', function (response) {
         $(document).trigger('fbStatusChange', response);
-
     });
 
     FB.init({
@@ -169,7 +167,7 @@ function initFB() {
         version          : 'v2.7',
         frictionlessRequests: true,
         init: true,
-        level: "debug",
+        level: "info",
         signedRequest: null,
         viewMode: "website",
         autoRun: true

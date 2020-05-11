@@ -1,6 +1,8 @@
 
 App.Views = {};
 App.Views.BaseAppView = Backbone.View.extend({
+    fbuser: App.User.FBPerson,
+
     el: $("#vifi-page-container"),
 
     events: {
@@ -85,10 +87,12 @@ App.Views.BaseAppView = Backbone.View.extend({
     showTicketPurchase: function(ticket) {
         
          var id = ticket.get("vod_id");
-         var title = app.usercollection.get(id);
-         title.set("validtotext", title.getValidityText());
+         var title = app.usercollection.findWhere({vod_id: id});
+        
     
         if (title) {
+            title.set("validtotext", title.getValidityText());
+
             if (!this.returnview)
                 this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
             else

@@ -116,7 +116,6 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             this.set("tickets", res.tickets);
             this.set("authToken", res.authToken);
             this.set("status", res.status);
-
         }
     },
 
@@ -234,6 +233,10 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
 
                 _.forEach(this.get("tickets"), function(item) {
                     var ticket = new App.User.Ticket(item);
+                    var vod_id = ticket.get('vod_id');
+                    ticket.set('id', vod_id);
+                    ticket.set('user_id', app.user.get("id"));
+                    
                     this.trigger("purchase:ticket:received", ticket);
                 }.bind(this));
 
@@ -259,8 +262,8 @@ App.Models.Purchase = Backbone.Model.extend({
     model: App.Models.Product,
     film: false,
     session: false,
-
-    defaults: { method: 'code',  price: "", code: '', email: '', purchaseInfo: {}, verified: false},
+    retrying: false,
+    defaults: { method: 'code',  price: "", code: '', email: '', purchaseInfo: {}, verified: false },
     productKey: '52e802db-553c-4ed2-95bc-44c10a38c199',
     validation: {
         email: {
@@ -276,9 +279,8 @@ App.Models.Purchase = Backbone.Model.extend({
             required:true,
         },
         termsconditions: {
-          fn: 'validateTerms',
+          fn: 'validateTerms'
         },
-
         price: {
           required: true,
           min: 0.01,
@@ -333,7 +335,7 @@ App.Models.Purchase = Backbone.Model.extend({
 
     validateTerms: function(value, attr, computedState) {
 
-        if(value === '0' && this.get("method") != "code" && this.get("method") != "mobile") {
+        if(value == undefined && this.get("method") != "code" && this.get("method") != "mobile") {
             return 'Please accept terms and conditions';
         }
     },
@@ -359,7 +361,7 @@ App.Models.Purchase = Backbone.Model.extend({
         var email = this.get("email");
         if (!email || email == "") email = this.session.get("profile").get("email");
 
-        this.session.once("user:login:success", callback, this);
+        this.session.on("user:login:success", callback, this);
 
         return this.session.getToken(email);
 
@@ -389,11 +391,21 @@ App.Models.Purchase = Backbone.Model.extend({
         if (session_id != "") {
             this.session.set("session_id", session_id);
             var id = this.model.get("id");
-            var movie = app.collection.originalCollection.get(id);
             var filmsession = new App.User.FilmSession();
             filmsession.set("session_id", session_id);
-            movie.set("playsession", filmsession);
-            app.usercollection.add(app.collection.originalCollection.get(id));
+            filmsession.set("vod_id", id);
+            filmsession.set("auth_code", data.auth_code);
+            filmsession.fetch();
+
+            var ticket = new App.User.Ticket;
+            ticket.set("id", id);            
+            ticket.set("playsession", filmsession);
+            ticket.set("vod_id", id);
+            ticket.set("auth_code", data.auth_code);
+            ticket.set("status", 'active');
+            ticket.set("user_id", app.session.get('user_id'));
+            ticket.set("playsession", filmsession);
+            app.usercollection.add(ticket);
             this.trigger("purchase:successful");
         }
     },
@@ -405,16 +417,22 @@ App.Models.Purchase = Backbone.Model.extend({
 
     onVerifyResponse: function(data) {
 
-        if (data.status !== "ok") {
-            var message = data.message;
-            this.trigger("purchase:verify:error", message);
-            this.set("verified",false);
-            return false;
-        } else {
+        if (data.status === "ok") {
+            this.retrying = false;
             this.set("verified",true);
             this.trigger("purchase:verify:successful");
             return true;
         }
+
+        if (this.session.profile.isAnonymous() && this.retrying !== true) {
+            this.retrying = true;
+            this.getAnonymousToken(this.verify(this.onVerifyResponse));
+        }
+
+        var message = data.message;
+        this.trigger("purchase:verify:error", message);
+        this.set("verified",false);
+        return false;
     },
 
     purchase: function() {
@@ -478,19 +496,26 @@ App.Models.Purchase = Backbone.Model.extend({
 
     generatePurchaseInfo: function() {
         var film_id = this.model.get("id");
-        var user_id = this.session.profile.get("id");
+        var auth_id = this.session.get("auth_id");
+        var user_id = this.session.get("user_id");
+
+        if (!auth_id || auth_id < 1)
+            auth_id = this.session.get("auth_id");
+
         if (!film_id || film_id < 1) {
             throw ("Invalid film given for purchase");
         }
 
         if (!user_id || user_id < 1) {
+            app.session.logout();
+            
             throw ("Invalid or missing user for purchase");
             return false;
         }
 
         var info = {
-            'auth_id': this.session.get("auth_id"),
-            'user_id': user_id,
+            'auth_id': auth_id,
+            'user_id': this.session.get("user_id"),
             'email': this.get("email"),
             'method_id': this.get("method_id"),
             'method' : this.get("method"),

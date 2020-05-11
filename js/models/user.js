@@ -10,6 +10,7 @@ App.User.Ticket = Backbone.Model.extend({
         validtotext: '',
         title: '',
         type: '',
+        model: 'VodTitle',
         auth_code: '',
         user_id: false,
         status: 'invalid',
@@ -19,13 +20,11 @@ App.User.Ticket = Backbone.Model.extend({
      * @return boolean
      */
     parse: function(data) {
-        var data = _.pick(data, _.keys(this.defaults));
-        if (data.vod_id) {
-            data.id = data.vod_id
-        } else {
-            data.vod_id = data.id;
-        }
-        var playsession = new App.User.FilmSession(this.get("session"));
+
+
+        var ticket = _.pick(data, _.keys(this.defaults));
+
+        var playsession = new App.User.FilmSession(data.playsession);
 
         this.set("playsession", playsession);
 
@@ -195,15 +194,16 @@ App.User.Session = Backbone.Model.extend({
         this.purchases = new App.User.CookiePurchases({
             session: this
         });
-        this.profile = new App.User.Profile({
+        var profile = new App.User.Profile({
             session: this,
             purchases: this.purchases,
         });
-        this.set("profile", this.profile);
+        this.set("profile", profile);
         this.on('poll:enable', this.enable, this);
         this.on('poll:disable', this.disable, this);
-        this.profile.on('user:profile:login', this.onUserAuthenticate, this);
-        this.once('ticket:purchase', this.onTicketReceived, this);
+
+        this.listenTo(this.get("profile"), 'user:profile:login', this.onUserAuthenticate, this);
+        this.on('ticket:purchase', this.onTicketReceived, this);
         this.parseAuthCookie();
         _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'parseAuthCookie', 'onUserAuthenticate', 'writeAuthCookie', 'getNewPurchases', 'clearNewPurchases');
     },
@@ -289,7 +289,7 @@ App.User.Session = Backbone.Model.extend({
      */
     getToken: function(email, password, access_token, callback, errcb) {
         if (!password) password = "";
-        if (access_token && password == "") password = access_token;
+
         if (!this.isLoggedIn()) {
             this.reset();
             var params = ["get_token", email, password];
@@ -625,7 +625,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     hasMovie: function(movie) {
         var id = movie.get("id");
         var movies = app.usercollection.where({
-            id: id
+            vod_id: id
         });
         if (movies.length > 0) return true;
         return false;
@@ -637,11 +637,11 @@ App.User.Profile = App.Models.ApiModel.extend({
      * @return mixed, string or false
      */
     getMovieSession: function(id) {
-        var movie = app.usercollection.findWhere({
-            id: id
+        var ticket = app.usercollection.findWhere({
+            vod_id: id
         });
-        if (movie && movie.get("playsession")) {
-            var session_id = movie.get("playsession").get("session_id");
+        if (ticket && ticket.get("playsession")) {
+            var session_id = ticket.get("playsession").get("session_id");
             return session_id;
         }
         return false;
@@ -653,11 +653,11 @@ App.User.Profile = App.Models.ApiModel.extend({
      * @return mixed, string or false
      */
     getMovieAuthCode: function(id) {
-        var movie = app.usercollection.findWhere({
-            id: id
+        var ticket = app.usercollection.findWhere({
+            vod_id: id
         });
-        if (movie) {
-            var code = movie.get("auth_code");
+        if (ticket) {
+            var code = ticket.get("auth_code");
             return code;
         }
         return false;
@@ -702,9 +702,8 @@ App.User.Profile = App.Models.ApiModel.extend({
     updatePurchases: function(cb) {
         var deferred = new $.Deferred();
         this.fetch().done(function() {
-            this.updateUserCollection();
-            var tickets = this.get("tickets");
-            deferred.resolve(tickets);
+            var collection = this.updateUserCollection();
+            deferred.resolve(app.usercollection.models);
         }.bind(this));
         return deferred.promise();
     },

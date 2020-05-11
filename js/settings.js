@@ -6,6 +6,7 @@ App.Settings = {
         skin: 'vifi',
         cookie_name: 'vifi_session',
         cookie_options: {path : '/', domain: '.vifi.ee'},
+        purchase_cookie_name: 'film',
         anonymous_username: 'anonymous@vifi.ee',
         debug: false,
         commentsEnabled: true,
@@ -21,12 +22,12 @@ App.Settings = {
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         disqus_shortname: 'vifi',
         image_optimizer_enabled: true,
-        image_optimiser_url: '//dev.vifi.ee/files/images/image.php',
+        image_optimiser_url: '//gonzales.vifi.ee/files/images/image.php',
         page_change_callback: function(title, parameters) {
         },
         Payment: {
             'default_method' : 'code',
-            'mobile' : {'autostart' : true }
+            'mobile' : {'autostart' : false }
         },
         /** Player Settings **/
 
@@ -40,14 +41,14 @@ App.Settings = {
             mp4_url: '//gonzales.vifi.ee/zsf/',
             rtmp_url: 'rtmp://media.vifi.ee/vod',
             speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
-            subtitles_url: '//beta.vifi.ee/subs/'
+            subtitles_url: '//www.vifi.ee/subs/'
         },
 
         /** API Settings **/
 
         Api: {
-            url: '//dev.vifi.ee/api/',
-            key: '298fh23hhdff112'
+            url: '//gonzales.vifi.ee/api/',
+            key: '298fh23hhdff11'
         },
 
         /** Search Settings **/

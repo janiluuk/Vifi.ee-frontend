@@ -10,7 +10,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     ratio: 9 / 16,
     initialize: function(options) {
         if (this.ready) return false;
-        _.bindAll(this, 'load');
+        _.bindAll(this, 'load', 'startFetchingPlaySession', 'stopFetchingPlaySession');
 
         this.content = new App.Models.FilmContent({
             session: options.session,
@@ -50,6 +50,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
 
     onPlayerAction: function(evt, arg, arg2) {
+
         if (App.Settings.debug === false) return;
         //$log("Got player event: " + evt);
         var parts = evt.split(":");
@@ -60,9 +61,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
     onPlaySessionOverridden: function() {
         this.trigger("player:sessionoverridden", this);
-        if (this.get("playsession")) {
-            this.get("playsession").stopFetching();
-        }
+        this.stopFetchingPlaySession();
     },
     onChangeRatio: function(video) {
         if (undefined !== video) {
@@ -106,7 +105,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
         if (typeof(item) != "undefined" && _.isEmpty(item) !== true) {
             var file = item[0].file;
-            this.player.loadSubtitles(item[0]);
+            this.loadSubtitles(item[0]);
         } else {
             this.disableSubtitles();
 
@@ -117,16 +116,18 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.get("playsession").trigger("player:timeupdate", this.getCurrentTime() / 1000);
     },
 
-    onPlaySessionReady: function(session) {
-        this.set("playsession", session);
-        this.content.trigger("player:playsession:ready");
-        session.startFetching();
-        this.listenTo(session, "playsession:overridden", this.onPlaySessionOverridden);
+    onPlaySessionReady: function(playsession) {
+        var playsession = new App.User.FilmSession(this.content.attributes.playsession);
+        this.set("playsession", playsession);
+        this.content.trigger("player:playsession:ready", playsession);
+        this.startFetchingPlaySession();
+        this.listenTo(playsession, "playsession:overridden", this.onPlaySessionOverridden);
+        this.listenTo(playsession, "change:session_id", this.stopFetchingPlaySession);
+
     },
 
     onSubtitlesReady: function(subtitles) {
         this.player._initSubtitles(subtitles);
-
     },
 
     loadSubtitles: function(filename) {
@@ -144,40 +145,48 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.trigger("subtitles:enabled");
     },
     load: function(movie) {
+
         if (!movie) return false;
         var id = movie.get("id");
+        this.stopFetchingPlaySession();
 
         app.router.trigger("action", "player", "load", "Loading " + movie.get("title"));
-        $log("Loading content " +id);
+        $log("[Player] Loading content " +id);
         this.content.load(id);
     },
     play: function() {
-
-        if (this.get("playsession")) {
-            this.get("playsession").stopFetching();
-        }
-
         this.player.play();
+        this.startFetchingPlaySession();
     },
     stop: function() {
         if (this.player) {
             this.player.stop();
         }
-        if (this.get("playsession")) {
-            this.get("playsession").stopFetching();
-        }
+        this.stopFetchingPlaySession();
     },
     unload: function() {
         $log("Unloading player");
 
+        this.stop();
         if (this.player.subtitles) {
             this.player.subtitles.unload();
         }
-
-
     },
     isReady: function() {
         return this.player && this.player.isReady();
+    },
+    stopFetchingPlaySession: function() {
+
+        if (this.get("playsession")) {
+            this.get("playsession").stopFetching();
+        }
+    },
+
+    startFetchingPlaySession: function() {
+
+        if (this.get("playsession") && this.get("playsession").get("session_id") !== '') {
+            this.get("playsession").startFetching();
+        }
     },
 
     /*
@@ -194,19 +203,9 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     getCurrentTime: function() {
         return this.player.getCurrentTime() > 0 ? this.player.getCurrentTime() : 0;
     },
-    updateCurrentTime: function() {
-        var currentTime = App.Player.getCurrentTime();
-    },
     verifyContent: function() {
         return true;
-    },
-    verifySession: function(movie) {
-        // Check if user is pared at all
-        if (!this.session.get("profile").hasMovie(movie)) {
-            return false;
-        }
-        return true;
-    },
+    }
 });
 _.extend(App.Player.MediaPlayer, Backbone.Events);
 /**
