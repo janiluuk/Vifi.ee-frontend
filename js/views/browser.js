@@ -5,67 +5,60 @@ App.Views.FeaturedView = Backbone.View.extend({
     initialized: false,
     initialize: function(options) {
         this.querystate = options.querystate;
-        this.fragment = document.createDocumentFragment();            
+        this.fragment = document.createDocumentFragment();
         this.banners = options.banners;
         this.listenTo(this.querystate, "change:q", this.onQueryChange, this);
         if (this.querystate.get("q").length > 0) {
             this.$el.hide();
-        } 
-
+        }
     },
     onQueryChange: function() {
-        if (this.querystate.get("q").length > 0) { 
+        if (this.querystate.get("q").length > 0) {
             this.trigger("search:open");
-        } else { 
+        } else {
             this.trigger("search:close");
         }
     },
-    resetView: function() { 
-          setTimeout(function() {
+    resetView: function() {
+        setTimeout(function() {
             this.$el.empty();
             this.render();
-        }.bind(this),85);
+        }.bind(this), 85);
     },
     render: function() {
         this.$el.empty().append(ich.featuredTemplate());
         var counter = 0;
-
-            this.banners.forEach(function(item) {               
-                $(this.fragment).append(ich.bannerItemTemplate(item.toJSON()));
+        this.banners.forEach(function(item) {
+            $(this.fragment).append(ich.bannerItemTemplate(item.toJSON()));
+            counter++;
+        }.bind(this));
+        _.each(this.collection, function(item) {
+            if (counter < App.Settings.featured_slides_limit) {
                 counter++;
-            }.bind(this));
-            _.each(this.collection, function(item) {
-                if (counter < App.Settings.featured_slides_limit) {
-                    counter++;
-		    var overview = item.get('overview');
-		    var shortOverview = '';
-
-		if (overview !== null)
-                    shortOverview = item.get('overview').substr(0, 210) + "...";
-		   
-                    item.set("shortOverview",shortOverview);
-                    $(this.fragment).append(ich.featuredItemTemplate(item.toJSON()));
-                }
-            }.bind(this));
-     
+                var overview = item.get('overview');
+                var shortOverview = item.get('shortOverview');
+                if (overview !== null)
+                    if (_.isEmpty(shortOverview)) {
+                        shortOverview = item.get('overview').substr(0, 210) + "...";
+                        item.set("shortOverview", shortOverview);
+                    }
+                $(this.fragment).append(ich.featuredItemTemplate(item.toJSON()));
+            }
+        }.bind(this));
         $(this.swiperel).empty().append(this.fragment);
-       
-        if (counter < 2) { 
+        if (counter < 2) {
             this.$(".arrow-left, .arrow-right").hide();
-
         } else {
             setTimeout(function() {
-                    this.startCarousel();
-            }.bind(this), 1800);
+                this.startCarousel();
+            }.bind(this), 1000);
         }
-
         setTimeout(function() {
-           App.Utils.lazyload();
-        },250);
+            App.Utils.lazyload();
+        }, 300);
         return this;
     },
     startCarousel: function() {
-
         window.mySwiper = new Swiper('#featured-swiper-container', {
             //Your options here:
             mode: 'horizontal',
@@ -78,7 +71,6 @@ App.Views.FeaturedView = Backbone.View.extend({
                 App.Utils.lazyload();
             }
         });
-
         $('#featured-swiper-container .arrow-left').on('click', function(e) {
             e.preventDefault();
             mySwiper.swipePrev();
@@ -89,7 +81,6 @@ App.Views.FeaturedView = Backbone.View.extend({
         });
     }
 });
-
 App.Views.BrowserPage = Backbone.View.extend({
     model: App.Models.Film,
     el: '#browser-content',
@@ -101,7 +92,6 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     initialize: function(options) {
         this.options = options;
-
         this.collection = options.collection;
         this.collection.options.genres.bind('all', this.setGenreDropDown, this);
         this.collection.fullCollection.bind('reset', this.renderResults, this);
@@ -128,44 +118,40 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.on("maximize", function() {
             var height = this.originalHeight;
             var altHeight = $("#featured-swiper-container").height();
-            height = Math.max(height, altHeight);            
+            height = Math.max(height, altHeight);
             $("#front-page-slider").css({
-                    "min-height": height,
-                    "height": height,
-                    "opacity": 0
-                });            
+                "min-height": height,
+                "height": height,
+                "opacity": 0
+            });
             $("#search").velocity({
                 "opacity": 0,
                 "height": height,
                 "min-height": height
             }, 200, false, function() {
                 $(this).hide();
-
                 $("#front-page-slider").show().velocity({
                     "opacity": 1
-                }, 400,false, function() {
-                    setTimeout(function() {   
+                }, 400, false, function() {
+                    setTimeout(function() { 
                         if (window.mySwiper) window.mySwiper.resizeFix();
-                    },250);
+                    }, 250);
                 }.bind(this));
             });
         });
         this.on("minimize", function() {
-
             this.originalHeight = $("#front-page-slider").height();
             var height = $(".feature-wrapper#search").css("min-height");
-
             $("#search").css({
-                    "height": height,
-                    "min-height": height,
-                    "opacity" : 0
+                "height": height,
+                "min-height": height,
+                "opacity": 0
             });
             $("#front-page-slider").velocity({
                 "min-height": height,
                 "height": height,
                 "opacity": 0
             }, 325, false, function() {
-
                 $("#search").show().velocity({
                     "opacity": 1
                 }, 200);
@@ -177,7 +163,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.$el.html(ich.browserPageTemplate());
         this.filterview.render();
         this.applyIsotope();
-        
         return this;
     },
     applyIsotope: function() {
@@ -237,8 +222,7 @@ App.Views.BrowserPage = Backbone.View.extend({
     },
     onSort: function(field, desc) {
         this.onLoadingStart();
-    
-    this.collection.sortByAttribute(field, desc);
+        this.collection.sortByAttribute(field, desc);
         return false;
     },
     onLoadingStart: function() {
@@ -258,7 +242,6 @@ App.Views.BrowserPage = Backbone.View.extend({
     onClear: function(e) {
         this.collection.querystate.set(this.collection.querystate.defaults);
         this.onChangeCollectionState(this.collection.querystate, true);
-
         return false;
     },
     onChangeGenre: function(model, genre) {
@@ -276,25 +259,20 @@ App.Views.BrowserPage = Backbone.View.extend({
     onSearchFieldChange: function(event) {
         this.onLoadingStart();
         var value = $("#main-search-box").val();
-
         var search_dict = {
             q: value,
             genres: undefined,
             periods: undefined,
             durations: undefined
         };
-     
         $("#search-form select option[selected=selected]").each(function() {
             var fieldid = $(this).parent().attr("id");
             var fieldname = fieldid.replace("id_", "");
             var val = $(this).val();
-
             search_dict[fieldname] = search_dict[fieldname] == undefined ? val : search_dict[fieldname] += ";" + val;
         });
-
         if (JSON.stringify(search_dict) != JSON.stringify(this.collection.querystate.attributes)) {
             this.collection.querystate.set(search_dict);
-
         } else {
             this.onLoadingEnd();
         }
@@ -317,7 +295,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         this.$isotope.append(container).isotope('insert', items);
         delete(items);
         delete(container);
-
         return true;
     },
     onLoadMore: function(e) {
@@ -334,7 +311,6 @@ App.Views.BrowserPage = Backbone.View.extend({
         return false;
     },
     renderResults: function(force) {
-
         if (typeof(force) == "undefined" && ((typeof(this.lastattributes) != "undefined") || this.lastattributes == JSON.stringify(this.collection.querystate.changedAttributes()))) {
             return false;
         }
@@ -355,7 +331,6 @@ App.Views.BrowserPage = Backbone.View.extend({
             } else {
                 $("#loadMore").show();
             }
-
             this.lastattributes = JSON.stringify(this.collection.querystate.changedAttributes());
             this.rendering = false;
         }
@@ -366,8 +341,8 @@ App.Views.BrowserPage = Backbone.View.extend({
         var trigger = silent === true ? false : true;
         _.extend(this.collection.queryParams, this.collection.querystate.attributes);
         //Update the url of the browser using the router navigate method
-            app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {
-                trigger: trigger
-            });
+        app.router.navigate('search' + '?' + app.homepage.collection.querystate.getHash(), {
+            trigger: trigger
+        });
     }
 });

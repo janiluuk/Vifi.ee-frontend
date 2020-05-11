@@ -81,7 +81,6 @@ window.app = _.extend({}, Backbone.Events);
                 window.history = Backbone.history.start();
 
                 deferred.resolve(app);
-        	initFB();
 
                 delete(data);
 
@@ -98,9 +97,9 @@ function init() {
     $.getJSON(url, function(data) {
         $.when(initApp(data)).then(function() {
             app.trigger("app:ready");
-
             setTimeout(function() {
                 window.scrollTo(0,1);
+                initFB();
             },1000);
 
         },function() {

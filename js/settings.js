@@ -18,7 +18,7 @@ App.Settings = {
         featured_slides_autoplay_interval : 6000,
         initial_film_amount: 300,
         google_analytics_enabled: true,
-        google_analytics_code: 'UA-33921368-1', //UA-66018559-1',
+        google_analytics_code: 'UA-66018559-1', //'UA-33921368-1'
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         disqus_shortname: 'vifi',
         image_optimizer_enabled: true,
@@ -38,17 +38,17 @@ App.Settings = {
             flowplayer_html5_key: '$202296466927761',
             flowplayer_fp7_token: 'eyJraWQiOiJMNE5JZWNidlR5T0MiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJjIjoie1wiYWNsXCI6NCxcImlkXCI6XCJMNE5JZWNidlR5T0NcIn0iLCJpc3MiOiJGbG93cGxheWVyIn0.Ji_KqLLl5wJm28h1wdv_Lb1QSC-_9NyA7mIZS4HHIlIr6V29c3UYYkFsbo2jZQON35f_PC4xHk7hqLIGwMnJIw',
             hls_url: 'https://media.vifi.ee/vod/vod',
-            mp4_url: '//gonzales.vifi.ee/zsf/',
+            mp4_url: '//dev.vifi.ee/zsf/',
             rtmp_url: 'rtmp://media.vifi.ee/vod',
-            speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
-            subtitles_url: '//www.vifi.ee/subs/'
+            speedtest_url: '//dev.vifi.ee/files/bwtest.jpg',
+            subtitles_url: '//beta.vifi.ee/subs/'
         },
 
         /** API Settings **/
 
         Api: {
-            url: '//gonzales.vifi.ee/api/',
-            key: '298fh23hhdff11'
+            url: '//dev.vifi.ee/api/',
+            key: '298fh23hhdff112'
         },
 
         /** Search Settings **/

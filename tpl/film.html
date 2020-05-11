@@ -26,7 +26,7 @@
             <% _.each(images.backdrops, function(img) {  %>
             <div class="swiper-slide">
                 <div class="featured-item">
-                    <div class="featured-item-background b-lazy" data-src="<%= App.Utils.getImageUrl(img,960,false,'t',2)%>"></div>
+                    <div class="featured-item-background b-lazy" data-src="<%= App.Utils.getImageUrl(img,1280,480,'c',1)%>"></div>
                 </div>
             </div>
             <% }); %>
@@ -56,15 +56,15 @@
                     <tbody>
                         <tr>
                             <td id="imdbratings">
-                                <% if (imdb_id != null) { 
-                                    if (imdbrating && imdbrating != "Data") { 
+                                <% if (imdb_id != null) {
+                                    if (imdbrating && imdbrating != "Data") {
                                 %>
-                                
+
                                 <span class=" imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1" target="_blank"><img src="/style/img/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
-                                <% 
+                                <%
                                  } else { %>
                                 <span class="imdbRatingPlugin" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a target="_blank" href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1"><img src="/style/img/imdb_46x22.png" /> </a></span>
-                                <% } 
+                                <% }
                             } %>
                             </td>
                             <td id="rtratings">
@@ -78,7 +78,7 @@
                                     </span>
                                     </a>
                                 <%
-                                } 
+                                }
                                 %>
                             </td>
                             <td id="mcratings"></td>
@@ -107,7 +107,7 @@
                             <td><%
             				if (subtitles.length < 1) {
             				%>Subtiitreid pole.<%
-            				} 
+            				}
             				_.each(subtitles, function(subtitle) { %>
                             <%= subtitle %>
                             <% }); %></td>
@@ -116,9 +116,9 @@
                 </table>
             </div>
             <div id="disqus_thread"></div>
-            
+
         </div>
-            
+
     </div>
     <!-- Film cast -->
     <div id="film-cast-container" class="float_left" style="display:none;">
@@ -129,7 +129,7 @@
             var characters = _.map(actor.character, function(char) { return char });
                 actor.character = "'"+characters.join(", ")+"'";
             }
-            if (actor.image_url == null) { 
+            if (actor.image_url == null) {
                 actor.image_url = '/style/img/anonymous_avatar.jpg';
             } else {
                 actor.image_url = App.Utils.getImageUrl(actor.image_url.replace("/original/", "/w300/"),180,260);

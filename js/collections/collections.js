@@ -121,10 +121,11 @@ App.Collections.UserCollection = Backbone.Collection.extend({
     },
     hasTicket: function(id) {
         return _.find(this.models, function(item) {
-            return item.get("id") == id
+            return item.get("vod_id") == id
         });
     },
     parseModel: function(ticket) {
+
         if (!ticket.isValid()) {
             $log("Invalid model, deleting " + ticket.get("id"));
             ticket.destroy();

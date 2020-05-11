@@ -132,11 +132,11 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         this.isotope = false;
         setTimeout(function() {
             this.startCarousel();
-            this.enableRatings();
-            this.model.fetchRT();
+            //this.enableRatings();
+            //this.model.fetchRT();
             //  this.enableAddThis();
             App.Utils.lazyload();
-        }.bind(this), 200);
+        }.bind(this), 500);
         setTimeout(function() {
             this.enableComments();
             this.enableYoutubePlayer();
@@ -218,7 +218,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         }
         this.playerView.close();
         this.playerView.model.stop();
-        
+
         this.showCarousel();
     },
     showCarousel: function() {

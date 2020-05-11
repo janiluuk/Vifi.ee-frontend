@@ -1459,7 +1459,6 @@ a.arrow-right {
     z-index: 0;
     background-repeat: no-repeat;
     background-size: cover;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.8) 45%,rgba(0,0,0,0.8) 60%,rgba(0,0,0,0.9) 100%);
 }
 
 .swiper-slide, .featured-item {
@@ -1484,6 +1483,7 @@ a.arrow-right {
     position: absolute;
     bottom: 0;
     padding: 2.5em 5% 3.5em 5%;
+    width:100%;
 }
 
 .featured-item-title {
@@ -1497,7 +1497,7 @@ a.arrow-right {
 }
 
 .featured-item-description {
-    font-size: 1.4em;
+    font-size: 1.2em;
     line-height: 1.5em;
     color: #ddd;
     text-shadow: 0 1px 10px rgba(51, 51, 51, 0.85);
@@ -1517,23 +1517,33 @@ a.arrow-right {
     -webkit-backface-visibility:hidden; /* Chrome and Safari */
     -moz-backface-visibility:hidden; /* Firefox */
     -ms-backface-visibility:hidden; /* Internet Explorer 10+ */
+    -webkit-animation: AnimationName 59s ease infinite;
+    -moz-animation: AnimationName 59s ease infinite;
+    animation: AnimationName 180s ease infinite;
+    background: linear-gradient(75deg, #4b4180, #463773, #6d6790, #6f4862, #464c66, #633c7b);
+    background-size: 400% 400%;
+}
 
+#content-container.playing {
+    transition: 0.9s;
+    animation: AnimationName 1s ease infinite;
+    background: linear-gradient(48deg, #01011d, #10102b, #000, #111, #2f2121, #111135);
 }
 
 @-webkit-keyframes AnimationName {
-    0%{background-position:90% 0%}
-    50%{background-position:11% 100%}
-    100%{background-position:90% 0%}
+    0%{background-position:97% 0%}
+    50%{background-position:4% 100%}
+    100%{background-position:97% 0%}
 }
 @-moz-keyframes AnimationName {
-    0%{background-position:90% 0%}
-    50%{background-position:11% 100%}
-    100%{background-position:90% 0%}
+    0%{background-position:97% 0%}
+    50%{background-position:4% 100%}
+    100%{background-position:97% 0%}
 }
 @keyframes AnimationName {
-    0%{background-position:90% 0%}
-    50%{background-position:11% 100%}
-    100%{background-position:90% 0%}
+    0%{background-position:97% 0%}
+    50%{background-position:4% 100%}
+    100%{background-position:97% 0%}
 }
 
 .main-wrapper {
@@ -1811,9 +1821,43 @@ ul.user-filmcollection-list, #film-info-container,
 
 .page-footer {
     background: #BEA2B1;
-    padding: 1%;
     width: 100%;
     box-sizing: border-box;
+}
+
+.footer-container {
+    background-color: rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-flow: row;
+}
+
+.company-name-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.info-list {
+    list-style: none;
+    margin: 2rem   ;
+    padding: 0;
+}
+
+.info-list a {
+    color: #000;
+    transition: opacity 0.15s linear;
+    -webkit-transition: opacity 0.15s linear;
+    -moz-transition: opacity 0.15s linear;
+    -webkit-transition: opacity 0.15s linear;
+}
+
+.info-list a:hover {
+    opacity: 0.8;
+}
+
+.info-item.company-name {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 ul#content-body-list li, ul#cast-content-body-list li {
@@ -3115,6 +3159,15 @@ ul#subscription-benefit-list li .icon {
 
     .card-heading {
         font-size: 1.5em;
+    }
+
+    .footer-container {
+        flex-flow: column;
+        padding: 1rem;
+    }
+
+    .info-list {
+        margin: 0.5rem;
     }
 
 }

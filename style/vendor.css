@@ -2,7 +2,7 @@
     color: transparent;
     font-weight: bold;
     margin: 10px auto;
-    font-size: 1.0em;
+    font-size: 1.2em;
     padding: 20px;
     text-align: left;
     text-shadow: none;
@@ -11,7 +11,7 @@
     position: fixed;
     top: 0px;
     max-height: 160px;
-    overflow-y: hidden;
+    overflow-y: auto;
     z-index: -1;
 }
 

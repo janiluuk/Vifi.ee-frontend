@@ -106,15 +106,13 @@ App.Router = Backbone.Router.extend({
                 _.each(films, function(item) {
 
                     var id = parseInt(item.vod_id);
-                    var title = app.usercollection.get(id);
+                    var ticket = app.usercollection.get(id);
+                    var title = app.collection.fullCollection.get(id);
                     if (title) {
-			            title.set("validtotext", title.getValidityText());
+			            title.set("validtotext", ticket.getValidityText());
 
-                        if (!this.returnview)
-                            this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
-                        else
-                            this.returnview.model.set(title.toJSON());
-    
+                        this.purchaseSuccess(id);
+
 	                    $.removeCookie('film', { path: '/', domain: '.'+App.Settings.domain });
 
                         this.returnview.render();
@@ -123,6 +121,8 @@ App.Router = Backbone.Router.extend({
                 }.bind(this));
             }.bind(this));
         }
+
+        app.showMoviePage();
        return false;
     },
     search: function(searchStateHash) {

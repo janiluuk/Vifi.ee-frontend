@@ -11,7 +11,7 @@
             <button style="display:none" id="loadMore">Lae juurde</button>
         </div>
 
-                    {{>footerPartial}}                
+                    {{>footerPartial}}
 </script>
 <!-- Empty list item -->
 <script id="emptyListTemplate" type="text/html">
@@ -117,7 +117,7 @@
                             <a href="#{{seo_friendly_url}}"><button class="btn green icon play">Vaata</button></a>
                     </div>
                 </div>
-                <div class="featured-item-background b-lazy" data-src="{{imageHelper backdrop_url 960 360 'c' 1 }}"></div>
+                <div class="featured-item-background b-lazy" data-src="{{imageHelper backdrop_url 1280 null 't' 0  }}"></div>
             </div>
         </div>
 </script>
@@ -467,21 +467,24 @@ andnud vastava nõusoleku. Kui klient ei soovi saada otseturustusteateid, siis t
                 <p>Tagasi</p>
             </div>
             <div class="footer-container">
-                <div class="inner">
-                    <div class="span4 float_left">
-                        <ul class="unstyled">
-                             <li class="heading">Vificom OÜ, Aadress: Rotermanni 5, 10111 Tallinn, Email: abi@vifi.ee</li>
-                            <li class="heading">24/7 tugitelefon:</li>
-                            <li>+372 58 667 570</li>
-                          </ul>
+                    <div class="footer-column company-name-container">
+                        <ul class="info-list">
+                            <li class="info-item company-name">Vificom OÜ </li>
+                        </ul>
                     </div>
-                    <div class="span4 float_left">
-                        <ul class="unstyled">
+                    <div class="footer-column">
+                        <ul class="info-list">
+                            <li class="info-item"><b>Aadress:</b> Rotermanni 5, 10111 Tallinn</li>
+                            <li class="info-item"><b>Email:</b> abi@vifi.ee</li>
+                            <li class="info-item"><b>24/7 tugitelefon:</b> +372 58 667 570</li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <ul class="info-list">
                             <li> <a href="#/page/gdpr">Privaatsustingimused</a> </li>
                             <li> <a href="#page/terms-and-conditions">Kasutustingimused</a> </li>
                         </ul>
                     </div>
-                </div>
             </div>
         </div>
 </script>

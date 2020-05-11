@@ -625,7 +625,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     hasMovie: function(movie) {
         var id = movie.get("id");
         var movies = app.usercollection.where({
-            vod_id: id
+            id: id
         });
         if (movies.length > 0) return true;
         return false;
@@ -638,7 +638,7 @@ App.User.Profile = App.Models.ApiModel.extend({
      */
     getMovieSession: function(id) {
         var ticket = app.usercollection.findWhere({
-            vod_id: id
+            id: id
         });
         if (ticket && ticket.get("playsession")) {
             var session_id = ticket.get("playsession").get("session_id");
