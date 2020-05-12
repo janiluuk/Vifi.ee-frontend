@@ -49,6 +49,7 @@ window.app = _.extend({}, Backbone.Events);
             pagination: data.pagination,
             search: data.search
         });
+        collection.querystate.setFromUrl();
 
 
         var player = new App.Player.MediaPlayer({session: session});
@@ -63,9 +64,7 @@ window.app = _.extend({}, Backbone.Events);
                 window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, banners: banners, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});
 
                 // Bind ready event when everything has been loaded
-	initGA();
                 app.on('app:ready', function() {
-                        app.collection.querystate.setFromUrl();
                         app.user.updatePurchases();
                         if (App.Settings.debug === true) {
                             $log("App ready, finished at "+new Date().getTime());
@@ -82,6 +81,7 @@ window.app = _.extend({}, Backbone.Events);
 
                 deferred.resolve(app);
 
+
                 delete(data);
 
             }.bind(this));
@@ -92,15 +92,18 @@ window.app = _.extend({}, Backbone.Events);
 
 
 function init() {
+
     app.trigger("app:init");
+
     var url = App.Settings.Api.url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.Api.key+"&jsoncallback=?";
     $.getJSON(url, function(data) {
         $.when(initApp(data)).then(function() {
             app.trigger("app:ready");
             setTimeout(function() {
                 window.scrollTo(0,1);
+            },500);
                 initFB();
-            },1000);
+                    initGA();
 
         },function() {
             app.trigger("app:fail"); } );

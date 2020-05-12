@@ -78,6 +78,7 @@ App.Router = Backbone.Router.extend({
     },
 
     onRoute: function(route, params) {
+        console.log(route); console.log(params);
         this.trigger("page:change", route, params);
         app.sidemenu.closeSideBar();
         this.currentPage = route;
@@ -97,7 +98,7 @@ App.Router = Backbone.Router.extend({
     },
     purchaseReturn: function()
     {
-
+        var _this = this;
 	    var films = app.user.checkPurchases();
         if (films) {
 
@@ -105,24 +106,32 @@ App.Router = Backbone.Router.extend({
 
                 _.each(films, function(item) {
 
-                    var id = parseInt(item.vod_id);
-                    var ticket = app.usercollection.get(id);
-                    var title = app.collection.fullCollection.get(id);
-                    if (title) {
-			            title.set("validtotext", ticket.getValidityText());
+                    $log(item);
 
-                        this.purchaseSuccess(id);
+                    var vod_id = parseInt(item.id);
+                    var ticket = app.usercollection.get(vod_id);
 
-	                    $.removeCookie('film', { path: '/', domain: '.'+App.Settings.domain });
 
-                        this.returnview.render();
-                        return false;
+                    if (!ticket) {
+                        var ticket = new App.User.Ticket(item);
+                        ticket.set("user_id", app.user.get("id"));
+                        ticket.set('id', vod_id);
+                        ticket.set('vod_id', vod_id);
+                        var playsession = new App.User.FilmSession(ticket.get("playsession"));
+                        ticket.set("playsession", playsession);
+
+                        app.usercollection.add(ticket);
                     }
+                        if (app.collection.fullCollection.get(vod_id)) {
+                            app.router.navigate('purchaseSuccess/'+vod_id, {trigger: false});
+                            _this.purchaseSuccess(vod_id);
+                        }
                 }.bind(this));
             }.bind(this));
+
+
         }
 
-        app.showMoviePage();
        return false;
     },
     search: function(searchStateHash) {
@@ -136,12 +145,6 @@ App.Router = Backbone.Router.extend({
     },
 
 	showFilm: function(id, autoplay) {
-        var film = app.collection.fullCollection.get(id);
-            if (!film) {
-                film = new App.Models.Film({
-                id: id
-            });
-        }
 
         var _this = this;
 
@@ -150,52 +153,59 @@ App.Router = Backbone.Router.extend({
          *  Check if user has purchases, navigate to confirmation page if so.
          */
 
-        if (films) {
+        if (false !== films) {
             this.navigate("/return", {
                 trigger: true
             });
+            return false;
         }
 
+        var film = new App.Models.Film({
+            id: id
+        });
+
         film.fetch().done(function() {
+
             var playButtonText = "Vaata filmi (" + film.get("price") + ")";
+
             if (app.user.hasMovie(film)) {
                 playButtonText = "Vaata edasi";
             }
             film.set("playButton", playButtonText);
 
-            if (!app.movieview) {
-                app.movieview = new App.Views.MovieDetailView({
-                    model: film
-                });
-                app.movieview.render();
-
-            } else {
-                    $log("Loading movie info to page");
-                    app.movieview.model.set(film.toJSON());
-                    app.movieview.render();
-            }
-
-            var url = film.get("seo_friendly_url");
-            _this.navigate(url, {
+            _this.navigate(film.get("seo_friendly_url"), {
                 trigger: false
             });
 
+
+            if (!app.movieview) {
+                app.movieview = new App.Views.MovieDetailView({
+                    model: film
+               });
+                 app.movieview.render();
+
+
+            } else {
+                app.movieview.model.set(film.toJSON());
+            }
+
             app.showMoviePage();
-            if (autoplay === true) app.movieview.playMovie();
-            _this.trigger("change:title", film.get("title"));
+            if (autoplay === true) {
+                    app.movieview.playMovie();
+            }
 
         });
 
     },
     purchaseSuccess: function(id) {
-        var title = app.usercollection.get(id);
+        var ticket = app.usercollection.get(id);
 
-        if (!title) return false;
+        if (!ticket) return false;
 
         if (!this.returnview)
-                this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
+                this.returnview = new App.Views.PostPurchaseDialogView({model: ticket, session:app.user.session});
         else
-        this.returnview.model.set(title.toJSON());
+        this.returnview.model.set(ticket.toJSON());
         this.returnview.render();
         return false;
 
@@ -209,7 +219,6 @@ App.Router = Backbone.Router.extend({
         if (currentPage == "showFilm") {
             app.collection.querystate.setQueryString();
         }
-
         this.trigger("change:title", "Home");
     },
 

@@ -1520,8 +1520,8 @@ a.arrow-right {
     -webkit-animation: AnimationName 59s ease infinite;
     -moz-animation: AnimationName 59s ease infinite;
     animation: AnimationName 180s ease infinite;
-    background: linear-gradient(75deg, #4b4180, #463773, #6d6790, #6f4862, #464c66, #633c7b);
-    background-size: 400% 400%;
+ /*   background: linear-gradient(75deg, #4b4180, #463773, #6d6790, #6f4862, #464c66, #633c7b);
+    background-size: 400% 400%; */
 }
 
 #content-container.playing {

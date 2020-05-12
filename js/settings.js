@@ -1,6 +1,6 @@
 App.Settings = {
     // properties
-        version: '011016',
+        version: '2020-05',
         sitename: 'Vifi',
         domain: 'vifi.ee',
         skin: 'vifi',
@@ -23,6 +23,8 @@ App.Settings = {
         disqus_shortname: 'vifi',
         image_optimizer_enabled: true,
         image_optimiser_url: '//gonzales.vifi.ee/files/images/image.php',
+        image_optimizer_default_preset: 'w780',
+
         page_change_callback: function(title, parameters) {
         },
         Payment: {
@@ -38,17 +40,17 @@ App.Settings = {
             flowplayer_html5_key: '$202296466927761',
             flowplayer_fp7_token: 'eyJraWQiOiJMNE5JZWNidlR5T0MiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJjIjoie1wiYWNsXCI6NCxcImlkXCI6XCJMNE5JZWNidlR5T0NcIn0iLCJpc3MiOiJGbG93cGxheWVyIn0.Ji_KqLLl5wJm28h1wdv_Lb1QSC-_9NyA7mIZS4HHIlIr6V29c3UYYkFsbo2jZQON35f_PC4xHk7hqLIGwMnJIw',
             hls_url: 'https://media.vifi.ee/vod/vod',
-            mp4_url: '//dev.vifi.ee/zsf/',
+            mp4_url: '//gonzales.vifi.ee/zsf/',
             rtmp_url: 'rtmp://media.vifi.ee/vod',
-            speedtest_url: '//dev.vifi.ee/files/bwtest.jpg',
-            subtitles_url: '//beta.vifi.ee/subs/'
+            speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
+            subtitles_url: '//www.vifi.ee/subs/'
         },
 
         /** API Settings **/
 
         Api: {
-            url: '//dev.vifi.ee/api/',
-            key: '298fh23hhdff112'
+            url: '//gonzales.vifi.ee/api/',
+            key: '298fh23hhdff11'
         },
 
         /** Search Settings **/

@@ -300,7 +300,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
 
 App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
-    model: App.Models.Film,
+    model: App.User.Ticket,
     template: '<div id="modalcontent"><div id="post-purchase-modal"/></div>',
     events: {
         'click .mfp-close': 'close',
@@ -310,7 +310,7 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
         options = options || {};
         this.session = options.session;
         this.model = options.model;
-        this.listenTo(this.model, 'change', this.render, this);
+        this.listenTo(this.model, 'change:vod_id', this.render, this);
         if (this.view) this.view.remove();
         this.view = new App.Views.PurchaseSuccessDialog({
             model: this.model,
@@ -333,13 +333,12 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
 
 });
 App.Views.PurchaseSuccessDialog = Backbone.View.extend({
-    model: App.Models.Ticket,
+    model: App.User.Ticket,
     events: {
         'click .mfp-close': 'close',
         'click .continue-button': 'onContinue'
     },
     initialize: function(options) {
-        this.listenTo(this.model, "change", this.render, this);
         options = options || {};
         this.parent = options.parent;
         this.session = options.session;
@@ -349,10 +348,10 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
         e.preventDefault();
         var id = this.model.get("id");
         app.user.purchases.removeFilm(id);
-        app.router.trigger("action","payment", "success", "Payment successful with method "+this.model.get("title")+ " for "+app.user.get("email") ? app.user.get("email") : " anonymous user");
+        app.router.trigger("action","payment", "success", "Payment successful for title "+this.model.get("id")+ " for "+app.user.get("email") ? app.user.get("email") : " anonymous user");
         this.close();
         this.parent.close();
-        app.router.showFilm(id,true);
+        app.router.showFilm(id, true);
 
         return false;
     },

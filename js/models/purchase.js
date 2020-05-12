@@ -236,7 +236,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
                     var vod_id = ticket.get('vod_id');
                     ticket.set('id', vod_id);
                     ticket.set('user_id', app.user.get("id"));
-                    
+
                     this.trigger("purchase:ticket:received", ticket);
                 }.bind(this));
 
@@ -398,7 +398,7 @@ App.Models.Purchase = Backbone.Model.extend({
             filmsession.fetch();
 
             var ticket = new App.User.Ticket;
-            ticket.set("id", id);            
+            ticket.set("id", id);
             ticket.set("playsession", filmsession);
             ticket.set("vod_id", id);
             ticket.set("auth_code", data.auth_code);
@@ -437,7 +437,7 @@ App.Models.Purchase = Backbone.Model.extend({
 
     purchase: function() {
 
-        if (!this.session.get("auth_id") || this.session.get("auth_id").length == 0 ) {
+        if (!this.session.get("auth_id") || this.session.get("auth_id").length == 0 || !this.session.get("user_id") ) {
             this.getAnonymousToken(this.purchase);
             return false;
         }
@@ -507,8 +507,7 @@ App.Models.Purchase = Backbone.Model.extend({
         }
 
         if (!user_id || user_id < 1) {
-            app.session.logout();
-            
+
             throw ("Invalid or missing user for purchase");
             return false;
         }

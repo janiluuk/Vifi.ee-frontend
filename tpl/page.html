@@ -98,7 +98,7 @@
                     {{/if}}
                 </div>
                {{#if background_image}}
-                <div class="featured-item-background b-lazy" data-src="{{imageHelper background_image}}"></div>
+                <div class="featured-item-background b-lazy" data-src="{{imageHelper background_image 1280 null}}"></div>
                 {{/if}}
             {{#if url}}
                 </a>
@@ -117,7 +117,7 @@
                             <a href="#{{seo_friendly_url}}"><button class="btn green icon play">Vaata</button></a>
                     </div>
                 </div>
-                <div class="featured-item-background b-lazy" data-src="{{imageHelper backdrop_url 1280 null 't' 0  }}"></div>
+                <div class="featured-item-background b-lazy" data-src="{{imageHelper backdrop_url 960 false 'c' 1  }}"></div>
             </div>
         </div>
 </script>

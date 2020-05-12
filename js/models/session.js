@@ -158,6 +158,8 @@ App.User.Session = Backbone.Model.extend({
         var cookie = this.cookies.findWhere({
             name: "film"
         });
+        cookie.destroy();
+
         if (undefined !== cookie) {
             return cookie.get("value");
         }

@@ -21,13 +21,16 @@ App.User.Ticket = Backbone.Model.extend({
      */
     parse: function(data) {
 
+        if (data.vod_id > 0) data.id = data.vod_id;
+        else if (data.id > 0 && !data.vod_id) data.vod_id = data.id;
+
 
         var ticket = _.pick(data, _.keys(this.defaults));
 
         var playsession = new App.User.FilmSession(data.playsession);
 
         this.set("playsession", playsession);
-
+        alert("MOI");
         if (!this.isExpired(data.validto)) this.set("status", "active");
         if (data.validto) data.validtotext = this.getValidityText(data.validto);
         return data;
@@ -151,6 +154,7 @@ App.User.CookiePurchases = Backbone.Model.extend({
      *
      */
     cleanPurchases: function() {
+        var _this = this;
         var films = this.getPurchases();
         if (typeof(films) == "undefined" || _.isEmpty(films)) {
             return false;
@@ -164,7 +168,7 @@ App.User.CookiePurchases = Backbone.Model.extend({
         });
         if (!_.isEmpty(new_list)) {
             _.each(new_list, function(item) { 
-                this.removeFilm(item.vod_id);
+                _this.removeFilm(item.vod_id);
                 $log("Removed #" + item.vod_id + " from cookies");
             });
         }
@@ -624,10 +628,9 @@ App.User.Profile = App.Models.ApiModel.extend({
      */
     hasMovie: function(movie) {
         var id = movie.get("id");
-        var movies = app.usercollection.where({
-            id: id
-        });
-        if (movies.length > 0) return true;
+        var movie = app.usercollection.get(id);
+
+        if (movie && movie.get("id")) return true;
         return false;
     },
     /**
@@ -637,11 +640,9 @@ App.User.Profile = App.Models.ApiModel.extend({
      * @return mixed, string or false
      */
     getMovieSession: function(id) {
-        var ticket = app.usercollection.findWhere({
-            id: id
-        });
+        var ticket = app.usercollection.get(id);
         if (ticket && ticket.get("playsession")) {
-            var session_id = ticket.get("playsession").get("session_id");
+            var session_id = ticket.attributes.playsession.session_id;
             return session_id;
         }
         return false;
