@@ -32,8 +32,8 @@ App.Views.MobilePurchase = Backbone.View.extend({
     renderPendingView: function(model) {
 
         if (!model) model = this.model;
-
-        this.$el.empty().html(ich.mobilePaymentPendingTemplate(model.toJSON()));
+        var body = ich.mobilePaymentPendingTemplate(model.toJSON());
+        this.$el.empty().append(body);
         return this;
     },
 
@@ -310,20 +310,22 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
         options = options || {};
         this.session = options.session;
         this.model = options.model;
-        this.listenTo(this.model, 'change:vod_id', this.render, this);
+        this.listenTo(this.model, 'change', this.render, this);
+        this.listenTo(this.session, 'change', this.render, this);
+
         if (this.view) this.view.remove();
         this.view = new App.Views.PurchaseSuccessDialog({
-            model: this.model,
             session: this.session,
             parent: this
         });
     },
 
     render: function() {
-        this.$el.empty().html(this.template).appendTo("body");
+        this.$el.empty().append(this.template).appendTo("body");
         this.openDialog();
         this.setElement(".mfp-content");
         this.assign(this.view, "#post-purchase-modal");
+        this.view.render();
         return this;
     },
     afterClose: function(e) {
@@ -333,7 +335,6 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
 
 });
 App.Views.PurchaseSuccessDialog = Backbone.View.extend({
-    model: App.User.Ticket,
     events: {
         'click .mfp-close': 'close',
         'click .continue-button': 'onContinue'
@@ -342,23 +343,21 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
         options = options || {};
         this.parent = options.parent;
         this.session = options.session;
-        this.model = options.model;
     },
     onContinue: function(e) {
         e.preventDefault();
-        var id = this.model.get("id");
-        app.user.purchases.removeFilm(id);
-        app.router.trigger("action","payment", "success", "Payment successful for title "+this.model.get("id")+ " for "+app.user.get("email") ? app.user.get("email") : " anonymous user");
-        this.close();
-        this.parent.close();
+        var id = this.parent.model.get("id");
+        app.router.trigger("action","payment", "success", "Payment successful for title "+this.parent.model.get("id")+ " for "+app.user.get("email") ? app.user.get("email") : " anonymous user");
         app.router.showFilm(id, true);
 
+        this.close();
+        this.parent.close();
         return false;
     },
     render: function() {
         this.$el.html(ich.purchaseSuccessTemplate({
             email: this.session.get("profile").get("email"),
-            purchase: this.model.toJSON()
+            purchase: this.parent.model.toJSON()
         }));
         return this;
     }

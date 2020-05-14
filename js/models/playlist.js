@@ -21,25 +21,16 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
                 'language': ''
             }],
             session: {},
-            playsession: App.User.FilmSession
         }
     },
     initialize: function(options) {
         this.on("change:id", this.onSessionLoad, this);
         this.on("change:videos", this.onLoadContent, this);
         this.on("change:subtitles", this.onLoadSubtitles, this);
-        if (options && undefined !== options.playsession) {
-            this.set("playsession", options.playsession);
-        } else {
-            this.set("playsession", new App.User.FilmSession());
-        }
-        this.on('change:playsession', this.onLoadPlaySession, this);
-
 
         if (options && undefined !== options.player) {
             this.set("player", options.player);
         }
-        this.listenTo(this.get("playsession"), 'playsession:overridden', this);
     },
     /*
      * Fetch Film session and auth code from the user ticket if they exist
@@ -64,7 +55,6 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     resetContent: function() {
         this.set("videos", false);
         this.set("subtitles", false);
-        this.set("playsession", false);
         $log("[Content] Reset content");
     },
     /*
@@ -88,19 +78,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         if (this.get("videos").length > 0) this.trigger("content:ready", this.get("videos"));
         else this.trigger("content:reset");
     },
-    onLoadPlaySession: function(data) {
-        if (data != false) {
-            $log('Playsession loaded');
-            var playsession = data.playsession;
-
-            this.trigger("content:playsession:ready", playsession);
-        } else {
-            this.trigger("content:playsession:reset", playsession);
-        }
-    },
-    onPlaySessionOverridden: function() {
-        this.trigger("content:playsession:overridden");
-    },
+    
     onLoadSubtitles: function(event) {
         if (this.get("subtitles") != null && this.get("subtitles").length > 0) this.trigger("content:subtitles:ready", this.get("subtitles"));
     },

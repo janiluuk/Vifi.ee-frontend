@@ -8,9 +8,8 @@ window.app = _.extend({}, Backbone.Events);
 
     // Initialization event
     app.on('app:init', function() {
-        if (App.Settings.debug === true)
-        $log("Starting at "+new Date().getTime());}
-    );
+        $log("Starting at "+new Date().getTime());
+    });
 
 
     function initApp(data) {
@@ -66,9 +65,7 @@ window.app = _.extend({}, Backbone.Events);
                 // Bind ready event when everything has been loaded
                 app.on('app:ready', function() {
                         app.user.updatePurchases();
-                        if (App.Settings.debug === true) {
                             $log("App ready, finished at "+new Date().getTime());
-                        }
                 }.bind(this));
 
                 // Bind startup fail event for catching the initialization failures.
@@ -94,16 +91,20 @@ window.app = _.extend({}, Backbone.Events);
 function init() {
 
     app.trigger("app:init");
-
+               initGA();            
     var url = App.Settings.Api.url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.Api.key+"&jsoncallback=?";
     $.getJSON(url, function(data) {
         $.when(initApp(data)).then(function() {
             app.trigger("app:ready");
+	       
+            if (App.Settings.sentry_enabled === true) {
+                Sentry.init({ dsn: 'https://e6ac1f6fc6eb41c18a3521bb0794946f@o392056.ingest.sentry.io/5239051' });
+            }
             setTimeout(function() {
+                initFB();
                 window.scrollTo(0,1);
             },500);
-                initFB();
-                    initGA();
+     
 
         },function() {
             app.trigger("app:fail"); } );

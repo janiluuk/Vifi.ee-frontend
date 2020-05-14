@@ -13,6 +13,15 @@
       
       
 </script>
+<script id="humanDate" class="helper" data-args="arg1" type="text/html">
+      
+      var date = arg1;
+      if (!App.Utils.isValidDate(date)) return date;
+      return App.Utils.dateToHumanreadable(App.Utils.stringToDate(date));
+      
+      
+</script>
+
 <script id="selectedHelper" class="helper" data-args="arg1,arg2" type="text/html">
       var sel = arg1;
       if (sel == arg2) { 
@@ -27,6 +36,7 @@
       return App.Utils.getImageUrl(image_url,width,height,a,zc);
 
 </script>
+
 
 <script id="ifCond" class="helper" data-args="v1,operator,v2,options" type="text/html">
     switch (operator) {

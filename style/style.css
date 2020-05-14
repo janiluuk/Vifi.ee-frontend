@@ -1517,11 +1517,11 @@ a.arrow-right {
     -webkit-backface-visibility:hidden; /* Chrome and Safari */
     -moz-backface-visibility:hidden; /* Firefox */
     -ms-backface-visibility:hidden; /* Internet Explorer 10+ */
-    -webkit-animation: AnimationName 59s ease infinite;
+   /* -webkit-animation: AnimationName 59s ease infinite;
     -moz-animation: AnimationName 59s ease infinite;
-    animation: AnimationName 180s ease infinite;
- /*   background: linear-gradient(75deg, #4b4180, #463773, #6d6790, #6f4862, #464c66, #633c7b);
-    background-size: 400% 400%; */
+    animation: AnimationName 180s ease infinite;*/
+ /*   background: linear-gradient(75deg, #4b4180, #463773, #6d6790, #6f4862, #464c66, #633c7b);*/
+    background-size: 200% 200%; */
 }
 
 #content-container.playing {

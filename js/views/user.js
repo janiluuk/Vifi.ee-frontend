@@ -318,6 +318,8 @@ App.Views.UserCollectionView = Backbone.View.extend({
             model: model,
         });
         $(this.fragment).append(filmView.render().el);
+        App.Utils.lazyload();
+        
         return filmView;
     },
 });

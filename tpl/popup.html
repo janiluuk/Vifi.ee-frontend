@@ -15,7 +15,7 @@
 
                     <p>Võid kasutada seda koodi filmi vaatamiseks iga seadme pealt. </p>
 
-                    <p class="extra-info">Kood kehtib kuni <b>{{ purchase.validtotext }}</b> </p>
+                    <p class="extra-info">Kood kehtib kuni <b>{{ humanDate purchase.validto }} </b> </p>
                     <p> {{#if email }} Vaatamiskood saadeti ka antud emailile: <b>{{ email }} </b>{{/if}}</p>
                     
 		            <p class="info">
@@ -30,7 +30,7 @@
 <script type="text/html" id="purchaseDialogTemplate">
     <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
         <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-        <div class="col-img" style="background-image: url('{{imageHelper poster_url 320 600}}');">
+        <div class="col-img" style="background-image: url('{{imageHelper poster_url 320 500}}');">
         </div>
         <div class="col-content">
             <div class="popup-section">

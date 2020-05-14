@@ -8,7 +8,7 @@ App.Settings = {
         cookie_options: {path : '/', domain: '.vifi.ee'},
         purchase_cookie_name: 'film',
         anonymous_username: 'anonymous@vifi.ee',
-        debug: false,
+        debug: true,
         commentsEnabled: true,
         sortingEnabled: true,
         loginEnabled: true,
@@ -17,8 +17,9 @@ App.Settings = {
         featured_slides_randomize: true,
         featured_slides_autoplay_interval : 6000,
         initial_film_amount: 300,
+        sentry_enabled: true,
         google_analytics_enabled: true,
-        google_analytics_code: 'UA-66018559-1', //'UA-33921368-1'
+        google_analytics_code: 'UA-33921368-1',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         disqus_shortname: 'vifi',
         image_optimizer_enabled: true,
@@ -49,8 +50,8 @@ App.Settings = {
         /** API Settings **/
 
         Api: {
-            url: '//gonzales.vifi.ee/api/',
-            key: '298fh23hhdff11'
+            url: '//dev.vifi.ee/api/',
+            key: '298fh23hhdff112'
         },
 
         /** Search Settings **/

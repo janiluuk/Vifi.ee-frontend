@@ -161,10 +161,12 @@ App.Utils = {
         },
         stringToDate: function(s) {
             if (!s) return false;
-
+            if (!this.isValidDate(s)) return false;
             var dateParts = s.split(' ')[0].split('-');
             var timeParts = s.split(' ')[1].split(':');
-            return new Date(dateParts[0], dateParts[1], dateParts[2], timeParts[0], timeParts[1], 00, 0);
+            if (_.isEmpty(timeParts[2])) timeParts[2] = 0;
+
+            return new Date(dateParts[0], parseInt(dateParts[1])-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], 0);
         },
 
         /* Return date as human readable format */
@@ -196,6 +198,15 @@ App.Utils = {
             var now = new Date().getTime();
 
             if (date < now) return true;
+
+            return false;
+        },
+        isValidDate: function(date) {
+            if (!date) return false;
+            var parsed = Date.parse(date);
+            if (null !== parsed)
+                return true;
+            else 
 
             return false;
         }
@@ -244,6 +255,7 @@ App.Utils.State = Backbone.Model.extend({
     },
     
     setDefault: function() { 
+        if (!this.isDefault())
         this.set(this.defaults);
     },
     isDefault: function() {
@@ -251,7 +263,6 @@ App.Utils.State = Backbone.Model.extend({
     },
 
     setFromUrl: function() { 
-
         var hash = window.location.hash.replace('#search', '');
         var hash = hash.replace('#', '');
         hash = hash.split("=").join(":");
@@ -382,6 +393,11 @@ App.Utils.Notification = Backbone.Model.extend({
             actionOutputEl = $("<div>").attr("id", "flash-output").html(msg).appendTo("body");        
         else
             actionOutputEl.innerHTML += msg;
+
+        var el = $("#flash-output span").last();
+        
+        $("#flash-output").scrollTop(el.offset().top);
+
 
         $("#flash-output").addClass('animation').addClass('highlight');
         if (this.id) clearTimeout(this.id);

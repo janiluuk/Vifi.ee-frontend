@@ -10,7 +10,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     ratio: 9 / 16,
     initialize: function(options) {
         if (this.ready) return false;
-        _.bindAll(this, 'load', 'startFetchingPlaySession', 'stopFetchingPlaySession');
+        _.bindAll(this, 'load');
 
         this.content = new App.Models.FilmContent({
             session: options.session,
@@ -28,8 +28,6 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         }
 
         this.player = App.MediaPlayer;
-        this.content.on('content:playsession:overridden', this.onPlaySessionOverridden, this);
-        this.content.on('content:playsession:ready', this.onPlaySessionReady, this);
         this.content.on('content:subtitles:ready', this.onSubtitlesReady, this);
         this.content.on("content:ready", this.onContentReady, this);
         this.player.on("mediaplayer:timeupdate", this.onTimeUpdate,this);
@@ -59,10 +57,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
             app.router.trigger("action", evt, action, "Mediaplayer event on " + app.platform.name);
 
     },
-    onPlaySessionOverridden: function() {
-        this.trigger("player:sessionoverridden", this);
-        this.stopFetchingPlaySession();
-    },
+
     onChangeRatio: function(video) {
         if (undefined !== video) {
             var ratio = video.height / video.width;
@@ -113,17 +108,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
 
     onTimeUpdate: function(time) {
-        this.get("playsession").trigger("player:timeupdate", this.getCurrentTime() / 1000);
-    },
-
-    onPlaySessionReady: function(playsession) {
-        var playsession = new App.User.FilmSession(this.content.attributes.playsession);
-        this.set("playsession", playsession);
-        this.content.trigger("player:playsession:ready", playsession);
-        this.startFetchingPlaySession();
-        this.listenTo(playsession, "playsession:overridden", this.onPlaySessionOverridden);
-        this.listenTo(playsession, "change:session_id", this.stopFetchingPlaySession);
-
+        this.trigger("player:timeupdate", this.getCurrentTime() / 1000);
     },
 
     onSubtitlesReady: function(subtitles) {
@@ -148,7 +133,6 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
         if (!movie) return false;
         var id = movie.get("id");
-        this.stopFetchingPlaySession();
 
         app.router.trigger("action", "player", "load", "Loading " + movie.get("title"));
         $log("[Player] Loading content " +id);
@@ -156,13 +140,11 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
     play: function() {
         this.player.play();
-        this.startFetchingPlaySession();
     },
     stop: function() {
         if (this.player) {
             this.player.stop();
         }
-        this.stopFetchingPlaySession();
     },
     unload: function() {
         $log("Unloading player");
@@ -175,20 +157,6 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     isReady: function() {
         return this.player && this.player.isReady();
     },
-    stopFetchingPlaySession: function() {
-
-        if (this.get("playsession")) {
-            this.get("playsession").stopFetching();
-        }
-    },
-
-    startFetchingPlaySession: function() {
-
-        if (this.get("playsession") && this.get("playsession").get("session_id") !== '') {
-            this.get("playsession").startFetching();
-        }
-    },
-
     /*
      * Calculate ending time for the film.
      * @params duration - total length of film in minutes
@@ -314,7 +282,6 @@ App.Player.Platforms.Core = {
             alert("no player found");
             return false;
         }
-        this._trackEvents();
 
         if (this.plugin && !this.plugin.paused && (typeof(this._videoElement.playbackRate) != 'undefined' && this._videoElement.playbackRate != 1)) {
             $log(" Restting Playback Rate");
@@ -333,6 +300,8 @@ App.Player.Platforms.Core = {
             }
         }
         this.active();
+        if (App.Settings.debug === true) this._trackEvents();
+
     },
     resume: function() {
         try {

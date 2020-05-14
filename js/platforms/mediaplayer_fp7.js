@@ -64,7 +64,6 @@ App.MediaPlayer = {
                 var video = e.target;
                 _this.active();
                 _this.plugin.togglePlay(true);
-                if (App.Settings.debug === true) _this._trackEvents();
 
                 if (_this.subtitles) {
                     _this.subtitles.loadLanguage();
@@ -105,6 +104,7 @@ App.MediaPlayer = {
         this.currentStream = this.playlist.nextFile();
         $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
         this.play();
+
     },
     _initSubtitles: function(content) { 
         $log("Initializing subtitles");

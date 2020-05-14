@@ -235,7 +235,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
                     var ticket = new App.User.Ticket(item);
                     var vod_id = ticket.get('vod_id');
                     ticket.set('id', vod_id);
-                    ticket.set('user_id', app.user.get("id"));
+                    ticket.set('user_id', app.user.id);
 
                     this.trigger("purchase:ticket:received", ticket);
                 }.bind(this));
@@ -389,24 +389,11 @@ App.Models.Purchase = Backbone.Model.extend({
         var session_id = data.session_id;
 
         if (session_id != "") {
-            this.session.set("session_id", session_id);
-            var id = this.model.get("id");
-            var filmsession = new App.User.FilmSession();
-            filmsession.set("session_id", session_id);
-            filmsession.set("vod_id", id);
-            filmsession.set("auth_code", data.auth_code);
-            filmsession.fetch();
 
-            var ticket = new App.User.Ticket;
-            ticket.set("id", id);
-            ticket.set("playsession", filmsession);
-            ticket.set("vod_id", id);
-            ticket.set("auth_code", data.auth_code);
-            ticket.set("status", 'active');
-            ticket.set("user_id", app.session.get('user_id'));
-            ticket.set("playsession", filmsession);
-            app.usercollection.add(ticket);
-            this.trigger("purchase:successful");
+            var ticket = new App.User.Ticket(data, {parse:true});
+            app.usercollection.add(ticket, {parse:true});
+
+            this.trigger("purchase:successful", ticket);
         }
     },
 
@@ -437,7 +424,7 @@ App.Models.Purchase = Backbone.Model.extend({
 
     purchase: function() {
 
-        if (!this.session.get("auth_id") || this.session.get("auth_id").length == 0 || !this.session.get("user_id") ) {
+        if (!this.session.get("auth_id") || this.session.get("auth_id").length == 0 ) {
             this.getAnonymousToken(this.purchase);
             return false;
         }

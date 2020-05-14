@@ -109,13 +109,13 @@ App.Films.GenreCollection = Backbone.Collection.extend({
 App.Collections.SortCollection = Backbone.Collection.extend({});
 App.Collections.FilterCollection = Backbone.Collection.extend({});
 App.Collections.UserCollection = Backbone.Collection.extend({
-    localStorage: new Backbone.LocalStorage("Ticket"),
+    localStorage: new Backbone.LocalStorage("ticket"),
     model: App.User.Ticket,
     initialize: function(models, options) {
         if (options && undefined !== options.session) {
             this.session = options.session;
         }
-        _.bindAll(this, 'updateUserCollection', 'parseModel', 'reset');
+        _.bindAll(this, 'updateUserCollection', 'parseModel', 'reset', 'hasTicket');
         this.on("reset", this.updateUserCollection);
         this.on("add", this.updateUserCollection);
     },
@@ -131,18 +131,21 @@ App.Collections.UserCollection = Backbone.Collection.extend({
             ticket.destroy();
             return false;
         }
-        return true;
+
+        return ticket;
     },
+
+    clearInvalid: function() {
+        _.each(this.models, function(item) { 
+            if (item.get("isValid") === false) {
+                $log("Removing "+item.get("id")+ " from user library as invalid");
+                item.destroy();
+            }
+        });
+    },
+
     updateUserCollection: function(model) {
-        if (this.models.length == 0) {
-            return false;
-        }
-        _.each(this.models, function(model) {
-            // Destroy all non anonymous tickets that are from different user
-            if (this.session && _.isEmpty(model.get("user_id")) === false && model.get("user_id") != this.session.get("user_id")) model.destroy();
-            else this.parseModel(model);
-        }.bind(this));
-        return this;
+        return this.models;
     }
 });
 App.Collections.SubscriptionCollection = Backbone.Collection.extend({});
@@ -157,6 +160,19 @@ App.Collections.CookieCollection = Backbone.Collection.extend({
         _.bindAll(this, 'fetch', '_readCookies');
 
     },
+    findByName: function(name) {
+        var cookie = this.findWhere({
+            'name': name
+        });    
+        if (undefined !== cookie) {        
+            return cookie;
+        }
+        return false;
+    },
+    create: function(name) {
+        var cookie = new App.Models.CookieModel({name: name});
+        return cookie;
+    },
     deleteByName: function(name) {
 
         var cookie = this.findWhere({
@@ -164,6 +180,7 @@ App.Collections.CookieCollection = Backbone.Collection.extend({
         });
         if (undefined !== cookie) {
             cookie.destroy();
+            cookie.clear();
             $log("Destroyed cookie '" + name + "'");
             return true;
         }

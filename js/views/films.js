@@ -26,7 +26,7 @@ _.extend(App.Views.FilmView.prototype, {
     }
 });
 App.Views.UserFilmView = Backbone.View.extend({
-    model: App.Models.Film,
+    model: App.User.Ticket,
     tagName: 'li',
     className: 'item',
     events: {
@@ -47,7 +47,7 @@ App.Views.UserFilmView = Backbone.View.extend({
         return false;
     },
     render: function() {
-        var filmitem = app.collection.originalCollection.get(this.model.get("id"));
+        var filmitem = this.model.getFilm();
         if (typeof(filmitem) == "undefined") return false;
         filmitem.set("validtotext", this.model.getValidityText());
         this.$el.html(ich.userfilmitemTemplate(filmitem.toJSON()));

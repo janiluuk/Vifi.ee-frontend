@@ -140,8 +140,11 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         setTimeout(function() {
             this.enableComments();
             this.enableYoutubePlayer();
-        }.bind(this), 1000);
+        App.Utils.lazyload();
+            
+        }.bind(this), 800);
         return this;
+
     },
     playTrailer: function(e) {
         if (e) e.preventDefault();
@@ -174,7 +177,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         if (e) e.preventDefault();
         if (e) e.stopPropagation();
 
-        if (!app.session.get("profile").hasMovie(this.model)) {
+        if (!app.user.hasMovie(this.model)) {
             this.showCarousel();
             this.purchaseView = new App.Views.PurchaseView({
                 model: this.model,
@@ -184,7 +187,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         }
 
 
-        if (app.player.content && app.player.content.get("id") == this.model.get("id")) {
+        if (app.player.content.get('id') > 0 && app.player.content.get("id") == this.model.get("id")) {
                 this.playerView.render();
                 this.hideCarousel();
                 app.player.player.init(app.player.player.playlist);
@@ -224,12 +227,12 @@ App.Views.MovieDetailView = App.Views.Page.extend({
     showCarousel: function() {
         $("#close-player").hide();
         $("#gallery-swiper-container").velocity("fadeIn", {
-            duration: 500
+            duration: 300
         });
     },
     hideCarousel: function() {
         $("#gallery-swiper-container").velocity("fadeOut", {
-            duration: 500
+            duration: 300
         });
     },
     changeTab: function(e) {
@@ -243,7 +246,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         setTimeout(function() {
             App.Utils.lazyload();
             this.applyIsotope();
-        }.bind(this), 1000);
+        }.bind(this), 600);
         return false;
     },
     startCarousel: function() {

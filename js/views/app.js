@@ -159,7 +159,7 @@ App.Views.BaseAppView = Backbone.View.extend({
       var next = view;
 
       if (previous) {
-        previous.transitionOut(function() {
+        previous.trransitionOut(function() {
             
             if (scroll) this.scrollToTop(true);
 

@@ -1,6 +1,7 @@
 App.User.FilmSession = App.Models.ApiModel.extend({
     path: 'update_session',
     urlRoot: App.Settings.Api.url,
+    retryCount : 0,
     idAttribute: 'session_id',
     url: function() {
         return this.urlRoot + this.path + "/" + this.get("session_id") + "/" + this.get("timestamp") + "?format=json&api_key=" + App.Settings.Api.key;
@@ -10,14 +11,43 @@ App.User.FilmSession = App.Models.ApiModel.extend({
             'session_id': '',
             'timestamp': 0,
             'watched': false,
-            'vod_id': ''
+            'vod_id': '',
+            'updated_at': '',
+            'created_at': '',
+            'status': '',
         };
     },
     initialize: function(options) {
         this.on("change:session_id", this.onSessionLoad, this);
         this.on("player:timeupdate", this.onSetDuration, this);
-
+        this.on("refresh:always", this.onRefresh, this);
+        this.on("refresh:fail", this.onRefreshFail, this);
+        this.on("content:play", this.startFetching, this);
+        this.on("content:stop", this.stopFetching, this);
+        
+        var options = {
+            refresh: 5000,                 // rate at which the plugin fetches data
+            fetchOptions: {},              // options for the fetch request
+            retryRequestOnFetchFail: true  // automatically retry request on fetch failure
+        }
+        this.configure(options);
     },
+    onRefreshFail: function() {
+        this.stopFetching();
+    },
+    onRefresh: function() {
+    
+        if (this.get("timestamp") == this.latestTimestamp) {
+            this.retryCount++;
+        } else {
+            this.retryCount = 0;
+        }
+
+        if (this.retryCount > 10) {
+            this.onRefreshFail();
+        }
+    },
+
     onSetDuration: function(duration) {
         var seconds = parseInt(duration);
         if (seconds > 0)
@@ -25,12 +55,13 @@ App.User.FilmSession = App.Models.ApiModel.extend({
     },
 
     onSessionLoad: function() {
+        this.stopFetching();
         this.trigger('playsession:ready', this);
         $log("[FilmSession] Loaded session: " + this.get('session_id'));
     },
     checkStatus: function(status) {
 
-        if (status === "Active") {
+        if (status === "active") {
             this.trigger("playsession:session:active", this);
         }
         if (status === "error") {
@@ -50,17 +81,25 @@ App.User.FilmSession = App.Models.ApiModel.extend({
     parse: function(data) {
 
         $log("Received Session: " +JSON.stringify(data));
+        
+        if (!data.created_at) {
+            data.created_at = new Date().toJSON();
+        }
+        if (!App.Utils.isValidDate(data.updated_at)) {
+            delete data.updated_at;
+        }
         if (data.status) this.checkStatus(data.status);
         return data;
     }
+
 });
 _.extend(App.User.FilmSession.prototype, BackbonePolling);
+
 
 
 App.User.Session = Backbone.Model.extend({
     path: 'session',
     cookie_name: App.Settings.cookie_name,
-    purchase_cookie_name: App.Settings.purchase_cookie_name,
     counter: 0,
     // Initialize with negative/empty defaults
     // These will be overriden after the initial checkAuth
@@ -80,7 +119,7 @@ App.User.Session = Backbone.Model.extend({
     initialize: function() {
         this.cookies = new App.Collections.CookieCollection;
         this.purchases = new App.User.CookiePurchases({
-            session: this
+            cookies: this.cookies
         });
         this.profile = new App.User.Profile({
             session: this,
@@ -92,7 +131,7 @@ App.User.Session = Backbone.Model.extend({
         this.profile.on('user:profile:login', this.onUserAuthenticate, this);
         this.on('ticket:purchase', this.onTicketReceived, this);
         this.parseAuthCookie();
-        _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'parseAuthCookie', 'onUserAuthenticate', 'writeAuthCookie', 'getNewPurchases', 'clearNewPurchases');
+        _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'parseAuthCookie', 'onUserAuthenticate', 'writeAuthCookie');
     },
     /** Reset session, clear cookies. **/
     reset: function() {
@@ -145,26 +184,7 @@ App.User.Session = Backbone.Model.extend({
             value: JSON.stringify(data)
         });
     },
-    getNewPurchases: function() {
-        var cookie = this.cookies.findWhere({
-            name: "film"
-        });
-        if (undefined !== cookie) {
-            return cookie.get("value");
-        }
-        return false;
-    },
-    clearNewPurchases: function() {
-        var cookie = this.cookies.findWhere({
-            name: "film"
-        });
-        cookie.destroy();
 
-        if (undefined !== cookie) {
-            return cookie.get("value");
-        }
-        return false;
-    },
     /*
      * Get a token for user.
      * For unregistered users, email is sufficient
@@ -291,8 +311,12 @@ App.User.Session = Backbone.Model.extend({
     },
     onTicketReceived: function(ticket) {
         if (ticket) {
+            $log("TICKET RECEIVED " + JSON.parse(ticket));
+            
             ticket.set("user_id", this.get("user_id"));
             app.usercollection.add(ticket);
+            
+            ticket.save(),
             this.trigger("ticket:purchase:done", ticket);
         }
         return false;
