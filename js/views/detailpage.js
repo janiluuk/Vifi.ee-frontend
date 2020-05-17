@@ -1,8 +1,8 @@
 App.Views.MovieDetailView = App.Views.Page.extend({
     model: App.Models.Film,
     transition: function() {
-        return { in : 'slideDownIn',
-            out: 'bounceUpOut'
+        return { in : 'slideUpIn',
+            out: 'slideDownOut'
         }
     },
     el: "#moviepage",

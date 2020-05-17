@@ -184,8 +184,8 @@ App.Views.Page = Backbone.View.extend({
     transitionOut: function(callback) {
         var view = this;
         view.$el.velocity('transition.' + view.transition().out, {
-            duration: 500,
-            easing: 'easeInSine',
+            duration: 400,
+            easing: 'easeOutSine',
             complete: function() {
                 if (_.isFunction(callback)) {
                     callback(); // hard to track bug! He's binding to transitionend each time transitionOut called
@@ -199,7 +199,7 @@ App.Views.Page = Backbone.View.extend({
 App.Views.HomePage = App.Views.Page.extend({
     el: $("#homepage"),
     transition: function() {
-        return { in : 'slideDownIn',
+        return { in : 'slideUpIn',
             out: 'slideDownOut'
         }
     },
@@ -382,7 +382,7 @@ App.Views.CarouselView = Backbone.View.extend({
         $(e.currentTarget).siblings().removeClass("active");
         $(el).siblings().removeClass("active").hide();
         $(el).velocity("fadeIn", {
-            duration: 700
+            duration: 300
         }).addClass("active");
         return false;
     },
@@ -453,7 +453,7 @@ App.Views.DialogView = Backbone.View.extend({
     beforeOpen: function(e) {},
     afterClose: function(e) {},
 });
-App.Views.ContentView = Backbone.View.extend({
+App.Views.ContentView = App.Views.Page.extend({
     el: "#contentpage",
     initialize: function(options) {
         this.content = eval("ich." + options.template + "().html()");

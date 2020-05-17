@@ -10,7 +10,7 @@
     App.Views = { FB: {}};
     App.Films = {};
     App.Player = {};
-    App.User = {};  
+    App.User = {};
     App.Event = {};
     App.MediaPlayer = {}
     App.ContentPages = {
@@ -90,7 +90,7 @@
                     var ticket = new App.User.Ticket(item, {parse: true});
 
                     $log("Ticket generated: "+ JSON.stringify(ticket));
-                    _latestTicket= ticket; 
+                    _latestTicket= ticket;
 
                     app.usercollection.add(ticket);
                     ticket.save();
@@ -233,7 +233,7 @@
         },
         pairdevice: function() {
             var profile = app.session.get("profile");
-            if (!this.views.pairview) { 
+            if (!this.views.pairview) {
                 this.views.pairview = new App.Views.UserPairView({
                 model: profile,
                 el: "#contentpage"
@@ -272,7 +272,7 @@
 
             this.views.contactview = new App.Views.ContactView();
             this.views.contactview.render();
-            
+
             this.views.contactview.$el.fadeIn();
             app.showContentPage("contact", "Contact Us!");
             app.router.init_map();
@@ -285,8 +285,8 @@
                     this.init_map();
                 }.bind(this), 760);
                 return false;
-            } 
-       
+            }
+
             var mymap = L.map('map_canvas').setView([59.431327835282154, 24.74103927612305], 13);
 
                 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -300,7 +300,7 @@
             var marker = L.marker([59.43795770000001, 24.75549920000003]).addTo(mymap);
             marker.bindPopup("<b>Vificom OÜ</b><br>Roseni 5, Tallinn").openPopup();
 
-           
+
         },
         showContentPage: function(template, title) {
             var name = template.split("-").join("");
@@ -314,10 +314,14 @@
                 title: title,
                 template: name + "Template"
             });
-            this.views.contentview.$el.hide().render().transitionIn(function() {
+
+            console.log(this.views.contentview);
+
+            this.views.contentview.$el.hide();
+            this.views.contentview.render().transitionIn(function() {
 
             app.showContentPage(name);
             });
         }
     });
-   
+
