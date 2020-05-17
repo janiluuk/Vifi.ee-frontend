@@ -2,7 +2,7 @@ var App = {};
 
 App.Settings = {
     // properties
-        version: '2020-05',
+        version: '2020-05.1',
         sitename: 'Vifi',
         domain: 'vifi.ee',
         skin: 'vifi',
