@@ -1,4 +1,4 @@
-App.Utils = { 
+App.Utils = {
 
     post: function(path, params, method) {
         method = method || "post"; // Set method to post by default if not specified.
@@ -22,9 +22,9 @@ App.Utils = {
         return form;
     },
 
-    translate: function(string) { 
-        var str = _.filter(App.Translations[App.Settings.language], function(item,key) { if (key == string) return item});        
-        if (!_.isEmpty(str)) return str; 
+    translate: function(string) {
+        var str = _.filter(App.Translations[App.Settings.language], function(item,key) { if (key == string) return item});
+        if (!_.isEmpty(str)) return str;
         return string;
 
     },
@@ -41,16 +41,16 @@ App.Utils = {
     include: function(names, callback) {
         var self = this;
         var deferreds = [];
-        $.each(names, function(index, name) { 
-        
-        deferreds.push($.ajax({ url: '/tpl/'+name+'.html', dataType: 'html', success: function(response) { 
+        $.each(names, function(index, name) {
 
-            var items = $('<div>').html(response).find("script"); 
-            items.each(function(idx,item) { 
-                var id = $(item).attr("id");         
+        deferreds.push($.ajax({ url: '/tpl/'+name+'.html', dataType: 'html', success: function(response) {
+
+            var items = $('<div>').html(response).find("script");
+            items.each(function(idx,item) {
+                var id = $(item).attr("id");
                 if ($(item).hasClass("helper") === true)
                 ich.addHelper(id, $(item).html(), $(item).attr("data-args") );
-                else if ($(item).hasClass("partial") === true) 
+                else if ($(item).hasClass("partial") === true)
                 ich.addPartial(id, $(item).html());
                 else
                 ich.addTemplate(id, $(item).html());
@@ -59,26 +59,26 @@ App.Utils = {
         })
         $.when.apply(window, deferreds).done(callback);
     },
-    
-    lazyload: function() { 
-        if (!App.Utils.bLazy) { 
+
+    lazyload: function() {
+        if (!App.Utils.bLazy) {
             App.Utils.bLazy = new Blazy({ container: "#content-container", offset: 450});
         } else {
             App.Utils.bLazy.revalidate();
         }
     },
-    
+
     /** Build TimThumb image optimiser url for given image */
     /** Parameters, url, width, height, align(t,b,l,r) and zoomcrop(1-3) */
 
     getImageUrl: function(image_url,width,height,a,zc) {
-        if (App.Settings.image_optimizer_enabled === false) return image_url;
+        if (App.Settings.Images.image_optimizer_enabled === false) return image_url;
 
-        var url=App.Settings.image_optimiser_url + "?src="+image_url;      
+        var url=App.Settings.Images.image_optimizer_url + "?src="+image_url;
         if (width) url+="&w="+width;
         if (height) url+="&h="+height;
         if (zc) url+= "&zc="+zc;
-        if (a) url+= "&a="+a;       
+        if (a && typeof a == "string") url+= "&a="+a;
         return url;
     },
     // Underscore template loader
@@ -190,7 +190,7 @@ App.Utils = {
             endingtimestring += ("0" + endingtime.getMinutes()).slice(-2);
             return endingtimestring;
         },
-        dateExpired: function(date) { 
+        dateExpired: function(date) {
             if (!date) return false;
 
             var date = Date.parse(date);
@@ -205,7 +205,7 @@ App.Utils = {
             var parsed = Date.parse(date);
             if (null !== parsed)
                 return true;
-            else 
+            else
 
             return false;
         }
@@ -219,10 +219,10 @@ App.Utils.State = Backbone.Model.extend({
             durations: undefined
     },
     defaults: App.Settings.Search.default_search_state,
-    initialize: function(options) { 
+    initialize: function(options) {
         _.bindAll(this, 'setFromHash', 'getHash', 'setFromUrl' );
     },
-    setQueryString: function(trigger) { 
+    setQueryString: function(trigger) {
 
         var string = this.getQueryString();
         app.router.navigate('search' + string, {
@@ -252,8 +252,8 @@ App.Utils.State = Backbone.Model.extend({
        var len =  _.values(this.attributes).join("").length;
        return len == 0 ? true : false;
     },
-    
-    setDefault: function() { 
+
+    setDefault: function() {
         if (!this.isDefault())
         this.set(this.defaults);
     },
@@ -261,7 +261,7 @@ App.Utils.State = Backbone.Model.extend({
        return _.values(this.defaults).join("") == _.values(this.attributes).join("");
     },
 
-    setFromUrl: function() { 
+    setFromUrl: function() {
         var hash = window.location.hash.replace('#search', '');
         var hash = hash.replace('#', '');
         hash = hash.split("=").join(":");
@@ -278,10 +278,10 @@ App.Utils.State = Backbone.Model.extend({
     setFromHash: function(hash) {
         hash = hash.replace("?", "");
 
-        if (hash.length == 0)  {  
+        if (hash.length == 0)  {
             var size = _.size(this.changedAttributes());
             if (size > 0) this.set(this.defaults);
-            return true; 
+            return true;
         }
 
         var hashables = hash.split('|');
@@ -292,12 +292,12 @@ App.Utils.State = Backbone.Model.extend({
             var parts = hashable.split(':');
             var prop = parts[0];
             var value = parts[1];
-            if (typeof(value) != "undefined") { 
+            if (typeof(value) != "undefined") {
                 dict[prop] = value.length > 0 ? value : undefined;
             }
             if (dict[prop] == undefined && !i) {
                 i = true;
-            } 
+            }
         });
         if (dict.q != '')
         dict = _.extend(this.emptyDefaults, {q: dict.q});
@@ -306,15 +306,15 @@ App.Utils.State = Backbone.Model.extend({
     }
 });
 
-App.Utils.Api = Backbone.Model.extend({  
+App.Utils.Api = Backbone.Model.extend({
 
     session: {},
 
-    initialize: function(options) { 
+    initialize: function(options) {
 
         options = options || {};
         if (options.session) this.session = session;
-        
+
         $.ajaxSetup({
               'error':function(res,data) { $error(data); }.bind(this)
         });
@@ -323,22 +323,22 @@ App.Utils.Api = Backbone.Model.extend({
         this.on("notice", this.onNotice);
 
     },
-    onError: function(data) {  
+    onError: function(data) {
         app.trigger("error", data);
 
     },
-    onSuccess: function(data) {  
+    onSuccess: function(data) {
         app.trigger("success", data);
 
     },
-    onNotice: function(data) {  
+    onNotice: function(data) {
         app.trigger("notify", data);
 
     },
-    parseResponse: function(data, callback, silent) { 
+    parseResponse: function(data, callback, silent) {
         var msg = data.message || JSON.stringify(data);
 
-        if (!silent) { 
+        if (!silent) {
             if (data.status == "ok") {
                 this.onSuccess(msg);
             }
@@ -352,7 +352,7 @@ App.Utils.Api = Backbone.Model.extend({
         if (callback) callback(data);
 
     },
-    post: function(action, params, callback, silent) {  
+    post: function(action, params, callback, silent) {
 
         if (_.isArray(action)) action = action.join("/");
         var sessionParams = app.session.getParams();
@@ -361,7 +361,7 @@ App.Utils.Api = Backbone.Model.extend({
         $.post(url,params, function(data) { this.parseResponse(data, callback, silent);  }.bind(this));
 
     },
-    call: function(action, params, callback, silent) {  
+    call: function(action, params, callback, silent) {
         if (_.isArray(action)) action = action.join("/");
         var sessionParams = app.session.getParams();
         params = _.extend(params, sessionParams.data);
@@ -371,7 +371,7 @@ App.Utils.Api = Backbone.Model.extend({
 }),
 
 
-App.Utils.Notification = Backbone.Model.extend({ 
+App.Utils.Notification = Backbone.Model.extend({
 
     initialize: function(options) {
         if (options && options.model) this.attach(options.model);
@@ -389,12 +389,12 @@ App.Utils.Notification = Backbone.Model.extend({
         if (!amount) amount = 7500;
         var actionOutputEl = document.getElementById("flash-output");
         if (actionOutputEl == null)
-            actionOutputEl = $("<div>").attr("id", "flash-output").html(msg).appendTo("body");        
+            actionOutputEl = $("<div>").attr("id", "flash-output").html(msg).appendTo("body");
         else
             actionOutputEl.innerHTML += msg;
 
         var el = $("#flash-output span.flash-inactive").last();
-        
+
 
 
         $("#flash-output").addClass('animation').addClass('highlight');
@@ -408,7 +408,7 @@ App.Utils.Notification = Backbone.Model.extend({
         }.bind(this), amount);
     },
 
-    notify: function(message, type, callback) { 
+    notify: function(message, type, callback) {
         message = message || "Empty message";
         type = type || "notice";
 
@@ -435,17 +435,17 @@ window.nl2br = App.Utils.nl2br;
 
 _.extend(Backbone.Validation.callbacks, {
     valid: function (view, attr, selector) {
-        var $el = view.$('[name=' + attr + ']'), 
+        var $el = view.$('[name=' + attr + ']'),
             $group = $el.closest('form');
-        
+
         $group.removeClass('error');
 
         $group.find('.error-'+attr).remove();
     },
     invalid: function (view, attr, error, selector) {
 
-        var $el = view.$('[name=' + attr + ']'), 
-        $group = $el.closest('form');        
+        var $el = view.$('[name=' + attr + ']'),
+        $group = $el.closest('form');
         $group.addClass('error');
         $group.find('.error-'+attr).remove();
 
@@ -457,16 +457,16 @@ Backbone.View.prototype.assign = function(view, selector) {
     view.setElement(this.$(selector)).render();
 }
 
-Backbone.View.prototype.removeOnDone = function(el, cls) { 
+Backbone.View.prototype.removeOnDone = function(el, cls) {
     if (!cls) cls = "loading";
-    
+
     el.addClass("loading");
     el.attr("disabled", "disabled");
 
-    app.once("all", function() { 
+    app.once("all", function() {
         $(el).attr("disabled", false);
-        $(el).removeClass(cls); 
-    }); 
+        $(el).removeClass(cls);
+    });
 };
 
 Backbone.View.prototype.close = function(){
@@ -474,7 +474,7 @@ Backbone.View.prototype.close = function(){
   this.unbind();
   this.stopListening();
 
-  if (this.onClose){ 
+  if (this.onClose){
     this.onClose();
   }
 };

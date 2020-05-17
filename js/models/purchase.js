@@ -387,7 +387,8 @@ App.Models.Purchase = Backbone.Model.extend({
             return false;
         }
         var session_id = data.session_id;
-
+        if (data.playsession && data.playsession.vod_id != "")
+            data.vod_id = data.playsession.vod_id;
         if (session_id != "") {
 
             var ticket = new App.User.Ticket(data, {parse:true});

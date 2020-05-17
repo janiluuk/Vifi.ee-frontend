@@ -33,7 +33,7 @@ App.Views.FeaturedView = Backbone.View.extend({
             counter++;
         }.bind(this));
         _.each(this.collection, function(item) {
-            if (counter < App.Settings.featured_slides_limit) {
+            if (counter < App.Settings.Featured.featured_slides_limit) {
                 counter++;
                 var overview = item.get('overview');
                 var shortOverview = item.get('shortOverview');
@@ -64,7 +64,7 @@ App.Views.FeaturedView = Backbone.View.extend({
             mode: 'horizontal',
             loop: true,
             pagination: '.pagination',
-            autoplay: App.Settings.featured_slides_autoplay_interval,
+            autoplay: App.Settings.Featured.featured_slides_autoplay_interval,
             paginationClickable: true,
             createPagination: true,
             onSlideChangeStart: function(e) {

@@ -3,32 +3,32 @@ var App = {};
 App.Settings = {
     // properties
         version: '2020-05.1',
+        debug: false,
+        language: 'est',
         sitename: 'Vifi',
-        domain: 'vifi.ee',
         skin: 'vifi',
         cookie_name: 'vifi_session',
         cookie_options: {path : '/', domain: '.vifi.ee'},
         purchase_cookie_name: 'film',
         anonymous_username: 'anonymous@vifi.ee',
-        debug: false,
-        commentsEnabled: true,
         sortingEnabled: true,
         loginEnabled: true,
-        language: 'est',
-        featured_slides_limit: 6,
-        featured_slides_randomize: true,
-        featured_slides_autoplay_interval : 6000,
-        initial_film_amount: 300,
         sentry_enabled: true,
-	sentry_dsn: 'https://dea56abbf17f45af9910de94893d3f6d@o392056.ingest.sentry.io/5239044',
+	    sentry_dsn: 'https://dea56abbf17f45af9910de94893d3f6d@o392056.ingest.sentry.io/5239044',
         google_analytics_enabled: true,
         google_analytics_code: 'UA-66018559-1',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
+        commentsEnabled: true,
         disqus_shortname: 'vifi',
-        image_optimizer_enabled: true,
-        image_optimiser_url: '//gonzales.vifi.ee/files/images/image.php',
-        image_optimizer_default_preset: 'w780',
-        page_change_callback: function(title, parameters) {
+        Images: {
+            image_optimizer_enabled: true,
+            image_optimizer_url: '//gonzales.vifi.ee/files/images/image.php',
+            image_optimizer_default_preset: 'w780',
+        },
+        Featured: {
+            featured_slides_limit: 6,
+            featured_slides_randomize: true,
+            featured_slides_autoplay_interval : 6000
         },
         Payment: {
             'default_method' : 'code',
@@ -46,7 +46,7 @@ App.Settings = {
             mp4_url: '//gonzales.vifi.ee/zsf/',
             rtmp_url: 'rtmp://media.vifi.ee/vod',
             speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
-            subtitles_url: '//www.vifi.ee/subs/'
+            subtitles_url: '//beta.vifi.ee/subs/'
         },
 
         /** API Settings **/
@@ -59,6 +59,7 @@ App.Settings = {
         /** Search Settings **/
 
         Search: {
+            initial_film_amount: 300,
 
             default_query_params: {
                   totalPages: null,
@@ -83,7 +84,9 @@ App.Settings = {
                 sortKey: 'updated_at',
                 order: 0,
             }
-        }
+        },
+        page_change_callback: function(title, parameters) {
+        },
 }
 
 App.Translations = {

@@ -211,7 +211,7 @@ App.Views.HomePage = App.Views.Page.extend({
             initialState: options.initialFilterState,
         });
         var featured = options.collection.featured();
-        featured = _.rest(featured.reverse(), _.size(featured) - App.Settings.featured_slides_limit);
+        featured = _.rest(featured.reverse(), _.size(featured) - App.Settings.Featured.featured_slides_limit);
         if (App.Settings.featured_slides_randomize === true) {
             featured = _.shuffle(featured);
         }

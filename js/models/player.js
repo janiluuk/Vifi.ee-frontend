@@ -78,7 +78,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
                 var files = _this.playlist.getPlaylistFiles();
                 var file = "";
                 if (files) {
-                    file = files[0].mp4;
+                    file = files[0].src;
                 }
                 app.router.trigger("action", "player", "play", "Playing content " + file);
                 _this.trigger("player:ready", _this.content);

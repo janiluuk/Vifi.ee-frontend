@@ -91,12 +91,12 @@ window.app = _.extend({}, Backbone.Events);
 function init() {
 
     app.trigger("app:init");
-               initGA();            
-    var url = App.Settings.Api.url+"search?&short=1&limit="+App.Settings.initial_film_amount+"&api_key="+App.Settings.Api.key+"&jsoncallback=?";
+               initGA();
+    var url = App.Settings.Api.url+"search?&short=1&limit="+App.Settings.Search.initial_film_amount+"&api_key="+App.Settings.Api.key+"&jsoncallback=?";
     $.getJSON(url, function(data) {
         $.when(initApp(data)).then(function() {
             app.trigger("app:ready");
-	       
+
             if (App.Settings.sentry_enabled === true) {
                 Sentry.init({ dsn: App.Settings.sentry_dsn});
 		Raven.config(App.Settings.sentry_dsn).install()
@@ -105,7 +105,7 @@ function init() {
                 initFB();
                 window.scrollTo(0,1);
             },500);
-     
+
 
         },function() {
             app.trigger("app:fail"); } );

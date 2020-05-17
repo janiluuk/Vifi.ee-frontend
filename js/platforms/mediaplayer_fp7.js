@@ -51,6 +51,20 @@ App.MediaPlayer = {
                 embed: false,
                 hls : { native: true },
                 src: playlistFiles,
+                // subtitles: {
+                //    tracks: [{
+                //     label: 'Eesti',
+                //     kind: 'subtitles',
+                //     src: 'https://beta.vifi.ee/subs/whitney_ee.vtt',
+                //     is_default: true
+                //    },
+                //    {
+                //     label: 'Vene',
+                //     kind: 'subtitles',
+                //     src: 'https://beta.vifi.ee/subs/whitney_ru.vtt',
+                //    },
+                //    ]
+                // },
                 plugins: [
                     'subtitles',
                     'qsel',
