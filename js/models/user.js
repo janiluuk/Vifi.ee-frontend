@@ -50,6 +50,9 @@ App.User.Ticket = Backbone.Model.extend({
 
     toJSON: function() {
         var json = _.clone(this.attributes);
+        if (!this.playsession) {
+            this.playsession = new App.User.FilmSession();
+        }        
         json.playsession = this.playsession.toJSON();   
 
         return json;

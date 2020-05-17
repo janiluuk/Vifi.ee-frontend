@@ -34,7 +34,6 @@ App.MediaPlayer = {
 
         var playlistFiles = this.playlist.getPlaylistFiles();
         var _this = this;
-console.log(playlistFiles);
 
         this.player = this._videoElement.flowplayer({
             rtmp: 0,
@@ -150,7 +149,7 @@ console.log(playlistFiles);
     },
     isReady: function() {
         return (this.plugin.ready === true);
-    },       
+    },
     duration: function() {
         if (_.isNaN(this.plugin.video.duration)) {
             return null;

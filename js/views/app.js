@@ -93,8 +93,8 @@ App.Views.BaseAppView = Backbone.View.extend({
                 this.returnview = new App.Views.PostPurchaseDialogView({model: title, session:app.user.session});
             else
                 this.returnview.model.set(title.toJSON());
-                this.returnview.render();
         }
+                this.returnview.render();
         
         
     },
@@ -115,12 +115,13 @@ App.Views.BaseAppView = Backbone.View.extend({
     
         app.homepage.browserview.$isotope.isotope('layout');
         app.homepage.browserview.renderResults();
-        App.Utils.lazyload();
 
         if (this.scrollTop == 0) {
         } else {
             $("#content-container").scrollTop(this.scrollTop);
         }
+        App.Utils.lazyload();
+
     },
 
 
@@ -159,12 +160,12 @@ App.Views.BaseAppView = Backbone.View.extend({
       var next = view;
 
       if (previous) {
-        previous.trransitionOut(function() {
+        previous.transitionOut(function() {
             
-            if (scroll) this.scrollToTop(true);
 
             
         }.bind(this));
+            if (scroll) this.scrollToTop(true);
 
 
       }
@@ -216,7 +217,7 @@ App.Views.BaseAppView = Backbone.View.extend({
           if (_.isFunction(callback)) {
             callback();
           }
-        }.bind(this)});
+        }.bind});
         
       
 
@@ -226,7 +227,7 @@ App.Views.BaseAppView = Backbone.View.extend({
 
       var view = this;
         view.$el.velocity('transition.'+view.transition().out,{ 
-            duration:400,
+            duration:500,
 easing:'easeInSine',            
             complete:function() {
                 

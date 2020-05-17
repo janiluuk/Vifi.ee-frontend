@@ -103,7 +103,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
                 parent: this
             });
         } else {
-            this.paymentView.set({model: options.model, session:options.session});
+            this.paymentView.set({model: options.model.toJSON(), session:options.session});
         }
         this.loginView = new App.Views.LoginDialog({
             session: this.session,
@@ -126,6 +126,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
         this.setElement(".mfp-content");
         this.assign(this.paymentView, "#purchasemodal");
         this.assign(this.loginView, "#loginmodal");
+
         if (this.session.isLoggedIn() || !App.Settings.loginEnabled) this.showPayment();
         else this.showLogin();
         return this;
@@ -262,10 +263,11 @@ App.Views.PaymentDialog = Backbone.View.extend({
 
         app.router.trigger("action","payment", "success", "Payment successful with "+this.payment.get("method")+ " for "+ this.model.get("title"));
 
-        app.movieview.playMovie();
         this.$("#confirm-purchase-button").removeClass("loading");
         this.remove();
         app.scrollToTop();
+        app.movieview.playMovie();
+        
     },
     onPaymentError: function(message) {
 
@@ -311,7 +313,7 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
         this.session = options.session;
         this.model = options.model;
         this.listenTo(this.model, 'change', this.render, this);
-        this.listenTo(this.session, 'change', this.render, this);
+       // this.listenTo(this.session, 'change', this.render, this);
 
         if (this.view) this.view.remove();
         this.view = new App.Views.PurchaseSuccessDialog({
@@ -325,7 +327,7 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
         this.openDialog();
         this.setElement(".mfp-content");
         this.assign(this.view, "#post-purchase-modal");
-        this.view.render();
+       //this.view.render();
         return this;
     },
     afterClose: function(e) {

@@ -160,8 +160,7 @@ App.Utils = {
             return s.replace(/^\s+|\s+$/g, "");
         },
         stringToDate: function(s) {
-            if (!s) return false;
-            if (!this.isValidDate(s)) return false;
+            if (!s || !this.isValidDate(s)) return false;
             var dateParts = s.split(' ')[0].split('-');
             var timeParts = s.split(' ')[1].split(':');
             if (_.isEmpty(timeParts[2])) timeParts[2] = 0;
@@ -394,15 +393,17 @@ App.Utils.Notification = Backbone.Model.extend({
         else
             actionOutputEl.innerHTML += msg;
 
-        var el = $("#flash-output span").last();
+        var el = $("#flash-output span.flash-inactive").last();
         
-        $("#flash-output").scrollTop(el.offset().top);
 
 
         $("#flash-output").addClass('animation').addClass('highlight');
         if (this.id) clearTimeout(this.id);
+        $("#flash-output").scrollTop(el.offset().top+300);
 
         this.id = setTimeout(function() {
+            $("#flash-output").scrollTop(el.offset().top+300);
+
             $("#flash-output").removeClass('highlight');
         }.bind(this), amount);
     },

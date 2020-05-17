@@ -1,3 +1,5 @@
+var App = {};
+
 App.Settings = {
     // properties
         version: '2020-05',
@@ -8,7 +10,7 @@ App.Settings = {
         cookie_options: {path : '/', domain: '.vifi.ee'},
         purchase_cookie_name: 'film',
         anonymous_username: 'anonymous@vifi.ee',
-        debug: true,
+        debug: false,
         commentsEnabled: true,
         sortingEnabled: true,
         loginEnabled: true,
@@ -18,14 +20,14 @@ App.Settings = {
         featured_slides_autoplay_interval : 6000,
         initial_film_amount: 300,
         sentry_enabled: true,
+	sentry_dsn: 'https://dea56abbf17f45af9910de94893d3f6d@o392056.ingest.sentry.io/5239044',
         google_analytics_enabled: true,
-        google_analytics_code: 'UA-33921368-1',
+        google_analytics_code: 'UA-66018559-1',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         disqus_shortname: 'vifi',
         image_optimizer_enabled: true,
         image_optimiser_url: '//gonzales.vifi.ee/files/images/image.php',
         image_optimizer_default_preset: 'w780',
-
         page_change_callback: function(title, parameters) {
         },
         Payment: {
@@ -127,5 +129,4 @@ App.Translations = {
             'No results' : 'Ei tulemusi',
             'Timed out' : 'Timed out'
         }
-
 }

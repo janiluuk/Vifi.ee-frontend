@@ -98,7 +98,8 @@ function init() {
             app.trigger("app:ready");
 	       
             if (App.Settings.sentry_enabled === true) {
-                Sentry.init({ dsn: 'https://e6ac1f6fc6eb41c18a3521bb0794946f@o392056.ingest.sentry.io/5239051' });
+                Sentry.init({ dsn: App.Settings.sentry_dsn});
+		Raven.config(App.Settings.sentry_dsn).install()
             }
             setTimeout(function() {
                 initFB();
