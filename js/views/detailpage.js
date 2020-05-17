@@ -132,15 +132,15 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         this.isotope = false;
         setTimeout(function() {
             this.startCarousel();
-            this.enableRatings();
             //this.model.fetchRT();
             //  this.enableAddThis();
             App.Utils.lazyload();
-        }.bind(this), 500);
+        }.bind(this), 300);
         setTimeout(function() {
             this.enableComments();
             this.enableYoutubePlayer();
-        App.Utils.lazyload();
+            this.enableRatings();
+            App.Utils.lazyload();
 
         }.bind(this), 1200);
         return this;
