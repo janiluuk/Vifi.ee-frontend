@@ -144,8 +144,8 @@ App.Views.BaseAppView = Backbone.View.extend({
 // perhaps better named something like AnimView?
 App.Views.Page = Backbone.View.extend({
     transition: function() {
-        return { in : "slideUpIn",
-            out: 'slideDownOut'
+        return { in : "slideDownIn",
+            out: 'slideUpOut'
         }
     },
     // base render class that checks whether the the view is to be a 'page'
@@ -172,7 +172,7 @@ App.Views.Page = Backbone.View.extend({
     transitionIn: function(callback) {
         var view = this;
         view.$el.velocity('transition.' + view.transition().in, {
-            duration: 400,
+            duration: 600,
             easing: 'easeInSine',
             complete: function() {
                 if (_.isFunction(callback)) {
@@ -184,7 +184,7 @@ App.Views.Page = Backbone.View.extend({
     transitionOut: function(callback) {
         var view = this;
         view.$el.velocity('transition.' + view.transition().out, {
-            duration: 400,
+            duration: 600,
             easing: 'easeOutSine',
             complete: function() {
                 if (_.isFunction(callback)) {

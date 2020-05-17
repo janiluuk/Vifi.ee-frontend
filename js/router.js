@@ -315,11 +315,8 @@
                 template: name + "Template"
             });
 
-            console.log(this.views.contentview);
-
             this.views.contentview.$el.hide();
             this.views.contentview.render().transitionIn(function() {
-
             app.showContentPage(name);
             });
         }
