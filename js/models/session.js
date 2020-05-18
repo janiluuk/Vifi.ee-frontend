@@ -24,7 +24,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
         this.on("refresh:fail", this.onRefreshFail, this);
         this.on("content:play", this.startFetching, this);
         this.on("content:stop", this.stopFetching, this);
-        
+
         var options = {
             refresh: 5000,                 // rate at which the plugin fetches data
             fetchOptions: {},              // options for the fetch request
@@ -36,7 +36,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
         this.stopFetching();
     },
     onRefresh: function() {
-    
+
         if (this.get("timestamp") == this.latestTimestamp) {
             this.retryCount++;
         } else {
@@ -81,7 +81,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
     parse: function(data) {
 
         $log("Received Session: " +JSON.stringify(data));
-        
+
         if (!data.created_at) {
             data.created_at = new Date().toJSON();
         }
@@ -99,7 +99,7 @@ _.extend(App.User.FilmSession.prototype, BackbonePolling);
 
 App.User.Session = Backbone.Model.extend({
     path: 'session',
-    cookie_name: App.Settings.cookie_name,
+    cookie_name: App.Settings.Cookies.cookie_name,
     counter: 0,
     // Initialize with negative/empty defaults
     // These will be overriden after the initial checkAuth
@@ -117,6 +117,7 @@ App.User.Session = Backbone.Model.extend({
         return App.Settings.Api.url + 'session/' + '?jsoncallback=?';
     },
     initialize: function() {
+        this.cookie_name = App.Settings.Cookies.cookie_name;
         this.cookies = new App.Collections.CookieCollection;
         this.purchases = new App.User.CookiePurchases({
             cookies: this.cookies
@@ -139,7 +140,7 @@ App.User.Session = Backbone.Model.extend({
         this.set(this.defaults());
     },
     clearAuthCookie: function() {
-        var cookieName = App.Settings.cookie_name;
+        var cookieName = App.Settings.Cookies.cookie_name;
         this.cookies.deleteByName(cookieName);
     },
     parseAuthCookie: function() {
@@ -312,10 +313,10 @@ App.User.Session = Backbone.Model.extend({
     onTicketReceived: function(ticket) {
         if (ticket) {
             $log("TICKET RECEIVED " + JSON.parse(ticket));
-            
+
             ticket.set("user_id", this.get("user_id"));
             app.usercollection.add(ticket);
-            
+
             ticket.save(),
             this.trigger("ticket:purchase:done", ticket);
         }

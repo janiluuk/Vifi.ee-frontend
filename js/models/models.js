@@ -78,7 +78,7 @@ App.Models.CookieModel = Backbone.Model.extend({
                 days: -1
             }).save();
 
-            $.removeCookie(this.get("name"), App.Settings.cookie_options);
+            $.removeCookie(this.get("name"), App.Settings.Cookies.cookie_options);
         },
 
         validate: function (attrs) {
