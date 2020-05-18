@@ -172,7 +172,7 @@ App.Views.Page = Backbone.View.extend({
     transitionIn: function(callback) {
         var view = this;
         view.$el.velocity('transition.' + view.transition().in, {
-            duration: 600,
+            duration: 400,
             easing: 'easeInSine',
             complete: function() {
                 if (_.isFunction(callback)) {
@@ -184,7 +184,7 @@ App.Views.Page = Backbone.View.extend({
     transitionOut: function(callback) {
         var view = this;
         view.$el.velocity('transition.' + view.transition().out, {
-            duration: 600,
+            duration: 500,
             easing: 'easeOutSine',
             complete: function() {
                 if (_.isFunction(callback)) {

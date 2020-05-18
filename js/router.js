@@ -143,9 +143,9 @@
             });
             var _this = this;
             film.fetch().done(function() {
-                var playButtonText = "Vaata filmi (" + film.get("price") + ")";
+                var playButtonText = tr("Watch film") + " " + film.get("price") + ")";
                 if (app.user.hasMovie(film)) {
-                    playButtonText = "Vaata edasi";
+                    playButtonText = tr("Continue watching");
                 }
                 film.set("playButton", playButtonText);
                 if (!app.movieview) {

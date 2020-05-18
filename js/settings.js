@@ -7,9 +7,6 @@ App.Settings = {
         language: 'est',
         sitename: 'Vifi',
         skin: 'vifi',
-        cookie_name: 'vifi_session',
-        cookie_options: {path : '/', domain: '.vifi.ee'},
-        purchase_cookie_name: 'film',
         anonymous_username: 'anonymous@vifi.ee',
         sortingEnabled: true,
         loginEnabled: true,
@@ -20,6 +17,18 @@ App.Settings = {
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
         commentsEnabled: true,
         disqus_shortname: 'vifi',
+        /** API Settings **/
+        Api: {
+            url: '//dev.vifi.ee/api/',
+            key: '298fh23hhdff112'
+        },
+        Cookies: {
+            cookie_name: 'vifi_session',
+            cookie_options: {path : '/', domain: '.vifi.ee'},
+            purchase_cookie_name: 'film',
+        },
+        /** Image settings **/
+
         Images: {
             image_optimizer_enabled: true,
             image_optimizer_url: '//gonzales.vifi.ee/files/images/image.php',
@@ -30,6 +39,9 @@ App.Settings = {
             featured_slides_randomize: true,
             featured_slides_autoplay_interval : 6000
         },
+
+        /** Payment Settings **/
+
         Payment: {
             'default_method' : 'code',
             'mobile' : {'autostart' : false }
@@ -47,13 +59,6 @@ App.Settings = {
             rtmp_url: 'rtmp://media.vifi.ee/vod',
             speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
             subtitles_url: '//beta.vifi.ee/subs/'
-        },
-
-        /** API Settings **/
-
-        Api: {
-            url: '//dev.vifi.ee/api/',
-            key: '298fh23hhdff112'
         },
 
         /** Search Settings **/
@@ -96,20 +101,34 @@ App.Translations = {
             'Clear' : 'Puhasta',
             'Change password': 'Vaheta parool',
             'Create password': 'Loo parool',
+            'Passwords do not match' : 'Paroolid pole samad',
             'No results' : 'Antud otsinguga tulemusi ei leitud. Täpsustage palun otsingut ja kontrollige üle ka teised filtrid (kategooria, kestvus, aasta)',
             'No purchases' : 'Ei ostusid',
             'You have registered successfully' : 'Registreerimine õnnestus',
             'Fill all the fields' : 'Täida kõik väljad',
-            'Passwords do not match' : 'Paroolid pole samad',
             'Thank you' : 'Tänud!',
             'No' : 'Ei',
             'Yes' : 'Jah',
-            'Invalid code' : 'Vale kood',
             'All Genres' : 'Kõik genred',
             'Hours' : 'Tundi',
             'Days' : 'Päeva',
             'Weeks' : 'Nädala',
             'Months' : 'Kuud',
+            'Choose payment method' : 'Vali makseviis',
+            'Watch' : 'Vaata',
+            'Watch film' : 'Vaata filmi',
+            'Continue watching' : 'Vaata edasi',
+            'Invalid code' : 'Vale kood',
+            'Enter code': 'Sisesta piletikood',
+            'Try again' : 'Proovi uuesti',
+            'Disabled' : 'Väljas',
+            'Subtitles' : 'Subtiitrid',
+            'Quality' : 'Kvaliteet',
+            'Close' : 'Sulge',
+            'No Subtitles' : 'Subtiitreid pole',
+            'Invalid code, please verify and try again.': 'Vale kood! Kontrolli õigust ja proovi uuesti.',
+            'Ticket code accepted! The code is valid until': 'Piletikood aktsepteeritud! Kood kehtib kuni',
+            'Content is not available. It may have been removed or the address is invalid.' : 'Seda filmi pole saadaval. See võib olla maha võetud, või aadress on vale.',
             'Timed out' : 'Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu.',
             'Invalid merchant' : 'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Transaction cannot be completed.': 'Makse ei ole lubatud. M-makse lubamiseks palun võta ühendust mobiilioperaatori klienditoega',
@@ -117,14 +136,14 @@ App.Translations = {
             'Insufficient funds':'Kontol pole piisavalt vahendeid või on lubatud limiit ületatud. Palun võta ühendust mobiilioperaatori klienditoega',
             'Transaction is not permitted':'Makse ei ole lubatud. M-makse lubamiseks palun võta ühendust mobiilioperaatori klienditoega.',
             'Exceeds withdrawal amount limit':'Summa ületab lubatud päevalimiidi',
-            'Accepted':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
+            'Accepted':'Makse õnnestus!',
             'Invalid transaction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Format error':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'System malfunction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Time out waiting for response':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Duplicate transaction':'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
             'Original transaction missing' :'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
-            'Transaction in progress' :'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega'
+            'Transaction in progress' :'Makse ei õnnestunud, palun proovi uuesti. Probleemi kordumisel võta ühendust teenusepakkuja klienditoega',
         },
         'en' : {
             'eesti' : 'Estonian',

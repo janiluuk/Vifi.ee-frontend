@@ -22,7 +22,7 @@ App.User.Ticket = Backbone.Model.extend({
 
     },
     parse: function(data) {
-        
+
         $log('BUILDING TICKET FROM '+JSON.stringify(data));
 
         if (data.vod_id > 0) data.id = data.vod_id;
@@ -38,7 +38,7 @@ App.User.Ticket = Backbone.Model.extend({
             this.playsession = new App.User.FilmSession(data.playsession, {
                 parse: true
             });
-            delete data.playsession;    
+            delete data.playsession;
         }
 
 
@@ -52,8 +52,8 @@ App.User.Ticket = Backbone.Model.extend({
         var json = _.clone(this.attributes);
         if (!this.playsession) {
             this.playsession = new App.User.FilmSession();
-        }        
-        json.playsession = this.playsession.toJSON();   
+        }
+        json.playsession = this.playsession.toJSON();
 
         return json;
     },
@@ -77,7 +77,7 @@ App.User.Ticket = Backbone.Model.extend({
         var id = this.get("id"  );
         var film = app.collection.fullCollection.get(id);
         return film;
-    },    
+    },
     /**
      * Check if ticket is valid
      * @return boolean
@@ -127,7 +127,7 @@ App.User.Ticket = Backbone.Model.extend({
         }
         return false;
     },
-    
+
     onPlaySessionOverridden: function() {
         this.trigger("playsession:overridden", this);
         this.stopFetchingPlaySession();
@@ -145,7 +145,7 @@ App.User.Ticket = Backbone.Model.extend({
         if (this.playsession && this.playsession.get("session_id") !== '') {
             this.playsession.startFetching();
         }
-    },    
+    },
 
 });
 /**
@@ -154,11 +154,12 @@ App.User.Ticket = Backbone.Model.extend({
  *
  */
 App.User.CookiePurchases = Backbone.Model.extend({
-    purchase_cookie_name: 'film',
+    purchase_cookie_name: null,
     initialize: function(options) {
         _.bindAll(this, 'getPurchases', 'setPurchases', 'getNewPurchases', 'clearNewPurchases', 'removeFilm', 'cleanPurchases');
         this.cookies = options.cookies;
-        this.purchase_cookie_name = App.Settings.purchase_cookie_name;
+        this.purchase_cookie_name = App.Settings.Cookies.purchase_cookie_name;
+
     },
     /**
      * Check for any purchases in the cookies.

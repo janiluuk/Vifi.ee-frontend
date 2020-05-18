@@ -17,7 +17,7 @@
 
                     <p class="extra-info">Kood kehtib kuni <b>{{ humanDate purchase.validto }} </b> </p>
                     <p> {{#if email }} Vaatamiskood saadeti ka antud emailile: <b>{{ email }} </b>{{/if}}</p>
-                    
+
 		            <p class="info">
                         Head vaatamist!
                     </p>
@@ -48,7 +48,7 @@
                                 <td>{{#if subtitles }}
                                 {{#subtitles}}{{this}} {{/subtitles}}
                                 {{else}}
-                                Subtiitreid pole
+                                {{ trans 'No subtitles' }}
                                 {{/if}}
                                 </td>
                             </tr>
@@ -58,7 +58,7 @@
             </div>
 
             <div id="payment-section" class="popup-section">
-                <h3>Vali makseviis</h3>
+                <h3>{{ trans 'Choose payment method'}}</h3>
 
                 <ul id="payment-list">
                     {{#payments}}
@@ -67,7 +67,7 @@
                     <p>{{name}}</p>
                     </a></li>
                     {{/payments}}
-                </ul>                    
+                </ul>
                 <form id="single-purchase">
                 <input type="hidden" name="method" id="method"/>
                 <div class="payment-method-data" id="payment-email" style="display:none">
@@ -78,14 +78,14 @@
                 </div>
                 <div class="payment-method-data" id="payment-mobile" style="display:none"></div>
                 <div class="payment-method-data"  id="payment-code" style="display:none">
-                    <h3>Sisesta filmi kood</h3>
-                    <input type="password" style="display:none"/>                        
-                    <input type="password" value="" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
+                    <h3>{{ trans 'Enter code'}}</h3>
+                    <input type="password" style="display:none"/>
+                    <input type="password" value="" name="code" id="payment-method-code" class="vifi-text-input" placeholder="{{ trans 'Enter code' }}"></input><br/>
                 </div>
-                <div class="payment-method-terms" style="display:none" id="payment-method-terms">                
+                <div class="payment-method-terms" style="display:none" id="payment-method-terms">
                 <input type="checkbox" name="termsconditions" id="termsconditions" value="true"/><label for="termsconditions">Nõustun <a target="_blank" href="/#page/termsandconditions">kasutustingimustega</a> ja <a target="_blank" href="/#page/gdpr">Privaatsustingimustega. </a> </label></div>
 
-                <button id="confirm-purchase-button" class="btn big green full">Vaata filmi</button>
+                <button id="confirm-purchase-button" class="btn big green full">{{ trans 'Watch'}}</button>
                 </form>
             </div>
         </div>
@@ -115,13 +115,13 @@
         </p>
         <p class="info">
                 {{#if statusMessage }}
-                {{#statusMessage}}{{this}} 
+                {{#statusMessage}}{{this}}
                 {{/statusMessage}}
                 {{else}}
-                Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu. 
-                {{/if}}        
+                Helistamiseks mõeldud aeg on läbi ja makset ei toimunud. Kui soovid siiski piletit tellida, vajuta allolevat nuppu.
+                {{/if}}
         </p>
-        <button id="mobile-payment-try-again" class="btn big green full">Proovi uuesti</button>
+        <button id="mobile-payment-try-again" class="btn big green full">{{ trans 'Try again' }}</button>
     </div>
 
 </script>
@@ -143,7 +143,7 @@
         <p class="info">
             Head vaatamist!
         </p>
-        <button onclick="js:return false;" id="mobile-payment-continue" class="btn big green full">Vaata filmi</button>
+        <button onclick="js:return false;" id="mobile-payment-continue" class="btn big green full">{{trans "Watch"}}</button>
     </div>
 
 </script>
@@ -201,7 +201,7 @@
                     <input type="password" value="0nly4z0000l" name="code" id="payment-method-code" class="vifi-text-input" placeholder="Sisesta kood"></input><br/>
                 </div>
                  <button id="confirm-purchase-button" class="btn big green full">Kinnita tellimus</button>
-                </form> 
+                </form>
             </div>
         </div>
     </div>
