@@ -51,11 +51,10 @@ App.Views.FeaturedView = Backbone.View.extend({
         } else {
             setTimeout(function() {
                 this.startCarousel();
+
             }.bind(this), 1000);
         }
-        setTimeout(function() {
-            App.Utils.lazyload();
-        }, 300);
+
         return this;
     },
     startCarousel: function() {
@@ -188,8 +187,9 @@ App.Views.BrowserPage = Backbone.View.extend({
         });
         this.$isotope.isotope('on', 'layoutComplete', function() { 
             setTimeout(function() {
-                App.Utils.lazyload();
-            }, 500);
+                   App.Utils.lazyload();
+
+            }, 300);
         });
         return true;
     },

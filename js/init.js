@@ -13,7 +13,7 @@ window.app = _.extend({}, Backbone.Events);
 
 
     function initApp(data) {
-
+        $("#content-container").addClass(App.Settings.skin);
         var deferred = new $.Deferred();
 
         App.Platforms.init();

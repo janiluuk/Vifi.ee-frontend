@@ -67,10 +67,11 @@ App.User.Ticket = Backbone.Model.extend({
      */
     getValidityText: function(date) {
         if (!date) date = this.get("validto");
-        if (typeof(type) != "undefined") {
-            validityTime = App.Utils.stringToDate(date);
+        if (typeof(data) != "undefined") {
+            var validityTime = App.Utils.stringToDate(date);
+            return App.Utils.dateToHumanreadable(validityTime);
         }
-        return App.Utils.dateToHumanreadable(validityTime);
+        return this.get("validto");
     },
 
     getFilm: function() {

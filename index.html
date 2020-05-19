@@ -7,7 +7,7 @@
         <meta property="og:url" content="//www.vifi.ee/"/>
        	<meta property="og:description" content="Vaata mugavalt filme!"/>
         <link rel="stylesheet" href="style/style.css" type="text/css" />
-        <link rel="stylesheet" href="style/vendor.css" type="text/css" />       
+        <link rel="stylesheet" href="style/vendor.css" type="text/css" />
         <link rel="icon" sizes="192x192" href="/favicon.png"/>
 	<link rel="image_src" href="http://www.vifi.ee/screenshot.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui"/>
@@ -18,11 +18,13 @@
         <meta name="keywords" content="eesti filmid, hollywoodi filmid, videolaenutus, filmid 2012, filmid online, head filmid, uued filmid, 2020 filmid, estonian films, 2016 filmid, 2015 filmid, eesti film, filmid 2011, filmid, oksmaa, parimad filmid, laenutus, filmide laenutus"/>
     </head>
     <body>
-    <div id="top-main-toolbar"></div>
+    <div id="dialog"></div>
+    <div id="fb-root"></div>
+    <div id="top-main-toolbar" class="vifi"></div>
     <div id="vifi-page-container">
             <div id="side-menu-container" class="snap-drawers"></div>
 
-            <div id="content-container" class="snap-content">
+            <div id="content-container" class="vifi snap-content">
                     <!-- Home Page-->
                     <div class="main-wrapper" id="homepage">
                         <div id="front-page-slider" class="feature-wrapper float_left"></div>
@@ -37,9 +39,6 @@
                     <div class="main-wrapper" id="searchpage"></div>
             </div>
     </div>
-    <div id="dialog"></div>                                                                                                                                                                                                                                                                                                                                                                     
-    <div id="fb-root"></div>      
-
     <script type="text/javascript" src="js/vendors.js"></script>
     <script src="https://cdn.ravenjs.com/3.26.4/raven.min.js" crossorigin="anonymous"></script>
     <script src="https://browser.sentry-cdn.com/5.15.5/bundle.min.js" integrity="sha384-wF7Jc4ZlWVxe/L8Ji3hOIBeTgo/HwFuaeEfjGmS3EXAG7Y+7Kjjr91gJpJtr+PAT" crossorigin="anonymous"></script>

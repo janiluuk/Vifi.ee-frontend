@@ -133,15 +133,15 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         setTimeout(function() {
             this.startCarousel();
             //this.model.fetchRT();
-            //  this.enableAddThis();
             App.Utils.lazyload();
+
+            //  this.enableAddThis();
+            this.enableComments();
         }.bind(this), 300);
         setTimeout(function() {
-            this.enableComments();
             this.enableYoutubePlayer();
             this.enableRatings();
             App.Utils.lazyload();
-
         }.bind(this), 1200);
         return this;
 
@@ -246,7 +246,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         setTimeout(function() {
             App.Utils.lazyload();
             this.applyIsotope();
-        }.bind(this), 600);
+        }.bind(this), 400);
         return false;
     },
     startCarousel: function() {
@@ -271,7 +271,6 @@ App.Views.MovieDetailView = App.Views.Page.extend({
                 myMovieSwiper.swipeNext();
                 App.Utils.lazyload();
             });
-            App.Utils.lazyload();
         }
         window.filmnavSwiper = new Swiper('#film-tabbar-swiper-container', {
             slidesPerView: 'auto',

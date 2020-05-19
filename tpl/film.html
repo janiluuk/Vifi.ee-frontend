@@ -4,7 +4,7 @@
     <div id="movie-player-container" class="fixed-controls">
                 <div id="video-container-heading" data-snap-ignore="true" class="float_left">
                 <div id="close-player" style="display:none;" class="close">
-                    <span class="close-button"></span>Sulge
+                    <span class="close-button"></span><%-tr("Close") %>
                 </div>
         </div>
         <div id="player-container" data-snap-ignore="true"></div>
@@ -47,10 +47,10 @@
     <!-- Film Info -->
     <div id="film-info-container" class="float_left">
         <div class="film-poster float_left">
-        <img class="b-lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="<%-App.Utils.getImageUrl(poster_url.replace("/original/", "/w300/"),180,260)%>" /></div>
+        <img class="b-lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="<%-App.Utils.getImageUrl(poster_url,180,260)%>" /></div>
         <div class="film-info float_left">
             <div class="film-title"><%-title %></div>
-            <div class="film-description"><span><%-year %></span> - <span><%-genres_text %></span> - <span><%-running_time_text %></span></div>
+            <div class="film-description"><span><%-year %></span> - <span><%-genres_text %></span> <span><small><%-_.isEmpty(running_time_text) ? '- '+running_time_text :''%></small></span></div>
             <div class="film-rating" id="film-rating">
                 <table>
                     <tbody>
@@ -60,7 +60,7 @@
                                     if (imdbrating && imdbrating != "Data") {
                                 %>
 
-                                <span class=" imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1" target="_blank"><img src="/style/img/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
+                                <span class="imdbRatingPlugin imdbRatingStyle4" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1" target="_blank"><img src="/style/img/imdb_46x22.png"> </a><span class="rating"><%-imdbrating%><span class="ofTen">/10</span></span></span>
                                 <%
                                  } else { %>
                                 <span class="imdbRatingPlugin" data-user="ur44573370" data-title="<%-imdb_id%>" data-style="p4"><a target="_blank" href="//www.imdb.com/title/<%-imdb_id%>/?ref_=plg_rt_1"><img src="/style/img/imdb_46x22.png" /> </a></span>
@@ -92,16 +92,19 @@
         <div id="film-summary-container" class="film-summary float_left">
             <h3>Filmist</h3>
 
-            <div class="text-area"><%=nl2br(overview)%></div>
+            <div class="text-area"><%=overview ? nl2br(overview): tr("No description available")%></div>
             <div class="film-language float_left">
                 <table>
                     <tbody>
                         <tr>
+                            <td><h3>Režissöör</h3></td>
                             <td><h3>Keeled</h3></td>
+
                             <td><h3>Riigid</h3></td>
                             <td><h3>Subtiitrid</h3></td>
                         </tr>
                         <tr>
+                            <td><%-_.isEmpty(director) ? '':director %></td>
                             <td><%-language %></td>
                             <td><%-countries %></td>
                             <td><%
@@ -111,6 +114,7 @@
             				_.each(subtitles, function(subtitle) { %>
                             <%= subtitle %>
                             <% }); %></td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -132,7 +136,7 @@
             if (actor.image_url == null) {
                 actor.image_url = '/style/img/anonymous_avatar.jpg';
             } else {
-                actor.image_url = App.Utils.getImageUrl(actor.image_url.replace("/original/", "/w300/"),180,260);
+                actor.image_url = actor.image_url.replace("/original/", "/w300/");
             }
             %>
             <li class="item">

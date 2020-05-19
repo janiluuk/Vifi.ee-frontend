@@ -1072,6 +1072,11 @@ span.css-icon.loading {
     background-color: rgba(50, 46, 84, 0.95);
 }
 
+#top-main-toolbar.vifi {
+    background-color: rgba(13, 13, 34, 0.9);
+    opacity: 0.9;
+}
+
 #menu-dragger {
     height: 45px;
     width: 45px;
@@ -1520,15 +1525,15 @@ a.arrow-right {
    /* -webkit-animation: AnimationName 59s ease infinite;
     -moz-animation: AnimationName 59s ease infinite;
     animation: AnimationName 180s ease infinite;*/
- /*   background: linear-gradient(75deg, #4b4180, #463773, #6d6790, #6f4862, #464c66, #633c7b);*/
+    background: linear-gradient(75deg, #4b4180, #463773, #6d6790, #6f4862, #464c66, #633c7b);
     background-size: 200% 200%; */
 }
 
-#content-container.playing {
+#content-container.vifi {
     transition: 0.9s;
-    animation: AnimationName 1s ease infinite;
     background: linear-gradient(48deg, #01011d, #10102b, #000, #111, #2f2121, #111135);
 }
+
 
 @-webkit-keyframes AnimationName {
     0%{background-position:97% 0%}

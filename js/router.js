@@ -29,6 +29,7 @@
             'search/:searchStateHash': 'search',
             'film/:id': 'showFilm',
             'films/:id': 'showFilm',
+            'films/:id/watch/:code': 'playFilm',
             'me': 'me',
             'return': 'purchaseReturn',
             'return/:id': 'purchaseReturn',
@@ -127,6 +128,21 @@
 
             this.trigger("change:title", "Search results");
         },
+        playFilm: function(id, code) {
+
+            var film = new App.Models.Film({
+                id: id,
+
+            });
+            var _this = this;
+            film.fetch().done(function() {
+                 var purchase = new App.Models.Purchase({model: film, session: app.session});
+
+                    purchase.sendCodeAuth(purchase.onCodeAuth, film.get("id"), code);
+                    purchase.on('purchase:successful', function () { _this.showFilm(film.get("id"), true); }, this);
+                });
+        },
+
         showFilm: function(id, autoplay) {
             var films = app.user.checkPurchases();
             /*

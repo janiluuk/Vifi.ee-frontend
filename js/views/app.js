@@ -210,11 +210,14 @@ App.Views.HomePage = App.Views.Page.extend({
             sort: options.sort,
             initialState: options.initialFilterState,
         });
+
         var featured = options.collection.featured();
-        featured = _.rest(featured.reverse(), _.size(featured) - App.Settings.Featured.featured_slides_limit);
-        if (App.Settings.featured_slides_randomize === true) {
+
+        if (App.Settings.Featured.featured_slides_randomize === true) {
             featured = _.shuffle(featured);
         }
+
+        featured = _.rest(featured.reverse(), _.size(featured) - App.Settings.Featured.featured_slides_limit);
         this.featuredview = new App.Views.FeaturedView({
             collection: featured,
             banners: options.banners,
@@ -408,7 +411,6 @@ App.Views.CarouselView = Backbone.View.extend({
                     el.click();
                     var tab = el.attr("data-rel");
                     $("#" + tab).show().siblings().hide();
-                    App.Utils.lazyload();
                 }
             },
         });
@@ -418,7 +420,6 @@ App.Views.CarouselView = Backbone.View.extend({
                 _this.options.swipeTo = item;
                 e.preventDefault();
                 _this.swiper.swipeTo(item);
-                App.Utils.lazyload();
             })
         });
         return this.swiper;
