@@ -17,8 +17,8 @@ window.$debug = function() { 
     if (App.Settings.debug === true) {
             App.Settings.debug = false;
         } else {
-            App.Settings.debug = true;       
-        } 
+            App.Settings.debug = true;
+        }
 };
 
 
@@ -117,10 +117,10 @@ App.Platform.prototype.setMediaPlayer = function(mediaplayer) {
 App.Platform.prototype.fetchMediaPlayer = function() {
     if (this._mediaPlayer) {
         //  $log("Adding media player path");
-        var path = "js/platforms/mediaplayer_" + this._mediaPlayer.toLowerCase() + ".js";
+        var path = "/js/platforms/mediaplayer_" + this._mediaPlayer.toLowerCase() + ".js";
         //$log("Adding media player path: " + path);
         $('<script async src="' + path + '" type="text/javascript"></script>').appendTo("head");
-        var pluginpath = "js/vendor/flowplayer." + this._mediaPlayer.toLowerCase() + ".js";
+        var pluginpath = "/js/vendor/flowplayer." + this._mediaPlayer.toLowerCase() + ".js";
         $log("Adding flowplayer path: " + pluginpath);
         $("<script/>", {
             src: pluginpath,

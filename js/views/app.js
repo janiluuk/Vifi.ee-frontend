@@ -126,6 +126,9 @@ App.Views.BaseAppView = Backbone.View.extend({
         // cache the current view and the new view
         var previous = this.currentPage || null;
         var next = view;
+
+
+
         if (previous) {
             previous.transitionOut(function() { }.bind(this));
         }
@@ -384,9 +387,8 @@ App.Views.CarouselView = Backbone.View.extend({
         var el = $("#" + attr);
         $(e.currentTarget).siblings().removeClass("active");
         $(el).siblings().removeClass("active").hide();
-        $(el).velocity("fadeIn", {
-            duration: 300
-        }).addClass("active");
+
+        $(el).addClass("active").show();
         return false;
     },
     startCarousel: function(initialSlide) {

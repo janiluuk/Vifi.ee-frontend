@@ -4,10 +4,10 @@
        {{#if profile_picture}}
         <div id="menu-dragger" class="float_left" style="background-image: url({{profile_picture}}?width=90&height=90); background-size: auto 45px;"></div>
         {{else}}
-        <div id="menu-dragger" class="menu-icon float_left" style="background-image: url('style/img/menu-icon.png'); background-size: 90px;"></div>
+        <div id="menu-dragger" class="menu-icon float_left" style="background-image: url('/style/img/menu-icon.png'); background-size: 90px;"></div>
         {{/if}}
 
-        <a href="#">
+        <a href="/">
             <div id="main-vifi-logo" class="float_left"></div>
         </a>
     </div>
@@ -32,9 +32,9 @@
                         {{#if name}}
                         <h3>{{ name }}</h3>
                         <ul class="side-menu-list">
-                            <a href="#me" id="menu-me"><li>Minu konto</li></a>
-                            <a href="#me/my-films" id="menu-myfilms"><li>Minu filmid</li></a>
-                            <a href="#me/pair-device" id="menu-pairtv"><li>Ühenda Telekas</li></a>
+                            <a href="/me" id="menu-me"><li>Minu konto</li></a>
+                            <a href="/me/my-films" id="menu-myfilms"><li>Minu filmid</li></a>
+                            <a href="/me/pair-device" id="menu-pairtv"><li>Ühenda Telekas</li></a>
                             <a class="logout" href="#"><li>Logi välja </li></a>
                         </ul>
                         {{else}}
@@ -48,7 +48,7 @@
 
                         <h3 class="new-feature">Püsitellimus</h3>
                         <ul class="side-menu-list">
-                            <a id="menu-subscription" href="#subscription-plans"><li>Hinnakiri</li></a>
+                            <a id="menu-subscription" href="/subscription-plans"><li>Hinnakiri</li></a>
                         </ul>
 
                         <h3>24/7 tugitelefon:</h3>
@@ -59,11 +59,11 @@
                         <h3>Tugi</h3>
                         <ul class="side-menu-list" id="side-menu-content-pages">
 
-                            <a id="menu-termsandconditions" href="#/page/terms-and-conditions"><li>Kasutustingimused</li></a>
-                            <a id="menu-faq" href="#/page/faq"><li>Korduma kippuvad küsimused</li></a>
-                            <a id="menu-gdpr" href="#/page/gdpr"><li>Isikuandmete käitlemine</li></a>
-                            <a id="menu-watchfilmsfromtv" href="#/page/watch-films-from-tv" href="#"><li>Filmi vaatamine läbi teleri</li></a>
-                            <a id="menu-contact" href="#contact"><li>Tagasiside</li></a>
+                            <a id="menu-termsandconditions" href="/page/terms-and-conditions"><li>Kasutustingimused</li></a>
+                            <a id="menu-faq" href="/page/faq"><li>Korduma kippuvad küsimused</li></a>
+                            <a id="menu-gdpr" href="/page/gdpr"><li>Isikuandmete käitlemine</li></a>
+                            <a id="menu-watchfilmsfromtv" href="/page/watch-films-from-tv"><li>Filmi vaatamine läbi teleri</li></a>
+                            <a id="menu-contact" href="/contact"><li>Tagasiside</li></a>
                         </ul>
                         <h3>Testi Arvutit!</h3>
                         <ul class="side-menu-list">

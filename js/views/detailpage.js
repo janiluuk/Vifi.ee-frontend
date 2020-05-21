@@ -128,7 +128,9 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         return this;
     },
     render: function() {
+
         this.$el.empty().append(this.template(this.model.toJSON()));
+
         this.isotope = false;
         setTimeout(function() {
             this.startCarousel();

@@ -93,7 +93,7 @@ App.Utils = {
                 self = this;
 
             $.each(names, function (index, name) {
-                deferreds.push($.get('tpl/' + name + '.html', function (data) {
+                deferreds.push($.get('/tpl/' + name + '.html', function (data) {
                     self.templates[name] = data;
                 }));
             });
@@ -225,7 +225,7 @@ App.Utils.State = Backbone.Model.extend({
     setQueryString: function(trigger) {
 
         var string = this.getQueryString();
-        app.router.navigate('search' + string, {
+        app.router.navigate('/search' + string, {
                 trigger: trigger
         });
     },
@@ -262,7 +262,8 @@ App.Utils.State = Backbone.Model.extend({
     },
 
     setFromUrl: function() {
-        var hash = window.location.hash.replace('#search', '');
+
+        var hash = window.location.hash.replace('search', '');
         var hash = hash.replace('#', '');
         hash = hash.split("=").join(":");
         return this.setFromHash(decodeURIComponent(hash));

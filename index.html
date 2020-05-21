@@ -2,12 +2,10 @@
 <html lang="en-us">
     <head>
         <meta charset="utf-8">
-        <title>Vifi.ee - Vaata filme mugavalt!</title>
-	<meta property="og:image" content="//www.vifi.ee/screenshot.png"/>
-        <meta property="og:url" content="//www.vifi.ee/"/>
-       	<meta property="og:description" content="Vaata mugavalt filme!"/>
-        <link rel="stylesheet" href="style/style.css" type="text/css" />
-        <link rel="stylesheet" href="style/vendor.css" type="text/css" />
+        <?php include("header.php"); ?>
+
+        <link rel="stylesheet" href="/style/style.css" type="text/css" />
+        <link rel="stylesheet" href="/style/vendor.css" type="text/css" />
         <link rel="icon" sizes="192x192" href="/favicon.png"/>
 	<link rel="image_src" href="http://www.vifi.ee/screenshot.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui"/>
@@ -39,32 +37,31 @@
                     <div class="main-wrapper" id="searchpage"></div>
             </div>
     </div>
-    <script type="text/javascript" src="js/vendors.js"></script>
+    <script type="text/javascript" src="/js/vendors.js"></script>
+    <script type="text/javascript" src="/js/settings.js"></script>
+    <script type="text/javascript" src="/js/router.js"></script>
+    <script type="text/javascript" src="/js/models/models.js"></script>
+    <script type="text/javascript" src="/js/models/platform.js"></script>
+    <script type="text/javascript" src="/js/models/utils.js"></script>
+    <script type="text/javascript" src="/js/models/user.js"></script>
+    <script type="text/javascript" src="/js/models/player.js"></script>
+    <script type="text/javascript" src="/js/models/playlist.js"></script>
+    <script type="text/javascript" src="/js/models/purchase.js"></script>
+    <script type="text/javascript" src="/js/models/session.js"></script>
+    <script type="text/javascript" src="/js/collections/collections.js"></script>
+    <script type="text/javascript" src="/js/models/forms.js"></script>
+    <script type="text/javascript" src="/js/views/app.js"></script>
+    <script type="text/javascript" src="/js/views/films.js"></script>
+    <script type="text/javascript" src="/js/views/filterbar.js"></script>
+    <script type="text/javascript" src="/js/views/detailpage.js"></script>
+    <script type="text/javascript" src="/js/views/purchase.js" async></script>
+    <script type="text/javascript" src="/js/views/player.js" async></script>
+    <script type="text/javascript" src="/js/views/user.js"></script>
+    <script type="text/javascript" src="/js/views/facebook.js"></script>
+    <script type="text/javascript" src="/js/views/browser.js"></script>
+    <script type="text/javascript" src="/js/init.js"></script>
     <script src="https://cdn.ravenjs.com/3.26.4/raven.min.js" crossorigin="anonymous"></script>
     <script src="https://browser.sentry-cdn.com/5.15.5/bundle.min.js" integrity="sha384-wF7Jc4ZlWVxe/L8Ji3hOIBeTgo/HwFuaeEfjGmS3EXAG7Y+7Kjjr91gJpJtr+PAT" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="js/settings.js"></script>
-
-    <script type="text/javascript" src="js/router.js"></script>
-    <script type="text/javascript" src="js/models/models.js"></script>
-    <script type="text/javascript" src="js/models/platform.js"></script>
-    <script type="text/javascript" src="js/models/utils.js"></script>
-    <script type="text/javascript" src="js/models/user.js"></script>
-    <script type="text/javascript" src="js/models/player.js"></script>
-    <script type="text/javascript" src="js/models/playlist.js"></script>
-    <script type="text/javascript" src="js/models/purchase.js"></script>
-    <script type="text/javascript" src="js/models/session.js"></script>
-    <script type="text/javascript" src="js/collections/collections.js"></script>
-    <script type="text/javascript" src="js/models/forms.js"></script>
-    <script type="text/javascript" src="js/views/app.js"></script>
-    <script type="text/javascript" src="js/views/films.js"></script>
-    <script type="text/javascript" src="js/views/filterbar.js"></script>
-    <script type="text/javascript" src="js/views/detailpage.js"></script>
-    <script type="text/javascript" src="js/views/purchase.js" async></script>
-    <script type="text/javascript" src="js/views/player.js" async></script>
-    <script type="text/javascript" src="js/views/user.js"></script>
-    <script type="text/javascript" src="js/views/facebook.js"></script>
-    <script type="text/javascript" src="js/views/browser.js"></script>
-    <script type="text/javascript" src="js/init.js"></script>
 
 <!--    <script type="text/javascript" src="js/packed.js"></script>  -->
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic" rel="stylesheet" type='text/css' />

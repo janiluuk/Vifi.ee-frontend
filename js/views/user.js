@@ -212,15 +212,17 @@ App.Views.ProfileView = App.Views.CarouselView.extend({
         return this;
     },
     render: function() {
-        
+
         this.$el.html(ich.profileTemplate(this.model.toJSON()));
+
         this.resetpasswordview.setElement("#reset-password").render();
         this.renderProfile();
         this.renderCollection();
-
             setTimeout(function() {
                 this.swiper = this.startCarousel(this.options.swipeTo);
-            }.bind(this), 150);
+            }.bind(this), 100);
+
+
         return this;
     }
 });
@@ -292,7 +294,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
         this.$el.append('<ul class="user-filmcollection-list"></ul>');
         this.$filmCollectionHolder = this.$('.user-filmcollection-list');
         this.renderFilmViews();
-        
+
         return this;
     },
     renderFilmViews: function() {
@@ -319,7 +321,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
         });
         $(this.fragment).append(filmView.render().el);
         App.Utils.lazyload();
-        
+
         return filmView;
     },
 });

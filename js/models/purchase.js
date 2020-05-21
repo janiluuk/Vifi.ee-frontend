@@ -236,7 +236,7 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
                     var vod_id = ticket.get('vod_id');
                     ticket.set('id', vod_id);
                     ticket.set('user_id', app.user.id);
-
+                    app.session.onTicketReceived(ticket);
                     this.trigger("purchase:ticket:received", ticket);
                 }.bind(this));
 

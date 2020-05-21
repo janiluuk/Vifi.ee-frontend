@@ -54,6 +54,7 @@
             if (!category || !action) {
                 return false;
             }
+
             if (App.Settings.google_analytics_enabled) {
                 if (!label) label = action;
                 ga('send', {
@@ -65,6 +66,7 @@
             }
         },
         onRoute: function(route, params) {
+
             this.trigger("page:change", route, params);
             app.sidemenu.closeSideBar();
             this.currentPage = route;
@@ -148,6 +150,8 @@
             /*
              *  Check if user has purchases, navigate to confirmation page if so.
              */
+
+
             if (films) {
                 this.navigate("/return", {
                     trigger: true
@@ -172,12 +176,17 @@
                     $log("Loading movie info to page");
                     app.movieview.model.set(film.toJSON());
                 }
+
                 app.movieview.render();
 
                 var url = film.get("seo_friendly_url");
+
                 _this.navigate(url, {
                     trigger: false
                 });
+
+
+
                 app.showMoviePage();
                 _this.trigger("change:title", film.get("title"));
                 if (autoplay) app.movieview.playMovie();
@@ -232,19 +241,13 @@
             app.showContentPage("subscription", "Subscription information");
         },
         filmcollection: function() {
-            if (!this.views.profile) {
-                this.views.profile = new App.Views.ProfileView({
-                    swiperEl: '#profile-tabbar-swiper-container',
-                    model: app.session.get("profile"),
-                    swipeTo: 1
-                });
+
+            this.views.profile = new App.Views.ProfileView({
+                swiperEl: '#profile-tabbar-swiper-container',
+                model: app.session.get("profile"),
+                swipeTo: 1
+            });
             this.views.profile.render();
-
-            } else {
-                this.views.profile.options.swipeTo = 1;
-                this.views.profile.model.set(app.session.get("profile").toJSON());
-            }
-
             app.showContentPage("myfilms", "My films");
         },
         pairdevice: function() {

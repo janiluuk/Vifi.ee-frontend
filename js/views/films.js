@@ -17,6 +17,7 @@ App.Views.FilmView = Backbone.View.extend({
 });
 _.extend(App.Views.FilmView.prototype, {
     showMoviePage: function(e) {
+
         e.preventDefault();
         var url = this.model.get("seo_friendly_url");
         app.router.navigate(url, {
@@ -40,6 +41,8 @@ App.Views.UserFilmView = Backbone.View.extend({
         var film = app.collection.originalCollection.get(this.model.get("id"));
         if (typeof(film) == "undefined") return false;
         var url = film.get("seo_friendly_url");
+        return;
+
         app.router.navigate(url, {
             trigger: true
         });
