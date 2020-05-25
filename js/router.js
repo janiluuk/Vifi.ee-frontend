@@ -51,6 +51,7 @@
             this.on('route', this.onRoute, this);
             this.on('change:title', this.onChangeTitle, this);
             this.on('action', this.onAction, this);
+            _.bindAll(this, 'showContentPage');
         },
         onAction: function(category, action, label) {
             if (!category || !action) {
@@ -315,6 +316,9 @@
             marker.bindPopup("<b>Vificom OÜ</b><br>Roseni 5, Tallinn").openPopup();
         },
         showContentPage: function(template, title) {
+            if (!template) {
+                throw ("Invalid template");
+            }
             var name = template.split("-").join("");
             if (_.isEmpty(title)) {
                 title = _.find(App.ContentPages, function(title, idx) {

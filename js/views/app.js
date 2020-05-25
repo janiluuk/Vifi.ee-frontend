@@ -126,12 +126,15 @@ App.Views.BaseAppView = Backbone.View.extend({
     },
     showContentPage: function(id) {
         $(".main-wrapper:not(#contentpage)").hide();
+        this.$("#content-container").scrollTop(0);
+        $("#contentpage").show();
         if (id) {
             $(".side-menu-list a.active").removeClass("active");
             $(".side-menu-list a#menu-" + id).addClass("active");
         }
-        this.$("#content-container").scrollTop(0);
-        $("#contentpage").show();
+
+        this.currentPage = app.router.views.contentview;
+
     },
     goto: function(view, scroll) {
         // cache the current view and the new view
@@ -150,8 +153,9 @@ App.Views.BaseAppView = Backbone.View.extend({
             }.bind(this));
         //      next.render({ page: true });  // render the next view
         //    this.$el.append( next.$el );  // append the next view to the body (the el for this root view)
-        this.currentPage = next;
         }
+        this.currentPage = next;
+
     }
 });
 // Base view class for providing transition capabilities
@@ -380,14 +384,14 @@ App.Views.QuickbarMenu = Backbone.View.extend({
 
     closeQuickBar: function() {
         this.state = "closed";
-        this.$el.slideUp();
+        this.$el.velocity("slideUp", { delay: 500, duration: 1500 });
         this.$el.removeClass("visible");
 
         return false;        
     },
     openQuickBar: function() {
         this.state = "open";
-        this.$el.slideDown();
+        this.$el.velocity("slideDown", { delay: 500, duration: 1500 });
         this.$el.addClass("visible");
     },
     render: function() {

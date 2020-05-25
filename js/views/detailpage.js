@@ -1,8 +1,8 @@
 App.Views.MovieDetailView = App.Views.Page.extend({
     model: App.Models.Film,
     transition: function() {
-        return { in : 'slideUpIn',
-            out: 'slideDownOut'
+        return { in : 'slideDownIn',
+            out: 'slideUpOut'
         }
     },
     el: "#moviepage",
@@ -207,7 +207,6 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         this.playerView = new App.Views.PlayerView({
             model: app.player
         });
-        console.log(this.model);
 
         app.player.load(this.model);
         this.listenTo(this.playerView, 'player:close', this.closePlayer, this);

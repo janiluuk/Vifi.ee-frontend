@@ -993,24 +993,30 @@ input#main-search-box {
     background-position: center right 0.5em;
 }
 div#quickbar-overlay.visible {
-    min-width:9999px;
+    min-width:3000px;
     display:block;
-    min-height:100%;
     background: rgba(0, 0, 0, 0.9);
     position:absolute;
-    z-index:9990;
+    opacity:1;
+    min-height:100%;
+    z-index:999;
 }
 div#quickbar-overlay {
-    min-width:9999px;
+    min-width:3000px;
     display:none;
-    min-height:100%;
     background: rgba(0, 0, 0, 0.0);
+    opacity:0;
     position:absolute;
 }
 
 div#quickbar-container .item {
-    max-height: 62px;
-    max-height: 300px;
+    max-width: 120px;
+    max-height: 180px;    
+}
+div#quickbar-container .item-image
+{
+    max-width: 120px;
+    max-height: 180px;        
 }
 div#quickbar-container{
     position:relative;
@@ -1021,34 +1027,29 @@ div#quickbar-container{
     display:block;
     top: 44px;
     background: rgba(0, 0, 0, 0.0);
-    z-index:9999;
+    z-index:0;
 }
 
 div#quickbar-container.visible{
     display:block;
-    z-index:9999;
+    z-index:999;
     background: rgba(0, 0, 0, 0.9);
 }
-
+div#quickbar-content.visible #quickbar-content {
+    display:block;
+}
 div#quickbar-content {
     position: relative;
     top: 44px;
     width: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 9999;
-    max-height: 238px;
+    max-height: 338px;
     padding: 0px;
     overflow: auto;
     display: block;
     height: 89%;
     display: none;
-}
-
-div #quickbar-container .item{
-    width:14%;
-    height:53%;
-    max-height:62px;
-
 }
 /* SIDE MENU */
 
@@ -1628,13 +1629,28 @@ a.arrow-right {
 #content-body {
     position: relative;
     background: rgb(227, 211, 203);
-}
-ul#content-body-list, ul#cast-content-body-list, ul.user-filmcollection-list, #film-info-container, #film-cast-container, #film-list-container, #profilepage-mymovies-container, #profilepage-myprofile-container, .singlepage-body-container {
+} 
+#cast-content-body-list, 
+.user-filmcollection-list,
+#film-list-container, 
+#profilepage-mymovies-container
+{
     margin: 0;
-    padding: 0;
+    padding: 0;  
+    display: grid;
     width: 100%;
+    grid-template-columns: repeat(12, 1fr);
+    grid-column-gap: 1rem;
+    grid-row-gap: 1rem;
 }
-#film-info-container, #film-cast-container {
+#content-body-list, 
+#film-info-container, 
+#film-cast-container,
+#profilepage-myprofile-container,
+.singlepage-body-container {
+    margin: 0;
+    padding: 0;  
+    width: 100%;
     min-height: 40em;
 }
 .page-footer {
@@ -1682,13 +1698,15 @@ ul#content-body-list li, ul#cast-content-body-list li {
     padding: 1em;
 }
 .item {
-    width: 14.66%;
-    margin: 1%;
-    /* box-sizing: border-box; */
     box-shadow: 0 2px 2px #ACA0A0;
     background: white;
     float: left;
     cursor: pointer;
+    grid-column: span 2;
+}
+#content-body-list .item {
+    width: 14.66%;
+    margin: 1%;
 }
 .item:hover {
     background: #ddd;
@@ -1779,9 +1797,10 @@ ul#cast-content-body-list li .item-image {
     padding: 0.5em;
 }
 .item-info-title a, .item-info-title {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     letter-spacing: -0.2px;
-    line-height: 1;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
     text-decoration: none;
     font-weight: 700;
     color: #333;
@@ -2236,8 +2255,11 @@ ul#subscription-benefit-list li .icon {
         height: 25em;
     }
     .item {
-        width: 18%;
-        margin: 1%;
+        grid-column: span 3;
+    }
+    #content-body-list .item {
+      width: 18%;
+      margin: 1%;
     }
     .film-title {
         font-size: 2.8em;
@@ -2293,8 +2315,11 @@ ul#subscription-benefit-list li .icon {
         width: 24%;
     }
     .item {
-        width: 22%;
-        margin: 1.5%;
+        grid-column: span 3;
+    }
+    #content-body-list .item {
+      width: 22%;
+      margin: 1.5%;
     }
     .featured-item-title {
         font-size: 2em;
@@ -2536,14 +2561,19 @@ ul#subscription-benefit-list li .icon {
         text-align: left;
     }
     .film-list .item, .user-filmcollection-list .item {
+        grid-column: span 12;
+    }
+    #content-body, #moviepage-body, #profilepage-body, .singlepage-body {
+        padding: 0.5rem;
+    }
+    #cast-content-body-list .item {
+        grid-column: span 4;
+    }
+    #content-body-list .item {
         width: 98%;
         margin: 1%;
     }
-    ul#cast-content-body-list .item {
-        width: 44%;
-        margin: 3%;
-    }
-    ul#cast-content-body-list .item-image {
+    #cast-content-body-list .item-image {
         height: 15em;
     }
     .film-list .item-image, .user-filmcollection-list .item-image {
@@ -2606,11 +2636,11 @@ ul#subscription-benefit-list li .icon {
     #front-tabbar-swiper-container.swiper-nav .swiper-slide-active:after {
         border-bottom-color: rgba(55, 35, 60, 0.65);
     }
-    .item-info-title {
-        font-size: 1.4em;
+    .item-info-title, .item-info-title a {
+        font-size: 1.3rem;
     }
     .item-info-description {
-        font-size: 1.1em;
+        font-size: 1.1rem;
         margin: 0.1em 0 0.3em 0;
     }
     .film-title {

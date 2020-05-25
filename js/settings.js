@@ -15,6 +15,7 @@ App.Settings = {
         google_analytics_enabled: true,
         google_analytics_code: 'UA-66018559-1',
         rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
+        facebook_app_id:  '169875156439063',
         commentsEnabled: true,
         disqus_shortname: 'vifi',
         /** API Settings **/
@@ -112,6 +113,7 @@ App.Translations = {
             'Fill all the fields' : 'Täida kõik väljad',
             'Thank you' : 'Tänud!',
             'No' : 'Ei',
+            'Expired' : 'Aegunud',
             'Yes' : 'Jah',
             'All Genres' : 'Kõik genred',
             'Hours' : 'Tundi',

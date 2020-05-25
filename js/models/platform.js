@@ -173,6 +173,22 @@ App.Platform.prototype.proxy = function() {
 _.extend(App.Platform.prototype, Backbone.Events);
 (function() {
     var browser = new App.Platform('browser');
+    browser.init = function() {
+        $(window).on('resize', function(e) {
+            this.updateScreen();
+            // alert("screen changed to "+this.matrix()+" "+this.orientation);
+        }.bind(browser));
+        this.updateScreen(true);
+    };    
+    browser.updateScreen = function(silent) {
+        if (typeof(screen) != "undefined") {
+            window.screen.availWidth = $(window).width();
+            window.screen.availHeight = $(window).height();
+        }
+        this.setResolution(screen.availWidth, screen.availHeight);
+        if (!silent) this.trigger("screen:resize", screen.availWidth, screen.availHeight);
+
+    };    
     // browser.needsProxy = true;
     // We want this to fail, and get added as default
     browser.setResolution(window.screen.width, window.screen.height);

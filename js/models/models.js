@@ -22,10 +22,9 @@ _.extend(App.Models.ApiModel.prototype, {
         // the default construction of the url in Backbone.sync
         var data = ("undefined" == typeof(options)) ? {} : options.data;
 
-        var session = app.session;
-
-        var sessionParams = session ? session.getParams(data) : { data: {}};
-        console.log(sessionParams);
+        var session = this.get("session");
+        if (!session) session = app.session;
+        var sessionParams= session.getParams(data);
 
         var type="GET";
         var dataType = "jsonp";

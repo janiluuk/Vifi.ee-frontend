@@ -137,7 +137,7 @@ App.User.Session = Backbone.Model.extend({
         this.profile.on('user:profile:login', this.onUserAuthenticate, this);
         this.on('ticket:purchase', this.onTicketReceived);
         this.parseAuthCookie();
-        _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'parseAuthCookie', 'onUserAuthenticate', 'writeAuthCookie');
+        _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'parseAuthCookie', 'onUserAuthenticate', 'writeAuthCookie', 'onTicketReceived');
     },
     /** Reset session, clear cookies. **/
     reset: function() {
@@ -316,15 +316,16 @@ App.User.Session = Backbone.Model.extend({
         this.disable();
     },
     onTicketReceived: function(ticket) {
+        var _this = this;
         if (ticket) {
-//            $log("TICKET RECEIVED " + JSON.stringify(ticket));
+            $log("TICKET RECEIVED " + JSON.stringify(ticket));
             if (ticket.content.id && _.isEmpty(ticket.vod_id)) ticket.vod_id = ticket.content.id;
-            ticket.id = ticket.vod_id;
-            ticket.user_id = this.get("user_id");
+            if (!ticket.id) ticket.id = ticket.vod_id;
+            if (!ticket.user_id) ticket.user_id = this.get("user_id");
             
             app.usercollection.create(ticket).done(function() { 
-            _this.trigger("ticket:purchase:done", ticket);
-            });
+                _this.trigger("ticket:purchase:done", ticket);
+            }.bind(this));
         }
         return false;
     },

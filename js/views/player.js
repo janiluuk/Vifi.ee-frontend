@@ -14,9 +14,9 @@ App.Views.PlayerView = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "player:sessionoverridden", this.onForcedClose, this);
         this.listenTo(this.model, "player:resize", this.resize, this);
+        this.listenTo(app.platform, "screen:resize", this.resize, this);
         this.listenTo(app.router, "page:change", this.close, this);
         this.render();
-
     },
 
     /*
@@ -40,7 +40,10 @@ App.Views.PlayerView = Backbone.View.extend({
 
     },
     close: function() {
-        this.model.stop();        
+        this.model.stop();   
+        this.stopListening(app.platform);
+        this.stopListening(app.router);
+        this.stopListening(this.model);            
         this.setElement(this.el);
         this.$el.velocity("fadeOut", { duration: 200 });
         //this.stopListening();

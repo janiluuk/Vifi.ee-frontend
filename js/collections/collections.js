@@ -54,6 +54,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
     parse: function(resp, options) {
         var self = this;
         return _.map(resp.results, function(obj) {
+            
             return new self.model(obj.film, options);
         });
     },

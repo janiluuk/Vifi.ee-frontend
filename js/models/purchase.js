@@ -229,14 +229,9 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
             if (this.get("tickets")) {
 
                 $log("Receiving tickets");
-
-                _.forEach(this.get("tickets"), function(item) {
-                    
-                    if (!item.id) item.id = item.vod_id;
-                    item.user_id = app.user_id;
-
-                    app.session.onTicketReceived(item);
-                    this.trigger("purchase:ticket:received", item);
+                var _this = this;
+                _.forEach(this.get("tickets"), function(ticket) {
+                    _this.session.trigger("ticket:purchase",ticket);
                 }.bind(this));
 
                 this.set("tickets", []);

@@ -24,7 +24,7 @@ App.Utils = {
 
     translate: function(string) {
         var str = _.filter(App.Translations[App.Settings.language], function(item,key) { if (key == string) return item});
-        if (!_.isEmpty(str)) return str;
+        if (!_.isEmpty(str)) return str[0];
         return string;
 
     },
@@ -186,7 +186,7 @@ App.Utils = {
 
             var now = new Date().getTime(); 
             var t = time - now; 
-            if (time < 0) {
+            if (t < 0) {
                 return tr("Expired");
             }
 
@@ -202,6 +202,7 @@ App.Utils = {
             if (hours > 0 || (hours == 0 && days > 0)) {
                 string+=hours+tr("hr")+" ";
             }
+
             if (!include_minutes || (days == 0 && hours == 0 && minutes == 0)) {
 
             } else {

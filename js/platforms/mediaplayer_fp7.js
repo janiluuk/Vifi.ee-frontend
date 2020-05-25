@@ -15,7 +15,7 @@ App.MediaPlayer = {
     player: false,
     _eventsToTrack: ['error', 'finish', 'fullscreen', 'fullscreen-exit', 'progress', 'seek', 'pause', 'unload', 'resume', 'ready', 'volume'],
     init: function(playlist) {
-        $log("Calling init on HLS player");
+        $log("Calling init on FP7 player");
         if (playlist) this.setPlaylist(playlist);
         this._videoElement = $("#" + this.playerId);
         if (this._videoElement.length == 0) {

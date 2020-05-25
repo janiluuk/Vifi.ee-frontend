@@ -163,11 +163,11 @@ function initFB() {
 
     FB.init({
         appId: '169875156439063', // App ID
-        channelUrl: '//www.vifi.ee/channel.html', // Channel File
+        channelUrl: '//beta.vifi.ee/channel.html', // Channel File
         status: true, // check login status
         cookie: true, // enable cookies to allow the server to access the session
         xfbml: true, // parse XFBML
-        version          : 'v3.5',
+        version          : 'v4.0',
         frictionlessRequests: true,
         init: true,
         level: "info",
@@ -188,6 +188,7 @@ function initFB() {
     // Load the SDK Asynchronously
     $(document).on('fbStatusChange', function (event, data) {
         if (data.status === 'connected') {
+
             FB.api('/me', {fields: 'email, first_name, last_name'}, function (response) {
                 app.fbuser.set(response);
                 // Store the newly authenticated FB user
@@ -207,8 +208,7 @@ function initFB() {
     });
 
     $(document).on('login', function () {
-        app.session.reset();
-        app.session.enable();
+
         FB.login(function(response) {
         }, {scope: 'email, public_profile'});
         return false;

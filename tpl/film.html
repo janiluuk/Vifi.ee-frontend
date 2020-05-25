@@ -126,7 +126,7 @@
     </div>
     <!-- Film cast -->
     <div id="film-cast-container" class="float_left" style="display:none;">
-        <ul id="cast-content-body-list">
+        <div id="cast-content-body-list">
             <% _.each(actors, function(actor) {
 
             if (typeof(actor.character) =="object") {
@@ -139,7 +139,7 @@
                 actor.image_url = actor.image_url.replace("/original/", "/w300/");
             }
             %>
-            <li class="item">
+            <div class="item">
  <div class="item-image b-lazy" data-src="<%= actor.image_url %>"></div>
                  <div class="item-info">
                     <div class="item-info-title">
@@ -148,8 +148,8 @@
                     <div class="item-info-description"><%= actor.character %>
                     </div>
                 </div>
-            </li>
+            </div>
             <%  }); %>
-        </ul>
+        </div>
     </div>
 </div>

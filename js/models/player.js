@@ -394,7 +394,7 @@ App.Player.Platforms.Core = {
         }
     },
     _stopTrackingEvents: function() {
-        $log(" UNBINDING MEDIA EVENTS TO FLASH VIDEO PLAYER ");
+        $log(" UNBINDING MEDIA EVENTS");
         this.plugin.unbind();
         this.eventsBound = false;
     }

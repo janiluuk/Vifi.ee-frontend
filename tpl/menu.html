@@ -25,60 +25,59 @@
     <div class="toolbar-right float_right">
         <button id="quickbar-switch"></button>
     </div>
-
 </script>
 <script id="quickbarMenuTemplate" type="text/html">
     <div id="quickbar-container"></div>
 </script>
 <script type="text/html" id="sidemenuTemplate">
 
-            <div id="side-menu" class="snap-drawer snap-drawer-left">
-                        {{#if name}}
-                        <h3>{{ name }}</h3>
-                        <ul class="side-menu-list">
-                            <a href="/me" id="menu-me"><li>Minu konto</li></a>
-                            <a href="/me/my-films" id="menu-myfilms"><li>Minu filmid</li></a>
-                            <a href="/me/pair-device" id="menu-pairtv"><li>Ühenda Telekas</li></a>
-                            <a class="logout" href="#"><li>Logi välja </li></a>
-                        </ul>
-                        {{else}}
+    <div id="side-menu" class="snap-drawer snap-drawer-left">
+                {{#if name}}
+                <h3>{{ name }}</h3>
+                <ul class="side-menu-list">
+                    <a href="/me" id="menu-me"><li>Minu konto</li></a>
+                    <a href="/me/my-films" id="menu-myfilms"><li>Minu filmid</li></a>
+                    <a href="/me/pair-device" id="menu-pairtv"><li>Ühenda Telekas</li></a>
+                    <a class="logout" href="#"><li>Logi välja </li></a>
+                </ul>
+                {{else}}
 
 
-                        <div id="login-register-form">
-                            {{>fbLoginPartial}}
-                            {{>loginformPartial}}
-                        </div>
-                        {{/if}}
+                <div id="login-register-form">
+                    {{>fbLoginPartial}}
+                    {{>loginformPartial}}
+                </div>
+                {{/if}}
 
-                        <h3 class="new-feature">Püsitellimus</h3>
-                        <ul class="side-menu-list">
-                            <a id="menu-subscription" href="/subscription-plans"><li>Hinnakiri</li></a>
-                        </ul>
+                <h3 class="new-feature">Püsitellimus</h3>
+                <ul class="side-menu-list">
+                    <a id="menu-subscription" href="/subscription-plans"><li>Hinnakiri</li></a>
+                </ul>
 
-                        <h3>24/7 tugitelefon:</h3>
-                        <ul class="side-menu-list">
-                            <li id="hotline-number">58 667 570</li>
-                        </ul>
+                <h3>24/7 tugitelefon:</h3>
+                <ul class="side-menu-list">
+                    <li id="hotline-number">58 667 570</li>
+                </ul>
 
-                        <h3>Tugi</h3>
-                        <ul class="side-menu-list" id="side-menu-content-pages">
+                <h3>Tugi</h3>
+                <ul class="side-menu-list" id="side-menu-content-pages">
 
-                            <a id="menu-termsandconditions" href="/page/terms-and-conditions"><li>Kasutustingimused</li></a>
-                            <a id="menu-faq" href="/page/faq"><li>Korduma kippuvad küsimused</li></a>
-                            <a id="menu-gdpr" href="/page/gdpr"><li>Isikuandmete käitlemine</li></a>
-                            <a id="menu-watchfilmsfromtv" href="/page/watch-films-from-tv"><li>Filmi vaatamine läbi teleri</li></a>
-                            <a id="menu-contact" href="/contact"><li>Tagasiside</li></a>
-                        </ul>
-                        <h3>Testi Arvutit!</h3>
-                        <ul class="side-menu-list">
-                            <a href="#"><li>Vaata ja testi oma arvuti seadeid</li></a>
-                            <a href="#"><li>Liitu uudiskirjaga</li></a>
-                        </ul>
+                    <a id="menu-termsandconditions" href="/page/terms-and-conditions"><li>Kasutustingimused</li></a>
+                    <a id="menu-faq" href="/page/faq"><li>Korduma kippuvad küsimused</li></a>
+                    <a id="menu-gdpr" href="/page/gdpr"><li>Isikuandmete käitlemine</li></a>
+                    <a id="menu-watchfilmsfromtv" href="/page/watch-films-from-tv"><li>Filmi vaatamine läbi teleri</li></a>
+                    <a id="menu-contact" href="/contact"><li>Tagasiside</li></a>
+                </ul>
+                <h3>Testi Arvutit!</h3>
+                <ul class="side-menu-list">
+                    <a href="#"><li>Vaata ja testi oma arvuti seadeid</li></a>
+                    <a href="#"><li>Liitu uudiskirjaga</li></a>
+                </ul>
 
-                        <ul id="social-network-list">
-                            <a href="https://www.facebook.com/pages/Vifiee/385723814833754" target="_blank"><li id="facebook"></li></a>
-                            <a href="https://twitter.com/vifi_ee" target="_blank"><li id="twitter"></li></a>
-                            <a href="https://www.vifi.ee/feed" target="_blank"><li id="rss"></li></a>
-                        </ul>
-            </div>
-        </script>
+                <ul id="social-network-list">
+                    <a href="https://www.facebook.com/pages/Vifiee/385723814833754" target="_blank"><li id="facebook"></li></a>
+                    <a href="https://twitter.com/vifi_ee" target="_blank"><li id="twitter"></li></a>
+                    <a href="https://www.vifi.ee/feed" target="_blank"><li id="rss"></li></a>
+                </ul>
+    </div>
+</script>

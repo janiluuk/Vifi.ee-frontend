@@ -1,14 +1,14 @@
 App.Views.FilmView = Backbone.View.extend({
     model: App.Models.Film,
-    tagName: 'li',
-    className: 'item',
+    tagName: "div",
+    className: "item",
     events: {
-        'click ': 'showMoviePage'
+        "click ": "showMoviePage"
     },
     initialize: function() {
-        this.listenTo(this.model, 'change', this.render, this);
-        this.listenTo(this.model, 'remove', this.remove, this);
-        this.listenTo(this.model, 'destroy', this.remove, this);
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "remove", this.remove, this);
+        this.listenTo(this.model, "destroy", this.remove, this);
     },
     render: function() {
         this.$el.html(ich.filmitemTemplate(this.model.toJSON()));
@@ -17,7 +17,6 @@ App.Views.FilmView = Backbone.View.extend({
 });
 _.extend(App.Views.FilmView.prototype, {
     showMoviePage: function(e) {
-
         e.preventDefault();
         var url = this.model.get("seo_friendly_url");
         app.router.navigate(url, {
@@ -28,18 +27,18 @@ _.extend(App.Views.FilmView.prototype, {
 });
 App.Views.UserFilmView = Backbone.View.extend({
     model: App.User.Ticket,
-    tagName: 'li',
-    className: 'item',
+    tagName: "div",
+    className: "item",
     events: {
-        'click a': 'showMoviePage'
+        "click a": "showMoviePage"
     },
     initialize: function() {
-        this.listenTo(this.model, 'change', this.render, this);
-        this.listenTo(this.model, 'remove', this.remove, this);
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "remove", this.remove, this);
     },
     showMoviePage: function(e) {
         var film = app.collection.originalCollection.get(this.model.get("id"));
-        if (typeof(film) == "undefined") return false;
+        if (typeof film == "undefined") return false;
         var url = film.get("seo_friendly_url");
 
         app.router.navigate(url, {
@@ -49,27 +48,30 @@ App.Views.UserFilmView = Backbone.View.extend({
         return false;
     },
     render: function() {
-        var filmitem = this.model.getFilm();
-        if (typeof(filmitem) == "undefined") return false;
-        filmitem.set("validtotext", this.model.getValidityText());
-        this.$el.html(ich.userfilmitemTemplate(filmitem.toJSON()));
+        if (this.model.isExpired()) {return this;}
+        var filmitem = app.collection.originalCollection.get(this.model.get("vod_id"));
+        if (filmitem) {
+        this.model.set("poster_url", filmitem.get("poster_url"));
+        this.model.set("seo_friendly_url", filmitem.get("seo_friendly_url"));
+        this.$el.html(ich.userfilmitemTemplate(this.model.toJSON()));
+        }
         return this;
     }
 });
 App.Views.QuickbarView = Backbone.View.extend({
     model: App.User.Ticket,
-    tagName: 'li',
-    className: 'item',
+    tagName: "div",
+    className: "item",
     events: {
-        'click a': 'showMoviePage'
+        "click a": "showMoviePage"
     },
     initialize: function() {
-        this.listenTo(this.model, 'change', this.render, this);
-        this.listenTo(this.model, 'remove', this.remove, this);
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "remove", this.remove, this);
     },
     showMoviePage: function(e) {
         var film = app.collection.originalCollection.get(this.model.get("id"));
-        if (typeof(film) == "undefined") return false;
+        if (typeof film == "undefined") return false;
         var url = film.get("seo_friendly_url");
 
         app.router.navigate(url, {
@@ -80,8 +82,7 @@ App.Views.QuickbarView = Backbone.View.extend({
     },
     render: function() {
         var filmitem = this.model.getFilm();
-        if (typeof(filmitem) == "undefined") return false;
-        filmitem.set("validtotext", this.model.getValidityText());
+        if (typeof filmitem == "undefined") return false;
         this.$el.html(ich.userfilmitemTemplate(filmitem.toJSON()));
         return this;
     }
