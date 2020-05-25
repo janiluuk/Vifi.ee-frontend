@@ -41,7 +41,36 @@ App.Views.UserFilmView = Backbone.View.extend({
         var film = app.collection.originalCollection.get(this.model.get("id"));
         if (typeof(film) == "undefined") return false;
         var url = film.get("seo_friendly_url");
-        return;
+
+        app.router.navigate(url, {
+            trigger: true
+        });
+        e.preventDefault();
+        return false;
+    },
+    render: function() {
+        var filmitem = this.model.getFilm();
+        if (typeof(filmitem) == "undefined") return false;
+        filmitem.set("validtotext", this.model.getValidityText());
+        this.$el.html(ich.userfilmitemTemplate(filmitem.toJSON()));
+        return this;
+    }
+});
+App.Views.QuickbarView = Backbone.View.extend({
+    model: App.User.Ticket,
+    tagName: 'li',
+    className: 'item',
+    events: {
+        'click a': 'showMoviePage'
+    },
+    initialize: function() {
+        this.listenTo(this.model, 'change', this.render, this);
+        this.listenTo(this.model, 'remove', this.remove, this);
+    },
+    showMoviePage: function(e) {
+        var film = app.collection.originalCollection.get(this.model.get("id"));
+        if (typeof(film) == "undefined") return false;
+        var url = film.get("seo_friendly_url");
 
         app.router.navigate(url, {
             trigger: true

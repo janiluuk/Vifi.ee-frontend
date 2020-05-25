@@ -64,8 +64,9 @@ window.app = _.extend({}, Backbone.Events);
 
                 // Bind ready event when everything has been loaded
                 app.on('app:ready', function() {
-                        app.user.updatePurchases();
                             $log("App ready, finished at "+new Date().getTime());
+                             app.usercollection.fetch();
+
                 }.bind(this));
 
                 // Bind startup fail event for catching the initialization failures.
@@ -166,14 +167,13 @@ function initFB() {
         status: true, // check login status
         cookie: true, // enable cookies to allow the server to access the session
         xfbml: true, // parse XFBML
-        version          : 'v2.7',
+        version          : 'v3.5',
         frictionlessRequests: true,
         init: true,
         level: "info",
         signedRequest: null,
         viewMode: "website",
         autoRun: true
-
     });
 
     };
@@ -242,20 +242,14 @@ var resetDisqus = function (newIdentifier, newUrl, newTitle, newLanguage) {
     });
 };
 
-
+/** Workaround for "real links" to bind to the app */
 $(document).on("click", "a[href^='/']", function(event) {
-
   var href = $(event.currentTarget).attr('href')
-
-  var passThrough = href.indexOf('sign_out') >= 0;
-
+  var passThrough = href.indexOf('logout') >= 0;
   if (!passThrough && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
     event.preventDefault()
-
     url = href.replace(/^\//,'').replace('\#\!\/','');
-
     app.router.navigate(url, { trigger: true });
-
-}
+  }
     return false;
 });

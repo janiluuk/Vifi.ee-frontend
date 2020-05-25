@@ -76,7 +76,13 @@ App.Views.PlayerView = Backbone.View.extend({
     },
 
     renderControls: function(content) {
+
         this.controlBar = new App.Views.PlayerControlbar({model: content});
+
+        if (!App.Settings.Player.enable_legacy_subtitles) {
+            $log("Legacy subtitles disabled, not loading control bar");
+            return false;
+        }
         this.controlBar.on('controlbar:change', this.onControlsChange, this);
         this.$el.velocity("fadeIn", { duration: 200 });
         this.resize();
@@ -112,9 +118,18 @@ App.Views.PlayerControlbar = Backbone.View.extend({
     },
 
     render: function() {
+ 
         var _this = this;
         this.setElement(this.el);
         this.$el.empty().append(ich.playerControlsTemplate(this.model.toJSON()));
+
+        if (!App.Settings.Player.enable_legacy_subtitles) {
+            $(this).find("select").css("opacity",0);
+            $('.select-box').css("opacity", 0).attr("disabled", "disabled");
+            $log("Legacy subtitles disabled, not loading control bar");
+            return this;
+        }
+
         $('.select-box').fancySelect().on('change.fs', function(e) {
             var val = $(this).find("option:selected").val();
             var category = $(this).data('category');

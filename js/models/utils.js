@@ -179,6 +179,42 @@ App.Utils = {
 
             return s.getDate() + "." + s.getMonth() + " " + s.getHours() + ":" + ("0" + s.getMinutes()).slice(-2);
         },
+
+        countDownText: function(time, include_minutes, include_seconds) 
+        {
+            if (!this.isValidDate(time)) return "";
+
+            var now = new Date().getTime(); 
+            var t = time - now; 
+            if (time < 0) {
+                return tr("Expired");
+            }
+
+            var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
+            var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
+            var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
+            var seconds = Math.floor((t % (1000 * 60)) / 1000); 
+            var string = "";
+
+            if (days > 0) {
+                string+=days+tr("days")+", ";
+            }
+            if (hours > 0 || (hours == 0 && days > 0)) {
+                string+=hours+tr("hr")+" ";
+            }
+            if (!include_minutes || (days == 0 && hours == 0 && minutes == 0)) {
+
+            } else {
+                string+=", "+ minutes+" "+tr("Min")+" ";
+            }
+
+            if (include_seconds) {
+                string+=", "+seconds+" "+tr("Seconds");
+            }
+
+            return string;
+
+        },
         /* Return time after certain duration in minutes */
         minutesToTime: function(duration) {
 
@@ -191,8 +227,11 @@ App.Utils = {
             return endingtimestring;
         },
         dateExpired: function(date) {
-            if (!date) return false;
-
+            if (!date) return true;
+            if (!this.isValidDate(date)){
+                $log("EXPIRED TICKET with date:"+date);
+                return true;
+            }
             var date = Date.parse(date);
             var now = new Date().getTime();
 

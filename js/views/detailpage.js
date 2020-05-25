@@ -85,7 +85,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
                 layoutMode: 'fitRows',
                 resizable: true,
                 itemSelector: '#film-cast-container .item',
-                transitionDuration: '0.5s',
+                transitionDuration: '0.4s',
                 // disable scale transform transition when hiding
                 hiddenStyle: {
                     opacity: 0,
@@ -138,13 +138,14 @@ App.Views.MovieDetailView = App.Views.Page.extend({
             App.Utils.lazyload();
 
             //  this.enableAddThis();
-            this.enableComments();
         }.bind(this), 300);
         setTimeout(function() {
             this.enableYoutubePlayer();
             this.enableRatings();
+            this.enableComments();
+
             App.Utils.lazyload();
-        }.bind(this), 1200);
+        }.bind(this), 1000);
         return this;
 
     },
@@ -206,6 +207,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         this.playerView = new App.Views.PlayerView({
             model: app.player
         });
+        console.log(this.model);
 
         app.player.load(this.model);
         this.listenTo(this.playerView, 'player:close', this.closePlayer, this);

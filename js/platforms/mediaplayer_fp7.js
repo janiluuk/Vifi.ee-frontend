@@ -41,6 +41,11 @@ App.MediaPlayer = {
             var sources = {
                 sources: playlistFiles[0]
             };
+            var subs = {};
+
+            if (this.subtitles) {
+                subs = this.getSubtitleConfig();
+            }
 
             $log("Initializing flowplayer to "+ this.playerId + " element with playlist " + JSON.stringify(sources));
             this.plugin = flowplayer('#' + this.playerId, {
@@ -51,20 +56,7 @@ App.MediaPlayer = {
                 embed: false,
                 hls : { native: true },
                 src: playlistFiles,
-                // subtitles: {
-                //    tracks: [{
-                //     label: 'Eesti',
-                //     kind: 'subtitles',
-                //     src: 'https://beta.vifi.ee/subs/whitney_ee.vtt',
-                //     is_default: true
-                //    },
-                //    {
-                //     label: 'Vene',
-                //     kind: 'subtitles',
-                //     src: 'https://beta.vifi.ee/subs/whitney_ru.vtt',
-                //    },
-                //    ]
-                // },
+                subtitles: subs,
                 plugins: [
                     'subtitles',
                     'qsel',
@@ -114,9 +106,38 @@ App.MediaPlayer = {
         }
         return true;
     },
+    /**
+     * Get configuration for FP7 player
+     * @return new Object(value?: any)
+     **/
+    getSubtitleConfig: function() {
+
+        if (true === App.Settings.Player.enable_legacy_subtitles) {
+            $log("Legacy subtitles enabled, not loading VTT");
+            return {};
+        }
+        if (!this.subtitles) {
+            return {};
+        }
+        if (_.isEmpty(this.subtitles.subtitles)) {
+            return {};
+        }
+
+        var tracks = _.map(this.subtitles.subtitles, function (item) {
+            
+            var file = App.Settings.Player.subtitles_url + item.file;
+            if (App.Settings.Player.convert_srt_to_vtt === true) { 
+                file = file.replace('.srt','.vtt');
+            }
+            return {label: item.language, kind: 'subtitles', src: file, is_default: (item.code == 'et' || item.code == 'ee') };
+        });
+        var config = {tracks: tracks};
+
+        return config;
+    },    
     _playVideo: function() {
         this.currentStream = this.playlist.nextFile();
-        $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
+        $log(" SETTING CURRENT STREAM TO: " + this.currentStream.src);
         this.play();
 
     },

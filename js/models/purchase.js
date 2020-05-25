@@ -191,7 +191,6 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
     handleStatus: function() {
 
         var status = this.get("status");
-        $log(status);
 
         /* Waiting on phone call */
 
@@ -232,12 +231,12 @@ App.Models.MobilePurchase = App.Models.ApiModel.extend({
                 $log("Receiving tickets");
 
                 _.forEach(this.get("tickets"), function(item) {
-                    var ticket = new App.User.Ticket(item);
-                    var vod_id = ticket.get('vod_id');
-                    ticket.set('id', vod_id);
-                    ticket.set('user_id', app.user.id);
-                    app.session.onTicketReceived(ticket);
-                    this.trigger("purchase:ticket:received", ticket);
+                    
+                    if (!item.id) item.id = item.vod_id;
+                    item.user_id = app.user_id;
+
+                    app.session.onTicketReceived(item);
+                    this.trigger("purchase:ticket:received", item);
                 }.bind(this));
 
                 this.set("tickets", []);
@@ -386,16 +385,14 @@ App.Models.Purchase = Backbone.Model.extend({
             this.trigger("purchase:error", message);
             return false;
         }
-        var session_id = data.session_id;
-        if (data.playsession && data.playsession.vod_id != "")
-            data.vod_id = data.playsession.vod_id;
-        if (session_id != "") {
-
-            var ticket = new App.User.Ticket(data, {parse:true});
-            app.usercollection.add(ticket, {parse:true});
-
-            this.trigger("purchase:successful", ticket);
+        
+        if (app.usercollection.get(data.vod_id)) {
+         }else {
+           app.usercollection.create(data);
         }
+
+        this.trigger("purchase:successful", data);
+    
     },
 
     verify: function(callback) {
@@ -436,7 +433,6 @@ App.Models.Purchase = Backbone.Model.extend({
             this.once("purchase:verify:successful", this.purchase, this);
             this.verify(this.onVerifyResponse);
             return false;
-
         }
 
         var method = this.get("method");
@@ -450,15 +446,14 @@ App.Models.Purchase = Backbone.Model.extend({
 
         if (this.get("method_id") != "") {
             var form = this.generatePurchaseForm();
-            document.body.appendChild(form);
+
+            $("#content-container").append(form);
             form.submit();
             return false;
         } else {
             $log("Error while making purchase: invalid method selected");
             return false;
         }
-
-
     },
 
     generatePurchaseForm: function() {

@@ -245,7 +245,11 @@ App.Views.PaymentDialog = Backbone.View.extend({
     },
     initPayment: function(e) {
         if (e) e.preventDefault();
+        var method = this.payment.get("method");
 
+        if (method == "code") {
+            $("#payment-method-email").val('');
+        }
         var data = this.$("form").serializeObject();
         this.payment.set(data);
         if (this.payment.isValid(true)) {
@@ -312,6 +316,11 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
         options = options || {};
         this.session = options.session;
         this.model = options.model;
+        this.ticket = options.ticket;
+
+        if (this.ticket) {
+        $log(this.ticket);
+        }
         this.listenTo(this.model, 'change', this.render, this);
        // this.listenTo(this.session, 'change', this.render, this);
 
@@ -323,6 +332,8 @@ App.Views.PostPurchaseDialogView = App.Views.DialogView.extend({
     },
 
     render: function() {
+        $log("rrrenderrr");
+
         this.$el.empty().append(this.template).appendTo("body");
         this.openDialog();
         this.setElement(".mfp-content");
@@ -348,7 +359,10 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
     },
     onContinue: function(e) {
         e.preventDefault();
+        $log(this.parent.ticket);
+
         var id = this.parent.model.get("id");
+        app.user.purchases.clearNewPurchases();
         app.router.trigger("action","payment", "success", "Payment successful for title "+this.parent.model.get("id")+ " for "+app.user.get("email") ? app.user.get("email") : " anonymous user");
         app.router.showFilm(id, true);
 
@@ -358,7 +372,7 @@ App.Views.PurchaseSuccessDialog = Backbone.View.extend({
     },
     render: function() {
         this.$el.html(ich.purchaseSuccessTemplate({
-            email: this.session.get("profile").get("email"),
+            email: this.parent.ticket.email,
             purchase: this.parent.model.toJSON()
         }));
         return this;

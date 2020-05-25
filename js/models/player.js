@@ -457,6 +457,8 @@ App.Player.Playlist = function() {
         else user_bitrate = parseInt(App.MediaPlayer.userBitrate);
 
         var file = profiles[0];
+        $log("Parsing"+JSON.stringify(profiles));
+        
         var file_bitrate = parseInt(file.bitrate);
         var min_bitrate = file_bitrate;
         _.each(profiles, function(profile) {
@@ -472,14 +474,14 @@ App.Player.Playlist = function() {
         });
         $log("Minimum bitrate: " + min_bitrate);
 
-        $log("Choosing " + file.mp4 + " as the default video");
+        $log("Choosing " + file.src + " as the default video");
 
         return file;
     },
     this.getPlaylistFiles = function() {
         var content = this.nextFile();
 
-        var files = this.generatePlaylistItem(content.mp4);
+        var files = this.generatePlaylistItem(content.src);
         return files;
     }
     this.getBitrates = function() {
@@ -540,7 +542,7 @@ App.Player.Playlist = function() {
     this.addUrl = function(url) {
         this.files.push([{
             profile: null,
-            mp4: url,
+            src: url,
             bitrate: 0,
             code: 0,
         }]);
@@ -580,8 +582,8 @@ App.Player.Subtitles = Backbone.Model.extend({
 
     handleSubtitleSelection: function(sel) {
 
-        if (sel == "none") this.disable();
-        if (sel == "reset") sel = this.defaultCode;
+        if (sel == "none") { this.disable(); return;}
+        if (sel == "reset") { sel = this.defaultCode; }
         if (this.subtitles) {
             this.loadLanguage(sel);
         }
@@ -724,6 +726,7 @@ App.Player.Subtitles = Backbone.Model.extend({
      */
 
     load: function(subtitles, nodefault) {
+
         if (!subtitles) return false;
         this.subtitles = {};
         var that = this;
@@ -739,8 +742,6 @@ App.Player.Subtitles = Backbone.Model.extend({
         if (!nodefault) this.loadLanguage();
     },
 
-
-
     /**
      *
      * @param {string} code Country identificator (f.ex fi,se,ee)
@@ -749,6 +750,10 @@ App.Player.Subtitles = Backbone.Model.extend({
      */
 
     loadLanguage: function(code) {
+        if (!App.Settings.Player.enable_legacy_subtitles) {
+            $log("Legacy subtitles disabled, not loading SRT");
+            return false;
+        }
 
         if (!code) code = this.defaultCode;
 

@@ -80,7 +80,7 @@ App.MediaPlayer = {
     },
     _playVideo: function() {
         this.currentStream = this.playlist.nextFile();
-        $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
+        $log(" SETTING CURRENT STREAM TO: " + this.currentStream.src);
         this.play();
     },
     _initSubtitles: function(content) { 

@@ -48,7 +48,7 @@ App.MediaPlayer = {
         if (!this.playlist) return false;
         if (!this.currentStream) this.currentStream = this.playlist.nextFile();
 
-        var url = this.formatUrl(this.currentStream.mp4);
+        var url = this.formatUrl(this.currentStream.src);
 
         if (this.plugin) this.plugin = false;
 
@@ -178,7 +178,7 @@ App.MediaPlayer = {
     },
 
     _playVideo: function() {
-        $log(" SETTING CURRENT STREAM TO: " + this.currentStream.mp4);
+        $log(" SETTING CURRENT STREAM TO: " + this.currentStream.src);
         this.plugin.play();
         this.wasMuted = $f().getStatus().muted;
     },

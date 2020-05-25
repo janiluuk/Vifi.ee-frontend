@@ -115,37 +115,56 @@ App.Collections.UserCollection = Backbone.Collection.extend({
         if (options && undefined !== options.session) {
             this.session = options.session;
         }
-        _.bindAll(this, 'updateUserCollection', 'parseModel', 'reset', 'hasTicket');
-        this.on("reset", this.updateUserCollection);
+        _.bindAll(this, 'updateUserCollection', 'parseModels', 'reset', 'hasTicket', 'clearAll');
+        var _this = this;
         this.on("add", this.updateUserCollection);
+        this.on("reset", this.updateUserCollection);   
     },
-    hasTicket: function(id) {
-        return _.find(this.models, function(item) {
-            return item.get("vod_id") == id
+    hasTicket: function(ticket) {
+        if (!ticket) return false;
+
+        var id = ticket.vod_id;
+
+        var item = this.get(id);
+        if (item && item.isValid())
+        return true;
+
+    },
+    parseModels: function() {
+
+        var _this = this;
+        _.each(this.models, function(ticket) { 
+            if ("undefined" == typeof ticket) {
+                $log("[COLLECTION] Got INVALID ticket");
+                return;
+            }
+            if (!ticket.isValid()) {
+                $log("[COLLECTION] Invalid model, deleting " + ticket.get("id"));
+                ticket.destroy();
+                return false;
+            }
         });
+
+        return this.fetch();
     },
-    parseModel: function(ticket) {
 
-        if (!ticket.isValid()) {
-            $log("Invalid model, deleting " + ticket.get("id"));
-            ticket.destroy();
-            return false;
-        }
-
-        return ticket;
+    clearAll: function() {
+        $log("[COLLECTION] Deleting all entries");
+        this.localStorage._clear();
+        this.reset();
     },
 
     clearInvalid: function() {
-        _.each(this.models, function(item) { 
-            if (item.get("isValid") === false) {
-                $log("Removing "+item.get("id")+ " from user library as invalid");
-                item.destroy();
+        _.chain(this.models).clone().each(function(model){
+            if (model.isValid() === false) {
+                $log("[COLLECTION] Removing "+model.get("id")+ " from user library as invalid");
+                model.destroy();
             }
         });
     },
 
     updateUserCollection: function(model) {
-        return this.models;
+        $log("[COLLECTION] Collection update");
     }
 });
 App.Collections.SubscriptionCollection = Backbone.Collection.extend({});
@@ -178,6 +197,7 @@ App.Collections.CookieCollection = Backbone.Collection.extend({
         var cookie = this.findWhere({
             'name': name
         });
+
         if (undefined !== cookie) {
             cookie.destroy();
             cookie.clear();

@@ -9,8 +9,9 @@ window.$log = function(log) { 
             log = JSON.stringify(log);
         }
         app.trigger("flash", log, 5000);
-        console.log(log);
     }
+            console.log(log);
+
 };
 
 window.$debug = function() { 
@@ -167,7 +168,7 @@ App.Platform.prototype.getDeviceOrientation = function() {
     }
 }
 App.Platform.prototype.proxy = function() {
-    return this.needsProxy ? "proxy.php" : "";
+    return this.needsProxy ? "/inc/proxy.php" : "";
 }
 _.extend(App.Platform.prototype, Backbone.Events);
 (function() {

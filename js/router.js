@@ -7,25 +7,27 @@
      *
      */
     App.Utils = {};
-    App.Views = { FB: {}};
+    App.Views = {
+        FB: {}
+    };
     App.Films = {};
     App.Player = {};
     App.User = {};
     App.Event = {};
     App.MediaPlayer = {}
     App.ContentPages = {
-        'gdpr' : 'Isikuandmete töötlemine',
-        'termsandconditions' : 'Kasutus- ,müügi- ja ostutingimused',
-        'watchfilmsfromtv' : 'Filmi vaatamine läbi teleri',
-        'faq' : 'Korduma kippuvad küsimused'
+        'gdpr': 'Isikuandmete töötlemine',
+        'termsandconditions': 'Kasutus- ,müügi- ja ostutingimused',
+        'watchfilmsfromtv': 'Filmi vaatamine läbi teleri',
+        'faq': 'Korduma kippuvad küsimused'
     };
-
     App.Router = Backbone.Router.extend({
         views: {},
         models: {},
         routes: {
             '': 'root',
             'search': 'homePage',
+            'notfound': 'notFound',
             'search/:searchStateHash': 'search',
             'film/:id': 'showFilm',
             'films/:id': 'showFilm',
@@ -54,7 +56,6 @@
             if (!category || !action) {
                 return false;
             }
-
             if (App.Settings.google_analytics_enabled) {
                 if (!label) label = action;
                 ga('send', {
@@ -66,7 +67,6 @@
             }
         },
         onRoute: function(route, params) {
-
             this.trigger("page:change", route, params);
             app.sidemenu.closeSideBar();
             this.currentPage = route;
@@ -86,24 +86,30 @@
             var films = app.user.checkPurchases();
             var _this = this;
             var _latestTicket = false;
+            var _latestItem = false;
             if (films) {
+
                 _.each(films, function(item) {
-                    $log("New film cookie prepared: "+ JSON.stringify(item));
 
-                    var ticket = new App.User.Ticket(item, {parse: true});
-
-                    $log("Ticket generated: "+ JSON.stringify(ticket));
-                    _latestTicket= ticket;
+                    $log("[COOKIE] New film cookie prepared: " + JSON.stringify(item)); 
+                    item.id = item.vod_id;
+                    var ticket = new App.User.Ticket(item, {
+                        parse: true
+                    });
+/**                    $log("[COOKIE] Ticket generated out of cookie: " + JSON.stringify(ticket));**/
+                    _latestTicket = ticket;
+                    _latestItem = item;
 
                     app.usercollection.add(ticket);
                     ticket.save();
                 });
                 if (!_latestTicket) return false;
-                app.session.purchases.clearNewPurchases();
+
                 if (!_this.returnview) {
                     _this.returnview = new App.Views.PostPurchaseDialogView({
                         model: _latestTicket,
-                        session: app.session
+                        session: app.sessiom,
+                        ticket: _latestItem,
                     });
                 } else _this.returnview.model.set(_latestTicket.toJSON());
                 _this.returnview.render();
@@ -122,36 +128,33 @@
         },
         search: function(searchStateHash) {
             var currentPage = this.currentPage;
-
             if (!app.collection.querystate.isDefault()) app.collection.querystate.setQueryString();
             if (currentPage != "homePage" && currentPage != "search" && currentPage != "root") {
                 app.showBrowserPage();
             }
-
             this.trigger("change:title", "Search results");
         },
         playFilm: function(id, code) {
-
             var film = new App.Models.Film({
                 id: id,
-
             });
             var _this = this;
             film.fetch().done(function() {
-                 var purchase = new App.Models.Purchase({model: film, session: app.session});
-
-                    purchase.sendCodeAuth(purchase.onCodeAuth, film.get("id"), code);
-                    purchase.on('purchase:successful', function () { _this.showFilm(film.get("id"), true); }, this);
+                var purchase = new App.Models.Purchase({
+                    model: film,
+                    session: app.session
                 });
+                purchase.sendCodeAuth(purchase.onCodeAuth, film.get("id"), code);
+                purchase.on('purchase:successful', function() {
+                    _this.showFilm(film.get("id"), true);
+                }, this);
+            });
         },
-
         showFilm: function(id, autoplay) {
             var films = app.user.checkPurchases();
             /*
              *  Check if user has purchases, navigate to confirmation page if so.
              */
-
-
             if (films) {
                 this.navigate("/return", {
                     trigger: true
@@ -176,17 +179,11 @@
                     $log("Loading movie info to page");
                     app.movieview.model.set(film.toJSON());
                 }
-
                 app.movieview.render();
-
                 var url = film.get("seo_friendly_url");
-
                 _this.navigate(url, {
                     trigger: false
                 });
-
-
-
                 app.showMoviePage();
                 _this.trigger("change:title", film.get("title"));
                 if (autoplay) app.movieview.playMovie();
@@ -210,7 +207,6 @@
         },
         homePage: function() {
             var currentPage = this.currentPage;
-
             if (currentPage != "homePage" && currentPage != "search" && currentPage != "root") {
                 app.showBrowserPage();
             }
@@ -241,7 +237,6 @@
             app.showContentPage("subscription", "Subscription information");
         },
         filmcollection: function() {
-
             this.views.profile = new App.Views.ProfileView({
                 swiperEl: '#profile-tabbar-swiper-container',
                 model: app.session.get("profile"),
@@ -254,17 +249,24 @@
             var profile = app.session.get("profile");
             if (!this.views.pairview) {
                 this.views.pairview = new App.Views.UserPairView({
-                model: profile,
-                el: "#contentpage"
-            });
-            $('#contentpage').empty();
-            this.views.pairview.render();
+                    model: profile,
+                    el: "#contentpage"
+                });
+                $('#contentpage').empty();
+                this.views.pairview.render();
             }
             app.showContentPage("pairtv", "Pair Device");
         },
-        showErrorPage: function(type) {
+
+        notFound: function() {
+           this.showErrorPage('404', 'Not Found', 'This page is no longer available');
+        },
+
+        showErrorPage: function(type, subject, description) {
             this.views.errorview = new App.Views.Error({
-                type: type
+                type: type,
+                subject: subject,
+                description: description
             });
             this.views.errorview.render();
             app.showContentPage("error", "Error!");
@@ -288,16 +290,12 @@
                     type: 'text/javascript'
                 }).appendTo('head');
             }
-
             this.views.contactview = new App.Views.ContactView();
             this.views.contactview.render();
-
             this.views.contactview.$el.fadeIn();
             app.showContentPage("contact", "Contact Us!");
             app.router.init_map();
-
         },
-
         init_map: function() {
             if (typeof(L) == "undefined") {
                 setTimeout(function() {
@@ -305,21 +303,16 @@
                 }.bind(this), 760);
                 return false;
             }
-
             var mymap = L.map('map_canvas').setView([59.431327835282154, 24.74103927612305], 13);
-
-                L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-                    maxZoom: 18,
-                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                    id: 'mapbox/streets-v11',
-                    tileSize: 512,
-                    zoomOffset: -1
-                }).addTo(mymap);
-
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                maxZoom: 18,
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                id: 'mapbox/streets-v11',
+                tileSize: 512,
+                zoomOffset: -1
+            }).addTo(mymap);
             var marker = L.marker([59.43795770000001, 24.75549920000003]).addTo(mymap);
             marker.bindPopup("<b>Vificom OÜ</b><br>Roseni 5, Tallinn").openPopup();
-
-
         },
         showContentPage: function(template, title) {
             var name = template.split("-").join("");
@@ -333,11 +326,9 @@
                 title: title,
                 template: name + "Template"
             });
-
             this.views.contentview.$el.hide();
             this.views.contentview.render().transitionIn(function() {
-            app.showContentPage(name);
+                app.showContentPage(name);
             });
         }
     });
-

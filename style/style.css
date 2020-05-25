@@ -992,6 +992,64 @@ input#main-search-box {
     background-repeat: no-repeat;
     background-position: center right 0.5em;
 }
+div#quickbar-overlay.visible {
+    min-width:9999px;
+    display:block;
+    min-height:100%;
+    background: rgba(0, 0, 0, 0.9);
+    position:absolute;
+    z-index:9990;
+}
+div#quickbar-overlay {
+    min-width:9999px;
+    display:none;
+    min-height:100%;
+    background: rgba(0, 0, 0, 0.0);
+    position:absolute;
+}
+
+div#quickbar-container .item {
+    max-height: 62px;
+    max-height: 300px;
+}
+div#quickbar-container{
+    position:relative;
+    width:3000px;
+    height:100%;
+    text-align:center;
+    overflow: auto;
+    display:block;
+    top: 44px;
+    background: rgba(0, 0, 0, 0.0);
+    z-index:9999;
+}
+
+div#quickbar-container.visible{
+    display:block;
+    z-index:9999;
+    background: rgba(0, 0, 0, 0.9);
+}
+
+div#quickbar-content {
+    position: relative;
+    top: 44px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    max-height: 238px;
+    padding: 0px;
+    overflow: auto;
+    display: block;
+    height: 89%;
+    display: none;
+}
+
+div #quickbar-container .item{
+    width:14%;
+    height:53%;
+    max-height:62px;
+
+}
 /* SIDE MENU */
 
 .content-body, #main-content {

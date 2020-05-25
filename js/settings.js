@@ -58,7 +58,9 @@ App.Settings = {
             mp4_url: '//gonzales.vifi.ee/zsf/',
             rtmp_url: 'rtmp://media.vifi.ee/vod',
             speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
-            subtitles_url: '//beta.vifi.ee/subs/'
+            subtitles_url: '//beta.vifi.ee/subs/',
+            enable_legacy_subtitles: false,
+            convert_srt_to_vtt: true
         },
 
         /** Search Settings **/
@@ -113,7 +115,9 @@ App.Translations = {
             'Yes' : 'Jah',
             'All Genres' : 'Kõik genred',
             'Hours' : 'Tundi',
+            'hr' : 't',
             'Days' : 'Päeva',
+            'days' : 'pv',
             'Weeks' : 'Nädala',
             'Months' : 'Kuud',
             'Choose payment method' : 'Vali makseviis',

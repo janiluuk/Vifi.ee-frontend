@@ -8,6 +8,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
     },
     defaults: function() {
         return {
+            'id' : '',
             'session_id': '',
             'timestamp': 0,
             'watched': false,
@@ -24,13 +25,15 @@ App.User.FilmSession = App.Models.ApiModel.extend({
         this.on("refresh:fail", this.onRefreshFail, this);
         this.on("content:play", this.startFetching, this);
         this.on("content:stop", this.stopFetching, this);
-
-        var options = {
+        if (options && "undefined" !== typeof options.session_id) {
+            this.set("id", options.session_id);
+        }
+        var refreshOptions = {
             refresh: 5000,                 // rate at which the plugin fetches data
             fetchOptions: {},              // options for the fetch request
             retryRequestOnFetchFail: true  // automatically retry request on fetch failure
         }
-        this.configure(options);
+        this.configure(refreshOptions);
     },
     onRefreshFail: function() {
         this.stopFetching();
@@ -42,6 +45,8 @@ App.User.FilmSession = App.Models.ApiModel.extend({
         } else {
             this.retryCount = 0;
         }
+
+        if (this.status) this.checkStatus(this.get("status"));
 
         if (this.retryCount > 10) {
             this.onRefreshFail();
@@ -57,7 +62,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
     onSessionLoad: function() {
         this.stopFetching();
         this.trigger('playsession:ready', this);
-        $log("[FilmSession] Loaded session: " + this.get('session_id'));
+       // $log("[FilmSession] Loaded session: " + this.get('session_id'));
     },
     checkStatus: function(status) {
 
@@ -71,6 +76,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
 
             this.stopFetching();
             this.trigger("playsession:overridden", this);
+            
             alert("This content is being streamed from another device, please play only from one device at the time.");
         }
     },
@@ -80,15 +86,14 @@ App.User.FilmSession = App.Models.ApiModel.extend({
      */
     parse: function(data) {
 
-        $log("Received Session: " +JSON.stringify(data));
+        //$log("Received Session: " +JSON.stringify(data));
 
         if (!data.created_at) {
             data.created_at = new Date().toJSON();
         }
-        if (!App.Utils.isValidDate(data.updated_at)) {
-            delete data.updated_at;
+        if (!App.Utils.isValidDate(data.updated_at) || data.updated_at == '0000-00-00 00:00:00') {
+            data.updated_at = new Date().toJSON();
         }
-        if (data.status) this.checkStatus(data.status);
         return data;
     }
 
@@ -130,7 +135,7 @@ App.User.Session = Backbone.Model.extend({
         this.on('poll:enable', this.enable, this);
         this.on('poll:disable', this.disable, this);
         this.profile.on('user:profile:login', this.onUserAuthenticate, this);
-        this.on('ticket:purchase', this.onTicketReceived, this);
+        this.on('ticket:purchase', this.onTicketReceived);
         this.parseAuthCookie();
         _.bindAll(this, 'send', 'fetch', 'logout', 'login', 'register', 'parseAuthCookie', 'onUserAuthenticate', 'writeAuthCookie');
     },
@@ -299,7 +304,7 @@ App.User.Session = Backbone.Model.extend({
         }.bind(this), "jsonp").error(function(data) {
             this.reset();
             this.trigger("error", "Failed login. Something's up with service.")
-            $log(data);
+         $error("Failed login "+JSON.stringify(data));
         }.bind(this));
     },
     onUserAuthenticate: function() {
@@ -312,13 +317,14 @@ App.User.Session = Backbone.Model.extend({
     },
     onTicketReceived: function(ticket) {
         if (ticket) {
-            $log("TICKET RECEIVED " + JSON.parse(ticket));
-
-            ticket.set("user_id", this.get("user_id"));
-            app.usercollection.add(ticket);
-
-            ticket.save(),
-            this.trigger("ticket:purchase:done", ticket);
+//            $log("TICKET RECEIVED " + JSON.stringify(ticket));
+            if (ticket.content.id && _.isEmpty(ticket.vod_id)) ticket.vod_id = ticket.content.id;
+            ticket.id = ticket.vod_id;
+            ticket.user_id = this.get("user_id");
+            
+            app.usercollection.create(ticket).done(function() { 
+            _this.trigger("ticket:purchase:done", ticket);
+            });
         }
         return false;
     },
@@ -331,6 +337,8 @@ App.User.Session = Backbone.Model.extend({
                 this.set("auth_id", data.activationKey);
                 this.set("activationCode", data.activationCode);
                 this.trigger("user:login", data.message);
+                this.trigger("user:login:success", this.get("user_id"));
+
                 //  this.session.enable();
             } else {
                 this.trigger("user:login:fail", data);
@@ -340,8 +348,9 @@ App.User.Session = Backbone.Model.extend({
     logout: function() {
         this.reset();
         this.profile.clear();
+        this.clearAuthCookie();
         this.trigger("user:logout");
-        app.usercollection.reset();
+        app.usercollection.clearAll();
         app.router.navigate("/", {
             trigger: true
         });

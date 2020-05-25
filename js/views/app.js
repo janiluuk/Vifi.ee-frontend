@@ -32,6 +32,11 @@ App.Views.BaseAppView = Backbone.View.extend({
             model: this.user,
             session: this.session
         });
+        this.quickmenu = new App.Views.QuickbarMenu({
+            model: this.user,
+            collection: this.usercollection
+        });
+
         this.topmenu = new App.Views.TopMenu({
             model: this.user
         });
@@ -65,19 +70,22 @@ App.Views.BaseAppView = Backbone.View.extend({
     },
     showMoviePage: function() {
         this.scrollTop = this.$("#content-container").scrollTop() + $("body").scrollTop();
-
         app.goto(app.movieview, true);
     },
     showTicketPurchase: function(ticket) {
-        var id = ticket.get("vod_id");
+        var id = ticket.vod_id;
+
         var title = app.usercollection.get(id);
         title.set("validtotext", title.getValidityText());
         if (title) {
             if (!this.returnview) this.returnview = new App.Views.PostPurchaseDialogView({
                 model: title,
+                ticket: ticket,
                 session: app.user.session
             });
             else this.returnview.model.set(title.toJSON());
+        } else {
+            app.router.navigate("/notfound",{trigger:true});
         }
         this.returnview.render();
     },
@@ -90,10 +98,13 @@ App.Views.BaseAppView = Backbone.View.extend({
             if (window.mySwiper) mySwiper.resizeFix();
             app.homepage.browserview.filterview.filterbarview.enableCarosel();
             this.browserInitialized = true;
+   
         }
+
         app.homepage.browserview.$isotope.isotope('layout');
         app.homepage.browserview.renderResults();
-        if (this.scrollTop == 0) {} else {
+    
+        if (this.scrollTop != 0) {
             $("#content-container").scrollTop(this.scrollTop);
         }
         App.Utils.lazyload();
@@ -126,21 +137,21 @@ App.Views.BaseAppView = Backbone.View.extend({
         // cache the current view and the new view
         var previous = this.currentPage || null;
         var next = view;
-
-
-
-        if (previous) {
-            previous.transitionOut(function() { }.bind(this));
+        if (previous == next){
+            this.currentPage = next;
+            return;
         }
-
-        next.transitionIn(function() {
-
-            if (scroll) $("body, #content-container").scrollTop(0);
-
-        }.bind(this));
+        if (previous) {
+            previous.transitionOut(function() {}.bind(this));
+        }
+        if (next) {
+            next.transitionIn(function() {
+                if (scroll) $("body, #content-container").scrollTop(0);
+            }.bind(this));
         //      next.render({ page: true });  // render the next view
         //    this.$el.append( next.$el );  // append the next view to the body (the el for this root view)
         this.currentPage = next;
+        }
     }
 });
 // Base view class for providing transition capabilities
@@ -213,13 +224,10 @@ App.Views.HomePage = App.Views.Page.extend({
             sort: options.sort,
             initialState: options.initialFilterState,
         });
-
         var featured = options.collection.featured();
-
         if (App.Settings.Featured.featured_slides_randomize === true) {
             featured = _.shuffle(featured);
         }
-
         featured = _.rest(featured.reverse(), _.size(featured) - App.Settings.Featured.featured_slides_limit);
         this.featuredview = new App.Views.FeaturedView({
             collection: featured,
@@ -249,8 +257,11 @@ App.Views.TopMenu = Backbone.View.extend({
         'change #main-search-box input[type="text"]': 'onSearchChange',
         'click #search-button': 'toggleSearchBox',
         'click #menu-dragger': 'toggleSideBar',
+        'click #my-items' :'toggleTopBar',
         'click .login': 'login',
         'click .logout': 'logout',
+        'click #quickbar-switch': 'toggleQuickMenu',
+
         'click #clear-search-text-button': 'clearSearch'
     },
     model: App.User.FBPerson,
@@ -289,6 +300,11 @@ App.Views.TopMenu = Backbone.View.extend({
         $(document).trigger('logout');
         return false;
     },
+    toggleQuickMenu: function(e) {
+        app.quickmenu.toggleQuickBar();
+        return false;
+    },
+
     toggleSearchBox: function(e) {
         var el = this.$("#toolbar-search-group");
         var visible = el.hasClass("pullDownRight");
@@ -303,6 +319,9 @@ App.Views.TopMenu = Backbone.View.extend({
         app.sidemenu.toggleSideBar(e);
         return false;
     },
+
+
+
     clearSearch: function(e) {
         e.preventDefault();
         if (app.collection.querystate.isDefault() === false) { 
@@ -326,6 +345,59 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
     },
 });
+
+App.Views.QuickbarMenu = Backbone.View.extend({
+    el: $("#quickbar-overlay"),
+    state: 'closed',
+    events: {
+        'click .open-library': 'open'
+    },
+ initialize: function(options) {
+        var options = options || {};
+        if (options.collection) this.collection = options.collection;
+        _.bindAll(this, 'openQuickBar', 'closeQuickBar', 'toggleQuickBar', 'render');
+        this.listenTo(this.collection, "add", this.render, this);
+        this.listenTo(this.session, "user:login", this.render, this);
+        this.listenTo(this.session, "user:logout", this.render, this);
+        this.listenTo(this, "quickbar:open", this.openQuickBar);
+        this.listenTo(this, "quickbar:close", this.closeQuickBar);
+        this.listenTo(this, "quickbar:toggle", this.toggleQuickbar);
+        this.quickBarView = new App.Views.UserCollectionView({
+            collection: this.collection
+        });
+    },
+
+    toggleQuickBar: function(e) {
+        if ($("#quickbar-overlay").hasClass("visible")) this.state = "open";
+        else this.state = "closed";
+        if (this.state == "open") {
+            this.closeQuickBar();
+        } else {
+            this.openQuickBar();
+        }
+        if (e) $(e.currentTarget).toggleClass("active", this.state != "closed");
+    },
+
+    closeQuickBar: function() {
+        this.state = "closed";
+        this.$el.slideUp();
+        this.$el.removeClass("visible");
+
+        return false;        
+    },
+    openQuickBar: function() {
+        this.state = "open";
+        this.$el.slideDown();
+        this.$el.addClass("visible");
+    },
+    render: function() {
+        this.$el.html(ich.quickbarMenuTemplate());
+        this.quickBarView.setElement('div#quickbar-container');
+        this.quickBarView.render();
+        return this;
+    }
+});
+
 App.Views.SideMenu = Backbone.View.extend({
     el: $("#side-menu-container"),
     state: 'closed',
@@ -387,8 +459,9 @@ App.Views.CarouselView = Backbone.View.extend({
         var el = $("#" + attr);
         $(e.currentTarget).siblings().removeClass("active");
         $(el).siblings().removeClass("active").hide();
-
         $(el).addClass("active").show();
+        App.Utils.lazyload();
+
         return false;
     },
     startCarousel: function(initialSlide) {
@@ -590,18 +663,13 @@ App.Views.RecoveryView = App.Views.ContentView.extend({
 });
 App.Views.Error = App.Views.ContentView.extend({
     type: false,
-    text: {
-        error_description: ''
-    },
     events: {
         'click .retry': 'retry'
     },
     initialize: function(options) {
-        this.content = ich.errorPageTemplate(options).html();
-        this.template = ich.errorPageTemplate({
-            content: this.content,
-            title: "Error has occured"
-        });
+
+        this.template = ich.errorPageTemplate({subject: options.subject, description: options.description}).html();
+
     },
     retry: function() {
         Backbone.history.loadUrl(Backbone.history.fragment);

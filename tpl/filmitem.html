@@ -21,12 +21,12 @@
 </script>
 <script type="text/html" id="userfilmitemTemplate">
 
-<a href="#{{seo_friendly_url }}">
+<a href="{{seo_friendly_url }}">
 <div class="item-image b-lazy" data-src="{{imageHelper poster_url '191' '281'}}"></div></a>
 <div class="item-info">
-    <div class="item-info-title">{{title }}</div>
+    <div class="item-info-title">{{ title }}</div>
     <div class="item-info-footer">
-        <div class="item-info-duration">{{ humanDate validto }}</div>
+        <div class="item-info-duration">{{ validtotext }}</div>
     </div>
 </div>
 </a>

@@ -160,9 +160,6 @@ App.Views.ProfileView = App.Views.CarouselView.extend({
         this.profileview = new App.Views.UserProfileView({
             model: this.model
         });
-        this.collectionview = new App.Views.UserCollectionView({
-            collection: this.collection
-        });
         this.listenTo(this.model, "change:id", this.render, this);
         this.collectionview = new App.Views.UserCollectionView({
             collection: this.collection
@@ -287,6 +284,8 @@ App.Views.UserCollectionView = Backbone.View.extend({
     },
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
+        this.listenTo(this.collection, "change", this.render, this);
+
         this.options = options || {};
     },
     render: function() {
@@ -299,7 +298,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
     },
     renderFilmViews: function() {
         this.fragment = document.createDocumentFragment();
-        if (this.collection.length == 1) {
+        if (this.collection.length == 0) {
             this.$filmCollectionHolder.empty();
         }
         if (this.collection.length > 0) {
@@ -312,15 +311,19 @@ App.Views.UserCollectionView = Backbone.View.extend({
                 text: tr("No purchases")
             }));
         }
-        App.Utils.lazyload();
+
+        setTimeout(function() {
+            App.Utils.lazyload();
+        },200);
+
         return this;
     },
     addChildView: function(model) {
+
         var filmView = new App.Views.UserFilmView({
             model: model,
         });
         $(this.fragment).append(filmView.render().el);
-        App.Utils.lazyload();
 
         return filmView;
     },
