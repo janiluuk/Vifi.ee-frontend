@@ -35,27 +35,19 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     /*
      * Fetch Film session and auth code from the user ticket if they exist
      */
-    onSessionLoad: function(content) {
-        if (content) { 
-
-            var id = content.get("id");
-               $log("[Content] Looking for existing ticket with film id: " + id);            
-            if (_.isEmpty(this.params.session_id) === true) {
-                $log("[Content] No existing ticket for film id: " + id);
-                var session = app.session;
-                //if (session.profile.getMovieSession(id)) this.params.session_id = session.profile.getMovieSession(id);
-               // if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
-            } else {            
+    onSessionLoad: function(id) {
+        this.params = {};
+        if (id) { 
+            $log("[Content] Looking for existing ticket with film id: " + id);
+            var session = this.get("session");
+            if (session.profile.getMovieSession(id)) this.params.session_id = session.profile.getMovieSession(id);
+            if (session.profile.getMovieAuthCode(id)) this.params.auth_code = session.profile.getMovieAuthCode(id);
+            if (_.isEmpty(this.params) === false) {
                 $log("[Content] Found existing ticket: " + JSON.stringify(this.params));
-            } 
-        
+            } else {
+                $log("[Content] No existing ticket for film id: " + id);
+            }
         }
-
-    },
-    loadWithSession: function(id, auth_code, session_id) {
-        this.params.session_id = session_id;
-        this.params.auth_code = auth_code;
-        return this.load(id);
     },
     /*
      * Reset content items to defaults
@@ -100,7 +92,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         _.each(videos, function(video) { 
             var videofile = new App.Player.VideoFile();
             videofile.set("bitrate", video.bitrate);
-            videofile.set("src", video.src);
+            videofile.set("src", video.mp4);
             videofile.set("profile", video.profile);
             videofiles.push(videofile);
         });
@@ -145,6 +137,7 @@ App.Player.VideoFile = Backbone.Model.extend({
         var playlist_item = [{
             type: 'video/mp4',
             src: mp4_url,
+            mp4: mp4_url
         }, {
             type: 'application/x-mpegurl',
             mpegurl: mpegurl,

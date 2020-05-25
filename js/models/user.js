@@ -1,7 +1,6 @@
 App.User = {};
 App.User.Ticket = Backbone.Model.extend({
 
-    idAttribute: 'vod_id',
     initialize: function(options) {
         _.defaults(this.attributes, {
             id: null,
@@ -12,84 +11,52 @@ App.User.Ticket = Backbone.Model.extend({
             title: '',
             type: 'vod',
             model: 'VodTitle',
-            content: {},
-            playsession: {},
             user_id: false,
             isValid: false,
         });
-        var _this = this;
-        this.on('change:content', this.onLoadContent, this);
-        this.on('change:playsession', this.onLoadPlaySession, this); 
-        this.listenTo(this.playsession, 'playsession:overridden', this);
 
+        this.on('change:playsession', this.onLoadPlaySession, this);
+        this.listenTo(this.get("playsession"), 'playsession:overridden', this);
        // this.content.on('content:playsession:overridden', this.onPlaySessionOverridden, this);
        // this.content.on('content:playsession:ready', this.onPlaySessionReady, this);
+
     },
     parse: function(data) {
-        //$log('BUILDING TICKET FROM '+JSON.stringify(data));
 
-        if (!data.vod_id) {
-            alert("Issue on importing goodness.")
+        $log('BUILDING TICKET FROM '+JSON.stringify(data));
+
+        if (data.vod_id > 0) data.id = data.vod_id;
+        else if (data.id > 0 && !data.vod_id) data.vod_id = data.id;
+
+
+        if (!_.isEmpty(data.session_id) && _.isEmpty(data.playsession.session_id)) {
+                data.playsession.session_id = data.session_id;
+                delete data.session_id;
         }
 
-        if (_.has(data, 'playsession')) {
-            data.playsession.vod_id = data.vod_id;
-            data.playsession = new App.User.FilmSession(data.playsession, {parse:true});
-            data.playsession.set("session", app.session);
-        }   
+        if (data.playsession) {
+            this.playsession = new App.User.FilmSession(data.playsession, {
+                parse: true
+            });
+            delete data.playsession;
+        }
 
-    
-        if (_.has(data, 'content')) {
-            data.content = new App.Models.FilmContent(data.content, {parse:true});
-            data.content.session_id = data.playsession.session_id;
-            data.content.auth_code = data.auth_code;
-            data.content.id = data.vod_id;
-        }   
-      
+
+        this.content = new App.Models.FilmContent(data.content, {parse:true});
+        delete data.content;
+
         return data;
-    },
-    toJSON: function(options) {
-        var attrs = App.User.Ticket.__super__.toJSON.apply(this, options);
-        var playsession = attrs.playsession;
-
-        if (playsession) {
-            attrs.playsession = playsession.toJSON(options);
-        }
-        var content = attrs.content;
-
-        if (content) {
-            attrs.content = content.toJSON(content);
-        }
-
-        return attrs;
-    },
-    getAgenda: function() {
-        return this.get('agenda');
-    },
-    setAgenda: function(models, options) {
-        return this.getAgenda().set(models, options);
     },
 
     toJSON: function() {
         var json = _.clone(this.attributes);
-
-        if (this.playsession) {
-            json.playsession = this.playsession.toJSON();
+        if (!this.playsession) {
+            this.playsession = new App.User.FilmSession();
         }
-        if (this.content) {
-            json.content = this.content.toJSON();
-        }
+        json.playsession = this.playsession.toJSON();
 
         return json;
     },
-
-    onLoadPlaySession: function(data) {
-        //$log("[TICKET] Loaded play session: " + JSON.stringify(data.playsession));
-    },
-    onLoadContent: function(data) {
-        //$log("[TICKET] Loaded content: " + JSON.stringify(data.content));
-    },
-    
 
     /**
      * Gets a humanized version of dates
@@ -100,15 +67,15 @@ App.User.Ticket = Backbone.Model.extend({
      */
     getValidityText: function(date) {
         if (!date) date = this.get("validto");
-        if (typeof(date) != "undefined") {
+        if (typeof(data) != "undefined") {
             var validityTime = App.Utils.stringToDate(date);
-            return App.Utils.countDownText(validityTime);
+            return App.Utils.dateToHumanreadable(validityTime);
         }
         return this.get("validto");
     },
 
     getFilm: function() {
-        var id = this.get("id");
+        var id = this.get("id"  );
         var film = app.collection.fullCollection.get(id);
         return film;
     },
@@ -118,7 +85,7 @@ App.User.Ticket = Backbone.Model.extend({
      *
      */
     isValid: function() {
-        return !this.isExpired();
+        return this.get("isValid");
     },
 
     /**
@@ -166,12 +133,14 @@ App.User.Ticket = Backbone.Model.extend({
         this.trigger("playsession:overridden", this);
         this.stopFetchingPlaySession();
     },
+
     stopFetchingPlaySession: function() {
 
         if (this.playsession) {
             this.playsession.stopFetching();
         }
     },
+
     startFetchingPlaySession: function() {
 
         if (this.playsession && this.playsession.get("session_id") !== '') {
@@ -191,6 +160,7 @@ App.User.CookiePurchases = Backbone.Model.extend({
         _.bindAll(this, 'getPurchases', 'setPurchases', 'getNewPurchases', 'clearNewPurchases', 'removeFilm', 'cleanPurchases');
         this.cookies = options.cookies;
         this.purchase_cookie_name = App.Settings.Cookies.purchase_cookie_name;
+
     },
     /**
      * Check for any purchases in the cookies.
@@ -301,14 +271,11 @@ App.User.CookiePurchases = Backbone.Model.extend({
         return false;
     },
     clearNewPurchases: function() {
-        $log("Clearing out all purchase cookies");
         var cookieName = this.purchase_cookie_name;
         this.cookies.deleteByName(cookieName);
         return true;
     }
-}); 
-
-App.User.Profile = App.Models.ApiModel.extend({
+}); App.User.Profile = App.Models.ApiModel.extend({
     path: function() {
         return "profile"
     },
@@ -340,7 +307,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.session = options.session;
         this.purchases = options.purchases;
         this.session.on("change:auth_id", this.authorize, this);
-        this.on("change:tickets", this.updateUserCollection, this);
+        this.on("change:tickets", this.updatePurchases, this);
         this.on("user:facebook-connect", this.connectFB, this);
         this.on("user:pair", this.pair, this);
         this.on("user:unpair", this.unpair, this);
@@ -442,11 +409,10 @@ App.User.Profile = App.Models.ApiModel.extend({
         }.bind(this));
     },
     authorize: function() {
-
         if (this.session.get("auth_id") == "") {
             return false;
         }
-        return this.fetch({
+        this.fetch({
             success: function(data) {
                 if (this.get("user_id") != "") {
                     this.session.set("user_id", this.get("user_id"));
@@ -457,6 +423,7 @@ App.User.Profile = App.Models.ApiModel.extend({
                 }
             }.bind(this)
         });
+        return false;
     },
     deauthorize: function() {
         this.clear();
@@ -480,9 +447,9 @@ App.User.Profile = App.Models.ApiModel.extend({
      *
      */
     hasMovie: function(movie) {
-        var id = movie.get("id");        
+        var id = movie.get("id");
         var ticket = app.usercollection.get(id);
-        if (ticket && ticket.get("vod_id")) return true;
+        if (ticket && ticket.get("id")) return true;
         return false;
     },
     /**
@@ -542,46 +509,21 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
     updateUserCollection: function() {
         if (!app || !app.usercollection) return false;
-        var _this = this;
-        var deferred = new $.Deferred();
-        app.usercollection.fetch().done(function(){ 
-
-            var tickets = _this.get("tickets");
-            if (_.isEmpty(tickets)) {
-                deferred.resolve(app.usercollection);
-                return;
-            }
-
-            var ticketcollection = [];
+        var tickets = this.get("tickets");
             _.each(tickets, function(item) {
-
-                if (app.usercollection.hasTicket(item)) {
-                        var existing = app.usercollection.find(item.vod_id);
-                        if (existing) {
-                            existing.set(item);
-                            existing.save();
-                        }
-                } else {
-                    if (!_.isEmpty(item.vod_id)) {
-                    app.usercollection.create(item);
-                    }
-                }                      
+                var ticket = new App.User.Ticket(item);
+                app.usercollection.create(ticket);
+                ticket.save();
             });
-
-            deferred.resolve(app.usercollection);
-
-        });
-        return deferred.promise();
+        return app.usercollection;
     },
     updatePurchases: function(cb) {
         _this = this;
 
         var deferred = new $.Deferred();
         this.fetch().done(function() {
-            _this.updateUserCollection().done(function() {
-                deferred.resolve(app.usercollection);
-            });
-
+            _this.updateUserCollection();
+            deferred.resolve(app.usercollection);
         }.bind(this));
         return deferred.promise();
     },
@@ -590,9 +532,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             if (this.hasMovie(movie)) this.trigger("purchase:successful", movie);
         }.bind(this));
     },
-}); 
-
-App.User.FBPerson = Backbone.Model.extend({
+}); App.User.FBPerson = Backbone.Model.extend({
     defaults: {
         "id": "",
         "name": "",
