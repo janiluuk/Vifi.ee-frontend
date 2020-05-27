@@ -326,7 +326,7 @@ App.Views.UserProfileView = Backbone.View.extend({
 App.Views.UserCollectionView = Backbone.View.extend({
     events: {
         "click .next_page": "nextPage",
-        "click .previous_page": "previousPage"
+        "click .previous_page": "previousPage",
     },
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
@@ -334,6 +334,7 @@ App.Views.UserCollectionView = Backbone.View.extend({
 
         this.options = options || {};
     },
+
     render: function() {
         this.$el.empty();
         this.$el.append('<div class="user-filmcollection-list"></div>');
@@ -352,6 +353,9 @@ App.Views.UserCollectionView = Backbone.View.extend({
                 function(model) {
                     if (!model.isExpired())
                     this.addChildView(model);
+                    else
+                    model.destroy();
+
                 }.bind(this),
                 this
             );
@@ -379,6 +383,38 @@ App.Views.UserCollectionView = Backbone.View.extend({
         return filmView;
     }
 });
+
+App.Views.QuickbarView = App.Views.UserCollectionView.extend({
+    model: App.User.Ticket,
+    tagName: "div",
+    className: "item",
+    events: {
+        "click a": "showMoviePage"
+    },
+    initialize: function() {
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "remove", this.remove, this);
+    },
+    showMoviePage: function(e) {
+        app.quickmenu.trigger("quickbar:close");        
+        var film = app.collection.originalCollection.get(this.model.get("id"));
+        if (typeof film == "undefined") return false;
+        var url = film.get("seo_friendly_url");
+
+        app.router.navigate(url, {
+            trigger: true
+        });
+        e.preventDefault();
+        return false;
+    },
+    render: function() {
+        var filmitem = this.model.getFilm();
+        if (typeof filmitem == "undefined") return false;
+        this.$el.html(ich.userfilmitemTemplate(filmitem.toJSON()));
+        return this;
+    }
+});
+
 App.Views.RecoveryView = App.Views.ContentView.extend({
     events: {
         "submit #recovery-form": "onSubmit"
@@ -526,24 +562,19 @@ App.Views.LoginDialog = Backbone.View.extend({
     },
     initialize: function(options) {
         options = options || {};
-        this.parent = options.parent;
         this.session = options.session;
         this.loginForm = new App.Views.LoginForm({
             session: options.session
         });
-        this.listenTo(
-            this.session,
-            "user:login:success",
-            this.showPayment,
-            this
-        );
     },
     showPayment: function() {
-        this.parent.showPayment();
+        this.trigger("login:continue")
     },
     close: function() {},
     render: function() {
+        this.setElement("#loginmodal");        
         this.$el.html(ich.loginDialogTemplate(this.session.toJSON()));
+        if ($("#popup-login-register-form").length > 0)     
         this.assign(this.loginForm, "#popup-login-register-form");
         return this;
     }

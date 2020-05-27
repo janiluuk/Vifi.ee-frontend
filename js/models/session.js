@@ -96,7 +96,6 @@ App.User.FilmSession = App.Models.ApiModel.extend({
         }
         return data;
     }
-
 });
 _.extend(App.User.FilmSession.prototype, BackbonePolling);
 

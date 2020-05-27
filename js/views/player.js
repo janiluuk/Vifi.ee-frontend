@@ -25,7 +25,6 @@ App.Views.PlayerView = Backbone.View.extend({
      */
 
     resize: function() {
-
         var element = $("#player-container");
         var ratio = this.model.ratio;
         var nav_height = $('#video-container-heading').outerHeight();
@@ -69,12 +68,15 @@ App.Views.PlayerView = Backbone.View.extend({
 
     render: function() {
         this.setElement(this.el);
-
+        var height = this.$el.parent().height();
+        var _this = this;        
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
-        $("<div>").attr("id", "subtitles").appendTo("#player-container");
 
-        this.$el.show();
+        $("<div>").attr("id", "subtitles").appendTo("#player-container");
+        $("#movie-player-container").css("opacity",1).show();
+       
         $("#content-container").scrollTo(0,0);
+        this.resize();
         return this;
     },
 

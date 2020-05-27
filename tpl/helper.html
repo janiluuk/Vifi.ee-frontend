@@ -21,7 +21,13 @@
       
       
 </script>
-
+<script id="dateToHumanreadable" class="helper" data-args="arg1" type="text/html">
+      
+      var date = arg1;
+      if (!App.Utils.isValidDate(date)) return date;
+      return App.Utils.parseDateToHumanReadable(date);
+      
+</script>
 <script id="selectedHelper" class="helper" data-args="arg1,arg2" type="text/html">
       var sel = arg1;
       if (sel == arg2) { 
@@ -65,6 +71,14 @@
 <script id="trans" class="helper" data-args="arg1,arg2" type="text/html">
     return tr(arg1);
 </script>
+<script id="userCollectionLength" class="helper" data-args="" type="text/html">
+  alert(app.usercollection.length);
+
+  if (app.usercollection && app.usercollection.length) {
+  return "<div></div>";
+  }
+</script>
+
 <script id="checkboxFormat" class="helper" data-args="arg1" type="text/html">
       
       var checkboxString = arg1.toString();      

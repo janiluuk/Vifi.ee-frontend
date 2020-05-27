@@ -141,7 +141,7 @@
     filter: blur(6px)
 }
 .flowplayer .fp-chromecast-engine {
-    position: absolute;
+position: absolute;
     display: none;
     z-index: 99;
     top: 0;

@@ -8,6 +8,7 @@ App.Views.BaseAppView = Backbone.View.extend({
     initialize: function(options) {
         this.options = options || {};
         this.session = options.session;
+        this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
         this.user = options.session.get("profile");
         this.collection = options.collection;
         this.usercollection = options.usercollection;
@@ -17,7 +18,6 @@ App.Views.BaseAppView = Backbone.View.extend({
         this.evt = options.eventhandler;
         this.template = options.template;
         this.player = options.player;
-        this.fbuser = new App.User.FBPerson(); // Holds the authenticated Facebook user
         options.model = this.user;
         _.bindAll(this, 'render', 'showBrowserPage', 'onResizeScreen');
         this.listenTo(this.session, "ticket:purchase:done", this.showTicketPurchase, this);
@@ -36,9 +36,9 @@ App.Views.BaseAppView = Backbone.View.extend({
             model: this.user,
             collection: this.usercollection
         });
-
         this.topmenu = new App.Views.TopMenu({
-            model: this.user
+            model: this.user,
+            collection: this.usercollection
         });
         this.platform = App.Platforms.platform;
         /* Filterbar open by default */
@@ -74,7 +74,6 @@ App.Views.BaseAppView = Backbone.View.extend({
     },
     showTicketPurchase: function(ticket) {
         var id = ticket.vod_id;
-
         var title = app.usercollection.get(id);
         title.set("validtotext", title.getValidityText());
         if (title) {
@@ -85,7 +84,9 @@ App.Views.BaseAppView = Backbone.View.extend({
             });
             else this.returnview.model.set(title.toJSON());
         } else {
-            app.router.navigate("/notfound",{trigger:true});
+            app.router.navigate("/notfound", {
+                trigger: true
+            });
         }
         this.returnview.render();
     },
@@ -98,12 +99,9 @@ App.Views.BaseAppView = Backbone.View.extend({
             if (window.mySwiper) mySwiper.resizeFix();
             app.homepage.browserview.filterview.filterbarview.enableCarosel();
             this.browserInitialized = true;
-   
         }
-
         app.homepage.browserview.$isotope.isotope('layout');
         app.homepage.browserview.renderResults();
-    
         if (this.scrollTop != 0) {
             $("#content-container").scrollTop(this.scrollTop);
         }
@@ -132,15 +130,13 @@ App.Views.BaseAppView = Backbone.View.extend({
             $(".side-menu-list a.active").removeClass("active");
             $(".side-menu-list a#menu-" + id).addClass("active");
         }
-
         this.currentPage = app.router.views.contentview;
-
     },
     goto: function(view, scroll) {
         // cache the current view and the new view
         var previous = this.currentPage || null;
         var next = view;
-        if (previous == next){
+        if (previous == next) {
             this.currentPage = next;
             return;
         }
@@ -151,11 +147,10 @@ App.Views.BaseAppView = Backbone.View.extend({
             next.transitionIn(function() {
                 if (scroll) $("body, #content-container").scrollTop(0);
             }.bind(this));
-        //      next.render({ page: true });  // render the next view
-        //    this.$el.append( next.$el );  // append the next view to the body (the el for this root view)
+            //      next.render({ page: true });  // render the next view
+            //    this.$el.append( next.$el );  // append the next view to the body (the el for this root view)
         }
         this.currentPage = next;
-
     }
 });
 // Base view class for providing transition capabilities
@@ -261,17 +256,16 @@ App.Views.TopMenu = Backbone.View.extend({
         'change #main-search-box input[type="text"]': 'onSearchChange',
         'click #search-button': 'toggleSearchBox',
         'click #menu-dragger': 'toggleSideBar',
-        'click #my-items' :'toggleTopBar',
+        'click #my-items': 'toggleTopBar',
         'click .login': 'login',
-        'click .logout': 'logout',
         'click #quickbar-switch': 'toggleQuickMenu',
-
         'click #clear-search-text-button': 'clearSearch'
     },
     model: App.User.FBPerson,
     el: $("#top-main-toolbar"),
     initialize: function(options) {
         if (options.model) this.model = options.model;
+        this.listenTo(this.collection, "add", this.render, this);
         this.model.on('change', this.render, this);
     },
     onSearchChange: function(e) { 
@@ -288,6 +282,9 @@ App.Views.TopMenu = Backbone.View.extend({
         return true;
     },
     render: function() {
+        if (app.usercollection && app.usercollection.length > 0)
+        this.model.set("collectionLength", app.usercollection.length);
+    
         var search = this.$("#main-search-box").val();
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
         this.$("#main-search-box").val(search).trigger("keypress");
@@ -308,7 +305,6 @@ App.Views.TopMenu = Backbone.View.extend({
         app.quickmenu.toggleQuickBar();
         return false;
     },
-
     toggleSearchBox: function(e) {
         var el = this.$("#toolbar-search-group");
         var visible = el.hasClass("pullDownRight");
@@ -323,9 +319,6 @@ App.Views.TopMenu = Backbone.View.extend({
         app.sidemenu.toggleSideBar(e);
         return false;
     },
-
-
-
     clearSearch: function(e) {
         e.preventDefault();
         if (app.collection.querystate.isDefault() === false) { 
@@ -349,28 +342,29 @@ App.Views.TopMenu = Backbone.View.extend({
         return false;
     },
 });
-
 App.Views.QuickbarMenu = Backbone.View.extend({
-    el: $("#quickbar-overlay"),
+    el: "#quickbar-overlay",
     state: 'closed',
     events: {
-        'click .open-library': 'open'
+        'click .open-library': 'open',
+        'click #overlay-close' :'closeQuickBar',
     },
- initialize: function(options) {
+    initialize: function(options) {
         var options = options || {};
         if (options.collection) this.collection = options.collection;
         _.bindAll(this, 'openQuickBar', 'closeQuickBar', 'toggleQuickBar', 'render');
-        this.listenTo(this.collection, "add", this.render, this);
         this.listenTo(this.session, "user:login", this.render, this);
         this.listenTo(this.session, "user:logout", this.render, this);
+        this.listenTo(this.collection, "add", this.render, this);
         this.listenTo(this, "quickbar:open", this.openQuickBar);
         this.listenTo(this, "quickbar:close", this.closeQuickBar);
         this.listenTo(this, "quickbar:toggle", this.toggleQuickbar);
         this.quickBarView = new App.Views.UserCollectionView({
             collection: this.collection
         });
+        this.$el.html(ich.quickbarMenuTemplate());
+        this.quickBarView.setElement("div#quickbar-content");
     },
-
     toggleQuickBar: function(e) {
         if ($("#quickbar-overlay").hasClass("visible")) this.state = "open";
         else this.state = "closed";
@@ -381,27 +375,21 @@ App.Views.QuickbarMenu = Backbone.View.extend({
         }
         if (e) $(e.currentTarget).toggleClass("active", this.state != "closed");
     },
-
     closeQuickBar: function() {
         this.state = "closed";
-        this.$el.velocity("slideUp", { delay: 500, duration: 1500 });
         this.$el.removeClass("visible");
-
-        return false;        
+        return false;
     },
     openQuickBar: function() {
+        this.render();
         this.state = "open";
-        this.$el.velocity("slideDown", { delay: 500, duration: 1500 });
         this.$el.addClass("visible");
     },
     render: function() {
-        this.$el.html(ich.quickbarMenuTemplate());
-        this.quickBarView.setElement('div#quickbar-container');
         this.quickBarView.render();
         return this;
     }
 });
-
 App.Views.SideMenu = Backbone.View.extend({
     el: $("#side-menu-container"),
     state: 'closed',
@@ -414,7 +402,7 @@ App.Views.SideMenu = Backbone.View.extend({
         if (options.session) this.session = options.session;
         _.bindAll(this, 'enableSideMenu', 'toggleSideBar', 'render');
         this.listenTo(this.session, "user:login:success", this.render, this);
-        this.listenTo(this.session, "user:logout", this.render, this);
+        this.listenTo(this.session, "user:logout", this.closeSideBar, this);
         this.loginForm = new App.Views.LoginForm({
             session: this.session
         });
@@ -465,7 +453,6 @@ App.Views.CarouselView = Backbone.View.extend({
         $(el).siblings().removeClass("active").hide();
         $(el).addClass("active").show();
         App.Utils.lazyload();
-
         return false;
     },
     startCarousel: function(initialSlide) {
@@ -512,6 +499,22 @@ App.Views.DialogView = Backbone.View.extend({
     openDialog: function(e, content) {
         if (e) e.preventDefault();
         var html = content ? content : this.$el.html();
+        var _this = this;
+
+        if (_this.mustConfirm) {
+            // this part overrides "close" method in MagnificPopup object
+            $.magnificPopup.instance.close = function() {
+               console.log(_this);
+
+                if (_this.mustConfirm && (!_this.isConfirmed)) {
+                    return;
+                }
+                // "proto" variable holds MagnificPopup class prototype
+                // The above change that we did to instance is not applied to the prototype, 
+                // which allows us to call parent method:
+                $.magnificPopup.proto.close.call(this);
+            };
+        }
         $.magnificPopup.open({
             items: {
                 src: html,
@@ -522,7 +525,8 @@ App.Views.DialogView = Backbone.View.extend({
             callbacks: {
                 beforeOpen: this.beforeOpen,
                 afterOpen: this.afterOpen,
-                afterClose: this.afterClose
+                afterClose: function() {},
+                beforeClose: function() {},
             },
             showCloseBtn: false,
             closeBtnInside: false
@@ -671,9 +675,10 @@ App.Views.Error = App.Views.ContentView.extend({
         'click .retry': 'retry'
     },
     initialize: function(options) {
-
-        this.template = ich.errorPageTemplate({subject: options.subject, description: options.description}).html();
-
+        this.template = ich.errorPageTemplate({
+            subject: options.subject,
+            description: options.description
+        }).html();
     },
     retry: function() {
         Backbone.history.loadUrl(Backbone.history.fragment);

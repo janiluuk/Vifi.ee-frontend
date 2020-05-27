@@ -23,11 +23,25 @@
     <button class="search-button btn" id="clear-search-text-button">X</button>
     </div>
     <div class="toolbar-right float_right">
-        <button id="quickbar-switch"></button>
+        <div id="quickbar-switch">
+            <div class="quickbar-icon">
+
+            </div>
+               {{#if collectionLength}}
+                <div class="quickbar-number">{{ collectionLength }}</div>
+                {{/if}}            
+        </div>
     </div>
 </script>
 <script id="quickbarMenuTemplate" type="text/html">
-    <div id="quickbar-container"></div>
+    <div id="quickbar-container">
+        <div id="quickbar-header">
+            <h2>{{ trans 'My purchases' }}</h2>
+            <div id="overlay-close"></div>
+
+        </div>
+        <div id="quickbar-content"></div>
+    </div>
 </script>
 <script type="text/html" id="sidemenuTemplate">
 

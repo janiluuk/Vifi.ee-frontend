@@ -23,7 +23,7 @@ App.User.Ticket = Backbone.Model.extend({
     },
     parse: function(data) {
 
-        $log('BUILDING TICKET FROM '+JSON.stringify(data));
+    //    $log('BUILDING TICKET FROM '+JSON.stringify(data));
 
         if (data.vod_id > 0) data.id = data.vod_id;
         else if (data.id > 0 && !data.vod_id) data.vod_id = data.id;
@@ -31,7 +31,6 @@ App.User.Ticket = Backbone.Model.extend({
 
         if (!_.isEmpty(data.session_id) && _.isEmpty(data.playsession.session_id)) {
                 data.playsession.session_id = data.session_id;
-                delete data.session_id;
         }
 
         if (data.playsession) {
@@ -42,9 +41,8 @@ App.User.Ticket = Backbone.Model.extend({
 
         if (data.validto) {
             var date = Date.parse(data.validto);
-
             if (date) {
-                if (!this.isExpired(date)) {
+                if (!this.isExpired(data.validto)) {
                     data.isValid = true;
                 }             
                 data.validtotext = App.Utils.countDownText(date);
@@ -59,6 +57,10 @@ App.User.Ticket = Backbone.Model.extend({
 
 
         if (_.has(data, 'content')) {
+            if (_.isEmpty(data.title)) {
+                data.title = data.content.title;
+            }
+            
             data.content.session_id = data.playsession.session_id;
             data.content.auth_code = data.auth_code;
             data.content.id = data.vod_id;
@@ -316,9 +318,9 @@ App.User.Profile = App.Models.ApiModel.extend({
             "language": "Estonian",
             "tickets": [],
             "paired_user": false,
+            "profile_picture": "",
             "purchase_history": [],
             "favorites": '',
-            "profile_picture": false,
             "messages": 0,
             "role": 'Guest',
             "subscriber": 0,
@@ -326,7 +328,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         };
     },
     initialize: function(options) {
-        _.bindAll(this, 'connectFB', 'FBcallback');
+        _.bindAll(this, 'connectFB', 'FBcallback', 'authorize');
         this.session = options.session;
         this.purchases = options.purchases;
         this.session.on("change:auth_id", this.authorize, this);
@@ -342,6 +344,7 @@ App.User.Profile = App.Models.ApiModel.extend({
      * @return void
      */
     connectFB: function(fbuser) {
+
         var id = fbuser.get("id");
         if (id != "") {
             this.set("profile_picture", 'https://graph.facebook.com/' + id + '/picture')
@@ -350,6 +353,7 @@ App.User.Profile = App.Models.ApiModel.extend({
             this.set("email", fbuser.get("email"));
             this.set("name", fbuser.get("name"));
             this.set("access_token", FB.getAccessToken());
+            if (!this.session.isLoggedIn())
             this.session.getToken(fbuser.get("email"), false, false, this.FBcallback);
         }
     },
@@ -435,21 +439,31 @@ App.User.Profile = App.Models.ApiModel.extend({
         if (this.session.get("auth_id") == "") {
             return false;
         }
+        var _this = this;
         this.fetch({
             success: function(data) {
                 if (this.get("user_id") != "") {
                     this.session.set("user_id", this.get("user_id"));
                     this.trigger("user:profile:login", this);
-                    if (app.fbuser) this.trigger("user:facebook-connect", app.fbuser);
+                    if (app.fbuser) { 
+                        _this.trigger("user:facebook-connect", app.fbuser);
+                    }
                     $log("Logging in with user " + this.get("email"));
                     return true;
                 }
             }.bind(this)
+        }).done(function() { 
+                 if (app.fbuser) { 
+                        _this.trigger("user:facebook-connect", app.fbuser);
+                        _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
+                }
+
         });
         return false;
     },
     deauthorize: function() {
         this.clear();
+
         this.fetch().done(function() {
             return false;
         }.bind(this));
@@ -547,6 +561,9 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.fetch().done(function() {
             _this.updateUserCollection();
             deferred.resolve(app.usercollection);
+            if (app.fbuser && app.fbuser.get("id") > 0) { 
+                    _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
+            }            
         }.bind(this));
         return deferred.promise();
     },

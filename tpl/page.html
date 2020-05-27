@@ -28,20 +28,19 @@
         </div>
 </script>
 <script id="errorPageTemplate" type="text/html">
-    <div class="error-page-container">
-        <div class="error-icon">
-            <img src="/style/img/icons/solid/comment-alt-exclamation.svg"/>
-        </div>
-        <div class="error-body">
-            <div class="error-header">
-                <h2>{{ subject }}</h2>
-            </div>
-            <div class="error-body">
-                <img src="//cdn.inquisitr.com/wp-content/uploads/uncat/cute-sad-cat-uyoyuioyuioy.jpg"/>
-                <p>{{ description }}</p>
-            </div>
-            <div class="error-footer">
-                <button class="btn retry">{{ trans 'Go to home page' }}</button>
+    <div>
+        <div class="error-page-container">
+            <div class="error-page">
+                <div class="error-header">
+                    <div class="error-icon"></div>
+                    <h2 class="error-title">{{ subject }}</h2>
+                </div>
+                <div class="error-body">
+                    <p>{{ description }}</p>
+                    <p>
+                        <button class="btn retry">{{ trans 'Go to home page' }}</button>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

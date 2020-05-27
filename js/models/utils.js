@@ -168,6 +168,14 @@ App.Utils = {
             return new Date(dateParts[0], parseInt(dateParts[1])-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], 0);
         },
 
+        parseDateToHumanReadable: function(date) {
+            if (!date || !this.isValidDate(date)) return false;
+            var d = new Date(date);
+            if (d) {
+                return d.format("d.m.y H:i");
+            }
+            return false;
+        },
         /* Return date as human readable format */
 
         dateToHumanreadable: function(s) {
@@ -197,10 +205,10 @@ App.Utils = {
             var string = "";
 
             if (days > 0) {
-                string+=days+tr("days")+", ";
+                string+=days+tr("d")+", ";
             }
             if (hours > 0 || (hours == 0 && days > 0)) {
-                string+=hours+tr("hr")+" ";
+                string+=hours+tr("hr");
             }
 
             if (!include_minutes || (days == 0 && hours == 0 && minutes == 0)) {
@@ -369,8 +377,13 @@ App.Utils.Api = Backbone.Model.extend({
 
     },
     onSuccess: function(data) {
-        app.trigger("success", data);
+        var translateable = data.substr(0,data.indexOf(':'));
+        var translated = App.Utils.translate(translateable);
+        if (!_.isEmpty(data.substr(data.indexOf(':'))));
+        translated += data.substr(data.indexOf(':'));
 
+        app.trigger("success", translated);
+        
     },
     onNotice: function(data) {
         app.trigger("notify", data);

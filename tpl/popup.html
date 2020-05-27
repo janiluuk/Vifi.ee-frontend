@@ -1,6 +1,5 @@
 <script type="text/html" id="purchaseSuccessTemplate">
     <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
-        <button title="Close (Esc)" type="button" class="mfp-close">×</button>
         <div class="col-img" style="background-image: url('/style/img/purchase-success-cover.jpg');">
         </div>
         <div class="col-content">
@@ -15,7 +14,7 @@
 
                     <p>Võid kasutada seda koodi filmi vaatamiseks iga seadme pealt. </p>
 
-                    <p class="extra-info">Kood kehtib kuni <b>{{ humanDate purchase.validto }} </b> </p>
+                    <p class="extra-info">Kood kehtib kuni <b>{{ dateToHumanreadable purchase.validto }} </b> </p>
                     <p> {{#if email }} Vaatamiskood saadeti ka antud emailile: <b>{{ email }} </b>{{/if}}</p>
 
 		            <p class="info">
@@ -30,7 +29,8 @@
 <script type="text/html" id="purchaseDialogTemplate">
     <div id="film-popup" class="white-popup vifi-popup image-and-content-popup">
         <button title="Close (Esc)" type="button" class="mfp-close">×</button>
-        <div class="col-img" style="background-image: url('{{imageHelper poster_url 320 500}}');">
+
+        <div class="col-img b-lazy" data-src="{{imageHelper poster_url 320 600 'l' 1}}">
         </div>
         <div class="col-content">
             <div class="popup-section">
@@ -79,8 +79,7 @@
                 <div class="payment-method-data" id="payment-mobile" style="display:none"></div>
                 <div class="payment-method-data"  id="payment-code" style="display:none">
                     <h3>{{ trans 'Enter code'}}</h3>
-                    <input type="password" style="display:none"/>
-                    <input type="password" value="" name="code" id="payment-method-code" class="vifi-text-input" placeholder="{{ trans 'Enter code' }}"></input><br/>
+                    <input type="password" value="" name="code" autocomplete="current-password" id="payment-method-code" class="vifi-text-input" placeholder="{{ trans 'Enter code' }}"></input><br/>
                 </div>
                 <div class="payment-method-terms" style="display:none" id="payment-method-terms">
                 <input type="checkbox" name="termsconditions" id="termsconditions" value="true"/><label for="termsconditions">Nõustun <a target="_blank" href="/#page/termsandconditions">kasutustingimustega</a> ja <a target="_blank" href="/#page/gdpr">Privaatsustingimustega. </a> </label></div>

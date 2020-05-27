@@ -2,7 +2,7 @@ var App = {};
 
 App.Settings = {
     // properties
-        version: '2020-05.1',
+        version: '2020-05.2',
         debug: false,
         language: 'est',
         sitename: 'Vifi',
@@ -117,9 +117,9 @@ App.Translations = {
             'Yes' : 'Jah',
             'All Genres' : 'Kõik genred',
             'Hours' : 'Tundi',
+            'd' : 'pv',           
             'hr' : 't',
             'Days' : 'Päeva',
-            'days' : 'pv',
             'Weeks' : 'Nädala',
             'Months' : 'Kuud',
             'Choose payment method' : 'Vali makseviis',

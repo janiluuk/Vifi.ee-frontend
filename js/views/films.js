@@ -30,20 +30,19 @@ App.Views.UserFilmView = Backbone.View.extend({
     tagName: "div",
     className: "item",
     events: {
-        "click a": "showMoviePage"
+        "click a": "showMoviePage",
+
     },
     initialize: function() {
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "remove", this.remove, this);
     },
     showMoviePage: function(e) {
+        app.quickmenu.trigger("quickbar:close");
         var film = app.collection.originalCollection.get(this.model.get("id"));
         if (typeof film == "undefined") return false;
         var url = film.get("seo_friendly_url");
-
-        app.router.navigate(url, {
-            trigger: true
-        });
+        app.router.showFilm(film.get("id"), true);
         e.preventDefault();
         return false;
     },
@@ -55,35 +54,6 @@ App.Views.UserFilmView = Backbone.View.extend({
         this.model.set("seo_friendly_url", filmitem.get("seo_friendly_url"));
         this.$el.html(ich.userfilmitemTemplate(this.model.toJSON()));
         }
-        return this;
-    }
-});
-App.Views.QuickbarView = Backbone.View.extend({
-    model: App.User.Ticket,
-    tagName: "div",
-    className: "item",
-    events: {
-        "click a": "showMoviePage"
-    },
-    initialize: function() {
-        this.listenTo(this.model, "change", this.render, this);
-        this.listenTo(this.model, "remove", this.remove, this);
-    },
-    showMoviePage: function(e) {
-        var film = app.collection.originalCollection.get(this.model.get("id"));
-        if (typeof film == "undefined") return false;
-        var url = film.get("seo_friendly_url");
-
-        app.router.navigate(url, {
-            trigger: true
-        });
-        e.preventDefault();
-        return false;
-    },
-    render: function() {
-        var filmitem = this.model.getFilm();
-        if (typeof filmitem == "undefined") return false;
-        this.$el.html(ich.userfilmitemTemplate(filmitem.toJSON()));
         return this;
     }
 });
