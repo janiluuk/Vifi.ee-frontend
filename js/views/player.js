@@ -71,10 +71,11 @@ App.Views.PlayerView = Backbone.View.extend({
         var height = this.$el.parent().height();
         var _this = this;        
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
+        $("#video-container-heading").show().css("opacity",0.8).show();
 
         $("<div>").attr("id", "subtitles").appendTo("#player-container");
         $("#movie-player-container").css("opacity",1).show();
-       
+
         $("#content-container").scrollTo(0,0);
         this.resize();
         return this;
@@ -98,6 +99,7 @@ App.Views.PlayerView = Backbone.View.extend({
         this.model.trigger(evt, val);
     },
     onPageChange: function(page, params) {
+        $("#video-container-heading").hide().css("opacity",0);        
         this.close();
     }
 });
@@ -123,7 +125,7 @@ App.Views.PlayerControlbar = Backbone.View.extend({
     },
 
     render: function() {
- 
+        
         var _this = this;
         this.setElement(this.el);
         this.$el.empty().append(ich.playerControlsTemplate(this.model.toJSON()));
@@ -244,6 +246,7 @@ App.Views.TrailerView = Backbone.View.extend({
         }
     },
     onPlayerReady: function(event) {
+        $("#video-container-heading").show().css("opacity",0.8).show();        
         event.target.playVideo();
     },
 

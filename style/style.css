@@ -2032,7 +2032,7 @@ ul#movie-interactive-button-row li {
 /* TRAILER AND VIDEO */
 
 .video-container {
-    background-color: #1b1b1b;
+    background-color: #000;
     width: 100%;
     box-sizing: border-box;
 }
@@ -2062,6 +2062,7 @@ ul#movie-interactive-button-row li {
 }
 #video-container-footer ul li {
     display: inline-block;
+    min-height:40px;    
 }
 /* VIDEO PLAYER */
 
@@ -2085,6 +2086,7 @@ div#video-container-footer {
 }
 div#video-container-heading {
     opacity: 0;
+    display:none;
     -webkit-transition: opacity 0.5s ease-in-out;
     -moz-transition: opacity 0.5s ease-in-out;
     transition: opacity 0.5s ease-in-out;

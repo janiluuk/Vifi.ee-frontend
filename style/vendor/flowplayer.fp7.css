@@ -1545,6 +1545,13 @@
 	transform: scale(1.1);
 }
 
+.fp-secondary .fp-airplay,
+.fp-secondary .fp-fullscreen,
+.fp-secondary .fp-fullscreen-exit {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 .fp-secondary .fp-cast-button {
 	height: 1.6em;
 	width: 1.8em;
