@@ -108,6 +108,7 @@ App.Translations = {
             'Passwords do not match' : 'Paroolid pole samad',
             'No results' : 'Antud otsinguga tulemusi ei leitud. Täpsustage palun otsingut ja kontrollige üle ka teised filtrid (kategooria, kestvus, aasta)',
             'No purchases' : 'Ei ostusid',
+            'My purchases' : 'Minu filmid',
             'No description available' : 'Kirjeldus puudub',
             'You have registered successfully' : 'Registreerimine õnnestus',
             'Fill all the fields' : 'Täida kõik väljad',

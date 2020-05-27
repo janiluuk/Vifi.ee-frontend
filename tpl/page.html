@@ -16,7 +16,7 @@
 <!-- Empty list item -->
 <script id="emptyListTemplate" type="text/html">
     <div class="result-message">
-            <span class="">{{ text }}</span>
+            <span class="singlepage-title">{{ text }}</span>
         </div>
 </script>
 <!-- Empty list item -->
@@ -28,21 +28,16 @@
         </div>
 </script>
 <script id="errorPageTemplate" type="text/html">
-    <div>
-        <div class="error-page-container">
-            <div class="error-page">
-                <div class="error-header">
-                    <div class="error-icon"></div>
-                    <h2 class="error-title">{{ subject }}</h2>
-                </div>
-                <div class="error-body">
+        <div>
+                <div class="card">
+                    <div class="card-body">
+                    <h3>{{ subject }}</h3>
+                    <img src="//cdn.inquisitr.com/wp-content/uploads/uncat/cute-sad-cat-uyoyuioyuioy.jpg"/>
                     <p>{{ description }}</p>
-                    <p>
-                        <button class="btn retry">{{ trans 'Go to home page' }}</button>
-                    </p>
+
+                <button class="btn retry">{{ trans 'Go to home page' }}</button>
+                    </div>
                 </div>
-            </div>
-        </div>
     </div>
 </script>
 <script id="filterBarTemplate" type="text/html">
