@@ -187,7 +187,7 @@
                 });
                 app.showMoviePage();
                 _this.trigger("change:title", film.get("title"));
-                if (autoplay) app.movieview.playMovie();
+                if (autoplay === true) app.movieview.playMovie();
             });
         },
         purchaseSuccess: function(id) {
