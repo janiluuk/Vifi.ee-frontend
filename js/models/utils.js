@@ -378,6 +378,9 @@ App.Utils.Api = Backbone.Model.extend({
     },
     onSuccess: function(data) {
         var translateable = data.substr(0,data.indexOf(':'));
+        if (translateable == "") {
+            translateable = data;
+        }
         var translated = App.Utils.translate(translateable);
         if (!_.isEmpty(data.substr(data.indexOf(':'))));
         translated += data.substr(data.indexOf(':'));

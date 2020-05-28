@@ -34,7 +34,7 @@ App.Views.BaseAppView = Backbone.View.extend({
         });
         this.quickmenu = new App.Views.QuickbarMenu({
             model: this.user,
-            collection: this.usercollection
+            collection: this.tion
         });
         this.topmenu = new App.Views.TopMenu({
             model: this.user,
@@ -265,7 +265,10 @@ App.Views.TopMenu = Backbone.View.extend({
     el: $("#top-main-toolbar"),
     initialize: function(options) {
         if (options.model) this.model = options.model;
-        this.listenTo(this.collection, "add", this.render, this);
+        this.listenTo(this.collection, "change", this.render, this);    
+        this.listenTo(this.collection, "add", this.render, this);                    
+        this.listenTo(this.collection, "reset", this.render, this);        
+        this.listenTo(this.collection, "remove", this.render, this);        
         this.model.on('change', this.render, this);
     },
     onSearchChange: function(e) { 
@@ -283,11 +286,16 @@ App.Views.TopMenu = Backbone.View.extend({
     },
     render: function() {
         if (app.usercollection && app.usercollection.length > 0)
-        this.model.set("collectionLength", app.usercollection.length);
-    
-        var search = this.$("#main-search-box").val();
+            this.model.set("collectionLength", app.usercollection.length);
+        else {
+            this.model.set("collectionLength", 0)
+        }
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
-        this.$("#main-search-box").val(search).trigger("keypress");
+        var search = this.$("#main-search-box").val();
+
+        this.$("#main-search-box").val(search);
+        if (search && search != "")
+        this.$("#main-search-box").trigger("keypress");
         return this;
     },
     login: function(e) {
@@ -355,7 +363,8 @@ App.Views.QuickbarMenu = Backbone.View.extend({
         _.bindAll(this, 'openQuickBar', 'closeQuickBar', 'toggleQuickBar', 'render');
         this.listenTo(this.session, "user:login", this.render, this);
         this.listenTo(this.session, "user:logout", this.render, this);
-        this.listenTo(this.collection, "add", this.render, this);
+        this.listenTo(this.collection, "add", this.render, this);        
+        this.listenTo(this.collection, "reset", this.render, this);        
         this.listenTo(this, "quickbar:open", this.openQuickBar);
         this.listenTo(this, "quickbar:close", this.closeQuickBar);
         this.listenTo(this, "quickbar:toggle", this.toggleQuickbar);

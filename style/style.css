@@ -1914,6 +1914,17 @@ ul#cast-content-body-list li .item-image {
     color: #00A843;
     font-size: 1.1em;
 }
+
+#quickbar-container .empty-collection {
+    font-size: 2.5em;
+    color: #fff;
+    text-shadow: 0 1px 1px #333;
+    font-weight: 100;
+    text-align: center;
+    width: 90%;
+    margin: 1em auto;
+}
+
 .singlepage-title {
     font-size: 2.5em;
     color: #fff;

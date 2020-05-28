@@ -324,15 +324,18 @@ App.Views.UserProfileView = Backbone.View.extend({
     }
 });
 App.Views.UserCollectionView = Backbone.View.extend({
+    collection: App.Collections.UserCollection,
     events: {
         "click .next_page": "nextPage",
         "click .previous_page": "previousPage",
     },
     initialize: function(options) {
         this.$el.html(ich.userCollectionTemplate({}));
-        this.listenTo(this.collection, "change", this.render, this);
-
+        this.listenTo(this.collection, "add", this.render, this);
+        this.listenTo(this.collection, "reset", this.render, this);
+        _.bindAll(this, 'renderFilmViews', 'render');
         this.options = options || {};
+        this.collection = app.usercollection;
     },
 
     render: function() {
@@ -345,16 +348,29 @@ App.Views.UserCollectionView = Backbone.View.extend({
     },
     renderFilmViews: function() {
         this.fragment = document.createDocumentFragment();
-        if (this.collection.length == 0) {
+        var _this = this;
+        var length = 0;
+        var collection = [];
+
+        if ("undefined" == typeof app.usercollection) {
+           this.$filmCollectionHolder.append(
+                ich.emptyListTemplate({
+                    text: tr("No purchases")
+                })
+            );
+           return this;
+        } 
+
+        try {
+            console.log("update");
+        if (length == 0) {
             this.$filmCollectionHolder.empty();
         }
-        if (this.collection.length > 0) {
-            this.collection.each(
+        if (app.usercollection.length > 0) {
+            app.usercollection.each(
                 function(model) {
                     if (!model.isExpired())
-                    this.addChildView(model);
-                    else
-                    model.destroy();
+                    _this.addChildView(model);
 
                 }.bind(this),
                 this
@@ -367,10 +383,13 @@ App.Views.UserCollectionView = Backbone.View.extend({
                 })
             );
         }
-
+        } catch (err) {
+            console.log(err);
+            return this;
+        }
         setTimeout(function() {
             App.Utils.lazyload();
-        }, 200);
+        }, 300);
 
         return this;
     },
