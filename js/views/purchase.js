@@ -156,6 +156,8 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
             this.loginView.close();
         }
         this.paymentView.close();
+        $.magnificPopup.close();        
+        
         return false;
     }
 });
@@ -305,6 +307,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         // Remove the validation binding
         Backbone.Validation.unbind(this);
         this.trigger("remove");
+        $.magnificPopup.close();  
         this.mobilePaymentView.model.resetPayment();        
         this.mobilePaymentView.remove();
         return Backbone.View.prototype.remove.apply(this, arguments);
