@@ -1,16 +1,25 @@
 <script type="text/html" id="filmitemTemplate">
 <a href="#{{seo_friendly_url }}">
    <div class="item-inner">
+
        <div class="item-image b-lazy" data-src="{{imageHelper poster_url '191' '281'}}">
        </div>
        <div class="btn-play"></div>
+      {{#if is_new}}
+        <div class="is_new"></div>
+      {{/if}}
 
 
    </div>
 
 <div class="item-info">
     <div class="item-info-title"><a>{{title }}</a></div>
-    <div class="item-info-description">{{year }} - {{genres_text }}</div>
+    <div class="item-info-description">{{year }}
+    {{#if genres_text}}
+    - {{genres_text }}
+   {{/if}}
+
+  </div>
     <div class="item-info-footer">
         <div class="item-info-duration">{{running_time_text }}</div>
         <div class="item-info-price">{{price}} €</div>

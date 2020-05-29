@@ -36,7 +36,7 @@ App.Settings = {
             image_optimizer_default_preset: 'w780',
         },
         Featured: {
-            featured_slides_limit: 6,
+            featured_slides_limit: 8,
             featured_slides_randomize: true,
             featured_slides_autoplay_interval : 6000
         },
@@ -118,8 +118,8 @@ App.Translations = {
             'Yes' : 'Jah',
             'All Genres' : 'Kõik genred',
             'Hours' : 'Tundi',
-            'd' : 'pv',           
-            'hr' : 't',
+            'd' : 'pv',
+            'hr' : ' tundi',
             'Days' : 'Päeva',
             'Weeks' : 'Nädala',
             'Months' : 'Kuud',

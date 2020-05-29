@@ -60,7 +60,7 @@ App.User.Ticket = Backbone.Model.extend({
             if (_.isEmpty(data.title)) {
                 data.title = data.content.title;
             }
-            
+
             data.content.session_id = data.playsession.session_id;
             data.content.auth_code = data.auth_code;
             data.content.id = data.vod_id;
@@ -145,7 +145,7 @@ App.User.Ticket = Backbone.Model.extend({
         return App.Utils.dateToHumanreadable(this.get("validto"));
     },
 
-    parseDateString: function(string) {
+    parseDateString(string) {
         var date = new Date(string);
         if (null !== date.toJSON()) {
             return date;
@@ -455,6 +455,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         }).done(function() { 
                  if (app.fbuser) { 
                         _this.trigger("user:facebook-connect", app.fbuser);
+                        if (app.fbuser.get("profile_picture") != "")
                         _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
                 }
 

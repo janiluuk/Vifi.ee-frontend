@@ -83,12 +83,13 @@ App.Views.PlayerView = Backbone.View.extend({
 
     renderControls: function(content) {
 
-        this.controlBar = new App.Views.PlayerControlbar({model: content});
 
         if (!App.Settings.Player.enable_legacy_subtitles) {
             $log("Legacy subtitles disabled, not loading control bar");
             return false;
         }
+        this.controlBar = new App.Views.PlayerControlbar({model: content});
+        
         this.controlBar.on('controlbar:change', this.onControlsChange, this);
         this.$el.velocity("fadeIn", { duration: 200 });
         this.resize();

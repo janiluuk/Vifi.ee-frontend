@@ -8,6 +8,7 @@ App.Views.MobilePurchase = Backbone.View.extend({
 
     initialize: function(options) {
 
+
         this.model = options.model;
         this.listenTo(this.model, "purchase:mobile:success", this.onPaymentSuccess, this);
         this.listenTo(this.model, "purchase:mobile:error", this.onPaymentError, this);
@@ -150,11 +151,10 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
         }
         return this;
     },
-    afterClose: function(e) {
+    onClose: function(e) {
         if (this.loginView) {
             this.loginView.close();
         }
-
         this.paymentView.close();
         return false;
     }
@@ -173,17 +173,12 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.model = options.model;
         this.model.set('payments', app.paymentmethods.toJSON());
 
-        if (!this.payment)
+        if (this.payment) {
+            this.payment.mobilepayment.resetPayment();
+        }
+
         this.payment = new App.Models.Purchase({model:options.model, session:options.session});
-        else
-        this.payment.set({model:options.model, session:options.session});
-
-
-        if (!this.mobilePaymentView)
-        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.payment.mobilepayment});
-        else
-        this.mobilePaymentView.set({model: this.payment.mobilepayment});
-
+        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.payment.mobilepayment});            
 
         this.listenTo(this.model, "change", this.onModelChange, this);
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
@@ -310,6 +305,8 @@ App.Views.PaymentDialog = Backbone.View.extend({
         // Remove the validation binding
         Backbone.Validation.unbind(this);
         this.trigger("remove");
+        this.mobilePaymentView.model.resetPayment();        
+        this.mobilePaymentView.remove();
         return Backbone.View.prototype.remove.apply(this, arguments);
     },
     render: function() {

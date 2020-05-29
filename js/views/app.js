@@ -75,8 +75,8 @@ App.Views.BaseAppView = Backbone.View.extend({
     showTicketPurchase: function(ticket) {
         var id = ticket.vod_id;
         var title = app.usercollection.get(id);
-        title.set("validtotext", title.getValidityText());
         if (title) {
+            title.set("validtotext", title.getValidityText());
             if (!this.returnview) this.returnview = new App.Views.PostPurchaseDialogView({
                 model: title,
                 ticket: ticket,
@@ -258,6 +258,7 @@ App.Views.TopMenu = Backbone.View.extend({
         'click #menu-dragger': 'toggleSideBar',
         'click #my-items': 'toggleTopBar',
         'click .login': 'login',
+        'click #main-vifi-logo' : 'goHome',
         'click #quickbar-switch': 'toggleQuickMenu',
         'click #clear-search-text-button': 'clearSearch'
     },
@@ -283,6 +284,11 @@ App.Views.TopMenu = Backbone.View.extend({
             });
         }
         return true;
+    },
+    goHome: function(e) {
+        e.stopPropagation();
+        app.showBrowserPage();
+        return false;
     },
     render: function() {
         if (app.usercollection && app.usercollection.length > 0)
@@ -509,21 +515,20 @@ App.Views.DialogView = Backbone.View.extend({
         if (e) e.preventDefault();
         var html = content ? content : this.$el.html();
         var _this = this;
+ 
+        // this part overrides "close" method in MagnificPopup object
+        $.magnificPopup.instance.close = function() {
 
-        if (_this.mustConfirm) {
-            // this part overrides "close" method in MagnificPopup object
-            $.magnificPopup.instance.close = function() {
-               console.log(_this);
+            if (_this.mustConfirm && (!_this.isConfirmed)) {
+                return;
+            }
 
-                if (_this.mustConfirm && (!_this.isConfirmed)) {
-                    return;
-                }
-                // "proto" variable holds MagnificPopup class prototype
-                // The above change that we did to instance is not applied to the prototype, 
-                // which allows us to call parent method:
-                $.magnificPopup.proto.close.call(this);
-            };
-        }
+            // "proto" variable holds MagnificPopup class prototype
+            // The above change that we did to instance is not applied to the prototype, 
+            // which allows us to call parent method:
+            $.magnificPopup.proto.close.call(this);
+        };
+    
         $.magnificPopup.open({
             items: {
                 src: html,

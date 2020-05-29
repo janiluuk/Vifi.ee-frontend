@@ -54,7 +54,7 @@ App.Collections.PaginatedCollection = Backbone.PageableCollection.extend({
     parse: function(resp, options) {
         var self = this;
         return _.map(resp.results, function(obj) {
-            
+
             return new self.model(obj.film, options);
         });
     },
@@ -119,7 +119,8 @@ App.Collections.UserCollection = Backbone.Collection.extend({
         _.bindAll(this, 'updateUserCollection', 'parseModels', 'reset', 'hasTicket', 'clearAll');
         var _this = this;
         this.on("add", this.updateUserCollection);
-        this.on("reset", this.updateUserCollection);   
+        this.on("reset", this.updateUserCollection);
+        this.on("fetch", this.parseModels, this);
     },
     hasTicket: function(ticket) {
         if (!ticket) return false;
@@ -134,7 +135,8 @@ App.Collections.UserCollection = Backbone.Collection.extend({
     parseModels: function() {
 
         var _this = this;
-        _.each(this.models, function(ticket) { 
+        var refresh = false;
+        this.models.forEach(function(ticket) {
             if ("undefined" == typeof ticket) {
                 $log("[COLLECTION] Got INVALID ticket");
                 return;
@@ -142,11 +144,23 @@ App.Collections.UserCollection = Backbone.Collection.extend({
             if (!ticket.isValid()) {
                 $log("[COLLECTION] Invalid model, deleting " + ticket.get("id"));
                 ticket.destroy();
-                return false;
+                refresh = true;
             }
         });
 
-        return this.fetch();
+        var deferred = new $.Deferred();
+
+        if (refresh) {
+            this.reset();
+            this.fetch().done(function() {
+                deferred.resolve(app.usercollection);
+            } );
+        } else {
+            deferred.resolve(app.usercollection);
+        }
+
+        return deferred;
+
     },
 
     clearAll: function() {
@@ -183,8 +197,8 @@ App.Collections.CookieCollection = Backbone.Collection.extend({
     findByName: function(name) {
         var cookie = this.findWhere({
             'name': name
-        });    
-        if (undefined !== cookie) {        
+        });
+        if (undefined !== cookie) {
             return cookie;
         }
         return false;

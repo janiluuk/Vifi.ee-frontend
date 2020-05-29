@@ -318,7 +318,7 @@ App.User.Session = Backbone.Model.extend({
         var _this = this;
         if (ticket) {
             $log("TICKET RECEIVED " + JSON.stringify(ticket));
-            if (ticket.content.id && _.isEmpty(ticket.vod_id)) ticket.vod_id = ticket.content.id;
+            if (ticket.content && ticket.content.id && _.isEmpty(ticket.vod_id)) ticket.vod_id = ticket.content.id;
             if (!ticket.id) ticket.id = ticket.vod_id;
             if (!ticket.user_id) ticket.user_id = this.get("user_id");
             

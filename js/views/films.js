@@ -9,6 +9,9 @@ App.Views.FilmView = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "remove", this.remove, this);
         this.listenTo(this.model, "destroy", this.remove, this);
+        if (this.model.get("modified_days") >= 0) {
+            this.model.set("is_new", 1);
+        }
     },
     render: function() {
         this.$el.html(ich.filmitemTemplate(this.model.toJSON()));
