@@ -145,7 +145,7 @@ App.User.Ticket = Backbone.Model.extend({
         return App.Utils.dateToHumanreadable(this.get("validto"));
     },
 
-    parseDateString(string) {
+    parseDateString: function(string) {
         var date = new Date(string);
         if (null !== date.toJSON()) {
             return date;

@@ -306,7 +306,6 @@ App.Models.Purchase = Backbone.Model.extend({
         this.listenTo(this.mobilepayment, 'all', function(evenName, options) {
           var type = evenName.split(/purchase:/)[1];
           if (type) {            
-              console.log(evenName);
               this.trigger(evenName, options);
           }
         }, this);
