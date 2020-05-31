@@ -12,7 +12,7 @@ if (strstr($path, "films") && !$data = apc_fetch(md5($path))) {
 
         foreach ($nodes as $item) {
             $url = $item->getElementsByTagName('loc')->item(0)->nodeValue;
-            $url = str_replace('https://beta.vifi.ee', '', $url);
+            $url = str_replace('https://www.vifi.ee', '', $url);
             $data = [];
 
             if (strstr($path, $url)) {
@@ -38,6 +38,7 @@ if (!empty($data)) {
     echo "\t\t" . '<meta name="og:type" content="video.movie"/>' . "\n";       
     echo "\t\t" . '<meta property="og:image" content="' . $data['image_url'] . '" />' . "\n";
     echo "\t\t" . '<meta property="og:url" content="//www.vifi.ee' . $path . '"/>' . "\n";
+    echo "\t\t" . '<link rel="image_src" href="'.$data['image_url'] . '" />' . "\n";
 } else {
     printDefaultHeaders();
 }
@@ -46,8 +47,9 @@ function printDefaultHeaders()
 {
 
     echo '<title>Vifi.ee - Vaata filme mugavalt!</title>' . "\n";
-    echo "\t\t" . '<meta property="og:url" content="//www.vifi.ee/"/>' . "\n";
+    echo "\t\t" . '<meta property="og:url" content="https://www.vifi.ee/"/>' . "\n";
     echo "\t\t" . '<meta name="og:type" content="website"/>' . "\n";   
-    echo "\t\t" . '<meta property="og:image" content="//www.vifi.ee/screenshot.png"/>' . "\n";
+    echo "\t\t" . '<link rel="image_src" href="https://www.vifi.ee/screenshot.jpg" />' . "\n";
+    echo "\t\t" . '<meta property="og:image" content="https://www.vifi.ee/screenshot.jpg"/>' . "\n";
     echo "\t\t" . '<meta property="og:description" content="Vaata mugavalt filme!"/>' . "\n";
 }
