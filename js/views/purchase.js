@@ -117,7 +117,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
             );
             this.loginView = new App.Views.LoginDialog({
                 session: this.session
-            });            
+            });
             this.listenTo(this.loginView, "login:continue", this.showPayment, this);
 
         }
@@ -140,7 +140,7 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
 
         this.setElement(".mfp-content");
         this.assign(this.paymentView, "#purchasemodal");
-        
+
 
         if (this.session.isLoggedIn() || !App.Settings.loginEnabled) {
             this.showPayment();
@@ -156,8 +156,8 @@ App.Views.PurchaseView = App.Views.DialogView.extend({
             this.loginView.close();
         }
         this.paymentView.close();
-        $.magnificPopup.close();        
-        
+        $.magnificPopup.close();
+
         return false;
     }
 });
@@ -180,7 +180,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         }
 
         this.payment = new App.Models.Purchase({model:options.model, session:options.session});
-        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.payment.mobilepayment});            
+        this.mobilePaymentView = new App.Views.MobilePurchase({model: this.payment.mobilepayment});
 
         this.listenTo(this.model, "change", this.onModelChange, this);
         this.listenTo(this.payment, "purchase:successful", this.onPaymentSuccess, this);
@@ -290,7 +290,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.remove();
         app.scrollToTop();
         app.movieview.playMovie();
-        
+
     },
     onPaymentError: function(message) {
 
@@ -307,18 +307,25 @@ App.Views.PaymentDialog = Backbone.View.extend({
         // Remove the validation binding
         Backbone.Validation.unbind(this);
         this.trigger("remove");
-        $.magnificPopup.close();  
-        this.mobilePaymentView.model.resetPayment();        
+        $.magnificPopup.close();
+        this.mobilePaymentView.model.resetPayment();
         this.mobilePaymentView.remove();
         return Backbone.View.prototype.remove.apply(this, arguments);
     },
     render: function() {
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
-        this.mobilePaymentView.setElement("#payment-mobile");
-        this.mobilePaymentView.render();
+        if (!this.mobilePaymentView) {
+                setTimeout(function() {
+                    this.render();
+        }.bind(this), 200);
+
+        } else {
+                this.mobilePaymentView.setElement("#payment-mobile");
+                this.mobilePaymentView.render();
+        }
         var method = this.getSelectedMethod();
         $("#"+method).click();
-        App.Utils.lazyload();        
+        App.Utils.lazyload();
         return this;
     },
 });

@@ -930,7 +930,7 @@ span.css-icon.loading {
     width: 30px;
     background: #e8e8ea;
     -webkit-mask: url(img/icons/light/search.svg) no-repeat center;
-    mask: url(img/icons/light/search.svg); 
+    mask: url(img/icons/light/search.svg);
     -webkit-transition: background-color .2s ease-in-out;
     -moz-transition: background-color .2s ease-in-out;
     -o-transition: background-color .2s ease-in-out;
@@ -1038,7 +1038,7 @@ input#main-search-box:focus, input#main-search-box:active {
     height: 30px;
     background: #ffffff;
     -webkit-mask: url(img/icons/duotone/album-collection.svg) no-repeat center;
-    mask: url(img/icons/duotone/album-collection.svg); 
+    mask: url(img/icons/duotone/album-collection.svg);
 }
 .quickbar-number {
     position: absolute;
@@ -1065,8 +1065,7 @@ input#main-search-box:focus, input#main-search-box:active {
     overflow: auto;
     height: auto;
 }
-
-div#quickbar-overlay {
+#quickbar-overlay {
     display: none;
     opacity: 0;
 }
@@ -1099,8 +1098,8 @@ div#quickbar-overlay {
     height: 35px;
     background: #ffffff;
     -webkit-mask: url(img/icons/light/times-circle.svg) no-repeat center;
-    mask: url(img/icons/light/times-circle.svg);  
-    cursor: pointer;   
+    mask: url(img/icons/light/times-circle.svg);
+    cursor: pointer;
 }
 #overlay-close:hover {
     opacity: 0.7;
@@ -1581,17 +1580,6 @@ a.arrow-right {
 }
 #video-container-heading .close {
     float: right;
-    position: absolute;
-    z-index: 1;
-    top: 24px;
-    left: 10px;
-}
-
-#video-container-heading {
-    z-index: 5;
-    margin-top: -18px;
-
-    opacity: 0.5;
 }
 .close {
     color: white;
@@ -1603,6 +1591,14 @@ a.arrow-right {
 .close:hover {
     color: #C81C1C;
 }
+.close{
+    float: right;
+    position: absolute;
+    z-index: 1;
+    top: 30px;
+    left: 10px;
+}
+
 .selection-wrapper p {
     width: 100%;
     font-size: 1em;
@@ -1696,27 +1692,27 @@ a.arrow-right {
 #content-body {
     position: relative;
     background: rgb(227, 211, 203);
-} 
-#cast-content-body-list, 
+}
+#cast-content-body-list,
 .user-filmcollection-list,
-#film-list-container, 
+#film-list-container,
 #profilepage-mymovies-container
 {
     margin: 0;
-    padding: 0;  
+    padding: 0;
     display: grid;
     width: 100%;
     grid-template-columns: repeat(12, 1fr);
     grid-column-gap: 1rem;
     grid-row-gap: 1rem;
 }
-#content-body-list, 
-#film-info-container, 
+#content-body-list,
+#film-info-container,
 #film-cast-container,
 #profilepage-myprofile-container,
 .singlepage-body-container {
     margin: 0;
-    padding: 0;  
+    padding: 0;
     width: 100%;
     min-height: 40em;
 }
@@ -1772,6 +1768,7 @@ ul#content-body-list li, ul#cast-content-body-list li {
     font-weight: 100;
     color: #482D3F;
     padding: 1em;
+    grid-column: span 12;
 }
 .item {
     box-shadow: 0 2px 2px #ACA0A0;
@@ -1801,7 +1798,7 @@ ul#content-body-list li, ul#cast-content-body-list li {
 ul#cast-content-body-list li .item-image {
     background-image: url('img/anonymous_avatar.jpg');
 }
-/*.film-list .item-image:after {
+.film-list .item-image:after {
     content: ' ';
     position: absolute;
     width: 70px;
@@ -1824,7 +1821,7 @@ ul#cast-content-body-list li .item-image {
 .film-list .item-image:hover:after{
     opacity: 1;
     filter: alpha(opacity=100);
-}*/
+}
 
 .item-rating {
     position: absolute;
@@ -1924,14 +1921,9 @@ ul#cast-content-body-list li .item-image {
 }
 
 #quickbar-container .empty-collection {
-    font-size: 2.5em;
-    color: #fff;
-    text-shadow: 0 1px 1px #333;
-    font-weight: 100;
-    text-align: center;
-    width: 90%;
-    margin: 1em auto;
+    color: rgba(255, 255, 255, 0.7);
 }
+
 .singlepage-title {
     font-size: 2.5em;
     color: #fff;
@@ -2080,7 +2072,7 @@ ul#movie-interactive-button-row li {
 }
 #video-container-footer ul li {
     display: inline-block;
-    min-height:5px;    
+    min-height:40px;
 }
 /* VIDEO PLAYER */
 
@@ -2109,6 +2101,8 @@ div#video-container-heading {
     -webkit-transition: opacity 0.5s ease-in-out;
     -moz-transition: opacity 0.5s ease-in-out;
     transition: opacity 0.5s ease-in-out;
+    z-index: 5;
+    margin-top: -20px;
 }
 div#movie-player-container:hover div#video-container-heading {
     opacity: 0.5;
@@ -2723,7 +2717,7 @@ ul#subscription-benefit-list li .icon {
         grid-column: span 12;
     }
     .user-filmcollection-list .item {
-        grid-column: span 6;        
+        grid-column: span 6;
     }
     #content-body, #moviepage-body, #profilepage-body, .singlepage-body {
         padding: 0.5rem;

@@ -44,11 +44,11 @@ App.User.Ticket = Backbone.Model.extend({
             if (date) {
                 if (!this.isExpired(data.validto)) {
                     data.isValid = true;
-                }             
+                }
                 data.validtotext = App.Utils.countDownText(date);
             }
         }
-        
+
         if (_.has(data, 'playsession')) {
             data.playsession.vod_id = data.vod_id;
             this.playsession = new App.User.FilmSession(data.playsession, {parse:true});
@@ -299,7 +299,7 @@ App.User.CookiePurchases = Backbone.Model.extend({
         this.cookies.deleteByName(cookieName);
         return true;
     }
-}); 
+});
 App.User.Profile = App.Models.ApiModel.extend({
     path: function() {
         return "profile"
@@ -445,15 +445,15 @@ App.User.Profile = App.Models.ApiModel.extend({
                 if (this.get("user_id") != "") {
                     this.session.set("user_id", this.get("user_id"));
                     this.trigger("user:profile:login", this);
-                    if (app.fbuser) { 
+                    if (app.fbuser) {
                         _this.trigger("user:facebook-connect", app.fbuser);
                     }
                     $log("Logging in with user " + this.get("email"));
                     return true;
                 }
             }.bind(this)
-        }).done(function() { 
-                 if (app.fbuser) { 
+        }).done(function() {
+                 if (app.fbuser) {
                         _this.trigger("user:facebook-connect", app.fbuser);
                         if (app.fbuser.get("profile_picture") != "")
                         _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
@@ -562,9 +562,9 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.fetch().done(function() {
             _this.updateUserCollection();
             deferred.resolve(app.usercollection);
-            if (app.fbuser && app.fbuser.get("id") > 0) { 
+            if (app.fbuser && app.fbuser.get("id") > 0) {
                     _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
-            }            
+            }
         }.bind(this));
         return deferred.promise();
     },
