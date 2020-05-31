@@ -1798,7 +1798,7 @@ ul#content-body-list li, ul#cast-content-body-list li {
 ul#cast-content-body-list li .item-image {
     background-image: url('img/anonymous_avatar.jpg');
 }
-.film-list .item-image:after {
+.user-filmcollection-list .item-image:after {
     content: ' ';
     position: absolute;
     width: 70px;
@@ -1818,7 +1818,7 @@ ul#cast-content-body-list li .item-image {
     -ms-transition: opacity 0.2s;
 }
 
-.film-list .item-image:hover:after{
+.user-filmcollection-list .item-image:hover:after{
     opacity: 1;
     filter: alpha(opacity=100);
 }
