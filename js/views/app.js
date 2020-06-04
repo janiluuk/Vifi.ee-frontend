@@ -302,9 +302,9 @@ App.Views.TopMenu = Backbone.View.extend({
         else {
             this.model.set("collectionLength", 0)
         }
-        this.model.set("has_profile_picture", false);
+        this.model.set("has_profile_picture", false, {silent: true});
 
-        if (this.model.get("profile_picture") != "") this.model.set("has_profile_picture", true);
+        if (this.model.get("profile_picture") != "") this.model.set("has_profile_picture", true, {silent:true});
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
         var search = this.$("#main-search-box").val();
 

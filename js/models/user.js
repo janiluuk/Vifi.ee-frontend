@@ -46,7 +46,6 @@ App.User.Ticket = Backbone.Model.extend({
             this.playsession.set("session", app.session);
         }
 
-
         if (_.has(data, 'content')) {
             if (_.isEmpty(data.title)) {
                 data.title = data.content.title;
