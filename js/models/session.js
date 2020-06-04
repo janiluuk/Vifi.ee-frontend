@@ -76,7 +76,7 @@ App.User.FilmSession = App.Models.ApiModel.extend({
 
             this.stopFetching();
             this.trigger("playsession:overridden", this);
-            
+
             alert("This content is being streamed from another device, please play only from one device at the time.");
         }
     },
@@ -317,17 +317,20 @@ App.User.Session = Backbone.Model.extend({
     onTicketReceived: function(ticket) {
         var _this = this;
         if (ticket) {
-            $log("TICKET RECEIVED " + JSON.stringify(ticket));
+
+            Sentry.captureMessage("TICKET RECEIVED " + JSON.stringify(ticket));
             if (ticket.content && ticket.content.id && _.isEmpty(ticket.vod_id)) ticket.vod_id = ticket.content.id;
             if (!ticket.id) ticket.id = ticket.vod_id;
             if (!ticket.user_id) ticket.user_id = this.get("user_id");
-            
-            app.usercollection.create(ticket).done(function() { 
-                _this.trigger("ticket:purchase:done", ticket);
-            }.bind(this));
+
+            app.usercollection.create(ticket);
+
+            _this.trigger("ticket:purchase:done", ticket);
+
         }
         return false;
     },
+
     login: function(email, password) {
         if (!password || !email) return false;
         app.api.call(["user", "login", email, password], {}, function(data) {

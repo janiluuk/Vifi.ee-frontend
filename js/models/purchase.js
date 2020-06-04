@@ -276,7 +276,7 @@ App.Models.Purchase = Backbone.Model.extend({
           fn: 'validateTerms'
         },
         price: {
-          required: true,
+          required: App.Settings.Payment.allowFreeProducts !== true,
           min: 0.01,
           msg: 'Invalid price for the product'
         },

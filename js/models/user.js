@@ -1,5 +1,6 @@
 App.User = {};
 App.User.Ticket = Backbone.Model.extend({
+    idAttribute : 'vod_id',
 
     initialize: function(options) {
         _.defaults(this.attributes, {
@@ -28,17 +29,6 @@ App.User.Ticket = Backbone.Model.extend({
         if (data.vod_id > 0) data.id = data.vod_id;
         else if (data.id > 0 && !data.vod_id) data.vod_id = data.id;
 
-
-        if (!_.isEmpty(data.session_id) && _.isEmpty(data.playsession.session_id)) {
-                data.playsession.session_id = data.session_id;
-        }
-
-        if (data.playsession) {
-            data.playsession = new App.User.FilmSession(data.playsession, {
-                parse: true
-            });
-        }
-
         if (data.validto) {
             var date = Date.parse(data.validto);
             if (date) {
@@ -51,6 +41,7 @@ App.User.Ticket = Backbone.Model.extend({
 
         if (_.has(data, 'playsession')) {
             data.playsession.vod_id = data.vod_id;
+            data.session_id = data.playsession.session_id;
             this.playsession = new App.User.FilmSession(data.playsession, {parse:true});
             this.playsession.set("session", app.session);
         }
@@ -74,7 +65,9 @@ App.User.Ticket = Backbone.Model.extend({
     toJSON: function() {
         var json = _.clone(this.attributes);
         if(this.playsession) {
+
             json.playsession = this.playsession.toJSON();
+            this.playsession.attributes.session = null;
         }
         if (this.content) {
             this.content.attributes.session = null;
@@ -94,7 +87,7 @@ App.User.Ticket = Backbone.Model.extend({
         if (!date) date = this.get("validto");
         if (typeof(date) != "undefined") {
             var validityTime = App.Utils.stringToDate(date);
-            return App.Utils.countDownTime(validityTime);
+            return App.Utils.countDownText(validityTime);
         }
         return this.get("validto");
     },
@@ -562,7 +555,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.fetch().done(function() {
             _this.updateUserCollection();
             deferred.resolve(app.usercollection);
-            if (app.fbuser && app.fbuser.get("id") > 0) {
+            if (app.fbuser && app.fbuser.get("id")) {
                     _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
             }
         }.bind(this));

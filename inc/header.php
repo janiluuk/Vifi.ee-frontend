@@ -1,7 +1,7 @@
 <?php
 $path = $_SERVER['REQUEST_URI'];
 
-if (strstr($path, "films") && !$data = apc_fetch(md5($path))) {
+if (strstr($path, "films") && !$data = apcu_fetch(md5($path))) {
 
     $siteMap = __DIR__ . "/../sitemap.xml";
 
@@ -25,7 +25,7 @@ if (strstr($path, "films") && !$data = apc_fetch(md5($path))) {
 
         }
 
-        apc_add(md5($path), $data);
+        apcu_add(md5($path), $data);
     }
 
 }

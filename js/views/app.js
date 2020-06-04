@@ -73,22 +73,28 @@ App.Views.BaseAppView = Backbone.View.extend({
         app.goto(app.movieview, true);
     },
     showTicketPurchase: function(ticket) {
+        console.log(ticket);
+
         var id = ticket.vod_id;
-        var title = app.usercollection.get(id);
-        if (title) {
-            title.set("validtotext", title.getValidityText());
-            if (!this.returnview) this.returnview = new App.Views.PostPurchaseDialogView({
-                model: title,
-                ticket: ticket,
-                session: app.user.session
-            });
-            else this.returnview.model.set(title.toJSON());
-        } else {
-            app.router.navigate("/notfound", {
-                trigger: true
-            });
-        }
-        this.returnview.render();
+        app.usercollection.fetch().done(function() {
+            var title = app.usercollection.get(id);
+            if (title) {
+                title.set("validtotext", title.getValidityText());
+                if (!this.returnview) this.returnview = new App.Views.PostPurchaseDialogView({
+                    model: title,
+                    ticket: ticket,
+                    session: app.user.session
+                });
+                else this.returnview.model.set(title.toJSON());
+                this.returnview.render();
+
+            } else {
+                app.router.navigate("/notfound", {
+                    trigger: true
+                });
+                return false;
+            }
+        }.bind(this));
     },
     showBrowserPage: function() {
         app.goto(app.homepage);
@@ -266,10 +272,10 @@ App.Views.TopMenu = Backbone.View.extend({
     el: $("#top-main-toolbar"),
     initialize: function(options) {
         if (options.model) this.model = options.model;
-        this.listenTo(this.collection, "change", this.render, this);    
-        this.listenTo(this.collection, "add", this.render, this);                    
-        this.listenTo(this.collection, "reset", this.render, this);        
-        this.listenTo(this.collection, "remove", this.render, this);        
+        this.listenTo(this.collection, "change", this.render, this);
+        this.listenTo(this.collection, "add", this.render, this);
+        this.listenTo(this.collection, "reset", this.render, this);
+        this.listenTo(this.collection, "remove", this.render, this);
         this.model.on('change', this.render, this);
     },
     onSearchChange: function(e) { 
@@ -296,6 +302,9 @@ App.Views.TopMenu = Backbone.View.extend({
         else {
             this.model.set("collectionLength", 0)
         }
+        this.model.set("has_profile_picture", false);
+
+        if (this.model.get("profile_picture") != "") this.model.set("has_profile_picture", true);
         this.$el.html(ich.topmenuTemplate(this.model.toJSON()));
         var search = this.$("#main-search-box").val();
 
@@ -369,8 +378,8 @@ App.Views.QuickbarMenu = Backbone.View.extend({
         _.bindAll(this, 'openQuickBar', 'closeQuickBar', 'toggleQuickBar', 'render');
         this.listenTo(this.session, "user:login", this.render, this);
         this.listenTo(this.session, "user:logout", this.render, this);
-        this.listenTo(this.collection, "add", this.render, this);        
-        this.listenTo(this.collection, "reset", this.render, this);        
+        this.listenTo(this.collection, "add", this.render, this);
+        this.listenTo(this.collection, "reset", this.render, this);
         this.listenTo(this, "quickbar:open", this.openQuickBar);
         this.listenTo(this, "quickbar:close", this.closeQuickBar);
         this.listenTo(this, "quickbar:toggle", this.toggleQuickbar);
@@ -515,7 +524,7 @@ App.Views.DialogView = Backbone.View.extend({
         if (e) e.preventDefault();
         var html = content ? content : this.$el.html();
         var _this = this;
- 
+
         // this part overrides "close" method in MagnificPopup object
         $.magnificPopup.instance.close = function() {
 
@@ -524,11 +533,11 @@ App.Views.DialogView = Backbone.View.extend({
             }
 
             // "proto" variable holds MagnificPopup class prototype
-            // The above change that we did to instance is not applied to the prototype, 
+            // The above change that we did to instance is not applied to the prototype,
             // which allows us to call parent method:
             $.magnificPopup.proto.close.call(this);
         };
-    
+
         $.magnificPopup.open({
             items: {
                 src: html,

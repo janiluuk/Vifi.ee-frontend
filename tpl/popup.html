@@ -103,7 +103,7 @@
 
 <script type="text/html" id="mobilePaymentPendingTemplate">
     <p>Tellimiseks helista:</p>
-    <p class="activation-code"><span id="mobilePhoneNumber"><strong>{{mobilePhoneNumber}}</strong></span></p>
+    <p class="activation-code"><span id="mobilePhoneNumber"><strong><a href="tel:{{mobilePhoneNumber}}">{{mobilePhoneNumber}}</a></strong></span></p>
     <p class="sec-counter">Helistamiseks on aega <span><strong> <span id="mobileTimeout">60</span>&nbsp; sekundit</strong> </span></p>
 </script>
 
@@ -142,7 +142,7 @@
         <p class="info">
             Head vaatamist!
         </p>
-        <button onclick="js:return false;" id="mobile-payment-continue" class="btn big green full">{{trans "Watch"}}</button>
+        <button onclick="js:return false;" id="mobile-payment-continue continue-button" class="btn big green full">{{trans "Watch"}}</button>
     </div>
 
 </script>

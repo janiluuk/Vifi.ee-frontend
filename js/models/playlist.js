@@ -35,9 +35,11 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
     /*
      * Fetch Film session and auth code from the user ticket if they exist
      */
-    onSessionLoad: function(id) {
+    onSessionLoad: function(film) {
         this.params = {};
+        var id = this.get("id");
         if (id) { 
+
             $log("[Content] Looking for existing ticket with film id: " + id);
             var session = this.get("session");
             if (session.profile.getMovieSession(id)) this.params.session_id = session.profile.getMovieSession(id);
@@ -78,7 +80,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         if (this.get("videos").length > 0) this.trigger("content:ready", this.get("videos"));
         else this.trigger("content:reset");
     },
-    
+
     onLoadSubtitles: function(event) {
         if (this.get("subtitles") != null && this.get("subtitles").length > 0) this.trigger("content:subtitles:ready", this.get("subtitles"));
     },

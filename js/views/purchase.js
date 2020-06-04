@@ -40,7 +40,7 @@ App.Views.MobilePurchase = Backbone.View.extend({
 
     renderPhoneNumber: function() {
         var phonenumber = this.model.get("phoneNumber");
-        $("#mobilePhoneNumber").html("<strong>"+phonenumber+"</strong>");
+        $("#mobilePhoneNumber").html("<strong><a href=\"tel:"+phonenumber+"\">" +phonenumber + "</a></strong>");
         return this;
     },
 

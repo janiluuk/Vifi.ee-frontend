@@ -187,8 +187,8 @@ position: absolute;
 }
 .fp-chromecast {
     position: absolute;
-    left: 20px;
-    top: 0px;
+    left: 10px;
+    top: 10px;
 }
 .fp-chromecast .fp-chromecast-button {
     position: absolute;

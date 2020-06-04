@@ -45,7 +45,8 @@ App.Settings = {
 
         Payment: {
             'default_method' : 'code',
-            'mobile' : {'autostart' : false }
+            'mobile' : {'autostart' : false },
+            'allowFreeProducts' : false
         },
         /** Player Settings **/
 

@@ -519,6 +519,12 @@ a button, a .btn, button a, .btn a {
     text-decoration: none;
     color: #eee;
 }
+
+#mobilePhoneNumber a {
+    text-decoration: none;
+    color: #000;
+}
+
 .btn.green {
     background-color: #0CA94F;
     box-shadow: 0 2px 0 #04652D;
