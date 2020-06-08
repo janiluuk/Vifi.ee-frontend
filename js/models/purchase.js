@@ -357,7 +357,7 @@ App.Models.Purchase = Backbone.Model.extend({
         var email = this.get("email");
         if (!email || email == "") email = this.session.get("profile").get("email");
 
-        this.session.on("user:login:success", callback, this);
+        this.session.once("user:login:success", callback, this);
 
         return this.session.getToken(email);
 
