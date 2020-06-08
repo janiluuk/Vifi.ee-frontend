@@ -1,21 +1,20 @@
-<div class="event-feature-wrapper" id="event-page-header">
+<div
+    class="event-feature-wrapper"
+    id="event-page-header"
+    style="background: url(<%= encodeURI(backdrop_url) %>) center center/cover no-repeat;"
+>
     <div id="event-control-container" class="event-controls">
         <div class="event-state-container">
             <div class="event-state state-default">
                 <div class="event-poster">
-                    <img
-                        src="<%- poster_url %>"
-                    />
+                    <img src="<%= encodeURI(poster_url) %>" />
                 </div>
                 <button id="playEvent" class="play-event btn green icon play">
                     <span>
-
                         <%- playButton %>
                     </span>
 
-                    <div class="play-icon btn-icon" >
-                        
-                    </div>
+                    <div class="play-icon btn-icon"></div>
                 </button>
             </div>
         </div>
@@ -32,12 +31,10 @@
                     <div class="event-title">
                         <%-title %>
                     </div>
-                   
                 </div>
                 <!-- Live info: display only for live event -->
                 <div class="live-info-block">
-               
-                        <div id="event-view-count"></div>
+                    <div id="event-view-count"></div>
                 </div>
             </div>
             <div class="event-details-row">
@@ -65,43 +62,42 @@
             <div class="event-overview-row">
                 <ul class="event-overview-list">
                     <li class="event-overview-item">
-                        <span class="event-overview-label">
-                            Description: </span>   <%=overview ? nl2br(overview): tr("No description available")%>
+                        <span class="event-overview-label"> Description: </span>
+                        <% if (overview != '') { %> <%= nl2br(overview) %> <% }
+                        else { %> <%= tr("No description available") %> <% } %>
                     </li>
                     <li class="event-overview-item">
                         <span class="event-overview-label">
                             Producer:
                         </span>
-                        <%-producer_name%>
+                        <%= producer_name %>
                     </li>
                     <% if (series != false) { %>
                     <li class="event-overview-item">
-                        <span class="event-overview-label">
-                        Series:</span>
+                        <span class="event-overview-label"> Series:</span>
                         <%= series.name %>
                     </li>
                     <% } %>
                 </ul>
             </div>
-                <button class="offline-event button">
-                        Offline
-                    </button>
-                    <button class="error-event button">
-                        Error
-                    </button>
-                    <button class="preview-event button">
-                        Preview
-                    </button>
-                    <button class="finished-event button">
-                        Finished
-                    </button>
-                    <button class="pause-event button">
-                        Paused
-                    </button>
-                    <button class="online-event button">
-                        Online
-                    </button>
-
+            <button class="offline-event button">
+                Offline
+            </button>
+            <button class="error-event button">
+                Error
+            </button>
+            <button class="preview-event button">
+                Preview
+            </button>
+            <button class="finished-event button">
+                Finished
+            </button>
+            <button class="pause-event button">
+                Paused
+            </button>
+            <button class="online-event button">
+                Online
+            </button>
         </div>
         <!-- Keep just as reference -->
         <div

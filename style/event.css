@@ -13,6 +13,8 @@
 .event-feature-wrapper {
 	width: 100%;
 	background-color: #000;
+	background: linear-gradient(45deg, #41a84b, #4a7ea8);
+	/*
 	background: linear-gradient(
 		45deg,
 		#41a84b,
@@ -20,12 +22,14 @@
 		#ae854d,
 		#d77794,
 		#18ae7a,
-		#048c5d
+		#048c5d,
+		#e2a10f
 	);
-	background-size: 1200% 1200%;
-	-webkit-animation: background-gradient 90s ease infinite;
-	-moz-animation: background-gradient 90s ease infinite;
-	animation: background-gradient 90s ease infinite;
+	background-size: 700% 700%;
+	-webkit-animation: background-gradient 150s ease infinite;
+	-moz-animation: background-gradient 150s ease infinite;
+	animation: background-gradient 150s ease infinite;
+	*/
 	min-height: 580px;
 	position: relative;
 }
@@ -54,7 +58,7 @@
 
 .event-state.state-default {
 	cursor: pointer;
-	background-color: transparent;
+	background-color: rgba(0, 0, 0, 0.2);
 	transition: background-color 0.2s ease-in-out;
 	-webkit-transition: background-color 0.2s ease-in-out;
 	-moztransition: background-color 0.2s ease-in-out;
@@ -63,11 +67,12 @@
 }
 
 .event-state.state-default:hover {
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: rgba(0, 0, 0, 0.35);
 }
 
 .state-item {
-	background: rgba(17, 17, 17, 0.7);
+	background: rgba(17, 17, 17, 0.8);
+	border-radius: 7px;
 	display: flex;
 	flex-flow: row;
 	align-items: stretch;
@@ -104,6 +109,7 @@
 
 .state-message {
 	font-size: 16px;
+	color: #bdbdbd;
 }
 
 .state-message > .btn {
@@ -128,7 +134,7 @@
 .event-poster img {
 	width: 100%;
 	margin-bottom: 10px;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 #event-info-container {

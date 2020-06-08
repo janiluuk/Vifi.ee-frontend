@@ -8,13 +8,14 @@ App.Views.EventDetailView = App.Views.Page.extend({
     el: "#eventpage",
     events: {
         'click button.play-event': 'playEvent',
+        'click div.state-default': 'playEvent',
         'click #close-player': 'closePlayer',
         'click #close-trailer': 'closeTrailer',
         'click button.error-event': 'onStatusError',
         'click button.preview-event': 'onStatusPreview',
         'click button.offline-event': 'onStatusOffline',
         'click button.finished-event': 'onStatusFinished',
-        'click button.pause-event': 'onStatusPaused',        
+        'click button.pause-event': 'onStatusPaused',
         'click button.online-event': 'onStatusOnline',
         'click #film-tabbar-swiper-container .swiper-slide': 'changeTab'
 
@@ -39,19 +40,19 @@ App.Views.EventDetailView = App.Views.Page.extend({
     },
     onStatusOffline: function() {
         this.playerView.renderOffline();
-    },    
+    },
     onStatusPreview: function() {
         this.playerView.renderPreview();
-    },  
+    },
     onStatusPaused: function() {
         this.playerView.renderPaused();
-    },        
+    },
     onStatusFinished: function() {
         this.playerView.renderFinished();
-    },    
+    },
     onStatusOnline: function() {
         this.initPlayer();
-        $("#event-page-header").addClass("is-playing");        
+        $("#event-page-header").addClass("is-playing");
     },
     playEvent: function(e) {
         if (e) e.preventDefault();
@@ -89,7 +90,7 @@ App.Views.EventDetailView = App.Views.Page.extend({
                 model: app.player,
                 ticket: this.getTicket()
         });
-        
+
         if (this.eventStatusView) {
             this.eventStatusView.close();
         }
@@ -102,11 +103,13 @@ App.Views.EventDetailView = App.Views.Page.extend({
         this.content = ticket.content;
 
         var _this = this;
-        this.updateStatus().done(function(item) { 
+        this.updateStatus().done(function(item) {
 
             _this.content = ticket.content;
 
-            if (_this.content.get('status') == 'live')            
+            this.content.fetch();
+            
+            if (_this.content.get('status') == 'live')
                 this.initPlayer();
             else {
                 this.onStatusChange();
@@ -205,7 +208,7 @@ App.Views.EventDetailView = App.Views.Page.extend({
         }
         if (!this.model || !this.model.get) {
             throw "No ticket found for event!";
-            return false;            
+            return false;
         }
         var id = this.model.get("id");
         var ticket = app.usercollection.get(id);
@@ -222,7 +225,7 @@ App.Views.EventDetailView = App.Views.Page.extend({
         var deferred = new $.Deferred();
         this.eventViewersView.render();
 
-        ticket.content.fetch().done(function(item) { 
+        ticket.content.fetch().done(function(item) {
             deferred.resolve(ticket.content);
         }).error(function(err) { deferred.reject(err); console.log(err); });
         return deferred;
