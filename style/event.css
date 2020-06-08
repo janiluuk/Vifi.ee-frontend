@@ -1,0 +1,353 @@
+#eventpage {
+	font-family: "Open Sans", Helvetica, Arial;
+	font-size: 14px;
+	font-display: swap;
+}
+
+#eventpage * {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.event-feature-wrapper {
+	width: 100%;
+	background-color: #000;
+	background: linear-gradient(
+		45deg,
+		#41a84b,
+		#4a7ea8,
+		#ae854d,
+		#d77794,
+		#18ae7a,
+		#048c5d
+	);
+	background-size: 1200% 1200%;
+	-webkit-animation: background-gradient 90s ease infinite;
+	-moz-animation: background-gradient 90s ease infinite;
+	animation: background-gradient 90s ease infinite;
+	min-height: 580px;
+	position: relative;
+}
+
+.event-feature-wrapper.is-playing {
+	background: black;
+	display: flex;
+	flex-flow: column;
+	align-items: stretch;
+	justify-content: center;
+}
+
+.event-state-container {
+	width: 100%;
+}
+
+.event-state {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.event-state.state-default {
+	cursor: pointer;
+	background-color: transparent;
+	transition: background-color 0.2s ease-in-out;
+	-webkit-transition: background-color 0.2s ease-in-out;
+	-moztransition: background-color 0.2s ease-in-out;
+	-ms-transition: background-color 0.2s ease-in-out;
+	-o-transition: background-color 0.2s ease-in-out;
+}
+
+.event-state.state-default:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.state-item {
+	background: rgba(17, 17, 17, 0.7);
+	display: flex;
+	flex-flow: row;
+	align-items: stretch;
+	justify-content: stretch;
+	max-width: 40%;
+	min-height: 140px;
+	color: #f0f0f0;
+}
+
+.state-icon-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.state-icon-container .event-icon {
+	width: 80px;
+	height: 80px;
+	background: #f0f0f0;
+}
+
+.state-message-container {
+	padding: 14px;
+	display: flex;
+	flex-flow: column;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.state-header {
+	font-size: 30px;
+}
+
+.state-message {
+	font-size: 16px;
+}
+
+.state-message-container .status-badge {
+	margin-bottom: 5px;
+}
+
+.state-message-container .countdown {
+	font-size: 32px;
+	font-weight: 300;
+	margin-bottom: 5px;
+}
+
+.event-poster {
+	width: 150px;
+}
+
+.state-item .event-poster {
+	width: auto;
+	height: 100%;
+}
+
+.event-poster img {
+	width: 100%;
+	margin-bottom: 10px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+#event-info-container {
+	background: #101010;
+	color: #f0f0f0;
+	padding: 14px;
+}
+
+.event-title-row {
+	display: flex;
+	flex-flow: row;
+	align-items: flex-start;
+	margin-bottom: 7px;
+}
+
+.title-block {
+	flex: 1;
+	display: flex;
+	flex-flow: row;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.live-info-item {
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	margin-left: 14px;
+}
+
+.live-info-item.viewers {
+	color: #f53d3d;
+}
+
+.live-info-item.viewers > .event-icon {
+	background: #f53d3d;
+}
+
+.event-title {
+	font-weight: 600;
+	font-size: 1.7rem;
+	margin-bottom: 2px;
+}
+
+.status-badge {
+	text-transform: uppercase;
+	font-size: 11px;
+	margin-right: 14px;
+	margin-bottom: 2px;
+	font-weight: bold;
+	padding: 4px 8px;
+	border-radius: 3px;
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	background: #525252;
+}
+
+.status-badge.live {
+	background: #d41515;
+}
+
+.event-details-row {
+	margin-bottom: 14px;
+}
+
+.event-details-list {
+	margin: 0;
+	padding: 0;
+	color: #aaa;
+	list-style-type: none;
+	display: flex;
+	flex-flow: row;
+	flex-wrap: wrap;
+}
+
+.event-detail-item {
+	display: flex;
+	align-items: center;
+	margin-right: 28px;
+	margin-bottom: 4px;
+}
+
+.event-detail-item:last-child {
+	margin-right: 0;
+}
+
+.event-detail-item > .event-icon,
+.live-info-item > .event-icon {
+	width: 22px;
+	height: 22px;
+	margin-right: 5px;
+	background: #f0f0f0;
+}
+
+.status-badge > .event-icon {
+	width: 14px;
+	height: 14px;
+	margin-right: 5px;
+	background: #f0f0f0;
+}
+
+.play-icon {
+	-webkit-mask: url(img/icons/solid/play.svg) no-repeat center;
+	mask: url(img/icons/solid/play.svg);
+}
+
+.calendar-star-icon {
+	-webkit-mask: url(img/icons/duotone/calendar-star.svg) no-repeat center;
+	mask: url(img/icons/duotone/calendar-star.svg);
+}
+
+.headphones-icon {
+	-webkit-mask: url(img/icons/duotone/headphones.svg) no-repeat center;
+	mask: url(img/icons/duotone/headphones.svg);
+}
+
+.stopwatch-icon {
+	-webkit-mask: url(img/icons/duotone/stopwatch.svg) no-repeat center;
+	mask: url(img/icons/duotone/stopwatch.svg);
+}
+
+.circle-icon {
+	-webkit-mask: url(img/icons/solid/circle.svg) no-repeat center;
+	mask: url(img/icons/solid/circle.svg);
+}
+
+.pause-icon {
+	-webkit-mask: url(img/icons/solid/pause.svg) no-repeat center;
+	mask: url(img/icons/solid/pause.svg);
+}
+
+.head-side-icon {
+	-webkit-mask: url(img/icons/light/head-side.svg) no-repeat center;
+	mask: url(img/icons/light/head-side.svg);
+}
+
+.head-side-icon {
+	-webkit-mask: url(img/icons/light/head-side.svg) no-repeat center;
+	mask: url(img/icons/light/head-side.svg);
+}
+
+.snooze-icon {
+	-webkit-mask: url(img/icons/duotone/snooze.svg) no-repeat center;
+	mask: url(img/icons/duotone/snooze.svg);
+}
+
+.event-overview-list {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+.event-overview-label {
+	font-weight: bold;
+	opacity: 0.8;
+	margin-right: 5px;
+}
+
+/* Responsive */
+
+@media only screen and (max-width: 960px) {
+	.event-feature-wrapper {
+		min-height: 460px;
+	}
+	.event-poster {
+		width: 125px;
+	}
+	.state-item {
+		max-width: 60%;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	.event-feature-wrapper {
+		min-height: 300px;
+	}
+	.event-poster {
+		width: 100px;
+	}
+	.event-title {
+		font-size: 1.5rem;
+	}
+	.state-item {
+		max-width: 85%;
+	}
+}
+
+@-webkit-keyframes background-gradient {
+	0% {
+		background-position: 0% 90%;
+	}
+	50% {
+		background-position: 100% 11%;
+	}
+	100% {
+		background-position: 0% 90%;
+	}
+}
+@-moz-keyframes background-gradient {
+	0% {
+		background-position: 0% 90%;
+	}
+	50% {
+		background-position: 100% 11%;
+	}
+	100% {
+		background-position: 0% 90%;
+	}
+}
+@keyframes background-gradient {
+	0% {
+		background-position: 0% 90%;
+	}
+	50% {
+		background-position: 100% 11%;
+	}
+	100% {
+		background-position: 0% 90%;
+	}
+}

@@ -10,6 +10,30 @@ App.Collections.FilmCollection = Backbone.Collection.extend({
         });
     }
 });
+
+App.Collections.EventCollection = Backbone.Collection.extend({
+    params: {},
+    path: function() {
+        return 'events/';
+    },
+    url: function() {
+
+        if (app.session) {
+            var sessionParams = app.session.getParams();
+            _.extend(this.params, sessionParams.data);
+
+        }
+        return App.Settings.Api.url + this.path() + '?' + $.param(this.params);
+    },
+    model: App.Models.Event,
+    parse: function(resp, options) {
+        var self = this;
+        return _.map(resp.events, function(obj) {
+            return new self.model(obj.event, options);
+        });
+    }
+});
+
 App.Collections.BannerCollection = Backbone.Collection.extend({
     model: App.Models.Banner
 });

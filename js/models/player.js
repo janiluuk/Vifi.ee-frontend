@@ -7,6 +7,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     subtitles: {},
     playlist: {},
     ready: false,
+    type: 'vod',
     ratio: 9 / 16,
     initialize: function(options) {
         if (this.ready) return false;
@@ -14,7 +15,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
         this.content = new App.Models.FilmContent({
             session: options.session,
-            player: this,
+            player: this
 
         });
 
@@ -33,9 +34,13 @@ App.Player.MediaPlayer = Backbone.Model.extend({
         this.player.on("mediaplayer:timeupdate", this.onTimeUpdate,this);
         this.player.on("mediaplayer:pause", this.disableSubtitles, this);
         this.player.on("mediaplayer:resume", this.enableSubtitles, this);
+        this.player.on("mediaplayer:error", this.onPlayerError, this);
+        this.player.on("mediaplayer:offline", this.onPlayerOffline, this);        
         this.player.on("subtitles:unload", this.disableSubtitles, this);
         this.player.on("subtitles:load", this.loadSubtitles, this);
-        this.player.on("all", this.onPlayerAction, this);
+        if (App.Settings.debug === true) {
+            this.player.on("all", this.onPlayerAction, this);
+        }
         this.player.on("mediaplayer:onbeforeseek", this.disableSubtitles, this);
         this.player.on("mediaplayer:onseek", this.enableSubtitles, this);
         this.player.on("mediaplayer:ratio:change", this.onChangeRatio, this);
@@ -50,14 +55,24 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     onPlayerAction: function(evt, arg, arg2) {
 
         if (App.Settings.debug === false) return;
-        //$log("Got player event: " + evt);
+        $log("Got player event: " + evt);
         var parts = evt.split(":");
         var evt = parts.shift();
         var action = parts.shift();
-            app.router.trigger("action", evt, action, "Mediaplayer event on " + app.platform.name);
+        app.router.trigger("action", evt, action, "Mediaplayer event on " + app.platform.name);
 
     },
 
+    onPlayerOffline: function(evt) {
+        this.trigger("player:offline", evt.response);            
+    },
+
+    onPlayerError: function(evt) {
+        if (!evt || !evt.fatal) return false;
+        if (evt.fatal == true) {
+            this.trigger("player:offline", evt.response);            
+        }
+    },
     onChangeRatio: function(video) {
         if (undefined !== video) {
             var ratio = video.height / video.width;
@@ -76,6 +91,7 @@ App.Player.MediaPlayer = Backbone.Model.extend({
 
             if (_this.player.init(_this.playlist)) {
                 var files = _this.playlist.getPlaylistFiles();
+                
                 var file = "";
                 if (files) {
                     file = files[0].src;
@@ -108,7 +124,10 @@ App.Player.MediaPlayer = Backbone.Model.extend({
     },
 
     onTimeUpdate: function(time) {
-        this.trigger("player:timeupdate", this.getCurrentTime() / 1000);
+        var currentTime = Math.ceil(this.getCurrentTime() / 1000);
+        if (currentTime == this.currentTime) return;
+        this.currentTime = currentTime;
+        this.trigger("player:timeupdate", currentTime);
     },
 
     onSubtitlesReady: function(subtitles) {
@@ -266,6 +285,8 @@ App.Player.Platforms.Core = {
     },
     nextVideo: function() {
         this.currentStream = this.playlist.nextFile();
+        this.type = this.playlist.getType();
+
         if (this.currentStream) {
             this.trigger('mediaplayer:onnextvideo', this.playlist.currentItemIndex());
             this._playVideo();
@@ -274,8 +295,11 @@ App.Player.Platforms.Core = {
         }
     },
     play: function() {
-        if (!this.currentStream) {
-            $log(" Can't press play on a mediaplayer without a content")
+
+
+        if (!this.currentStream && !(this.currentStream = this.playlist.nextFile())) {
+
+            $log("Can't press play on a mediaplayer without a content");
             return;
         }
         if (!this.plugin) {
@@ -395,6 +419,7 @@ App.Player.Platforms.Core = {
     },
     _stopTrackingEvents: function() {
         $log(" UNBINDING MEDIA EVENTS");
+        if (this.plugin)
         this.plugin.unbind();
         this.eventsBound = false;
     }
@@ -403,6 +428,7 @@ App.Player.Platforms.Core = {
 
 App.Player.Playlist = function() {
     this.files = [];
+
     this.currentIndex = 0;
     this.looping = true;
     /*
@@ -448,10 +474,15 @@ App.Player.Playlist = function() {
         return file;
     },
 
+    this.getType = function() {
+        if (!_.isEmpty(this.files)) return this.files[this.currentIndex].get("type");
+        return "unknown";
+    }
     this.getPlaylistItem = function(content) {
         if (!content) return false;
 
         var profiles = content.get("videos");
+        if (_.isEmpty(profiles)) return false;
 
         if (this.userBitrate) user_bitrate = parseInt(this.userBitrate);
         else user_bitrate = parseInt(App.MediaPlayer.userBitrate);
@@ -480,8 +511,11 @@ App.Player.Playlist = function() {
     },
     this.getPlaylistFiles = function() {
         var content = this.nextFile();
-
-        var files = this.generatePlaylistItem(content.src);
+        if (this.getType() == 'event') {
+            var files = this.generateEventPlaylistItem();
+        } else {
+            var files = this.generatePlaylistItem(content.src);
+        }
         return files;
     }
     this.getBitrates = function() {
@@ -513,6 +547,11 @@ App.Player.Playlist = function() {
 
         return playlist_item;
     },
+
+    this.generateEventPlaylistItem = function() {
+        var playlist_item = this.files[this.currentIndex].get("videos");
+        return playlist_item;
+    },    
     this.addFiles = function(files) {
         this.files.push(files);
     }

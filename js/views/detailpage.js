@@ -180,7 +180,7 @@ App.Views.MovieDetailView = App.Views.Page.extend({
         if (e) e.preventDefault();
         if (e) e.stopPropagation();
 
-        if (!app.user.hasMovie(this.model)) {
+        if (!app.user.hasProduct(this.model)) {
             this.showCarousel();
             this.purchaseView = new App.Views.PurchaseView({
                 model: this.model,

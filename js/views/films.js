@@ -60,3 +60,42 @@ App.Views.UserFilmView = Backbone.View.extend({
         return this;
     }
 });
+App.Views.UserEventView = Backbone.View.extend({
+    model: App.User.Ticket,
+    tagName: "div",
+    className: "item",
+    events: {
+        "click a": "showEventPage",
+
+    },
+    initialize: function() {
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "remove", this.remove, this);
+    },
+    showEventPage: function(e) {
+        app.quickmenu.trigger("quickbar:close");
+        var event = app.usercollection.get(this.model.get("id"));
+        if (typeof event == "undefined") return false;
+        var url = event.get("seo_friendly_url");
+        app.router.showEvent(event.get("id"), true);
+        e.preventDefault();
+        return false;
+    },
+    render: function() {
+        if (this.model.isExpired()) {return this;}
+        var item = app.usercollection.get(this.model.get("id"));
+        console.log(item);
+
+        if (item && item.content) {
+            var images = item.content.get("images");
+        this.model.set("seo_friendly_url", item.content.get("seo_friendly_url"));         
+        this.model.set("poster_url", images.poster);
+        this.model.set("validtotext", item.content.get("starttime") + ' - ' + item.content.get("endtime"));
+
+
+        this.$el.html(ich.usereventitemTemplate(this.model.toJSON()));
+        }
+        return this;
+    }
+});
+

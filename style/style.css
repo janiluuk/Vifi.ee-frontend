@@ -506,8 +506,10 @@ button, .btn {
     transition: background-color .2s ease-in-out, padding 0.2s ease-in-out;
     position: relative;
 }
-button:hover, .btn:hover, button:focus, .btn:focus {
+button:hover, .btn:hover, button:focus, .btn:focus, button:active, .btn:active {
     background-color: #444;
+    outline: none;
+    box-shadow: none;
 }
 .btn.big {
     padding: 15px 20px 12px 20px;
@@ -518,6 +520,21 @@ button:hover, .btn:hover, button:focus, .btn:focus {
 a button, a .btn, button a, .btn a {
     text-decoration: none;
     color: #eee;
+}
+
+.btn-with-icon {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-icon {
+    margin-right: 15px;
+}
+
+.big .btn-icon {
+    margin-right: 20px;
 }
 
 #mobilePhoneNumber a {
@@ -1909,7 +1926,21 @@ ul#cast-content-body-list li .item-image {
     flex-flow: row;
     align-items: center;
 }
-.item-info-duration .icon {
+.item-info-duration-long {
+    width: 100%;
+    float: left;
+    box-sizing: border-box;
+    color: gray;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.item-info-duration .icon, .item-info-duration-long .icons {
     width: 18px;
     height: 18px;
     background: gray;
@@ -2052,7 +2083,7 @@ ul#movie-interactive-button-row li {
     width: 100%;
     box-sizing: border-box;
 }
-#video-container-heading {
+#video-container-heading, #event-container-heading {
     width: 100%;
     box-sizing: border-box;
     padding: 1%;
@@ -2100,7 +2131,7 @@ div#video-container-footer {
 #movie-page-header:hover div#video-container-footer {
     opacity: 1;
 }
-div#video-container-heading {
+div#video-container-heading, div#event-container-heading {
     opacity: 0;
     display:none;
     position: relative;
@@ -2113,6 +2144,10 @@ div#video-container-heading {
 div#movie-player-container:hover div#video-container-heading {
     opacity: 0.5;
 }
+div#event-control-container:hover div#event-container-heading {
+    opacity: 0.5;
+}
+
 #player-container {
     float: left;
 }

@@ -32,6 +32,8 @@
             'film/:id': 'showFilm',
             'films/:id': 'showFilm',
             'films/:id/watch/:code': 'playFilm',
+            'event/:id': 'showEvent',
+            'events/:id': 'showEvent',
             'me': 'me',
             'return': 'purchaseReturn',
             'return/:id': 'purchaseReturn',
@@ -43,7 +45,8 @@
             'me/pair-device': 'pairdevice',
             'subscription-plans': 'subscription',
             'revoke': 'revoke',
-            'page/:id': 'showContentPage'
+            'page/:id': 'showContentPage',
+            '*notFound': 'notFound'
         },
         initialize: function(options) {
             options = options ||  {};
@@ -51,7 +54,8 @@
             this.on('route', this.onRoute, this);
             this.on('change:title', this.onChangeTitle, this);
             this.on('action', this.onAction, this);
-            _.bindAll(this, 'showContentPage');
+            Backbone.history.bind('before:url-change', this.onUrlChange);
+            _.bindAll(this, 'showContentPage', 'onUrlChange');
         },
         onAction: function(category, action, label) {
             if (!category || !action) {
@@ -59,6 +63,8 @@
             }
             if (App.Settings.google_analytics_enabled) {
                 if (!label) label = action;
+                console.log("sending google anal");
+                
                 ga('send', {
                     hitType: 'event',
                     eventCategory: category,
@@ -66,6 +72,10 @@
                     eventLabel: label
                 });
             }
+        },
+        onUrlChange: function() {
+            this.trigger("page:change");
+         //   app.sidemenu.closeSideBar();
         },
         onRoute: function(route, params) {
             this.trigger("page:change", route, params);
@@ -92,7 +102,7 @@
 
                 _.each(films, function(item) {
 
-                    $log("[COOKIE] New film cookie prepared: " + JSON.stringify(item)); 
+                    $log("[COOKIE] New film cookie prepared: " + JSON.stringify(item));
                     item.id = item.vod_id;
                     var ticket = new App.User.Ticket(item, {
                         parse: true
@@ -126,6 +136,7 @@
                 app.collection.querystate.setDefault();
             }
             this.search();
+            this.navigate('/');
         },
         search: function(searchStateHash) {
             var currentPage = this.currentPage;
@@ -151,6 +162,32 @@
                 }, this);
             });
         },
+        showEvent: function(id, autoplay) {
+
+            var event = new App.Models.Event({
+                id: id
+            });
+            var _this = this;
+            event.fetch().done(function() {
+
+                if (!app.eventview) {
+                    app.eventview = new App.Views.EventDetailView({
+                        model: event
+                    });
+                } else {
+                    $log("Loading movie info to page");
+                    app.eventview.model.set(event.toJSON());
+                }
+                app.eventview.render();
+                var url = event.get("seo_friendly_url");
+                _this.navigate(url, {
+                    trigger: false
+                });
+                app.showEventPage();
+                _this.trigger("change:title", event.get("title"));
+                if (autoplay === true) app.eventview.playEvent();
+            });
+        },
         showFilm: function(id, autoplay) {
             var films = app.user.checkPurchases();
             /*
@@ -168,7 +205,7 @@
             var _this = this;
             film.fetch().done(function() {
                 var playButtonText = tr("Watch film") + " " + film.get("price") + ")";
-                if (app.user.hasMovie(film)) {
+                if (app.user.hasProduct(film)) {
                     playButtonText = tr("Continue watching");
                 }
                 film.set("playButton", playButtonText);
@@ -260,7 +297,7 @@
         },
 
         notFound: function() {
-           this.showErrorPage('404', 'Not Found', 'This page is no longer available');
+           this.showErrorPage('404', tr('Not Found'), tr('This page is no longer available'));
         },
 
         showErrorPage: function(type, subject, description) {

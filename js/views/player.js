@@ -1,3 +1,190 @@
+App.Views.EventPlayerView = Backbone.View.extend({
+    el: "#event-control-container",
+    model: App.Player.MediaPlayer,
+    controlBar: false,
+    template: false,
+
+    events: {
+        'click #close-player': 'onClosePlayer',
+    },
+    initialize: function(options) {
+        if (options.ticket) {
+            this.ticket = options.ticket;
+        }
+        this.setElement(this.el);
+        _.bindAll(this, 'render', 'close', 'resize');
+        app.platform.on("screen:orientation:change", this.resize, this);
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "player:sessionoverridden", this.onForcedClose, this);
+        this.listenTo(this.model, "player:resize", this.resize, this);
+        this.listenTo(this.model, "player:offline", this.renderOffline, this);   
+        this.listenTo(this.model, "player:error", this.renderError, this);
+        this.listenTo(this.model, "player:close", this.onClosePlayer, this);   
+
+        this.listenTo(this.model, "player:timeupdate", this.onPlayerProgress, this);   
+        this.listenTo(app.platform, "screen:resize", this.resize, this);
+        this.listenTo(app.router, "page:change", this.close, this);
+        this.render();
+    },
+
+    /*
+     * Get the film ratio, and calculate the optimal player height and width
+     *
+     */
+
+    resize: function() {
+        return;
+
+        var element = $("#event-control-container");
+        var ratio = this.model.ratio;
+        var nav_height = $('#event-container-heading').outerHeight();
+        var footer_height = $('#event-container-footer').outerHeight();
+        var orientation = App.Platforms.platform.getDeviceOrientation();
+        var player_width = (orientation == "portrait") ? $('#event-page-header').width() : $(window).width();
+        var player_height = player_width*ratio;
+
+        element.width(Math.ceil(player_width));
+        element.height(Math.ceil(player_height));
+        this.setElement(this.el);
+
+    },
+    close: function() {
+        this.model.stop();
+        this.stopListening(app.platform);
+        this.stopListening(app.router);
+        this.stopListening(this.model);
+        this.setElement(this.el);
+        this.$el.velocity("fadeOut", { duration: 200 });
+        //this.stopListening();
+    },
+    show: function() {
+        this.setElement(this.el);
+        this.$el.velocity("fadeIn", { duration: 200 });
+
+        //this.unbind();
+        //this.stopListening();
+    },
+    onClosePlayer: function(e) {
+        this.trigger('player:close', e);
+        this.close();
+    },
+    onForcedClose: function() {
+        this.trigger('player:close');
+    },
+    renderPreview: function() {
+        this.setElement(this.el);
+        var height = this.$el.parent().height();
+        var _this = this;
+        $("#event-page-header").removeClass("is-playing");
+
+        this.$el.empty().append(ich.eventStatePreviewTemplate(this.ticket.content.toJSON()));        
+        return this;
+    },
+    renderOffline: function() {
+        this.setElement(this.el);
+        var height = this.$el.parent().height();
+        var _this = this;
+        $("#event-page-header").removeClass("is-playing");
+        this.$el.empty().append(ich.eventStateOfflineTemplate(this.ticket.content.toJSON()));        
+        return this;
+    },
+    renderError: function() {
+        this.setElement(this.el);
+        var height = this.$el.parent().height();
+        var _this = this;
+        $("#event-page-header").removeClass("is-playing");
+
+        this.$el.empty().append(ich.eventStateErrorTemplate(this.ticket.content.toJSON()));        
+        return this;
+    },
+    renderFinished: function() {
+        this.setElement(this.el);
+        $("#event-page-header").removeClass("is-playing");
+
+        var height = this.$el.parent().height();
+        var _this = this;
+        this.$el.empty().append(ich.eventStateFinishedTemplate(this.ticket.content.toJSON()));        
+        return this;
+    },
+    renderPaused: function() {
+        this.setElement(this.el);
+        $("#event-page-header").removeClass("is-playing");
+
+        var height = this.$el.parent().height();
+        var _this = this;
+        this.$el.empty().append(ich.eventStatePausedTemplate(this.ticket.content.toJSON()));        
+        return this;
+    },
+
+    renderPlayer: function() {
+        this.setElement(this.el);
+
+        this.$el.empty().append(ich.eventPlayerTemplate(this.ticket.content.toJSON()));
+
+        $("#event-container-heading").show();
+
+        $("#event-control-container").css("opacity",1).show();
+        $("#event-page-header").addClass("is-playing");
+
+        $("#content-container").scrollTo(0,0);
+        this.resize();
+        return this;
+    },
+    render: function() {
+
+        this.setElement(this.el);        
+        return this;
+    },
+    onPageChange: function(page, params) {
+        $("#event-container-heading").hide().css("opacity",0);
+        this.close();
+     //   this.player.unload();
+
+    },
+    onPlayerProgress: function(evt) {
+        this.trigger("player:timeupdate", evt);
+    }
+}
+);
+
+App.Views.EventViewersView = Backbone.View.extend({
+    el: '#event-view-count',
+    model: App.User.Ticket,
+    render: function() {
+        this.setElement(this.el);        
+        var viewers = this.model.content.get("viewers");
+
+        var data = {viewers: viewers};
+
+        this.$el.empty().append(ich.eventViewersTemplate(data));
+        return this;
+    }
+});
+
+App.Views.EventStatusView = Backbone.View.extend({
+    el: '#event-status',
+    model: App.User.Ticket,
+    render: function() {
+        this.setElement(this.el);        
+        var statusText = this.model.content.get("status");
+        var statustime = Math.ceil(this.model.content.get("status_timestamp")*1000);
+        var date = new Date();
+        var timestamp = date.getTime();
+        var time = (timestamp-statustime);
+
+        if (parseInt(time) > 0 && statusText == 'live') {
+            var progress = App.Utils.convertMstoHumanReadable(time,true).toString();
+        } else {
+            var progress = '';
+        }
+
+        var data = {statusText: statusText, progress: progress};
+
+        this.$el.empty().append(ich.eventStatusTemplate(data));
+        return this;
+    }
+});
+
 App.Views.PlayerView = Backbone.View.extend({
     el: "#movie-player-container",
     subtitleEl: "#subtitles",
@@ -6,8 +193,8 @@ App.Views.PlayerView = Backbone.View.extend({
     events: {
         'click #close-player': 'onClosePlayer',
     },
-    initialize: function() {
-        this.setElement(this.el);
+    initialize: function()
+{        this.setElement(this.el);
         _.bindAll(this, 'render', 'close', 'resize', 'renderControls');
         app.platform.on("screen:orientation:change", this.resize, this);
         this.listenTo(this.model, "player:ready", this.renderControls, this);
@@ -39,10 +226,10 @@ App.Views.PlayerView = Backbone.View.extend({
 
     },
     close: function() {
-        this.model.stop();   
+        this.model.stop();
         this.stopListening(app.platform);
         this.stopListening(app.router);
-        this.stopListening(this.model);            
+        this.stopListening(this.model);
         this.setElement(this.el);
         this.$el.velocity("fadeOut", { duration: 200 });
         //this.stopListening();
@@ -53,10 +240,6 @@ App.Views.PlayerView = Backbone.View.extend({
 
         //this.unbind();
         //this.stopListening();
-    },
-    onSubtitlesLoaded: function() {
-
-
     },
     onClosePlayer: function(e) {
         this.trigger('player:close', e);
@@ -69,7 +252,7 @@ App.Views.PlayerView = Backbone.View.extend({
     render: function() {
         this.setElement(this.el);
         var height = this.$el.parent().height();
-        var _this = this;        
+        var _this = this;
         this.$el.empty().append(ich.playerTemplate(this.model.toJSON()));
         $("#video-container-heading").show();
 
@@ -83,13 +266,12 @@ App.Views.PlayerView = Backbone.View.extend({
 
     renderControls: function(content) {
 
-
         if (!App.Settings.Player.enable_legacy_subtitles) {
             $log("Legacy subtitles disabled, not loading control bar");
             return false;
         }
         this.controlBar = new App.Views.PlayerControlbar({model: content});
-        
+
         this.controlBar.on('controlbar:change', this.onControlsChange, this);
         this.$el.velocity("fadeIn", { duration: 200 });
         this.resize();
@@ -100,7 +282,7 @@ App.Views.PlayerView = Backbone.View.extend({
         this.model.trigger(evt, val);
     },
     onPageChange: function(page, params) {
-        $("#video-container-heading").hide().css("opacity",0);        
+        $("#video-container-heading").hide().css("opacity",0);
         this.close();
     }
 });
@@ -126,7 +308,7 @@ App.Views.PlayerControlbar = Backbone.View.extend({
     },
 
     render: function() {
-        
+
         var _this = this;
         this.setElement(this.el);
         this.$el.empty().append(ich.playerControlsTemplate(this.model.toJSON()));
@@ -189,7 +371,7 @@ App.Views.TrailerView = Backbone.View.extend({
           //  Vifi.KeyHandler.bind("keyhandler:"+item, eval("this."+key), this);
         }.bind(this));
     },
-    _unbindKeys: function() {
+    _unbindKeysKeys: function() {
         _.each(this._keyMap, function(key,item) {
           //  Vifi.KeyHandler.unbind("keyhandler:"+item, eval("this."+key));
         }.bind(this));
@@ -247,7 +429,7 @@ App.Views.TrailerView = Backbone.View.extend({
         }
     },
     onPlayerReady: function(event) {
-        $("#video-container-heading").show();        
+        $("#video-container-heading").show();
         event.target.playVideo();
     },
 

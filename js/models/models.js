@@ -1,9 +1,24 @@
+Backbone.History.prototype.navigate = _.wrap(Backbone.History.prototype.navigate, function(){
+    // Get arguments as an array
+    var args = _.toArray(arguments);
+    // firs argument is the original function
+    var original = args.shift();
+    // Set the before event
+    Backbone.history.trigger('before:url-change', args);
+    // Call original function
+    var res = original.apply(this, args);
+    // After event
+    Backbone.history.trigger('url-changed');
+    // Return original result
+    return res;
+});
+
 App.Models = {};
 
 App.Models.ApiModel = Backbone.Model.extend({
     defaults: {
         'id': '',
-        'session': false
+        'session': false,
     },
     params: {}
 
@@ -23,7 +38,7 @@ _.extend(App.Models.ApiModel.prototype, {
         var data = ("undefined" == typeof(options)) ? {} : options.data;
 
         var session = this.get("session");
-        if (!session) session = app.session;
+        if (!session || "undefined" == typeof session.attributes) session = app.session;
         var sessionParams= session.getParams(data);
 
         var type="GET";
@@ -57,7 +72,7 @@ _.extend(App.Models.ApiModel.prototype, {
 });
 
 App.Models.Product = App.Models.ApiModel.extend({
-
+    type: 'film'
 });
 App.Models.Subscription = App.Models.Product.extend({
     type: 'subscription'
@@ -132,6 +147,16 @@ App.Models.Film = App.Models.Product.extend({
     path: function() { return 'details/'; },
 
 });
+
+App.Models.Event = App.Models.Product.extend({
+    type: 'event',
+    path: function() { return 'event/details/' },
+
+});
+_.extend(App.Models.Event.prototype,  {
+    path: function() { return "event/details/" + this.get("id"); },
+});
+
 _.extend(App.Models.Film.prototype,  {
     path: function() { return "details/" + this.get("id"); },
 
@@ -167,4 +192,5 @@ _.extend(App.Models.Film.prototype,  {
         return true;
     },
  });
+
 

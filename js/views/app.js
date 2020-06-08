@@ -69,9 +69,15 @@ App.Views.BaseAppView = Backbone.View.extend({
         }
     },
     showMoviePage: function() {
+        app.router.trigger("page:change", "moviepage");        
         this.scrollTop = this.$("#content-container").scrollTop() + $("body").scrollTop();
         app.goto(app.movieview, true);
     },
+    showEventPage: function() {
+        this.scrollTop = this.$("#content-container").scrollTop() + $("body").scrollTop();
+        app.goto(app.eventview, true);
+    },
+
     showTicketPurchase: function(ticket) {
         console.log(ticket);
 
@@ -97,7 +103,10 @@ App.Views.BaseAppView = Backbone.View.extend({
         }.bind(this));
     },
     showBrowserPage: function() {
+
         app.goto(app.homepage);
+        app.router.trigger("page:change", "homepage");
+
         $(".main-wrapper:not(#homepage)").hide();
         $("#homepage").css("visibility", "visible");
         $("#homepage").show();
@@ -105,9 +114,10 @@ App.Views.BaseAppView = Backbone.View.extend({
             if (window.mySwiper) mySwiper.resizeFix();
             app.homepage.browserview.filterview.filterbarview.enableCarosel();
             this.browserInitialized = true;
+          
         }
         app.homepage.browserview.$isotope.isotope('layout');
-        app.homepage.browserview.renderResults();
+        app.homepage.browserview.renderResults();  
         if (this.scrollTop != 0) {
             $("#content-container").scrollTop(this.scrollTop);
         }
@@ -129,6 +139,8 @@ App.Views.BaseAppView = Backbone.View.extend({
         app.homepage.browserview.collection.onSearchFieldChange();
     },
     showContentPage: function(id) {
+        this.trigger("page:change", id);
+
         $(".main-wrapper:not(#contentpage)").hide();
         this.$("#content-container").scrollTop(0);
         $("#contentpage").show();
@@ -146,16 +158,22 @@ App.Views.BaseAppView = Backbone.View.extend({
             this.currentPage = next;
             return;
         }
+        var deferred = new $.Deferred();
         if (previous) {
-            previous.transitionOut(function() {}.bind(this));
+            previous.transitionOut(function() {deferred.resolve(); });
+        } else {
+            deferred.resolve();
         }
-        if (next) {
+
+        deferred.done(function() { 
+            if (next)
             next.transitionIn(function() {
                 if (scroll) $("body, #content-container").scrollTop(0);
             }.bind(this));
             //      next.render({ page: true });  // render the next view
             //    this.$el.append( next.$el );  // append the next view to the body (the el for this root view)
-        }
+        }.bind(this));
+        
         this.currentPage = next;
     }
 });
@@ -292,8 +310,13 @@ App.Views.TopMenu = Backbone.View.extend({
         return true;
     },
     goHome: function(e) {
-        e.stopPropagation();
+        app.router.navigate("/", {
+            trigger: false
+        });
         app.showBrowserPage();
+        e.preventDefault();
+
+
         return false;
     },
     render: function() {

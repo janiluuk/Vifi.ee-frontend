@@ -1,0 +1,131 @@
+<script type="text/html" id="eventStateDefaultTemplate">
+    <div class="event-button-container">
+        <div class="event-poster">
+            <img
+                src="{{ images.poster '130' '188'}}"
+            />
+        </div>
+        <button class="btn green btn-with-icon play-event">
+            <div class="play-icon btn-icon" id="playEvent"></div>
+            <span>{{ playButton }}</span>
+        </button>
+    </div>
+</script>
+<script type="text/html" id="eventStatusTemplate">
+    <div>{{ statusText }} {{ progress }}</div>
+</script>
+<script type="text/html" id="eventViewersTemplate">
+    <span>{{ viewers }}</span>
+</script>
+
+<script type="text/html" id="eventStateOfflineTemplate">
+    <div class="event-state-container">
+        <div class="event-state state-offline">
+            <div class="state-item">
+                <div class="state-icon-container">
+                    <div class="event-icon snooze-icon"></div>
+                </div>
+                <div class="state-message-container">
+                    <div class="state-header">
+                        Offline
+                    </div>
+                    <div class="state-message">
+                        This event is currently offline. Please check back later.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="eventStatePausedTemplate">
+    <div class="event-state-container">
+        <div class="event-state state-paused">
+            <div class="state-item">
+                <div class="state-icon-container">
+                    <div class="event-icon pause-icon"></div>
+                </div>
+                </div>
+                <div class="state-message-container">
+                    <div class="status-badge">
+                        Paused
+                    </div>
+                    <div class="state-message">
+                        Event has been paused, and should continue anytime soon.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="eventStateErrorTemplate">
+    <div class="event-state-container">
+        <div class="event-state state-error">
+            <div class="state-item">
+                <div class="state-icon-container">
+                    <div class="event-icon dizzy-icon"></div>
+                </div>
+                <div class="state-message-container">
+                    <div class="state-header">
+                        Oops
+                    </div>
+                    <div class="state-message">
+                        An unexpected error has occured.
+                        <button class="btn">
+                            <span>Try again</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="eventStateFinishedTemplate">
+    <div class="event-state-container">
+        <div class="event-state state-finished">
+            <div class="state-item">
+                <div class="state-icon-container">
+                    <div class="event-icon snooze-icon"></div>
+                </div>
+                <div class="state-message-container">
+                    <div class="state-header">
+                        Finished
+                    </div>
+                    <div class="state-message">
+                        This event has finished.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="eventStatePreviewTemplate">
+    <div class="event-state-container">
+        <div class="event-state state-preview">
+            <div class="state-item">
+                <div class="state-icon-container">
+                    <div class="event-icon snooze-icon"></div>
+                </div>
+                <div class="state-message-container">
+                    <div class="state-header">
+                        14:57
+                    </div>
+                    <div class="state-message">
+                        This event is about to start soon.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="eventPlayerTemplate">
+    <div id="event-container-heading" data-snap-ignore="true" class="float_left">
+            <div id="close-player" class="close">
+                <span class="close-button"></span>{{trans 'Close' }}</div>
+    </div>
+    <div id="event-player-container" data-snap-ignore="true"></div>
+    <div id="event-container-footer" data-snap-ignore="true" class="float_left"></div>
+</script>

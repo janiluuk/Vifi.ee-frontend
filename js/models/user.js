@@ -44,20 +44,28 @@ App.User.Ticket = Backbone.Model.extend({
             data.session_id = data.playsession.session_id;
             this.playsession = new App.User.FilmSession(data.playsession, {parse:true});
             this.playsession.set("session", app.session);
+            delete(data.playsession);            
         }
 
         if (_.has(data, 'content')) {
             if (_.isEmpty(data.title)) {
                 data.title = data.content.title;
             }
-
-            data.content.session_id = data.playsession.session_id;
+            if (data.playsession && data.playsession.session_id) data.content.session_id = data.playsession.session_id;
             data.content.auth_code = data.auth_code;
             data.content.id = data.vod_id;
-            this.content = new App.Models.FilmContent(data.content, {parse:true});
+            var type = data.content.type;
+            if (type == 'vod') {
+                this.content = new App.Models.FilmContent(data.content, {parse:true});
+            } else if (type == 'event') {
+                this.content = new App.Models.EventContent(data.content, {parse:true});
+            }
+
+            delete(data.content);
 
         }
 
+    
         return data;
     },
 
@@ -310,7 +318,8 @@ App.User.Profile = App.Models.ApiModel.extend({
             "language": "Estonian",
             "tickets": [],
             "paired_user": false,
-            "profile_picture": "",
+            "profile_picture": false,
+            "has_profile_picture": false,
             "purchase_history": [],
             "favorites": '',
             "messages": 0,
@@ -338,7 +347,8 @@ App.User.Profile = App.Models.ApiModel.extend({
     connectFB: function(fbuser) {
 
         var id = fbuser.get("id");
-        if (id != "") {
+        if (parseInt(id) && parseInt(id)>0) {
+
             this.set("profile_picture", 'https://graph.facebook.com/' + id + '/picture')
             this.set("lastname", fbuser.get("last_name"));
             this.set("firstname", fbuser.get("first_name"));
@@ -447,7 +457,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         }).done(function() {
                  if (app.fbuser) {
                         _this.trigger("user:facebook-connect", app.fbuser);
-                        if (app.fbuser.get("profile_picture") != "")
+                        if (app.fbuser.get("id") != "" && parseInt(app.fbuser.get("id")) > 0)
                         _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
                 }
 
@@ -476,8 +486,8 @@ App.User.Profile = App.Models.ApiModel.extend({
      * @return boolean true if found from the user collection
      *
      */
-    hasMovie: function(movie) {
-        var id = movie.get("id");
+    hasProduct: function(product) {
+        var id = product.get("id");
         var ticket = app.usercollection.get(id);
         if (ticket && ticket.get("id")) return true;
         return false;
@@ -554,7 +564,8 @@ App.User.Profile = App.Models.ApiModel.extend({
         this.fetch().done(function() {
             _this.updateUserCollection();
             deferred.resolve(app.usercollection);
-            if (app.fbuser && app.fbuser.get("id")) {
+            if (app.fbuser && app.fbuser.get("id") && parseInt(app.fbuser.get("id")) > 0) {
+
                     _this.set("profile_picture", 'https://graph.facebook.com/' + app.fbuser.get("id") + '/picture')
             }
         }.bind(this));
@@ -562,7 +573,7 @@ App.User.Profile = App.Models.ApiModel.extend({
     },
     purchase: function(movie) {
         this.updatePurchases().done(function() {
-            if (this.hasMovie(movie)) this.trigger("purchase:successful", movie);
+            if (this.hasProduct(movie)) this.trigger("purchase:successful", movie);
         }.bind(this));
     },
 }); App.User.FBPerson = Backbone.Model.extend({

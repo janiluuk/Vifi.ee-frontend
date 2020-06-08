@@ -32,6 +32,7 @@ window.app = _.extend({}, Backbone.Events);
         var session = new App.User.Session();
         var profile = session.get("profile");
         var genres = new App.Films.GenreCollection(data.genres);
+        var events = new App.Collections.EventCollection(data.events);
         var banners = new App.Collections.BannerCollection(data.banners);
         var subscriptions = new App.Collections.SubscriptionCollection(data.subscriptions);
         var paymentmethods = new App.Collections.PaymentmethodCollection(data.paymentmethods);
@@ -57,8 +58,8 @@ window.app = _.extend({}, Backbone.Events);
         var sort = new App.Collections.SortCollection([{'id': 'id', 'desc':true, 'name': 'Viimati lisatud', 'default' : true}, {'id': 'title', 'name': 'A-Z'}, {'id': 'star_rating', 'name': 'Vaadatuimad'}]);
         var eventhandler = _.extend({}, Backbone.Events);
 
-        App.Utils.include(["popup", "helper", "menu", "player","filmitem", "profile", "page"], function() {
-            app.template.load(['film'], function () {
+        App.Utils.include(["popup", "helper", "menu", "player", "eventplayer", "filmitem", "profile", "page"], function() {
+            app.template.load(['film','event'], function () {
 
                 window.app = new App.Views.BaseAppView({platform: App.Platforms.platform, session: session, sessioncollection: sessioncollection, profile: profile,player: player, subscriptions: subscriptions, paymentmethods: paymentmethods, template: app.template, usercollection: usercollection,  eventhandler: eventhandler, banners: banners, collection: collection, sort: sort, filters: { genres: genres, durations: durations, periods: periods}});
 

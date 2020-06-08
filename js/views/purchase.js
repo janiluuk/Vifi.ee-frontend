@@ -5,9 +5,7 @@ App.Views.MobilePurchase = Backbone.View.extend({
         'click #mobile-payment-start-btn' : 'initPayment',
         'click #mobile-payment-try-again' : 'initPayment'
     },
-
     initialize: function(options) {
-
 
         this.model = options.model;
         this.listenTo(this.model, "purchase:mobile:success", this.onPaymentSuccess, this);
@@ -289,8 +287,11 @@ App.Views.PaymentDialog = Backbone.View.extend({
         this.$("#confirm-purchase-button").removeClass("loading");
         this.remove();
         app.scrollToTop();
-        app.movieview.playMovie();
+        var ticket = app.usercollection.get(this.model.get("id"));
 
+        if (ticket && ticket.get("type") == 'film') {
+            app.movieview.playMovie();
+        }
     },
     onPaymentError: function(message) {
 
@@ -313,6 +314,12 @@ App.Views.PaymentDialog = Backbone.View.extend({
         return Backbone.View.prototype.remove.apply(this, arguments);
     },
     render: function() {
+        if (this.model.type !== 'film') {
+            this.model.set("isMovie", false);
+        } else {
+            this.model.set("isMovie", true);
+        }
+        
         this.$el.html(ich.purchaseDialogTemplate(this.model.toJSON()));
         if (!this.mobilePaymentView) {
                 setTimeout(function() {

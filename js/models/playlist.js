@@ -1,3 +1,4 @@
+
 App.Models.FilmContent = App.Models.ApiModel.extend({
     path: function() {
         return 'content/' + this.get("id");
@@ -7,7 +8,7 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         return {
             'id': false,
             'videos': [{
-                'mp4': '',
+                'src': '',
                 'profile': '',
                 'code': ''
             }],
@@ -119,8 +120,38 @@ App.Models.FilmContent = App.Models.ApiModel.extend({
         });
         var collection = new App.Player.SubtitleFileCollection(subs);
         this.set("subtitles", collection);
+    },
+    getVideos: function() {
+        return this.get("videos");
     }
 });
+App.Models.EventContent = App.Models.FilmContent.extend({
+    defaults: function() {
+        return {
+            'id': false,
+            'videos': [{
+                'src': '',
+                'profile': '',
+                'code': '',
+                'type' : '',
+                'bitrate': 0
+            }],
+            'images': {
+                'backdrop': '',
+                'poster': ''
+            },
+            'auth_code': '',
+            session: {},
+        }
+    },
+
+    path: function() {
+        this.params.auth_code = this.get("auth_code");
+        return 'event/content/' + this.get("id");
+    },
+});
+
+
 App.Player.VideoFile = Backbone.Model.extend({
     defaults: { 
         bitrate: false,
@@ -152,6 +183,7 @@ App.Player.VideoFile = Backbone.Model.extend({
         return playlist_item;
     }
 });
+
 App.Player.VideoFileCollection = Backbone.Collection.extend({
     model: App.Player.VideoFile,
     findMinBitrate: function(min_bitrate) { 

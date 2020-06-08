@@ -277,7 +277,7 @@ App.Models.Purchase = Backbone.Model.extend({
         },
         price: {
           required: App.Settings.Payment.allowFreeProducts !== true,
-          min: 0.01,
+          min:  (App.Settings.Payment.allowFreeProducts === true) ? '0.00' : '0.01',
           msg: 'Invalid price for the product'
         },
         code: {
@@ -305,7 +305,7 @@ App.Models.Purchase = Backbone.Model.extend({
 
         this.listenTo(this.mobilepayment, 'all', function(evenName, options) {
           var type = evenName.split(/purchase:/)[1];
-          if (type) {            
+          if (type) {
               this.trigger(evenName, options);
           }
         }, this);
@@ -363,16 +363,8 @@ App.Models.Purchase = Backbone.Model.extend({
 
     },
 
-    authorizeCode: function(code) {
-        if (!code) code = this.get("code");
-        var film_id = this.model.get("id");
-        if (undefined !== code && code != "") {
-            this.sendCodeAuth(film_id, code, this.onCodeAuth);
-        }
-    },
-
-    sendCodeAuth: function(callback, film_id,code) {
-        app.api.call(["authorize_film", film_id, code], {}, callback);
+    sendCodeAuth: function(callback, product_id,code,type) {
+        app.api.call(["authorize_film", product_id, code], {product_type: type}, callback);
     },
 
     onCodeAuth: function(data) {
@@ -382,19 +374,19 @@ App.Models.Purchase = Backbone.Model.extend({
             this.trigger("purchase:error", message);
             return false;
         }
-        
+
         if (app.usercollection.get(data.vod_id)) {
          }else {
            app.usercollection.create(data);
         }
 
         this.trigger("purchase:successful", data);
-    
+
     },
 
     verify: function(callback) {
         var info = this.generatePurchaseInfo();
-        app.api.call(["payment", "verify", info.film_id], info, callback,true);
+        app.api.call(["payment", "verify", info.product_id], info, callback,true);
     },
 
     onVerifyResponse: function(data) {
@@ -436,8 +428,10 @@ App.Models.Purchase = Backbone.Model.extend({
 
         if (method == "code") {
             var id = this.model.get("id");
+            var type = this.model.type;
+
             var code = this.get("code");
-            this.sendCodeAuth(this.onCodeAuth, id, code);
+            this.sendCodeAuth(this.onCodeAuth, id, code, type);
             return false;
         }
 
@@ -457,13 +451,14 @@ App.Models.Purchase = Backbone.Model.extend({
 
         var info =  this.generatePurchaseInfo();
 
-        var url = App.Settings.Api.url + "payment/payment/" + info.film_id + "?";
+        var url = App.Settings.Api.url + "payment/payment/" + info.product_id + "?";
 
         var data = {
             'api_key' : App.Settings.Api.key,
             'token' : info.auth_id,
             'user_id' : info.user_id,
             'method_id' : info.method_id,
+            'type' : info.product_type,
             'sum' : this.model.get("price"),
         }
 
@@ -475,15 +470,19 @@ App.Models.Purchase = Backbone.Model.extend({
     // Purchase info for backend
 
     generatePurchaseInfo: function() {
-        var film_id = this.model.get("id");
+        var product_id = this.model.get("id");
         var auth_id = this.session.get("auth_id");
         var user_id = this.session.get("user_id");
+        var product_type = this.model.type;
 
+        if (!product_type) {
+            product_type = 'VodTitle'
+        }
         if (!auth_id || auth_id < 1)
             auth_id = this.session.get("auth_id");
 
-        if (!film_id || film_id < 1) {
-            throw ("Invalid film given for purchase");
+        if (!product_id || product_id < 1) {
+            throw ("Invalid product given for purchase");
         }
 
         if (!user_id || user_id < 1) {
@@ -498,7 +497,8 @@ App.Models.Purchase = Backbone.Model.extend({
             'email': this.get("email"),
             'method_id': this.get("method_id"),
             'method' : this.get("method"),
-            'film_id': film_id
+            'product_id': product_id,
+            'product_type' : product_type
         }
         this.set("purchaseInfo", info);
 
@@ -555,7 +555,7 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
     },
 
     sendCodeAuth: function(callback, product_id,code) {
-        app.api.call(["authorize_subscription_code", product_id, code], {}, callback);
+        app.api.call(["authorize_subscription_code", product_id, code], {product_type: 'subscription'}, callback);
 
     },
 
@@ -572,7 +572,7 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
         var method_id = this.get("method_id");
 
         if (!product_id || product_id < 1) {
-            throw ("Invalid film given for purchase");
+            throw ("Invalid product given for purchase");
         }
         if (!user_id || user_id < 1) {
             throw ("Invalid or missing user for purchase");
@@ -584,7 +584,8 @@ App.Models.PurchaseSubscription = App.Models.Purchase.extend({
             'user_id': user_id,
             'method_id' : method_id,
             'price' : this.get("price"),
-            'product_id': product_id
+            'product_id': product_id,
+            'product_type' : 'subscription'
         }
 
         this.set("purchaseInfo", info);

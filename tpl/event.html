@@ -1,0 +1,164 @@
+<div class="event-feature-wrapper" id="event-page-header">
+    <div id="event-control-container" class="event-controls">
+        <div class="event-state-container">
+            <div class="event-state state-default">
+                <div class="event-poster">
+                    <img
+                        src="<%- poster_url %>"
+                    />
+                </div>
+                <button id="playEvent" class="play-event btn green icon play">
+                    <span>
+
+                        <%- playButton %>
+                    </span>
+
+                    <div class="play-icon btn-icon" >
+                        
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="eventpage-body">
+    <!-- Event Info -->
+    <div id="event-info-container">
+        <!-- Details title, durations and language -->
+        <div class="event-details-container">
+            <div class="event-title-row">
+                <div class="title-block">
+                    <div id="event-status"></div>
+                    <div class="event-title">
+                        <%-title %>
+                    </div>
+                   
+                </div>
+                <!-- Live info: display only for live event -->
+                <div class="live-info-block">
+               
+                        <div id="event-view-count"></div>
+                </div>
+            </div>
+            <div class="event-details-row">
+                <ul class="event-details-list">
+                    <li class="event-detail-item">
+                        <div class="event-icon calendar-star-icon"></div>
+                        <span>
+                            <%-starttime %>
+                        </span>
+                    </li>
+                    <li class="event-detail-item">
+                        <div class="event-icon stopwatch-icon"></div>
+                        <span>
+                            <%-duration%>
+                        </span>
+                    </li>
+                    <li class="event-detail-item">
+                        <div class="event-icon headphones-icon"></div>
+                        <span>
+                            <%-languages%>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="event-overview-row">
+                <ul class="event-overview-list">
+                    <li class="event-overview-item">
+                        <span class="event-overview-label">
+                            Description: </span>   <%=overview ? nl2br(overview): tr("No description available")%>
+                    </li>
+                    <li class="event-overview-item">
+                        <span class="event-overview-label">
+                            Producer:
+                        </span>
+                        <%-producer_name%>
+                    </li>
+                    <% if (series != false) { %>
+                    <li class="event-overview-item">
+                        <span class="event-overview-label">
+                        Series:</span>
+                        <%= series.name %>
+                    </li>
+                    <% } %>
+                </ul>
+            </div>
+                <button class="offline-event button">
+                        Offline
+                    </button>
+                    <button class="error-event button">
+                        Error
+                    </button>
+                    <button class="preview-event button">
+                        Preview
+                    </button>
+                    <button class="finished-event button">
+                        Finished
+                    </button>
+                    <button class="pause-event button">
+                        Paused
+                    </button>
+                    <button class="online-event button">
+                        Online
+                    </button>
+
+        </div>
+        <!-- Keep just as reference -->
+        <div
+            class="event-summary"
+            id="event-summary-container"
+            style="display: none;"
+        >
+            <h3>
+                Event summary
+            </h3>
+            <div class="text-area">
+                <%=overview ? nl2br(overview): tr("No description available")%>
+            </div>
+            <div class="text-area" style="color:white;">
+                base_name: "asdf"
+                <br />
+                duration: "1h 30m"
+                <br />
+                duration_seconds: 5400
+                <br />
+                endtime: "04.06.2020 21:30"
+                <br />
+                endtime_timestamp: 1591295400
+                <br />
+                id: "17"
+                <br />
+                images:
+                <br />
+                languages: "Estonian, English"
+                <br />
+                backdrop: "full_placeholder.png"
+                <br />
+                poster: "full_placeholder_poster.png"
+                <br />
+                modified: "2020-06-04 16:30:49"
+                <br />
+                modified_days: 0
+                <br />
+                overview: "asdsda"
+                <br />
+                price: "0.00"
+                <br />
+                producer_name: "testing"
+                <br />
+                seo_friendly_url: "/event/asdf"
+                <br />
+                series: { name: "some series", id: series_id }
+                <br />
+                starttime: "04.06.2020 20:00"
+                <br />
+                starttime_timestamp: 1591290000
+                <br />
+                title: "testin"
+                <br />
+                status: "offline/paused/complete/live/preview" youtube_id: ""
+            </div>
+            <br />
+        </div>
+    </div>
+</div>

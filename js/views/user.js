@@ -362,7 +362,6 @@ App.Views.UserCollectionView = Backbone.View.extend({
         } 
 
         try {
-            console.log("update");
         if (length == 0) {
             this.$filmCollectionHolder.empty();
         }
@@ -371,7 +370,9 @@ App.Views.UserCollectionView = Backbone.View.extend({
                 function(model) {
                     if (!model.isExpired())
                     _this.addChildView(model);
-
+                    else {
+                        model.destroy();
+                    }
                 }.bind(this),
                 this
             );
@@ -394,9 +395,19 @@ App.Views.UserCollectionView = Backbone.View.extend({
         return this;
     },
     addChildView: function(model) {
-        var filmView = new App.Views.UserFilmView({
-            model: model
-        });
+
+        var type = model.get("type");
+
+        if (type == 'event') {
+            var filmView = new App.Views.UserEventView({
+                model: model
+            });
+
+        } else {
+            var filmView = new App.Views.UserFilmView({
+                model: model
+            });
+        }
         $(this.fragment).append(filmView.render().el);
 
         return filmView;

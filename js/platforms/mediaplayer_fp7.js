@@ -17,6 +17,11 @@ App.MediaPlayer = {
     init: function(playlist) {
         $log("Calling init on FP7 player");
         if (playlist) this.setPlaylist(playlist);
+        if (playlist.getType() == "event") {
+            this.playerId = 'event-player-container';
+        } else {
+            this.playerId = 'player-container';
+        }
         this._videoElement = $("#" + this.playerId);
         if (this._videoElement.length == 0) {
             this._videoElement = $("<div>").attr("id", this.playerId).appendTo("#movie-player-container");
@@ -35,27 +40,39 @@ App.MediaPlayer = {
     _createPlayer: function() {
         if (!this.playlist) return false;
         try {
+            var type = this.playlist.getType();
+            var playlist = this.playlist.getPlaylistFiles();
 
-            var playlistFiles = this.playlist.getPlaylistFiles();
+            var live = false;
+            if (type == 'event') {
+                
+                if (_.isEmpty(playlist)) {
+                    this.trigger("mediaplayer:stream:offline");
+                    return false;
+
+                }
+                live = true;
+
+            }
+
             var _this = this;
-            var sources = {
-                sources: playlistFiles[0]
-            };
             var subs = {};
 
             if (this.subtitles) {
                 subs = this.getSubtitleConfig();
             }
 
-            $log("Initializing flowplayer to "+ this.playerId + " element with playlist " + JSON.stringify(sources));
+            $log("Initializing flowplayer to "+ this.playerId + " element with playlist " + JSON.stringify(playlist));
             this.plugin = flowplayer('#' + this.playerId, {
                 token: App.Settings.Player.flowplayer_fp7_token,
                 auto_orient: true,
                 autoplay: true,
                 muted: false,
+                engine: 'hlsjs',
+                live: live,
                 embed: false,
                 hls : { native: true },
-                src: playlistFiles,
+                src: playlist,
                 subtitles: subs,
                 plugins: [
                     'subtitles',
@@ -64,7 +81,8 @@ App.MediaPlayer = {
                     'chromecast',
                     'airplay'
                 ]
-            });
+            }).on('error', function(e) { _this.trigger("mediaplayer:error", e.data);});
+
             this.plugin.on('loadeddata', function(e) {
 
                 var video = e.target;
@@ -82,6 +100,11 @@ App.MediaPlayer = {
                 _this.plugin.on("playing", function(e) {
                     _this.trigger("mediaplayer:resume");
                 });
+                _this.plugin.on('error', function(err) {
+
+                    _this.trigger("mediaplayer:error", err);
+                });
+
                 _this.plugin.on("ended", function(e) {
                     _this.trigger("mediaplayer:onstop");
                 });
@@ -137,6 +160,7 @@ App.MediaPlayer = {
     },    
     _playVideo: function() {
         this.currentStream = this.playlist.nextFile();
+        this.type = this.playlist.getType();        
         $log(" SETTING CURRENT STREAM TO: " + this.currentStream.src);
         this.play();
 

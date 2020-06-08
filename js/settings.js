@@ -46,7 +46,7 @@ App.Settings = {
         Payment: {
             'default_method' : 'code',
             'mobile' : {'autostart' : false },
-            'allowFreeProducts' : false
+            'allowFreeProducts' : true
         },
         /** Player Settings **/
 
@@ -100,8 +100,11 @@ App.Settings = {
 
 App.Translations = {
         'est' : {
-
+            'No subtitles': 'Subtiitreid pole',
             'Eesti' : 'Eesti',
+            'Not Found' : 'Läinud',
+            'This page is no longer available' : 'Seda lehte pole (enam) olemas',
+            'Go to home page' : 'Tagasi esilehele',
             'English' : 'Inglise',
             'Clear' : 'Puhasta',
             'Change password': 'Vaheta parool',
