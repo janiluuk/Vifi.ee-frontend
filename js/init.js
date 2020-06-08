@@ -99,7 +99,6 @@ function init() {
 
             if (App.Settings.sentry_enabled === true) {
                 Sentry.init({ dsn: App.Settings.sentry_dsn});
-		Raven.config(App.Settings.sentry_dsn).install()
             }
             setTimeout(function() {
                 initFB();
@@ -134,7 +133,7 @@ function handleSessionResponse(response) {
 
 /** Init google analytics */
 function initGA() {
-    if (App.Settings.google_analytics_code != "") {
+    if (App.Settings.google_analytics_enabled == true) {
         (function(i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
             i[r] = i[r] || function() {

@@ -549,6 +549,10 @@
 	display: inline;
 }
 
+.is-paused .fp-small-pause {
+    display: none;
+}
+
 .is-playing.is-touched .fp-play {
 	width: 0;
 	height: 0;

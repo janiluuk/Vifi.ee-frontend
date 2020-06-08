@@ -73,7 +73,6 @@
 	align-items: stretch;
 	justify-content: stretch;
 	max-width: 40%;
-	min-height: 140px;
 	color: #f0f0f0;
 }
 
@@ -91,7 +90,8 @@
 }
 
 .state-message-container {
-	padding: 14px;
+	padding: 20px;
+	padding-left: 0;
 	display: flex;
 	flex-flow: column;
 	align-items: flex-start;
@@ -106,8 +106,8 @@
 	font-size: 16px;
 }
 
-.state-message-container .status-badge {
-	margin-bottom: 5px;
+.state-message > .btn {
+	margin-top: 14px;
 }
 
 .state-message-container .countdown {
@@ -262,6 +262,11 @@
 	mask: url(img/icons/solid/pause.svg);
 }
 
+.pause-circle-icon {
+	-webkit-mask: url(img/icons/duotone/pause-circle.svg) no-repeat center;
+	mask: url(img/icons/duotone/pause-circle.svg);
+}
+
 .head-side-icon {
 	-webkit-mask: url(img/icons/light/head-side.svg) no-repeat center;
 	mask: url(img/icons/light/head-side.svg);
@@ -275,6 +280,21 @@
 .snooze-icon {
 	-webkit-mask: url(img/icons/duotone/snooze.svg) no-repeat center;
 	mask: url(img/icons/duotone/snooze.svg);
+}
+
+.dizzy-icon {
+	-webkit-mask: url(img/icons/duotone/dizzy.svg) no-repeat center;
+	mask: url(img/icons/duotone/dizzy.svg);
+}
+
+.badge-check-icon {
+	-webkit-mask: url(img/icons/duotone/badge-check.svg) no-repeat center;
+	mask: url(img/icons/duotone/badge-check.svg);
+}
+
+.grin-stars-icon {
+	-webkit-mask: url(img/icons/duotone/grin-stars.svg) no-repeat center;
+	mask: url(img/icons/duotone/grin-stars.svg);
 }
 
 .event-overview-list {
@@ -312,6 +332,24 @@
 	}
 	.event-title {
 		font-size: 1.5rem;
+	}
+	.state-icon-container,
+	.state-icon-container {
+		padding: 20px;
+	}
+	.state-header {
+		font-size: 24px;
+	}
+	.state-icon-container .event-icon {
+		width: 60px;
+		height: 60px;
+	}
+	.state-message {
+		font-size: 14px;
+	}
+
+	.state-message > .btn {
+		margin-top: 10px;
 	}
 	.state-item {
 		max-width: 85%;

@@ -12,10 +12,19 @@
     </div>
 </script>
 <script type="text/html" id="eventStatusTemplate">
-    <div>{{ statusText }} {{ progress }}</div>
+        <div class="status-badge {{ statusText }}">
+        <div class="event-icon circle-icon"></div>
+
+        <div>{{ statusText }} {{ progress }}</div>
+        </div>
+
 </script>
 <script type="text/html" id="eventViewersTemplate">
-    <span>{{ viewers }}</span>
+    <div class="live-info-item viewers">
+
+<div class="event-icon head-side-icon"></div>    
+<span>{{ viewers }}</span>
+</div>  
 </script>
 
 <script type="text/html" id="eventStateOfflineTemplate">
@@ -42,11 +51,10 @@
         <div class="event-state state-paused">
             <div class="state-item">
                 <div class="state-icon-container">
-                    <div class="event-icon pause-icon"></div>
-                </div>
+                    <div class="event-icon pause-circle-icon"></div>
                 </div>
                 <div class="state-message-container">
-                    <div class="status-badge">
+                    <div class="state-header">
                         Paused
                     </div>
                     <div class="state-message">
@@ -70,7 +78,7 @@
                         Oops
                     </div>
                     <div class="state-message">
-                        An unexpected error has occured.
+                        <div>An unexpected error has occured.</div>
                         <button class="btn">
                             <span>Try again</span>
                         </button>
@@ -86,7 +94,7 @@
         <div class="event-state state-finished">
             <div class="state-item">
                 <div class="state-icon-container">
-                    <div class="event-icon snooze-icon"></div>
+                    <div class="event-icon badge-check-icon"></div>
                 </div>
                 <div class="state-message-container">
                     <div class="state-header">
@@ -106,14 +114,14 @@
         <div class="event-state state-preview">
             <div class="state-item">
                 <div class="state-icon-container">
-                    <div class="event-icon snooze-icon"></div>
+                    <div class="event-icon grin-stars-icon"></div>
                 </div>
                 <div class="state-message-container">
                     <div class="state-header">
                         14:57
                     </div>
                     <div class="state-message">
-                        This event is about to start soon.
+                        Let's get excited! This event is about to start soon.
                     </div>
                 </div>
             </div>
