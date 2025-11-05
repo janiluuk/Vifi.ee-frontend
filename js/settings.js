@@ -11,17 +11,17 @@ App.Settings = {
         sortingEnabled: true,
         loginEnabled: true,
         sentry_enabled: true,
-	    sentry_dsn: 'https://dea56abbf17f45af9910de94893d3f6d@o392056.ingest.sentry.io/5239044',
+	    sentry_dsn: '',
         google_analytics_enabled: true,
-        google_analytics_code: 'UA-66018559-1',
-        rt_api_key: 'ckggf2er2ur93h6kjmxkem5m',
-        facebook_app_id:  '169875156439063',
+        google_analytics_code: 'UA-XXXXX-1',
+        rt_api_key: '',
+        facebook_app_id:  '',
         commentsEnabled: true,
         disqus_shortname: 'vifi',
         /** API Settings **/
         Api: {
             url: '//dev.vifi.ee/api/',
-            key: '298fh23hhdff112'
+            key: ''
         },
         Cookies: {
             cookie_name: 'vifi_session',
