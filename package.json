@@ -1,0 +1,49 @@
+{
+  "name": "vifi-frontend",
+  "version": "2020.5.2",
+  "description": "Vifi.ee online video streaming service frontend",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janiluuk/Vifi.ee-frontend.git"
+  },
+  "keywords": [
+    "video",
+    "streaming",
+    "vod",
+    "backbone",
+    "frontend"
+  ],
+  "author": "Jani Luukkanen",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lodash": "^4.17.21"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/vendor/**",
+      "!js/vendors.js"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/js/vendor/"
+    ],
+    "coverageReporters": ["text", "lcov", "html"],
+    "collectCoverage": false
+  }
+}
