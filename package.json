@@ -5,7 +5,12 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "lint": "eslint js/ tests/",
+    "lint:fix": "eslint js/ tests/ --fix",
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch"
   },
   "repository": {
     "type": "git",
@@ -24,9 +29,17 @@
     "@babel/core": "^7.23.5",
     "@babel/preset-env": "^7.23.5",
     "babel-jest": "^29.7.0",
+    "babel-loader": "^10.0.0",
+    "copy-webpack-plugin": "^13.0.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-jest": "^29.2.1",
+    "html-webpack-plugin": "^5.6.5",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "terser-webpack-plugin": "^5.3.15",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1"
   },
   "jest": {
     "testEnvironment": "jsdom",
@@ -43,7 +56,11 @@
       "/node_modules/",
       "/js/vendor/"
     ],
-    "coverageReporters": ["text", "lcov", "html"],
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
     "collectCoverage": false
   }
 }
