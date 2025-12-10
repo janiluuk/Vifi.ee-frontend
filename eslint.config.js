@@ -9,8 +9,8 @@ export default [
       'dist/**',
       'build/**',
       '.nyc_output/**',
-      'js/vendor/**',
-      'js/vendors.js',
+      'src/js/vendor/**',
+      'src/js/vendors.js',
       '**/*.min.js'
     ]
   },

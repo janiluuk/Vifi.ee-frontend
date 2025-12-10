@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
 
   return {
     entry: {
-      app: './js/init.js',
+      app: './src/js/init.js',
     },
     output: {
       filename: isProduction ? '[name].bundle.min.js' : '[name].bundle.js',
@@ -35,7 +35,7 @@ module.exports = (env, argv) => {
       splitChunks: {
         cacheGroups: {
           vendors: {
-            test: /[\\/]js[\\/]vendor[\\/]/,
+            test: /[\\/]src[\\/]js[\\/]vendor[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: 10,
@@ -66,14 +66,14 @@ module.exports = (env, argv) => {
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: 'index.html', to: 'index.html' },
-          { from: 'channel.html', to: 'channel.html' },
-          { from: 'style', to: 'style' },
-          { from: 'inc', to: 'inc' },
-          { from: 'tpl', to: 'tpl' },
-          { from: 'swf', to: 'swf' },
-          { from: 'favicon.ico', to: 'favicon.ico' },
-          { from: 'favicon.png', to: 'favicon.png' },
+          { from: 'src/index.html', to: 'index.html' },
+          { from: 'src/channel.html', to: 'channel.html' },
+          { from: 'src/style', to: 'style' },
+          { from: 'src/inc', to: 'inc' },
+          { from: 'src/tpl', to: 'tpl' },
+          { from: 'src/swf', to: 'swf' },
+          { from: 'src/favicon.ico', to: 'favicon.ico' },
+          { from: 'src/favicon.png', to: 'favicon.png' },
         ],
       }),
     ],
@@ -85,9 +85,9 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.js'],
       alias: {
-        '@models': path.resolve(__dirname, 'js/models'),
-        '@views': path.resolve(__dirname, 'js/views'),
-        '@collections': path.resolve(__dirname, 'js/collections'),
+        '@models': path.resolve(__dirname, 'src/js/models'),
+        '@views': path.resolve(__dirname, 'src/js/views'),
+        '@collections': path.resolve(__dirname, 'src/js/collections'),
       },
     },
     performance: {
