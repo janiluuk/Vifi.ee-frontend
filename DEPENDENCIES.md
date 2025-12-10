@@ -6,22 +6,34 @@
 
 #### jQuery
 - **Current Version**: 2.1.0
-- **File**: `js/vendor/jquery-2.1.0.min.js`
+- **Files**: 
+  - `js/vendor/jquery-2.1.0.min.js` (standalone file)
+  - `js/vendors.js` (concatenated with other libraries)
 - **Status**: ⚠️ Outdated (Latest stable: 3.7.1)
 - **Recommendation**: Update to jQuery 3.x for security patches and performance improvements
 - **Breaking Changes**: Migration guide available at https://jquery.com/upgrade-guide/3.0/
+- **Update Instructions**:
+  1. Download jQuery 3.7.1 minified from https://code.jquery.com/jquery-3.7.1.min.js
+  2. Replace `js/vendor/jquery-2.1.0.min.js` with the new version
+  3. Rename to `js/vendor/jquery-3.7.1.min.js`
+  4. Update reference in `js/vendors.js` (if concatenated build is used)
+  5. Test all jQuery-dependent functionality
+  6. Check for deprecated methods: `.size()`, `.andSelf()`, `.error()`, `.load()` (AJAX)
+  7. Verify Backbone.js compatibility (Backbone 1.4.0 supports jQuery 1.11.0+)
 
 #### Backbone.js
-- **Current Version**: Unknown (appears to be an older version)
+- **Current Version**: 1.4.0
 - **File**: `js/vendor/backbone-min.js`
-- **Status**: ⚠️ Needs version identification and possible update
-- **Recommendation**: Update to latest stable version (1.4.1+)
+- **Status**: ✅ Recent stable version (Latest: 1.4.1)
+- **Released**: 2019
+- **Recommendation**: Version is acceptable, but consider updating to 1.4.1 for minor bug fixes
 
 #### Underscore.js
-- **Current Version**: Unknown
+- **Current Version**: 1.10.2
 - **File**: `js/vendor/underscore-min.js`
-- **Status**: ⚠️ Needs version identification
-- **Recommendation**: Consider updating or migrating to Lodash for better performance
+- **Status**: ✅ Recent stable version (Latest: 1.13.x)
+- **Released**: 2020
+- **Recommendation**: Version is acceptable for current use, but updates available with minor improvements
 
 ### Backbone Plugins
 
