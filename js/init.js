@@ -79,8 +79,6 @@ window.app = _.extend({}, Backbone.Events);
                 window.history = Backbone.history.start({pushState: true});
                 deferred.resolve(app);
 
-                delete(data);
-
             }.bind(this));
         });
         return deferred.promise();

@@ -293,8 +293,6 @@ App.Views.BrowserPage = Backbone.View.extend({
             container.appendChild(el);
         });
         this.$isotope.append(container).isotope('insert', items);
-        delete(items);
-        delete(container);
         return true;
     },
     onLoadMore: function(e) {
