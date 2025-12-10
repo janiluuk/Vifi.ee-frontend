@@ -35,8 +35,8 @@ Vifi.ee is an online video streaming service frontend application built with Bac
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js**: v14.x or higher (recommended: v18.x or later)
-- **npm**: v6.x or higher (comes with Node.js)
+- **Node.js**: v16.x or higher (recommended: v18.x or later)
+- **npm**: v8.x or higher (comes with Node.js)
 - A modern web browser (Chrome, Firefox, Safari, or Edge)
 
 You can verify your installations by running:
@@ -634,4 +634,4 @@ For questions or issues:
 ---
 
 **Version**: 2020.5.2  
-**Last Updated**: December 2024
+**Last Updated**: December 10, 2024
