@@ -5,9 +5,18 @@
 
 // Load jQuery 3.7.1 from node_modules
 const $ = require('jquery');
-global.$ = global.jQuery = $;
 
 describe('jQuery 3.7.1', () => {
+  // Set up jQuery globals for each test
+  beforeAll(() => {
+    global.$ = global.jQuery = $;
+  });
+
+  // Clean up after all tests
+  afterAll(() => {
+    delete global.$;
+    delete global.jQuery;
+  });
   // Test that jQuery is loaded and available
   test('jQuery is loaded and available', () => {
     expect(typeof $).toBe('function');
