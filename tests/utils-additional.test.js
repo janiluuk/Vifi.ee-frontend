@@ -3,6 +3,9 @@
  * Testing utility functions that weren't covered in the original test suite
  */
 
+// Import lodash at the top level for better performance
+const _ = require('lodash');
+
 describe('App.Utils - Additional Functions', () => {
   beforeAll(() => {
     // Mock App global
@@ -39,7 +42,6 @@ describe('App.Utils - Additional Functions', () => {
       if (!s || !this.isValidDate(s)) return false;
       var dateParts = s.split(' ')[0].split('-');
       var timeParts = s.split(' ')[1].split(':');
-      var _ = require('lodash');
       if (_.isEmpty(timeParts[2])) timeParts[2] = 0;
 
       return new Date(dateParts[0], parseInt(dateParts[1]) - 1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], 0);
@@ -93,6 +95,8 @@ describe('App.Utils - Additional Functions', () => {
     };
 
     // Define dateToHumanreadable function
+    // NOTE: This function has a bug in the original implementation - getMonth() returns 0-11
+    // but it's not adjusted for display. This test reflects the actual implementation.
     global.App.Utils.dateToHumanreadable = function(s) {
       if (!s) return false;
       if ("string" == typeof(s)) {
