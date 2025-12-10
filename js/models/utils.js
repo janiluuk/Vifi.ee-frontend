@@ -109,16 +109,18 @@ App.Utils = {
     },
 
     convertMstoHumanReadable: function(ms, leadingZeros) {
-            leadingZeros = typeof(leadingZerons) == 'undefined' ? true : !!leadingZeros // Make sure its boolean
+            leadingZeros = typeof(leadingZeros) == 'undefined' ? true : !!leadingZeros // Make sure its boolean
 
             var x = ms / 1000
-            var numSecs = seconds = Math.floor(x % 60)
+            var seconds = Math.floor(x % 60)
+            var numSecs = seconds
             x /= 60
-            var numMins = minutes = Math.floor(x % 60)
+            var minutes = Math.floor(x % 60)
+            var numMins = minutes
             x /= 60
-            hours = Math.floor(x % 24)
+            var hours = Math.floor(x % 24)
             x /= 24
-            days = Math.floor(x);
+            var days = Math.floor(x);
 
             var numMs = ms - (seconds * 1000);
 
@@ -151,7 +153,7 @@ App.Utils = {
             var s = 0.0;
             if (t) {
                 var p = t.split(':');
-                for (i = 0; i < p.length; i++) s = s * 60 + parseFloat(p[i].replace(',', '.'))
+                for (var i = 0; i < p.length; i++) s = s * 60 + parseFloat(p[i].replace(',', '.'))
             }
             return parseInt(s * 1000);
         },
@@ -280,15 +282,17 @@ App.Utils.State = Backbone.Model.extend({
     getQueryString: function(addParams) {
         var hashables = [];
         var dict = this.toJSON();
-        for (key in dict) {
-            if ((!_.indexOf(_.keys(this.defaults), key) || (this.defaults[key] != dict[key])) && dict[key] != undefined) {
+        for (var key in dict) {
+            if (dict.hasOwnProperty(key) && (!_.indexOf(_.keys(this.defaults), key) || (this.defaults[key] != dict[key])) && dict[key] != undefined) {
                 if (dict[key] != "") hashables.push(key + '=' + escape(dict[key]));
             }
         }
 
         if (addParams) {
-            for (key in addParams) {
-                hashables.push(key + '=' + addParams[key])
+            for (var key in addParams) {
+                if (addParams.hasOwnProperty(key)) {
+                    hashables.push(key + '=' + addParams[key])
+                }
             }
         }
         var params = hashables.join('&');

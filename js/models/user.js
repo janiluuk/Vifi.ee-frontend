@@ -289,7 +289,8 @@ App.User.CookiePurchases = Backbone.Model.extend({
     },
     getNewPurchases: function() {
         var cookieName = this.purchase_cookie_name;
-        if (cookie = this.cookies.findByName(cookieName)) {
+        var cookie = this.cookies.findByName(cookieName);
+        if (cookie) {
             return cookie.get("value");
         }
         return false;

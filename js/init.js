@@ -79,8 +79,6 @@ window.app = _.extend({}, Backbone.Events);
                 window.history = Backbone.history.start({pushState: true});
                 deferred.resolve(app);
 
-                delete(data);
-
             }.bind(this));
         });
         return deferred.promise();
@@ -128,8 +126,10 @@ function handleSessionResponse(response) {
     }
     //if we do have a non-null response.session, call FB.logout(),
     //the JS method will log the user out of Facebook and remove any authorization cookies
-    FB.logout(response.authResponse);
-};
+    if (typeof FB !== 'undefined') {
+        FB.logout(response.authResponse);
+    }
+}
 
 /** Init google analytics */
 function initGA() {

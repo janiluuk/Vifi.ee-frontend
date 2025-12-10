@@ -63,7 +63,6 @@
             }
             if (App.Settings.google_analytics_enabled) {
                 if (!label) label = action;
-                console.log("sending google anal");
                 
                 ga('send', {
                     hitType: 'event',
