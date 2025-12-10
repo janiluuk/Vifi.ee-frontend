@@ -6,8 +6,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint js/ tests/",
-    "lint:fix": "eslint js/ tests/ --fix",
+    "lint": "eslint src/js/ tests/",
+    "lint:fix": "eslint src/js/ tests/ --fix",
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development",
     "watch": "webpack --mode development --watch"
@@ -46,16 +46,16 @@
     "testEnvironment": "jsdom",
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "js/**/*.js",
-      "!js/vendor/**",
-      "!js/vendors.js"
+      "src/js/**/*.js",
+      "!src/js/vendor/**",
+      "!src/js/vendors.js"
     ],
     "testMatch": [
       "**/tests/**/*.test.js"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
-      "/js/vendor/"
+      "/src/js/vendor/"
     ],
     "coverageReporters": [
       "text",

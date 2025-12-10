@@ -1,7 +1,7 @@
 #!/bin/sh
  
-routes=("js/settings.js" "js/router.js" "js/models/models.js" "js/models/platform.js" "js/models/utils.js" "js/models/user.js" "js/models/session.js" "js/models/player.js" "js/models/playlist.js" "js/models/purchase.js" "js/collections/collections.js" "js/models/forms.js" "js/views/app.js" "js/views/films.js" "js/views/filterbar.js" "js/views/detailpage.js" "js/views/purchase.js" "js/views/player.js" "js/views/user.js" "js/views/facebook.js" "js/views/browser.js" "js/init.js")
+routes=("src/js/settings.js" "src/js/router.js" "src/js/models/models.js" "src/js/models/platform.js" "src/js/models/utils.js" "src/js/models/user.js" "src/js/models/session.js" "src/js/models/player.js" "src/js/models/playlist.js" "src/js/models/purchase.js" "src/js/collections/collections.js" "src/js/models/forms.js" "src/js/views/app.js" "src/js/views/films.js" "src/js/views/filterbar.js" "src/js/views/detailpage.js" "src/js/views/purchase.js" "src/js/views/player.js" "src/js/views/user.js" "src/js/views/facebook.js" "src/js/views/browser.js" "src/js/init.js")
 
 FILES=$(printf " %s " "${routes[@]}")
-uglifyjs $FILES >js/packed.js
+uglifyjs $FILES >src/js/packed.js
 
