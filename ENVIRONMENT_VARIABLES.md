@@ -14,7 +14,10 @@ This document provides a comprehensive guide to configuring the Vifi.ee frontend
    # Minimum required configuration
    API_URL=//api.yourdomain.com/api/
    API_KEY=your-api-key-here
-   COOKIE_DOMAIN=.yourdomain.com
+   
+   # Customize other URLs as needed (optional)
+   HLS_URL=https://media.yourdomain.com/vod/vod
+   MP4_URL=//cdn.yourdomain.com/zsf/
    ```
 
 3. **Build the application:**
@@ -24,28 +27,12 @@ This document provides a comprehensive guide to configuring the Vifi.ee frontend
 
 ## All Environment Variables
 
-### Domain Configuration
+### Required Configuration
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `MAIN_DOMAIN` | `example.com` | Main domain name for your site |
-| `WWW_DOMAIN` | `www.example.com` | WWW subdomain (used in meta tags and links) |
-| `COOKIE_DOMAIN` | `.example.com` | Domain for cookies (must start with a dot for subdomains) |
-
-### API Configuration
-
-| Variable | Default | Required | Description |
-|----------|---------|----------|-------------|
-| `API_DOMAIN` | `api.example.com` | No | API server domain name |
-| `API_URL` | `//api.example.com/api/` | Yes | Full API endpoint URL |
-| `API_KEY` | (empty) | **Yes** | API authentication key |
-
-### Media & CDN Configuration
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MEDIA_DOMAIN` | `media.example.com` | Domain for media streaming services |
-| `CDN_DOMAIN` | `cdn.example.com` | Domain for CDN and static assets |
+| `API_URL` | `//api.example.com/api/` | Backend API endpoint URL (required) |
+| `API_KEY` | (empty) | API authentication key (required) |
 
 ### Streaming URLs
 
@@ -92,13 +79,11 @@ This document provides a comprehensive guide to configuring the Vifi.ee frontend
 
 ```bash
 # .env.development
-MAIN_DOMAIN=dev.mysite.com
-WWW_DOMAIN=dev.mysite.com
-COOKIE_DOMAIN=.dev.mysite.com
 API_URL=//api.dev.mysite.com/api/
 API_KEY=dev-api-key-here
 HLS_URL=https://media.dev.mysite.com/vod/vod
 MP4_URL=//cdn.dev.mysite.com/zsf/
+SUBTITLES_URL=//cdn.dev.mysite.com/subs/
 GOOGLE_ANALYTICS_CODE=
 SENTRY_DSN=
 ```
@@ -107,9 +92,6 @@ SENTRY_DSN=
 
 ```bash
 # .env.staging
-MAIN_DOMAIN=staging.mysite.com
-WWW_DOMAIN=staging.mysite.com
-COOKIE_DOMAIN=.staging.mysite.com
 API_URL=//api.staging.mysite.com/api/
 API_KEY=staging-api-key-here
 HLS_URL=https://media.staging.mysite.com/vod/vod
@@ -122,9 +104,6 @@ SENTRY_DSN=https://...@sentry.io/...
 
 ```bash
 # .env.production
-MAIN_DOMAIN=mysite.com
-WWW_DOMAIN=www.mysite.com
-COOKIE_DOMAIN=.mysite.com
 API_URL=//api.mysite.com/api/
 API_KEY=production-api-key-here
 HLS_URL=https://media.mysite.com/vod/vod

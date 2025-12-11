@@ -151,30 +151,43 @@ npm run build
 
 #### Available Environment Variables
 
+**Required:**
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `MAIN_DOMAIN` | `example.com` | Main domain name |
-| `WWW_DOMAIN` | `www.example.com` | WWW subdomain |
-| `COOKIE_DOMAIN` | `.example.com` | Cookie domain scope (include leading dot) |
-| `API_DOMAIN` | `api.example.com` | API server domain |
-| `API_URL` | `//api.example.com/api/` | Full API endpoint URL |
+| `API_URL` | `//api.example.com/api/` | Backend API endpoint URL (required) |
 | `API_KEY` | (empty) | API authentication key (required) |
-| `MEDIA_DOMAIN` | `media.example.com` | Media streaming domain |
-| `CDN_DOMAIN` | `cdn.example.com` | CDN domain for static assets |
-| `HLS_URL` | `https://media.example.com/vod/vod` | HLS streaming base URL |
+
+**Media & Streaming:**
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HLS_URL` | `https://media.example.com/vod/vod` | HLS adaptive streaming base URL |
 | `MP4_URL` | `//cdn.example.com/zsf/` | MP4 progressive download base URL |
 | `RTMP_URL` | `rtmp://media.example.com/vod` | RTMP streaming base URL (legacy) |
+| `SUBTITLES_URL` | `//cdn.example.com/subs/` | Subtitle files base URL |
+
+**Content Delivery:**
+| Variable | Default | Description |
+|----------|---------|-------------|
 | `IMAGE_OPTIMIZER_URL` | `//cdn.example.com/files/images/image.php` | Image optimization service URL |
 | `SPEEDTEST_URL` | `//cdn.example.com/files/bwtest.jpg` | Bandwidth test file URL |
-| `SUBTITLES_URL` | `//beta.example.com/subs/` | Subtitle files base URL |
-| `CHANNEL_URL` | `//beta.example.com/channel.html` | Facebook channel file URL |
+| `CHANNEL_URL` | `//www.example.com/channel.html` | Facebook channel file URL |
 | `CACHED_INIT_URL` | `//www.example.com/init.json` | Cached initialization data URL |
-| `ANONYMOUS_USERNAME` | `anonymous@example.com` | Email for anonymous users |
+
+**Application Settings:**
+| Variable | Default | Description |
+|----------|---------|-------------|
 | `SITE_NAME` | `Vifi` | Site name displayed in the application |
+| `ANONYMOUS_USERNAME` | `anonymous@example.com` | Email for anonymous users |
 | `DISQUS_SHORTNAME` | `vifi` | Disqus comments integration shortname |
+
+**Optional Integrations:**
+| Variable | Default | Description |
+|----------|---------|-------------|
 | `FACEBOOK_APP_ID` | (empty) | Facebook App ID for OAuth login |
 | `GOOGLE_ANALYTICS_CODE` | `UA-XXXXX-1` | Google Analytics tracking ID |
 | `SENTRY_DSN` | (empty) | Sentry error tracking DSN |
+
+**Legacy (auto-derived):** `MAIN_DOMAIN`, `WWW_DOMAIN`, `COOKIE_DOMAIN`, `API_DOMAIN`, `MEDIA_DOMAIN`, `CDN_DOMAIN` are automatically computed from the URLs above for backward compatibility.
 
 **Note:** Environment variables are injected at **build time** by webpack, not at runtime. You need to rebuild the application whenever you change environment variables.
 
