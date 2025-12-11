@@ -485,7 +485,12 @@ App.Views.SideMenu = Backbone.View.extend({
         this.state = "closed";
     },
     render: function() {
-        this.$el.html(ich.sidemenuTemplate(this.model.toJSON()));
+        var templateData = _.extend({}, this.model.toJSON(), {
+            social_facebook_url: App.Settings.Social.facebook_url,
+            social_twitter_url: App.Settings.Social.twitter_url,
+            rss_feed_url: App.Settings.Social.rss_feed_url
+        });
+        this.$el.html(ich.sidemenuTemplate(templateData));
         this.assign(this.loginForm, "#login-register-form");
         return this;
     }

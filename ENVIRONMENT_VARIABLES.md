@@ -65,6 +65,23 @@ This document provides a comprehensive guide to configuring the Vifi.ee frontend
 | `SITE_NAME` | `Vifi` | Site name displayed in the application |
 | `DISQUS_SHORTNAME` | `vifi` | Disqus shortname for comments integration |
 
+### Social Media & External Links
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `WWW_URL` | `//www.example.com` | Main website URL for Open Graph and meta tags |
+| `SOCIAL_FACEBOOK_URL` | `https://www.facebook.com/pages/Vifiee/385723814833754` | Facebook page URL |
+| `SOCIAL_TWITTER_URL` | `https://twitter.com/vifi_ee` | Twitter profile URL |
+| `RSS_FEED_URL` | `//www.example.com/feed` | RSS feed URL |
+
+### Support & Contact Information
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SUPPORT_PHONE` | `+372 58 667 570` | Support phone number |
+| `SUPPORT_EMAIL` | `support@example.com` | Support email address |
+| `PRIVACY_URL` | `//www.example.com/privacy` | Privacy policy URL |
+
 ### Optional Integration Settings
 
 | Variable | Default | Description |

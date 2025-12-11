@@ -40,6 +40,13 @@ module.exports = (env, argv) => {
     GOOGLE_ANALYTICS_CODE: 'UA-XXXXX-1',
     SENTRY_DSN: '',
     API_KEY: '',
+    WWW_URL: '//www.example.com',
+    SOCIAL_FACEBOOK_URL: 'https://www.facebook.com/pages/Vifiee/385723814833754',
+    SOCIAL_TWITTER_URL: 'https://twitter.com/vifi_ee',
+    RSS_FEED_URL: '//www.example.com/feed',
+    SUPPORT_PHONE: '+372 58 667 570',
+    SUPPORT_EMAIL: 'support@example.com',
+    PRIVACY_URL: '//www.example.com/privacy',
   };
 
   // Build the envVars object for DefinePlugin
@@ -50,10 +57,12 @@ module.exports = (env, argv) => {
 
   return {
     entry: {
-      app: './src/js/init.js',
+      'init': './src/js/init.js',
+      'settings': './src/js/settings.js',
+      'views/app': './src/js/views/app.js',
     },
     output: {
-      filename: isProduction ? '[name].bundle.min.js' : '[name].bundle.js',
+      filename: isProduction ? 'js/[name].min.js' : 'js/[name].js',
       path: path.resolve(__dirname, 'dist'),
       clean: true,
     },
@@ -116,6 +125,13 @@ module.exports = (env, argv) => {
           { from: 'src/inc', to: 'inc' },
           { from: 'src/tpl', to: 'tpl' },
           { from: 'src/swf', to: 'swf' },
+          { 
+            from: 'src/js', 
+            to: 'js', 
+            globOptions: { 
+              ignore: ['**/init.js', '**/settings.js', '**/views/app.js'] 
+            } 
+          },
           { from: 'src/favicon.ico', to: 'favicon.ico' },
           { from: 'src/favicon.png', to: 'favicon.png' },
         ],

@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/config.php');
+
 $path = $_SERVER['REQUEST_URI'];
 
 if (strstr($path, "films") && !$data = apcu_fetch(md5($path))) {
@@ -12,7 +14,11 @@ if (strstr($path, "films") && !$data = apcu_fetch(md5($path))) {
 
         foreach ($nodes as $item) {
             $url = $item->getElementsByTagName('loc')->item(0)->nodeValue;
-            $url = str_replace('https://www.vifi.ee', '', $url);
+            $url = str_replace($WWW_URL, '', $url);
+            $url = str_replace('https://', '//', $url);
+            $url = str_replace('http://', '//', $url);
+            // Remove any domain from the URL to get just the path
+            $url = preg_replace('#^//[^/]+#', '', $url);
             $data = [];
 
             if (strstr($path, $url)) {
@@ -31,13 +37,13 @@ if (strstr($path, "films") && !$data = apcu_fetch(md5($path))) {
 }
 
 if (!empty($data)) {
-    echo "" . '<title>' . $data['title'] . ' - Vifi.ee</title>' . "\n";
+    echo "" . '<title>' . $data['title'] . ' - ' . $SITE_NAME . '</title>' . "\n";
     echo "\t\t" . '<meta name="description" content="' . $data['caption'] . '" />' . "\n";
     echo "\t\t" . '<meta property="og:title" content="' . $data['title'] . '" />' . "\n";
     echo "\t\t" . '<meta property="og:description" content="' . $data['caption'] . '" />' . "\n";
     echo "\t\t" . '<meta name="og:type" content="video.movie"/>' . "\n";       
     echo "\t\t" . '<meta property="og:image" content="' . $data['image_url'] . '" />' . "\n";
-    echo "\t\t" . '<meta property="og:url" content="//www.vifi.ee' . $path . '"/>' . "\n";
+    echo "\t\t" . '<meta property="og:url" content="' . $WWW_URL . $path . '"/>' . "\n";
     echo "\t\t" . '<link rel="image_src" href="'.$data['image_url'] . '" />' . "\n";
 } else {
     printDefaultHeaders();
@@ -45,11 +51,12 @@ if (!empty($data)) {
 
 function printDefaultHeaders()
 {
+    global $WWW_URL, $SITE_NAME;
 
-    echo '<title>Vifi.ee - Vaata filme mugavalt!</title>' . "\n";
-    echo "\t\t" . '<meta property="og:url" content="https://www.vifi.ee/"/>' . "\n";
+    echo '<title>' . $SITE_NAME . ' - Vaata filme mugavalt!</title>' . "\n";
+    echo "\t\t" . '<meta property="og:url" content="' . $WWW_URL . '/"/>' . "\n";
     echo "\t\t" . '<meta name="og:type" content="website"/>' . "\n";   
-    echo "\t\t" . '<link rel="image_src" href="https://www.vifi.ee/screenshot.jpg" />' . "\n";
-    echo "\t\t" . '<meta property="og:image" content="https://www.vifi.ee/screenshot.jpg"/>' . "\n";
+    echo "\t\t" . '<link rel="image_src" href="' . $WWW_URL . '/screenshot.jpg" />' . "\n";
+    echo "\t\t" . '<meta property="og:image" content="' . $WWW_URL . '/screenshot.jpg"/>' . "\n";
     echo "\t\t" . '<meta property="og:description" content="Vaata mugavalt filme!"/>' . "\n";
 }
