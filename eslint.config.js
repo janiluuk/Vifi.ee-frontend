@@ -56,6 +56,7 @@ export default [
         url: 'writable',
         
         // Webpack DefinePlugin injected globals
+        // 'process.env.*' variables are replaced at build time by webpack
         process: 'readonly'
       }
     },
