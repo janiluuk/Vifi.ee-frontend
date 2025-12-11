@@ -120,135 +120,176 @@ This will:
 
 ## Configuration
 
-The application is configured through the `src/js/settings.js` file. Here are the key configuration sections:
+The application is configured through the `src/js/settings.js` file. All settings are defined in the `App.Settings` object.
 
-### Basic Settings
+### Settings Reference Table
+
+Below is a comprehensive table of all available settings and their descriptions:
+
+#### Basic Settings
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `version` | String | `'2020-05.2'` | Application version number |
+| `debug` | Boolean | `false` | Enable debug mode for additional logging |
+| `language` | String | `'est'` | Default language code (Estonian) |
+| `sitename` | String | `'Vifi'` | Site name displayed in the application |
+| `skin` | String | `'vifi'` | UI theme/skin identifier |
+| `anonymous_username` | String | `'anonymous@vifi.ee'` | Default username for anonymous users |
+| `sortingEnabled` | Boolean | `true` | Enable/disable sorting functionality in UI |
+| `loginEnabled` | Boolean | `true` | Enable/disable user login and registration |
+| `commentsEnabled` | Boolean | `true` | Enable/disable Disqus comments on videos |
+| `disqus_shortname` | String | `'vifi'` | Disqus shortname for comments integration |
+
+#### API Settings (`Api` object)
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `Api.url` | String | `'//dev.vifi.ee/api/'` | Backend API endpoint URL |
+| `Api.key` | String | `''` | API authentication key (required for API access) |
+
+**Important**: You must set `Api.key` to your API key for the application to work properly.
+
+#### Cookie Settings (`Cookies` object)
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `Cookies.cookie_name` | String | `'vifi_session'` | Name of the session cookie |
+| `Cookies.cookie_options.path` | String | `'/'` | Cookie path scope |
+| `Cookies.cookie_options.domain` | String | `'.vifi.ee'` | Cookie domain scope (adjust for your domain) |
+| `Cookies.purchase_cookie_name` | String | `'film'` | Name of the purchase tracking cookie |
+
+#### Image Settings (`Images` object)
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `Images.image_optimizer_enabled` | Boolean | `true` | Enable/disable image optimization service |
+| `Images.image_optimizer_url` | String | `'//gonzales.vifi.ee/files/images/image.php'` | URL of the image optimization service |
+| `Images.image_optimizer_default_preset` | String | `'w780'` | Default image width preset for optimization |
+
+#### Featured Content Settings (`Featured` object)
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `Featured.featured_slides_limit` | Number | `8` | Maximum number of featured slides to display |
+| `Featured.featured_slides_randomize` | Boolean | `true` | Randomize the order of featured slides |
+| `Featured.featured_slides_autoplay_interval` | Number | `6000` | Autoplay interval in milliseconds (6 seconds) |
+
+#### Payment Settings (`Payment` object)
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `Payment.default_method` | String | `'code'` | Default payment method (code, mobile, or card) |
+| `Payment.mobile.autostart` | Boolean | `false` | Automatically start mobile payment flow |
+| `Payment.allowFreeProducts` | Boolean | `true` | Allow access to free content without payment |
+
+#### Player Settings (`Player` object)
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `Player.defaultMediaPlayer` | String | `'fp7'` | Default video player version (fp6 or fp7) |
+| `Player.flowplayer_fp6_key` | String | `'$202296466927761'` | Flowplayer 6 license key |
+| `Player.flowplayer_flash_key` | String | `'#$05466e2f492e2ca07a3'` | Flowplayer Flash license key (legacy) |
+| `Player.flowplayer_html5_key` | String | `'$202296466927761'` | Flowplayer HTML5 license key |
+| `Player.flowplayer_fp7_token` | String | (JWT token string) | Flowplayer 7 JWT license token - replace with your token |
+| `Player.hls_url` | String | `'https://media.vifi.ee/vod/vod'` | Base URL for HLS adaptive streaming |
+| `Player.mp4_url` | String | `'//gonzales.vifi.ee/zsf/'` | Base URL for MP4 progressive download |
+| `Player.rtmp_url` | String | `'rtmp://media.vifi.ee/vod'` | Base URL for RTMP streaming (legacy) |
+| `Player.speedtest_url` | String | `'//gonzales.vifi.ee/files/bwtest.jpg'` | URL for bandwidth speed testing |
+| `Player.subtitles_url` | String | `'//beta.vifi.ee/subs/'` | Base URL for subtitle files |
+| `Player.enable_legacy_subtitles` | Boolean | `false` | Enable legacy subtitle format support |
+| `Player.convert_srt_to_vtt` | Boolean | `true` | Auto-convert SRT subtitles to WebVTT format |
+
+#### Search Settings (`Search` object)
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `Search.initial_film_amount` | Number | `300` | Number of films to load on initial page load |
+| `Search.default_query_params.totalPages` | Number | `null` | Total pages in search results (calculated) |
+| `Search.default_query_params.totalRecords` | Number | `null` | Total records in search results (calculated) |
+| `Search.default_query_params.sortKey` | String | `'sort'` | Query parameter name for sorting |
+| `Search.default_query_params.limit` | Number | `400` | Maximum number of results per API request |
+| `Search.default_search_state.q` | String | `''` | Default search query string |
+| `Search.default_search_state.genres` | Array\|undefined | `undefined` | Default genre filter (array of genre IDs) |
+| `Search.default_search_state.periods` | Array\|undefined | `undefined` | Default period/year filter (array of year ranges) |
+| `Search.default_search_state.durations` | Array\|undefined | `undefined` | Default duration filter (array of duration ranges) |
+| `Search.default_pagination_state.pageSize` | Number | `12` | Number of results to display per page |
+| `Search.default_pagination_state.sortKey` | String | `'updated_at'` | Default field to sort results by |
+| `Search.default_pagination_state.order` | Number | `0` | Sort order (0 = descending, 1 = ascending) |
+
+#### Analytics & Monitoring Settings
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `google_analytics_enabled` | Boolean | `true` | Enable/disable Google Analytics tracking |
+| `google_analytics_code` | String | `'UA-XXXXX-1'` | Google Analytics tracking ID (replace with yours) |
+| `sentry_enabled` | Boolean | `true` | Enable/disable Sentry error monitoring |
+| `sentry_dsn` | String | `''` | Sentry DSN (Data Source Name) for error reporting |
+| `rt_api_key` | String | `''` | Runtime API key (if applicable) |
+| `facebook_app_id` | String | `''` | Facebook App ID for OAuth login integration |
+
+#### Callback Functions
+
+| Setting | Type | Default Value | Description |
+|---------|------|---------------|-------------|
+| `page_change_callback` | Function | `function(title, parameters) {}` | Callback executed when page/route changes |
+
+### Configuration Examples
+
+#### Minimal Required Configuration
 
 ```javascript
 // src/js/settings.js
 App.Settings = {
-    version: '2020-05.2',
-    debug: false,                    // Enable debug mode
-    language: 'est',                  // Language (Estonian)
-    sitename: 'Vifi',
-    skin: 'vifi',                     // UI theme/skin
-    // ...
-}
-```
-
-### API Configuration
-
-Configure the backend API connection:
-
-```javascript
-Api: {
-    url: '//dev.vifi.ee/api/',       // API endpoint URL
-    key: ''                           // Your API key
-}
-```
-
-**Important**: You need to set the `Api.key` value to your API key for the application to work properly.
-
-### Cookie Configuration
-
-Session and purchase cookies:
-
-```javascript
-Cookies: {
-    cookie_name: 'vifi_session',
-    cookie_options: {
-        path: '/',
-        domain: '.vifi.ee'           // Adjust for your domain
+    Api: {
+        url: '//your-api-domain.com/api/',
+        key: 'your-api-key-here'  // Required!
     },
-    purchase_cookie_name: 'film',
-}
-```
-
-### Player Settings
-
-Configure the video player:
-
-```javascript
-Player: {
-    defaultMediaPlayer: 'fp7',        // Flowplayer version (fp6 or fp7)
-    flowplayer_fp7_token: 'YOUR_TOKEN', // Flowplayer 7 license token
-    hls_url: 'https://media.vifi.ee/vod/vod',  // HLS streaming URL
-    mp4_url: '//gonzales.vifi.ee/zsf/',        // MP4 progressive download URL
-    rtmp_url: 'rtmp://media.vifi.ee/vod',      // RTMP streaming URL (legacy)
-    subtitles_url: '//beta.vifi.ee/subs/',
-    enable_legacy_subtitles: false,
-    convert_srt_to_vtt: true
-}
-```
-
-### Payment Settings
-
-Configure payment methods:
-
-```javascript
-Payment: {
-    'default_method': 'code',         // Default payment method
-    'mobile': {
-        'autostart': false            // Auto-start mobile payment flow
-    },
-    'allowFreeProducts': true         // Allow free content
-}
-```
-
-### Search Settings
-
-Configure search and filtering:
-
-```javascript
-Search: {
-    initial_film_amount: 300,         // Initial films to load
-    default_query_params: {
-        sortKey: 'sort',
-        limit: 400                    // Max results per request
-    },
-    default_pagination_state: {
-        pageSize: 12,                 // Results per page
-        sortKey: 'updated_at',
-        order: 0,                     // 0=desc, 1=asc
+    Cookies: {
+        cookie_options: {
+            domain: '.your-domain.com'  // Update to your domain
+        }
     }
 }
 ```
 
-### Image Optimization
-
-Configure image processing:
+#### Development vs Production
 
 ```javascript
-Images: {
-    image_optimizer_enabled: true,
-    image_optimizer_url: '//gonzales.vifi.ee/files/images/image.php',
-    image_optimizer_default_preset: 'w780',  // Default image width
+// Development
+App.Settings = {
+    debug: true,
+    Api: {
+        url: '//dev.vifi.ee/api/',
+        key: 'dev-api-key'
+    }
+}
+
+// Production
+App.Settings = {
+    debug: false,
+    Api: {
+        url: '//api.vifi.ee/api/',
+        key: 'prod-api-key'
+    },
+    google_analytics_enabled: true,
+    google_analytics_code: 'UA-12345678-1'
 }
 ```
 
-### Analytics & Monitoring
-
-Configure external services:
+#### Customizing Video Player
 
 ```javascript
-google_analytics_enabled: true,
-google_analytics_code: 'UA-XXXXX-1',  // Replace with your GA code
-
-sentry_enabled: true,                 // Error tracking
-sentry_dsn: '',                       // Your Sentry DSN
-
-facebook_app_id: '',                  // Facebook app ID for login
-```
-
-### Feature Flags
-
-Enable or disable features:
-
-```javascript
-sortingEnabled: true,                 // Enable sorting UI
-loginEnabled: true,                   // Enable login/registration
-commentsEnabled: true,                // Enable comments (Disqus)
-disqus_shortname: 'vifi',            // Disqus shortname
+App.Settings = {
+    Player: {
+        defaultMediaPlayer: 'fp7',
+        flowplayer_fp7_token: 'your-flowplayer-token',
+        hls_url: 'https://your-cdn.com/vod',
+        mp4_url: '//your-cdn.com/videos/',
+        enable_legacy_subtitles: false,
+        convert_srt_to_vtt: true
+    }
+}
 ```
 
 ## Building for Production
