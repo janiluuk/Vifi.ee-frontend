@@ -1,0 +1,78 @@
+# Multi-stage Dockerfile that builds the application
+# Note: Due to npm issues in Docker, this may not work in all environments
+# For a simpler approach, use the main Dockerfile after building locally
+
+# Build stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm config set strict-ssl false && \
+    npm install --legacy-peer-deps || npm install
+
+# Build arguments - simplified domain configuration
+# Only override these if you need custom values
+ARG API_URL=//api.example.com/api/
+ARG HLS_URL=https://media.example.com/vod/vod
+ARG MP4_URL=//cdn.example.com/zsf/
+ARG RTMP_URL=rtmp://media.example.com/vod
+ARG SUBTITLES_URL=//cdn.example.com/subs/
+ARG IMAGE_OPTIMIZER_URL=//cdn.example.com/files/images/image.php
+ARG SPEEDTEST_URL=//cdn.example.com/files/bwtest.jpg
+ARG CHANNEL_URL=//www.example.com/channel.html
+ARG CACHED_INIT_URL=//www.example.com/init.json
+ARG ANONYMOUS_USERNAME=anonymous@example.com
+ARG SITE_NAME=Vifi
+ARG DISQUS_SHORTNAME=vifi
+ARG API_KEY=
+ARG FACEBOOK_APP_ID=
+ARG GOOGLE_ANALYTICS_CODE=UA-XXXXX-1
+ARG SENTRY_DSN=
+
+# Set environment variables for build (multi-line for clarity)
+ENV API_URL=${API_URL} \
+    HLS_URL=${HLS_URL} \
+    MP4_URL=${MP4_URL} \
+    RTMP_URL=${RTMP_URL} \
+    SUBTITLES_URL=${SUBTITLES_URL} \
+    IMAGE_OPTIMIZER_URL=${IMAGE_OPTIMIZER_URL} \
+    SPEEDTEST_URL=${SPEEDTEST_URL} \
+    CHANNEL_URL=${CHANNEL_URL} \
+    CACHED_INIT_URL=${CACHED_INIT_URL} \
+    ANONYMOUS_USERNAME=${ANONYMOUS_USERNAME} \
+    SITE_NAME=${SITE_NAME} \
+    DISQUS_SHORTNAME=${DISQUS_SHORTNAME} \
+    API_KEY=${API_KEY} \
+    FACEBOOK_APP_ID=${FACEBOOK_APP_ID} \
+    GOOGLE_ANALYTICS_CODE=${GOOGLE_ANALYTICS_CODE} \
+    SENTRY_DSN=${SENTRY_DSN} \
+    # Derived values for backward compatibility
+    MAIN_DOMAIN=example.com \
+    WWW_DOMAIN=www.example.com \
+    COOKIE_DOMAIN=.example.com \
+    API_DOMAIN=api.example.com \
+    MEDIA_DOMAIN=media.example.com \
+    CDN_DOMAIN=cdn.example.com
+
+# Copy source files
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM nginx:alpine
+
+# Copy built assets from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

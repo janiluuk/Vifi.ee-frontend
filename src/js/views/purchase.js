@@ -228,7 +228,7 @@ App.Views.PaymentDialog = Backbone.View.extend({
     },
     getEmail: function() {
         var email = this.session.get("profile").get("email");
-        if (email != "anonymous@vifi.ee") {
+        if (email != App.Settings.anonymous_username) {
             return email;
         }
         return false;

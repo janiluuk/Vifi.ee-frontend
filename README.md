@@ -120,7 +120,173 @@ This will:
 
 ## Configuration
 
-The application is configured through the `src/js/settings.js` file. All settings are defined in the `App.Settings` object.
+### Environment Variables
+
+The application supports environment-based configuration for all domain names and URLs. This allows you to easily deploy the application to different environments (development, staging, production) or customize it for your own deployment.
+
+#### Setting Up Environment Variables
+
+1. **Copy the example environment file**:
+
+```bash
+cp .env.example .env
+```
+
+2. **Edit `.env` and customize the values**:
+
+```bash
+# Example .env configuration
+MAIN_DOMAIN=yourdomain.com
+WWW_DOMAIN=www.yourdomain.com
+API_URL=//api.yourdomain.com/api/
+API_KEY=your-api-key-here
+# ... other settings
+```
+
+3. **Build the application** (environment variables are injected at build time):
+
+```bash
+npm run build
+```
+
+#### Available Environment Variables
+
+**Required:**
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `API_URL` | `//api.example.com/api/` | Backend API endpoint URL (required) |
+| `API_KEY` | (empty) | API authentication key (required) |
+
+**Media & Streaming:**
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HLS_URL` | `https://media.example.com/vod/vod` | HLS adaptive streaming base URL |
+| `MP4_URL` | `//cdn.example.com/zsf/` | MP4 progressive download base URL |
+| `RTMP_URL` | `rtmp://media.example.com/vod` | RTMP streaming base URL (legacy) |
+| `SUBTITLES_URL` | `//cdn.example.com/subs/` | Subtitle files base URL |
+
+**Content Delivery:**
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `IMAGE_OPTIMIZER_URL` | `//cdn.example.com/files/images/image.php` | Image optimization service URL |
+| `SPEEDTEST_URL` | `//cdn.example.com/files/bwtest.jpg` | Bandwidth test file URL |
+| `CHANNEL_URL` | `//www.example.com/channel.html` | Facebook channel file URL |
+| `CACHED_INIT_URL` | `//www.example.com/init.json` | Cached initialization data URL |
+
+**Application Settings:**
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SITE_NAME` | `Vifi` | Site name displayed in the application |
+| `ANONYMOUS_USERNAME` | `anonymous@example.com` | Email for anonymous users |
+| `DISQUS_SHORTNAME` | `vifi` | Disqus comments integration shortname |
+
+**Optional Integrations:**
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FACEBOOK_APP_ID` | (empty) | Facebook App ID for OAuth login |
+| `GOOGLE_ANALYTICS_CODE` | `UA-XXXXX-1` | Google Analytics tracking ID |
+| `SENTRY_DSN` | (empty) | Sentry error tracking DSN |
+
+**Legacy (auto-derived):** `MAIN_DOMAIN`, `WWW_DOMAIN`, `COOKIE_DOMAIN`, `API_DOMAIN`, `MEDIA_DOMAIN`, `CDN_DOMAIN` are automatically computed from the URLs above for backward compatibility.
+
+**Note:** Environment variables are injected at **build time** by webpack, not at runtime. You need to rebuild the application whenever you change environment variables.
+
+### Docker Deployment
+
+The application includes Docker support for easy deployment. There are two Dockerfile options:
+
+1. **Dockerfile** (recommended) - Serves pre-built `dist/` folder
+2. **Dockerfile.build** - Multi-stage build (may have npm issues in some environments)
+
+#### Method 1: Simple Docker Deployment (Recommended)
+
+Build the application locally first, then create a Docker image:
+
+```bash
+# 1. Configure environment variables
+cp .env.example .env
+# Edit .env with your values
+
+# 2. Build the application
+npm run build
+
+# 3. Build and run Docker image
+docker build -t vifi-frontend .
+docker run -p 8080:80 vifi-frontend
+```
+
+#### Method 2: Multi-stage Build with Docker
+
+Use `Dockerfile.build` to build everything inside Docker:
+
+```bash
+# Build with default settings
+docker build -f Dockerfile.build -t vifi-frontend .
+
+# Build with custom environment variables
+docker build -f Dockerfile.build \
+  --build-arg API_URL=//api.mysite.com/api/ \
+  --build-arg API_KEY=my-secret-key \
+  --build-arg MAIN_DOMAIN=mysite.com \
+  -t vifi-frontend .
+
+# Run the container
+docker run -p 8080:80 vifi-frontend
+```
+
+#### Using Docker Compose
+
+1. **Create or edit `.env` file** with your configuration:
+
+```bash
+cp .env.example .env
+# Edit .env with your values
+```
+
+2. **Build and run**:
+
+```bash
+# Build and start the container
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the container
+docker-compose down
+```
+
+The application will be available at `http://localhost:8080`.
+
+#### Docker Environment Variables
+
+When using Docker, you can pass environment variables in three ways:
+
+1. **Via `.env` file** (recommended for docker-compose):
+   ```bash
+   # .env file in the same directory as docker-compose.yml
+   API_URL=//api.mysite.com/api/
+   API_KEY=my-secret-key
+   ```
+
+2. **Via build arguments** in `docker build`:
+   ```bash
+   docker build --build-arg API_URL=//api.mysite.com/api/ -t vifi-frontend .
+   ```
+
+3. **Via environment variables** in docker-compose.yml:
+   ```yaml
+   services:
+     frontend:
+       build:
+         args:
+           - API_URL=${API_URL}
+           - API_KEY=${API_KEY}
+   ```
+
+### Static Configuration
+
+The application is also configured through the `src/js/settings.js` file. All settings are defined in the `App.Settings` object. However, **domain-related settings now use environment variables** and should be configured via `.env` file instead of editing `settings.js` directly.
 
 ### Settings Reference Table
 
@@ -133,22 +299,22 @@ Below is a comprehensive table of all available settings and their descriptions:
 | `version` | String | `'2020-05.2'` | Application version number |
 | `debug` | Boolean | `false` | Enable debug mode for additional logging |
 | `language` | String | `'est'` | Default language code (Estonian) |
-| `sitename` | String | `'Vifi'` | Site name displayed in the application |
+| `sitename` | String | `process.env.SITE_NAME` | Site name displayed in the application (from env) |
 | `skin` | String | `'vifi'` | UI theme/skin identifier |
-| `anonymous_username` | String | `'anonymous@vifi.ee'` | Default username for anonymous users |
+| `anonymous_username` | String | `process.env.ANONYMOUS_USERNAME` | Default username for anonymous users (from env) |
 | `sortingEnabled` | Boolean | `true` | Enable/disable sorting functionality in UI |
 | `loginEnabled` | Boolean | `true` | Enable/disable user login and registration |
 | `commentsEnabled` | Boolean | `true` | Enable/disable Disqus comments on videos |
-| `disqus_shortname` | String | `'vifi'` | Disqus shortname for comments integration |
+| `disqus_shortname` | String | `process.env.DISQUS_SHORTNAME` | Disqus shortname for comments integration (from env) |
 
 #### API Settings (`Api` object)
 
 | Setting | Type | Default Value | Description |
 |---------|------|---------------|-------------|
-| `Api.url` | String | `'//dev.vifi.ee/api/'` | Backend API endpoint URL |
-| `Api.key` | String | `''` | API authentication key (required for API access) |
+| `Api.url` | String | `process.env.API_URL` | Backend API endpoint URL (from env) |
+| `Api.key` | String | `process.env.API_KEY` | API authentication key (from env, required for API access) |
 
-**Important**: You must set `Api.key` to your API key for the application to work properly.
+**Important**: You must set `API_KEY` environment variable for the application to work properly.
 
 #### Cookie Settings (`Cookies` object)
 
@@ -156,7 +322,7 @@ Below is a comprehensive table of all available settings and their descriptions:
 |---------|------|---------------|-------------|
 | `Cookies.cookie_name` | String | `'vifi_session'` | Name of the session cookie |
 | `Cookies.cookie_options.path` | String | `'/'` | Cookie path scope |
-| `Cookies.cookie_options.domain` | String | `'.vifi.ee'` | Cookie domain scope (adjust for your domain) |
+| `Cookies.cookie_options.domain` | String | `process.env.COOKIE_DOMAIN` | Cookie domain scope (from env, include leading dot) |
 | `Cookies.purchase_cookie_name` | String | `'film'` | Name of the purchase tracking cookie |
 
 #### Image Settings (`Images` object)
@@ -164,7 +330,7 @@ Below is a comprehensive table of all available settings and their descriptions:
 | Setting | Type | Default Value | Description |
 |---------|------|---------------|-------------|
 | `Images.image_optimizer_enabled` | Boolean | `true` | Enable/disable image optimization service |
-| `Images.image_optimizer_url` | String | `'//gonzales.vifi.ee/files/images/image.php'` | URL of the image optimization service |
+| `Images.image_optimizer_url` | String | `process.env.IMAGE_OPTIMIZER_URL` | URL of the image optimization service (from env) |
 | `Images.image_optimizer_default_preset` | String | `'w780'` | Default image width preset for optimization |
 
 #### Featured Content Settings (`Featured` object)
@@ -192,11 +358,11 @@ Below is a comprehensive table of all available settings and their descriptions:
 | `Player.flowplayer_flash_key` | String | `'#$05466e2f492e2ca07a3'` | Flowplayer Flash license key (legacy) |
 | `Player.flowplayer_html5_key` | String | `'$202296466927761'` | Flowplayer HTML5 license key |
 | `Player.flowplayer_fp7_token` | String | (JWT token string) | Flowplayer 7 JWT license token - replace with your token |
-| `Player.hls_url` | String | `'https://media.vifi.ee/vod/vod'` | Base URL for HLS adaptive streaming |
-| `Player.mp4_url` | String | `'//gonzales.vifi.ee/zsf/'` | Base URL for MP4 progressive download |
-| `Player.rtmp_url` | String | `'rtmp://media.vifi.ee/vod'` | Base URL for RTMP streaming (legacy) |
-| `Player.speedtest_url` | String | `'//gonzales.vifi.ee/files/bwtest.jpg'` | URL for bandwidth speed testing |
-| `Player.subtitles_url` | String | `'//beta.vifi.ee/subs/'` | Base URL for subtitle files |
+| `Player.hls_url` | String | `process.env.HLS_URL` | Base URL for HLS adaptive streaming (from env) |
+| `Player.mp4_url` | String | `process.env.MP4_URL` | Base URL for MP4 progressive download (from env) |
+| `Player.rtmp_url` | String | `process.env.RTMP_URL` | Base URL for RTMP streaming (from env, legacy) |
+| `Player.speedtest_url` | String | `process.env.SPEEDTEST_URL` | URL for bandwidth speed testing (from env) |
+| `Player.subtitles_url` | String | `process.env.SUBTITLES_URL` | Base URL for subtitle files (from env) |
 | `Player.enable_legacy_subtitles` | Boolean | `false` | Enable legacy subtitle format support |
 | `Player.convert_srt_to_vtt` | Boolean | `true` | Auto-convert SRT subtitles to WebVTT format |
 
@@ -222,11 +388,11 @@ Below is a comprehensive table of all available settings and their descriptions:
 | Setting | Type | Default Value | Description |
 |---------|------|---------------|-------------|
 | `google_analytics_enabled` | Boolean | `true` | Enable/disable Google Analytics tracking |
-| `google_analytics_code` | String | `'UA-XXXXX-1'` | Google Analytics tracking ID (replace with yours) |
+| `google_analytics_code` | String | `process.env.GOOGLE_ANALYTICS_CODE` | Google Analytics tracking ID (from env) |
 | `sentry_enabled` | Boolean | `true` | Enable/disable Sentry error monitoring |
-| `sentry_dsn` | String | `''` | Sentry DSN (Data Source Name) for error reporting |
+| `sentry_dsn` | String | `process.env.SENTRY_DSN` | Sentry DSN (Data Source Name) for error reporting (from env) |
 | `rt_api_key` | String | `''` | Runtime API key (if applicable) |
-| `facebook_app_id` | String | `''` | Facebook App ID for OAuth login integration |
+| `facebook_app_id` | String | `process.env.FACEBOOK_APP_ID` | Facebook App ID for OAuth login integration (from env) |
 
 #### Callback Functions
 
@@ -238,16 +404,27 @@ Below is a comprehensive table of all available settings and their descriptions:
 
 #### Minimal Required Configuration
 
+Use environment variables for configuration (recommended):
+
+```bash
+# .env file
+API_URL=//your-api-domain.com/api/
+API_KEY=your-api-key-here
+COOKIE_DOMAIN=.your-domain.com
+```
+
+Or edit `src/js/settings.js` directly (not recommended for domains):
+
 ```javascript
 // src/js/settings.js
 App.Settings = {
     Api: {
-        url: '//your-api-domain.com/api/',
-        key: 'your-api-key-here'  // Required!
+        url: process.env.API_URL || '//your-api-domain.com/api/',
+        key: process.env.API_KEY || 'your-api-key-here'
     },
     Cookies: {
         cookie_options: {
-            domain: '.your-domain.com'  // Update to your domain
+            domain: process.env.COOKIE_DOMAIN || '.your-domain.com'
         }
     }
 }
@@ -255,42 +432,46 @@ App.Settings = {
 
 #### Development vs Production
 
-```javascript
-// Development
-App.Settings = {
-    debug: true,
-    Api: {
-        url: '//dev.vifi.ee/api/',
-        key: 'dev-api-key'
-    }
-}
+Use separate `.env` files for different environments:
 
-// Production
-App.Settings = {
-    debug: false,
-    Api: {
-        url: '//api.vifi.ee/api/',
-        key: 'prod-api-key'
-    },
-    google_analytics_enabled: true,
-    google_analytics_code: 'UA-12345678-1'
-}
+```bash
+# .env.development
+API_URL=//dev.vifi.ee/api/
+API_KEY=dev-api-key
+MAIN_DOMAIN=dev.vifi.ee
+GOOGLE_ANALYTICS_CODE=
+
+# .env.production
+API_URL=//api.vifi.ee/api/
+API_KEY=prod-api-key
+MAIN_DOMAIN=vifi.ee
+GOOGLE_ANALYTICS_CODE=UA-12345678-1
+```
+
+Then copy the appropriate file before building:
+
+```bash
+# For development
+cp .env.development .env
+npm run build:dev
+
+# For production
+cp .env.production .env
+npm run build
 ```
 
 #### Customizing Video Player
 
-```javascript
-App.Settings = {
-    Player: {
-        defaultMediaPlayer: 'fp7',
-        flowplayer_fp7_token: 'your-flowplayer-token',
-        hls_url: 'https://your-cdn.com/vod',
-        mp4_url: '//your-cdn.com/videos/',
-        enable_legacy_subtitles: false,
-        convert_srt_to_vtt: true
-    }
-}
+Configure media URLs via environment variables:
+
+```bash
+# .env file
+HLS_URL=https://your-cdn.com/vod
+MP4_URL=//your-cdn.com/videos/
+SUBTITLES_URL=//your-cdn.com/subs/
 ```
+
+The settings.js file now uses these environment variables automatically.
 
 ## Building for Production
 

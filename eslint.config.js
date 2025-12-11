@@ -53,7 +53,11 @@ export default [
         $error: 'writable',
         disqus_shortname: 'writable',
         DISQUS: 'writable',
-        url: 'writable'
+        url: 'writable',
+        
+        // Webpack DefinePlugin injected globals
+        // 'process.env.*' variables are replaced at build time by webpack
+        process: 'readonly'
       }
     },
     rules: {

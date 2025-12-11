@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+      args:
+        # Core URLs - customize these for your environment
+        - API_URL=${API_URL:-//api.example.com/api/}
+        - HLS_URL=${HLS_URL:-https://media.example.com/vod/vod}
+        - MP4_URL=${MP4_URL:-//cdn.example.com/zsf/}
+        - RTMP_URL=${RTMP_URL:-rtmp://media.example.com/vod}
+        - SUBTITLES_URL=${SUBTITLES_URL:-//cdn.example.com/subs/}
+        - IMAGE_OPTIMIZER_URL=${IMAGE_OPTIMIZER_URL:-//cdn.example.com/files/images/image.php}
+        - SPEEDTEST_URL=${SPEEDTEST_URL:-//cdn.example.com/files/bwtest.jpg}
+        - CHANNEL_URL=${CHANNEL_URL:-//www.example.com/channel.html}
+        - CACHED_INIT_URL=${CACHED_INIT_URL:-//www.example.com/init.json}
+        - ANONYMOUS_USERNAME=${ANONYMOUS_USERNAME:-anonymous@example.com}
+        # App settings
+        - SITE_NAME=${SITE_NAME:-Vifi}
+        - DISQUS_SHORTNAME=${DISQUS_SHORTNAME:-vifi}
+        # Keys & integrations
+        - API_KEY=${API_KEY}
+        - FACEBOOK_APP_ID=${FACEBOOK_APP_ID}
+        - GOOGLE_ANALYTICS_CODE=${GOOGLE_ANALYTICS_CODE:-UA-XXXXX-1}
+        - SENTRY_DSN=${SENTRY_DSN}
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production

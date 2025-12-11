@@ -525,7 +525,7 @@ App.User.Profile = App.Models.ApiModel.extend({
         return this.get("subscriber") === true ? true : false;
     },
     isAnonymous: function() {
-        if (this.get("email") == "anonymous@vifi.ee") return true;
+        if (this.get("email") == App.Settings.anonymous_username) return true;
         if (this.get("role") == "" || this.get("role") == "Guest") return true;
         return false;
     },
