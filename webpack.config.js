@@ -57,10 +57,12 @@ module.exports = (env, argv) => {
 
   return {
     entry: {
-      app: './src/js/init.js',
+      'init': './src/js/init.js',
+      'settings': './src/js/settings.js',
+      'views/app': './src/js/views/app.js',
     },
     output: {
-      filename: isProduction ? '[name].bundle.min.js' : '[name].bundle.js',
+      filename: isProduction ? 'js/[name].min.js' : 'js/[name].js',
       path: path.resolve(__dirname, 'dist'),
       clean: true,
     },
@@ -123,6 +125,13 @@ module.exports = (env, argv) => {
           { from: 'src/inc', to: 'inc' },
           { from: 'src/tpl', to: 'tpl' },
           { from: 'src/swf', to: 'swf' },
+          { 
+            from: 'src/js', 
+            to: 'js', 
+            globOptions: { 
+              ignore: ['**/init.js', '**/settings.js', '**/views/app.js'] 
+            } 
+          },
           { from: 'src/favicon.ico', to: 'favicon.ico' },
           { from: 'src/favicon.png', to: 'favicon.png' },
         ],
