@@ -191,7 +191,7 @@ Below is a comprehensive table of all available settings and their descriptions:
 | `Player.flowplayer_fp6_key` | String | `'$202296466927761'` | Flowplayer 6 license key |
 | `Player.flowplayer_flash_key` | String | `'#$05466e2f492e2ca07a3'` | Flowplayer Flash license key (legacy) |
 | `Player.flowplayer_html5_key` | String | `'$202296466927761'` | Flowplayer HTML5 license key |
-| `Player.flowplayer_fp7_token` | String | (long token) | Flowplayer 7 JWT license token |
+| `Player.flowplayer_fp7_token` | String | (JWT token string) | Flowplayer 7 JWT license token - replace with your token |
 | `Player.hls_url` | String | `'https://media.vifi.ee/vod/vod'` | Base URL for HLS adaptive streaming |
 | `Player.mp4_url` | String | `'//gonzales.vifi.ee/zsf/'` | Base URL for MP4 progressive download |
 | `Player.rtmp_url` | String | `'rtmp://media.vifi.ee/vod'` | Base URL for RTMP streaming (legacy) |
@@ -210,9 +210,9 @@ Below is a comprehensive table of all available settings and their descriptions:
 | `Search.default_query_params.sortKey` | String | `'sort'` | Query parameter name for sorting |
 | `Search.default_query_params.limit` | Number | `400` | Maximum number of results per API request |
 | `Search.default_search_state.q` | String | `''` | Default search query string |
-| `Search.default_search_state.genres` | Any | `undefined` | Default genre filter |
-| `Search.default_search_state.periods` | Any | `undefined` | Default period/year filter |
-| `Search.default_search_state.durations` | Any | `undefined` | Default duration filter |
+| `Search.default_search_state.genres` | Array\|undefined | `undefined` | Default genre filter (array of genre IDs) |
+| `Search.default_search_state.periods` | Array\|undefined | `undefined` | Default period/year filter (array of year ranges) |
+| `Search.default_search_state.durations` | Array\|undefined | `undefined` | Default duration filter (array of duration ranges) |
 | `Search.default_pagination_state.pageSize` | Number | `12` | Number of results to display per page |
 | `Search.default_pagination_state.sortKey` | String | `'updated_at'` | Default field to sort results by |
 | `Search.default_pagination_state.order` | Number | `0` | Sort order (0 = descending, 1 = ascending) |
