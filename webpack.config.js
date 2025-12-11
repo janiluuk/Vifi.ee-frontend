@@ -40,6 +40,13 @@ module.exports = (env, argv) => {
     GOOGLE_ANALYTICS_CODE: 'UA-XXXXX-1',
     SENTRY_DSN: '',
     API_KEY: '',
+    WWW_URL: '//www.example.com',
+    SOCIAL_FACEBOOK_URL: 'https://www.facebook.com/pages/Vifiee/385723814833754',
+    SOCIAL_TWITTER_URL: 'https://twitter.com/vifi_ee',
+    RSS_FEED_URL: '//www.example.com/feed',
+    SUPPORT_PHONE: '+372 58 667 570',
+    SUPPORT_EMAIL: 'support@example.com',
+    PRIVACY_URL: '//www.example.com/privacy',
   };
 
   // Build the envVars object for DefinePlugin

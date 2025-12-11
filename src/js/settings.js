@@ -94,6 +94,21 @@ App.Settings = {
                 order: 0,
             }
         },
+        /** Social Media & External Links **/
+        
+        Social: {
+            facebook_url: process.env.SOCIAL_FACEBOOK_URL || 'https://www.facebook.com/pages/Vifiee/385723814833754',
+            twitter_url: process.env.SOCIAL_TWITTER_URL || 'https://twitter.com/vifi_ee',
+            rss_feed_url: process.env.RSS_FEED_URL || '//www.example.com/feed',
+        },
+        
+        /** Support & Contact Information **/
+        
+        Support: {
+            phone: process.env.SUPPORT_PHONE || '+372 58 667 570',
+            email: process.env.SUPPORT_EMAIL || 'support@example.com',
+            privacy_url: process.env.PRIVACY_URL || '//www.example.com/privacy',
+        },
         page_change_callback: function(title, parameters) {
         },
 }
