@@ -53,7 +53,10 @@ export default [
         $error: 'writable',
         disqus_shortname: 'writable',
         DISQUS: 'writable',
-        url: 'writable'
+        url: 'writable',
+        
+        // Webpack DefinePlugin injected globals
+        process: 'readonly'
       }
     },
     rules: {
