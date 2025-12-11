@@ -180,23 +180,44 @@ npm run build
 
 ### Docker Deployment
 
-The application includes full Docker support with environment variable configuration:
+The application includes Docker support for easy deployment. There are two Dockerfile options:
 
-#### Building and Running with Docker
+1. **Dockerfile** (recommended) - Serves pre-built `dist/` folder
+2. **Dockerfile.build** - Multi-stage build (may have npm issues in some environments)
+
+#### Method 1: Simple Docker Deployment (Recommended)
+
+Build the application locally first, then create a Docker image:
 
 ```bash
-# Build the Docker image
+# 1. Configure environment variables
+cp .env.example .env
+# Edit .env with your values
+
+# 2. Build the application
+npm run build
+
+# 3. Build and run Docker image
 docker build -t vifi-frontend .
-
-# Run with default settings
 docker run -p 8080:80 vifi-frontend
+```
 
-# Run with custom environment variables
-docker build \
+#### Method 2: Multi-stage Build with Docker
+
+Use `Dockerfile.build` to build everything inside Docker:
+
+```bash
+# Build with default settings
+docker build -f Dockerfile.build -t vifi-frontend .
+
+# Build with custom environment variables
+docker build -f Dockerfile.build \
   --build-arg API_URL=//api.mysite.com/api/ \
   --build-arg API_KEY=my-secret-key \
   --build-arg MAIN_DOMAIN=mysite.com \
   -t vifi-frontend .
+
+# Run the container
 docker run -p 8080:80 vifi-frontend
 ```
 

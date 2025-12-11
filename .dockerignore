@@ -18,8 +18,8 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# Build artifacts
-dist/
+# Build artifacts (dist is needed for simple Dockerfile)
+# dist/
 build/
 *.log
 

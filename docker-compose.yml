@@ -4,7 +4,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.build
       args:
         - MAIN_DOMAIN=${MAIN_DOMAIN:-example.com}
         - WWW_DOMAIN=${WWW_DOMAIN:-www.example.com}
