@@ -210,7 +210,7 @@ App.User.Session = Backbone.Model.extend({
                         this.set("auth_id", data.token);
                         this.trigger("user:token:authenticated", data.token);
                         if (callback) callback(data);
-                        if (email == "anonymous@vifi.ee") this.disable();
+                        if (email == App.Settings.anonymous_username) this.disable();
                     }
                 } else {
                     this.trigger("user:token:error", data.message);

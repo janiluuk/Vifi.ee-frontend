@@ -1,13 +1,7 @@
-# Environment variables
-.env
-.env.local
-
 # Dependencies
 node_modules/
 npm-debug.log
 yarn-error.log
-package-lock.json
-yarn.lock
 
 # Test coverage
 coverage/
@@ -28,3 +22,20 @@ Thumbs.db
 dist/
 build/
 *.log
+
+# Git
+.git
+.gitignore
+
+# Environment files (will be passed as build args)
+.env
+.env.local
+
+# Documentation
+README.md
+API_DOCUMENTATION.md
+apiary.apib
+screenshot.png
+
+# CI/CD
+.github/

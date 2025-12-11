@@ -137,7 +137,7 @@ App.MediaPlayer = {
             plugins: {
                 rtmp: {
                     url: '/swf/flowplayer.rtmp-3.2.11.swf',
-                    netConnectionUrl: 'rtmp://media.vifi.ee/vod'                    
+                    netConnectionUrl: App.Settings.Player.rtmp_url                    
                 },
                 // the captions plugin
                 captions: {

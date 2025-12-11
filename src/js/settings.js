@@ -5,34 +5,34 @@ App.Settings = {
         version: '2020-05.2',
         debug: false,
         language: 'est',
-        sitename: 'Vifi',
+        sitename: process.env.SITE_NAME || 'Vifi',
         skin: 'vifi',
-        anonymous_username: 'anonymous@vifi.ee',
+        anonymous_username: process.env.ANONYMOUS_USERNAME || 'anonymous@example.com',
         sortingEnabled: true,
         loginEnabled: true,
         sentry_enabled: true,
-	    sentry_dsn: '',
+	    sentry_dsn: process.env.SENTRY_DSN || '',
         google_analytics_enabled: true,
-        google_analytics_code: 'UA-XXXXX-1',
+        google_analytics_code: process.env.GOOGLE_ANALYTICS_CODE || 'UA-XXXXX-1',
         rt_api_key: '',
-        facebook_app_id:  '',
+        facebook_app_id: process.env.FACEBOOK_APP_ID || '',
         commentsEnabled: true,
-        disqus_shortname: 'vifi',
+        disqus_shortname: process.env.DISQUS_SHORTNAME || 'vifi',
         /** API Settings **/
         Api: {
-            url: '//dev.vifi.ee/api/',
-            key: ''
+            url: process.env.API_URL || '//api.example.com/api/',
+            key: process.env.API_KEY || ''
         },
         Cookies: {
             cookie_name: 'vifi_session',
-            cookie_options: {path : '/', domain: '.vifi.ee'},
+            cookie_options: {path : '/', domain: process.env.COOKIE_DOMAIN || '.example.com'},
             purchase_cookie_name: 'film',
         },
         /** Image settings **/
 
         Images: {
             image_optimizer_enabled: true,
-            image_optimizer_url: '//gonzales.vifi.ee/files/images/image.php',
+            image_optimizer_url: process.env.IMAGE_OPTIMIZER_URL || '//cdn.example.com/files/images/image.php',
             image_optimizer_default_preset: 'w780',
         },
         Featured: {
@@ -56,11 +56,11 @@ App.Settings = {
             flowplayer_flash_key:  '#$05466e2f492e2ca07a3',
             flowplayer_html5_key: '$202296466927761',
             flowplayer_fp7_token: 'eyJraWQiOiJMNE5JZWNidlR5T0MiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJjIjoie1wiYWNsXCI6NCxcImlkXCI6XCJMNE5JZWNidlR5T0NcIn0iLCJpc3MiOiJGbG93cGxheWVyIn0.Ji_KqLLl5wJm28h1wdv_Lb1QSC-_9NyA7mIZS4HHIlIr6V29c3UYYkFsbo2jZQON35f_PC4xHk7hqLIGwMnJIw',
-            hls_url: 'https://media.vifi.ee/vod/vod',
-            mp4_url: '//gonzales.vifi.ee/zsf/',
-            rtmp_url: 'rtmp://media.vifi.ee/vod',
-            speedtest_url: '//gonzales.vifi.ee/files/bwtest.jpg',
-            subtitles_url: '//beta.vifi.ee/subs/',
+            hls_url: process.env.HLS_URL || 'https://media.example.com/vod/vod',
+            mp4_url: process.env.MP4_URL || '//cdn.example.com/zsf/',
+            rtmp_url: process.env.RTMP_URL || 'rtmp://media.example.com/vod',
+            speedtest_url: process.env.SPEEDTEST_URL || '//cdn.example.com/files/bwtest.jpg',
+            subtitles_url: process.env.SUBTITLES_URL || '//beta.example.com/subs/',
             enable_legacy_subtitles: false,
             convert_srt_to_vtt: true
         },

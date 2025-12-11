@@ -111,7 +111,7 @@ function init() {
 }
 
 function initCached() {
-    var cachedUrl = "//www.vifi.ee/init.json";
+    var cachedUrl = process.env.CACHED_INIT_URL || "//www.example.com/init.json";
     $.getJSON(cachedUrl, function(data) { var parsed = JSON.parse(data); initApp(parsed)}, "json");
 }
 
@@ -163,7 +163,7 @@ function initFB() {
 
     FB.init({
         appId: '169875156439063', // App ID
-        channelUrl: '//beta.vifi.ee/channel.html', // Channel File
+        channelUrl: process.env.CHANNEL_URL || '//beta.example.com/channel.html', // Channel File
         status: true, // check login status
         cookie: true, // enable cookies to allow the server to access the session
         xfbml: true, // parse XFBML
